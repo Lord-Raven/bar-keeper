@@ -1,5 +1,5 @@
 import {ReactElement} from "react";
-import {StageBase, StageResponse, InitialData, Message} from "@chub-ai/stages-ts";
+import {StageBase, StageResponse, InitialData, Message, Character} from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 
 /***
@@ -46,12 +46,16 @@ type ChatStateType = any;
  ***/
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
-    /***
-     A very simple example internal state. Can be anything.
-     This is ephemeral in the sense that it isn't persisted to a database,
-     but exists as long as the instance does, i.e., the chat page is open.
-     ***/
-    myInternalState: {[key: string]: any};
+    buildBarDescriptionPrompt(description: string): string {
+        return `[INST]Digest and appreciate the vibe, style, and setting of the following flavor text:[/INST]\n${description}\n` +
+            `[INST]Write two or three sentences describing a bar set in the fictional universe of this flavor text; focusing on the ` +
+            `ambiance, fixtures, and general clientele of the establishment.[/INST]`
+    };
+
+    barDescription: string|undefined;
+    barImageUrl: string|undefined;
+    character: Character;
+
 
     constructor(data: InitialData<InitStateType, ChatStateType, MessageStateType, ConfigType>) {
         /***
@@ -71,9 +75,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             initState,                             // @type: null | InitStateType
             chatState                              // @type: null | ChatStateType
         } = data;
-        this.myInternalState = messageState != null ? messageState : {'someKey': 'someValue'};
-        this.myInternalState['numUsers'] = Object.keys(users).length;
-        this.myInternalState['numChars'] = Object.keys(characters).length;
+
+        this.character = characters[0];
+        this.readChatState(chatState);
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
@@ -81,6 +85,19 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
          This is called immediately after the constructor, in case there is some asynchronous code you need to
          run on instantiation.
          ***/
+
+
+        //if (!this.barDescription) {
+            // Build a bar description:
+            let textResponse = await this.generator.textGen({
+                prompt: this.buildBarDescriptionPrompt(this.character.personality + ' ' + this.character.description),
+                max_tokens: 150,
+                min_tokens: 50
+            });
+
+            this.barDescription = textResponse?.result ?? '';
+        //}
+
         return {
             /*** @type boolean @default null
              @description The 'success' boolean returned should be false IFF (if and only if), some condition is met that means
@@ -92,19 +109,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
              briefly at the top of the screen, if any. ***/
             error: null,
             initState: null,
-            chatState: null,
+            chatState: this.buildChatState(),
         };
     }
 
     async setState(state: MessageStateType): Promise<void> {
-        /***
-         This can be called at any time, typically after a jump to a different place in the chat tree
-         or a swipe. Note how neither InitState nor ChatState are given here. They are not for
-         state that is affected by swiping.
-         ***/
-        if (state != null) {
-            this.myInternalState = {...this.myInternalState, ...state};
-        }
+
     }
 
     async beforePrompt(userMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
@@ -126,7 +136,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
              but that isn't persisted. ***/
             stageDirections: null,
             /*** @type MessageStateType | null @description the new state after the userMessage. ***/
-            messageState: {'someKey': this.myInternalState['someKey']},
+            messageState: null,
             /*** @type null | string @description If not null, the user's message itself is replaced
              with this value, both in what's sent to the LLM and in the database. ***/
             modifiedMessage: null,
@@ -139,7 +149,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             /*** @type null | string @description an error message to show
              briefly at the top of the screen, if any. ***/
             error: null,
-            chatState: null,
+            chatState: this.buildChatState(),
         };
     }
 
@@ -162,7 +172,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
              but that isn't persisted. ***/
             stageDirections: null,
             /*** @type MessageStateType | null @description the new state after the botMessage. ***/
-            messageState: {'someKey': this.myInternalState['someKey']},
+            messageState: null,
             /*** @type null | string @description If not null, the bot's response itself is replaced
              with this value, both in what's sent to the LLM subsequently and in the database. ***/
             modifiedMessage: null,
@@ -170,9 +180,22 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
              briefly at the top of the screen, if any. ***/
             error: null,
             systemMessage: null,
-            chatState: null
+            chatState: this.buildChatState(),
         };
     }
+
+    buildChatState(): ChatStateType {
+        return {
+            barDescription: this.barDescription,
+            barImageUrl: this.barImageUrl
+        };
+    }
+
+    readChatState(chatState: ChatStateType) {
+        this.barDescription = chatState.barDescription;
+        this.barImageUrl = chatState.barImageUrl;
+    }
+
 
 
     render(): ReactElement {
@@ -195,10 +218,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             display: 'grid',
             alignItems: 'stretch'
         }}>
-            <div>Hello World! I'm an empty stage! With {this.myInternalState['someKey']}!</div>
-            <div>There is/are/were {this.myInternalState['numChars']} character(s)
-                and {this.myInternalState['numUsers']} human(s) here.
-            </div>
+            <div>{this.barDescription}</div>
         </div>;
     }
 
