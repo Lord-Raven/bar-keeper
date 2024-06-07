@@ -192,8 +192,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     readChatState(chatState: ChatStateType) {
-        this.barDescription = chatState.barDescription;
-        this.barImageUrl = chatState.barImageUrl;
+        if (chatState) {
+            this.barDescription = chatState.barDescription;
+            this.barImageUrl = chatState.barImageUrl;
+        }
     }
 
 
@@ -218,7 +220,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             display: 'grid',
             alignItems: 'stretch'
         }}>
-            <div>{this.barDescription}</div>
+            <div>{this.barDescription ?? ''}</div>
         </div>;
     }
 
