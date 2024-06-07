@@ -1,5 +1,5 @@
 import {ReactElement} from "react";
-import {StageBase, StageResponse, InitialData, Message, Character} from "@chub-ai/stages-ts";
+import {AspectRatio, Character, InitialData, Message, StageBase, StageResponse} from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 
 /***
@@ -96,7 +96,18 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 min_tokens: 50
             });
 
-            this.barDescription = textResponse?.result ?? '';
+            this.barDescription = textResponse?.result ?? undefined;
+
+            if (this.barDescription) {
+                console.log('Generate an image');
+
+                let imageResponse = await this.generator.makeImage({
+                    prompt: `Visual novel background image of a bar matching this description: ${this.barDescription}`,
+                    aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
+                })
+
+                this.barImageUrl = imageResponse?.url;
+            }
         //}
 
         return {
@@ -216,6 +227,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
            @link https://cuberun.adamkarlsten.com/ (Demo)
          ***/
         return <div style={{
+            backgroundImage: `url(${this.barImageUrl})`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
             width: '100vw',
             height: '100vh',
             display: 'grid',
