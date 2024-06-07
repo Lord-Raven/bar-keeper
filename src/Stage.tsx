@@ -76,7 +76,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             chatState                              // @type: null | ChatStateType
         } = data;
 
-        this.character = characters[0];
+        this.character = characters[Object.keys(characters)[0]];
+        console.log(this.character);
         this.readChatState(chatState);
     }
 
