@@ -1,6 +1,7 @@
 import {ReactElement} from "react";
 import {AspectRatio, Character, InitialData, Message, StageBase, StageResponse} from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
+import LoadingBar from 'react-top-loading-bar';
 
 /***
  The type that this stage persists message-level state in.
@@ -49,11 +50,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     buildBarDescriptionPrompt(description: string): string {
         return `[INST]Digest and appreciate the vibe, style, and setting of the following flavor text:[/INST]\n${description}\n` +
             `[INST]Write two or three sentences describing a bar set in the fictional universe of this flavor text; focusing on the ` +
-            `ambiance, fixtures, and general clientele of the establishment.[/INST]`
+            `ambiance, setting, theming, fixtures, and general clientele of the establishment.[/INST]`
     };
 
     barDescription: string|undefined;
     barImageUrl: string|undefined;
+    loadingProgress: number|undefined;
+    loadingDescription: string|undefined;
     character: Character;
 
 
@@ -86,6 +89,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
          This is called immediately after the constructor, in case there is some asynchronous code you need to
          run on instantiation.
          ***/
+        this.loadingProgress = 0;
+        this.loadingDescription = 'Generating bar description.';
 
 
         //if (!this.barDescription) {
@@ -94,9 +99,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 prompt: this.buildBarDescriptionPrompt(this.character.personality + ' ' + this.character.description),
                 max_tokens: 150,
                 min_tokens: 50
-            });
+            })
+        this.loadingProgress = 40;
+        this.loadingDescription = 'Generating bar image.';
 
-            this.barDescription = textResponse?.result ?? undefined;
+
+        this.barDescription = textResponse?.result ?? undefined;
 
             if (this.barDescription) {
                 console.log('Generate an image');
@@ -109,6 +117,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 this.barImageUrl = imageResponse?.url;
             }
         //}
+        this.loadingProgress = this.loadingDescription = undefined;
+
 
         return {
             /*** @type boolean @default null
@@ -213,19 +223,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
 
     render(): ReactElement {
-        /***
-         There should be no "work" done here. Just returning the React element to display.
-         If you're unfamiliar with React and prefer video, I've heard good things about
-         @link https://scrimba.com/learn/learnreact but haven't personally watched/used it.
 
-         For creating 3D and game components, react-three-fiber
-           @link https://docs.pmnd.rs/react-three-fiber/getting-started/introduction
-           and the associated ecosystem of libraries are quite good and intuitive.
-
-         Cuberun is a good example of a game built with them.
-           @link https://github.com/akarlsten/cuberun (Source)
-           @link https://cuberun.adamkarlsten.com/ (Demo)
-         ***/
         return <div style={{
             backgroundImage: `url(${this.barImageUrl})`,
             backgroundPosition: 'center',
@@ -236,6 +234,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             display: 'grid',
             alignItems: 'stretch'
         }}>
+            <div>
+                {this.loadingProgress && (
+                    <div>
+                        <LoadingBar color="#f11946" height={3} progress={this.loadingProgress}/>
+                        <p style={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                            {this.loadingDescription} - {this.loadingProgress}%
+                        </p>
+                    </div>
+                )}
+            </div>
             <div>{this.barDescription ?? ''}</div>
         </div>;
     }
