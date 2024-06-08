@@ -187,7 +187,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     buildChatState(): ChatStateType {
         return {
             barDescription: this.barDescription,
-            barImageUrl: this.barImageUrl
+            barImageUrl: this.barImageUrl,
+            alcoholDescription: this.alcoholDescription,
+            alcoholImageUrl: this.alcoholImageUrl
         };
     }
 
@@ -195,6 +197,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         if (chatState) {
             this.barDescription = chatState.barDescription;
             this.barImageUrl = chatState.barImageUrl;
+            this.alcoholDescription = chatState.alcoholDescription;
+            this.alcoholImageUrl = chatState.alcoholImageUrl;
         }
     }
 
@@ -202,8 +206,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.loadingProgress = 0;
         this.loadingDescription = 'Generating bar description.';
 
-        //if (!this.barDescription) {
-        // Build a bar description:
         let textResponse = await this.generator.textGen({
             prompt: this.buildBarDescriptionPrompt(this.character.personality + ' ' + this.character.description),
             max_tokens: 150,
@@ -225,6 +227,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             this.barImageUrl = imageResponse?.url;
 
+            this.loadingProgress = 40;
+            this.loadingDescription = 'Generating beverages.';
+
             this.alcoholDescription = {};
             this.alcoholImageUrl = {};
 
@@ -235,7 +240,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             });
 
             const lines = alcoholResponse?.result ?? '';
-            const regex = /^(.+?)\s+-\s+(.+)$/gm;
+            const regex = /^[^\p{L}]*(\p{L}.+?)\s+-\s+(.+)$/gmu;
             let match;
             let count = 0;
             console.log(lines);
@@ -247,18 +252,20 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 }
             }
 
+            this.loadingProgress = 50;
+            this.loadingDescription = 'Generating beverage images.';
+
             for (const [key, value] of Object.entries(this.alcoholDescription)) {
                 console.log(`Generating image for ${key}`)
                 let alcoholImageResponse = await this.generator.makeImage({
-                    prompt: `Clean, professional, stylized illustration of a bottle of alcohol on a blank background, matching this description: ${value}`,
+                    prompt: `Clean, professional, stylized illustration of a bottle of alcohol on an empty background, matching this description: ${value}`,
                     aspect_ratio: AspectRatio.PHOTO_VERTICAL,
                     remove_background: true
                 });
                 this.alcoholImageUrl[key] = alcoholImageResponse?.url ?? '';
+                this.loadingProgress += 5;
             }
-
         }
-        //}
         this.loadingProgress = this.loadingDescription = undefined;
 
     }
