@@ -60,7 +60,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
             `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like sweetener on cocaine.\n` +
             `Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with a Eldridge Brewery logo.\n` +
-            `Toilet Wine - A plastic pitcher of questionably-sourced-but-unquestionably-alcoholic red wine.`
+            `Toilet Wine - A plastic pitcher of questionably-sourced-but-unquestionably-alcoholic red wine.[/INST]`
     };
 
     barDescription: string|undefined;
