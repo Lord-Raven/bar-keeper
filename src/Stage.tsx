@@ -205,6 +205,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     async generate() {
         this.loadingProgress = 0;
         this.loadingDescription = 'Generating bar description.';
+        console.log('Generating');
 
         let textResponse = await this.generator.textGen({
             prompt: this.buildBarDescriptionPrompt(this.character.personality + ' ' + this.character.description),
@@ -282,7 +283,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             width: '100vw',
             height: '100vh',
             display: 'grid',
-            alignItems: 'stretch'
+            alignItems: 'stretch',
+            color: '#ffffff'
         }}>
             <div>
                 <div>
