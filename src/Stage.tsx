@@ -259,7 +259,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             for (const [key, value] of Object.entries(this.alcoholDescription)) {
                 console.log(`Generating image for ${key}`)
                 let alcoholImageResponse = await this.generator.makeImage({
-                    prompt: `Clean, professional, stylized illustration of a bottle of alcohol on an empty background, matching this description: ${value}`,
+                    prompt: `Clean, professional, stylized illustration of a single bottle of alcohol on an empty background, matching this description: ${value}`,
+                    negative_prompt: `background, frame`,
                     aspect_ratio: AspectRatio.PHOTO_VERTICAL,
                     remove_background: true
                 });
@@ -288,12 +289,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }}>
             <div>
                 <div>
-                    <button onClick={() => this.generate()}>Generate</button>
+                    <button style={{color: '#ffffff'}} onClick={() => this.generate()}>Generate</button>
                 </div>
 
                 {this.loadingProgress && (
                     <div>
-                        <LoadingBar color="#f11946" height={3} progress={this.loadingProgress}/>
+                        <LoadingBar color="#f11946" height={30} progress={this.loadingProgress}/>
                         <p style={{color: '#ffffff', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
                             {this.loadingDescription} - {this.loadingProgress}%
                         </p>
