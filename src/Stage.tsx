@@ -82,6 +82,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     // Not saved:
     characterForGeneration: Character;
+    playerId: string;
 
     constructor(data: InitialData<InitStateType, ChatStateType, MessageStateType, ConfigType>) {
         /***
@@ -109,19 +110,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.actors = {};
         this.presentActorIds = [];
         this.currentActor = '';
+        this.playerId = users[Object.keys(users)[0]].anonymizedId;
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
 
         return {
-            /*** @type boolean @default null
-             @description The 'success' boolean returned should be false IFF (if and only if), some condition is met that means
-              the stage shouldn't be run at all and the iFrame can be closed/removed.
-              For example, if a stage displays expressions and no characters have an expression pack,
-              there is no reason to run the stage, so it would return false here. ***/
             success: true,
-            /*** @type null | string @description an error message to show
-             briefly at the top of the screen, if any. ***/
             error: null,
             initState: null,
             chatState: this.buildChatState(),
@@ -143,6 +138,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             identity
         } = userMessage;
 
+        console.log('beforePrompt()');
+
         if (this.messageParentIds && this.messageBodies) {
             this.messageParentIds[identity] = this.currentMessageId ?? '';
             this.messageBodies[identity] = content;
@@ -150,32 +147,17 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.currentMessageId = identity;
 
         return {
-            /*** @type null | string @description A string to add to the
-             end of the final prompt sent to the LLM,
-             but that isn't persisted. ***/
             stageDirections: null,
-            /*** @type MessageStateType | null @description the new state after the userMessage. ***/
             messageState: this.buildMessageState(),
-            /*** @type null | string @description If not null, the user's message itself is replaced
-             with this value, both in what's sent to the LLM and in the database. ***/
             modifiedMessage: null,
-            /*** @type null | string @description A system message to append to the end of this message.
-             This is unique in that it shows up in the chat log and is sent to the LLM in subsequent messages,
-             but it's shown as coming from a system user and not any member of the chat. If you have things like
-             computed stat blocks that you want to show in the log, but don't want the LLM to start trying to
-             mimic/output them, they belong here. ***/
             systemMessage: null,
-            /*** @type null | string @description an error message to show
-             briefly at the top of the screen, if any. ***/
             error: null,
             chatState: this.buildChatState(),
         };
     }
 
     async afterResponse(botMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
-        /***
-         This is called immediately after a response from the LLM.
-         ***/
+
         const {
             content,
             anonymizedId,
@@ -183,26 +165,19 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             identity
         } = botMessage;
 
+        console.log('afterResponse()');
         if (this.messageParentIds && this.messageBodies) {
             this.messageParentIds[identity] = this.currentMessageId ?? '';
             this.messageBodies[identity] = content;
         }
         this.currentMessageId = identity;
         return {
-            /*** @type null | string @description A string to add to the
-             end of the final prompt sent to the LLM,
-             but that isn't persisted. ***/
             stageDirections: null,
-            /*** @type MessageStateType | null @description the new state after the botMessage. ***/
             messageState: this.buildMessageState(),
-            /*** @type null | string @description If not null, the bot's response itself is replaced
-             with this value, both in what's sent to the LLM subsequently and in the database. ***/
             modifiedMessage: null,
-            /*** @type null | string @description an error message to show
-             briefly at the top of the screen, if any. ***/
             error: null,
             systemMessage: null,
-            chatState: this.buildChatState(),
+            chatState: this.buildChatState()
         };
     }
 
@@ -297,8 +272,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             for (const [key, value] of Object.entries(this.alcoholDescriptions)) {
                 console.log(`Generating image for ${key}`)
                 let alcoholImageResponse = await this.generator.makeImage({
-                    prompt: `Clean, professional, stylized illustration of a single bottle of alcohol on an empty background, matching this description: ${value}`,
-                    negative_prompt: `background, frame`,
+                    prompt: `Clean, professional, stylized illustration of a single, standalone bottle of alcohol on an empty background, matching this description: ${value}`,
+                    negative_prompt: `background, frame, multiple bottles`,
                     aspect_ratio: AspectRatio.PHOTO_VERTICAL,
                     remove_background: true
                 });
@@ -310,7 +285,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         let finalResponse = await this.messenger.impersonate({
             message: `[Generated content: ${this.barDescription}]`,
-            parent_id: this.currentMessageId ?? null
+            parent_id: this.currentMessageId ?? null,
+            speaker_id: this.playerId
         });
     }
 
@@ -338,7 +314,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }}>
             <div>
                 <div>
-                    <button style={{color: '#ffffff'}} onClick={() => this.generate()}>Generate</button>
+                    <button style={{color: '#ffffff'}} disabled={!!this.loadingProgress ?? false} onClick={() => this.generate()}>Generate</button>
                 </div>
 
                 {this.loadingProgress && (
