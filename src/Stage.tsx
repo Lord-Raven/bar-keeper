@@ -229,17 +229,15 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             backgroundPosition: 'center',
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
-            width: '100%',
-            height: '100%',
+            width: '100vw',
+            height: '100vh',
             display: 'flex',
             alignItems: 'stretch'
         }}>
             <div>
-                {!this.barDescription && (
-                    <div>
-                        <button onClick={() => this.generate()}>Generate</button>
-                    </div>
-                )}
+                <div>
+                    <button onClick={() => this.generate()}>Generate</button>
+                </div>
 
                 {this.loadingProgress && (
                     <div>
