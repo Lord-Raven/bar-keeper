@@ -85,13 +85,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     playerId: string;
 
     constructor(data: InitialData<InitStateType, ChatStateType, MessageStateType, ConfigType>) {
-        /***
-         This is the first thing called in the stage,
-         to create an instance of it.
-         The definition of InitialData is at @link https://github.com/CharHubAI/chub-stages-ts/blob/main/src/types/initial.ts
-         Character at @link https://github.com/CharHubAI/chub-stages-ts/blob/main/src/types/character.ts
-         User at @link https://github.com/CharHubAI/chub-stages-ts/blob/main/src/types/user.ts
-         ***/
+
         super(data);
         const {
             characters,         // @type:  { [key: string]: Character }
@@ -281,13 +275,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 this.loadingProgress += 5;
             }
         }
-        this.loadingProgress = this.loadingDescription = undefined;
 
-        let finalResponse = await this.messenger.impersonate({
+        /*let finalResponse = await this.messenger.impersonate({
             message: `[Generated content: ${this.barDescription}]`,
             parent_id: this.currentMessageId ?? null,
             speaker_id: this.playerId
-        });
+        });*/
+        await this.messenger.updateChatState(this.buildChatState());
+        this.loadingProgress = this.loadingDescription = undefined;
     }
 
     async continue() {
@@ -319,8 +314,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
                 {this.loadingProgress && (
                     <div>
-                        <LoadingBar color="#f11946" height={30} progress={this.loadingProgress}/>
-                        <p style={{color: '#ffffff', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                        <LoadingBar color="#f11946" height={30} progress={this.loadingProgress} />
+                        <p style={{color: '#ffffff', background: '#111122', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
                             {this.loadingDescription} - {this.loadingProgress}%
                         </p>
                     </div>
