@@ -307,12 +307,20 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             }
         }
         this.loadingProgress = this.loadingDescription = undefined;
+
+        let finalResponse = await this.messenger.impersonate({
+            message: `[Generated content: ${this.barDescription}]`,
+            parent_id: this.currentMessageId ?? null
+        });
     }
 
     async continue() {
 
     }
 
+    getMessageBody(messageId: string|undefined): string {
+        return (this.messageBodies ?? {})[messageId ?? ''] ?? '';
+    }
 
 
     render(): ReactElement {
@@ -342,7 +350,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </div>
                 )}
             </div>
-            <div>{this.barDescription ?? ''}</div>
+            <div>{this.getMessageBody(this.currentMessageId)}</div>
             <div>
                 <button style={{color: '#ffffff'}} onClick={() => this.continue()}>Continue</button>
             </div>
