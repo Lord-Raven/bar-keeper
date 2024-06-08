@@ -110,7 +110,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 console.log('Generate an image');
 
                 let imageResponse = await this.generator.makeImage({
-                    prompt: `Visual novel background image of a bar matching this description: ${this.barDescription}`,
+                    prompt: `4k, hyperrealistic. Visual novel background image of a bar matching this description: ${this.barDescription}`,
                     aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
                 })
 
