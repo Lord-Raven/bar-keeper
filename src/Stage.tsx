@@ -2,6 +2,7 @@ import {ReactElement} from "react";
 import {AspectRatio, Character, InitialData, Message, StageBase, StageResponse} from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import LoadingBar from 'react-top-loading-bar';
+import {Actor} from "./Actor";
 
 /***
  The type that this stage persists message-level state in.
@@ -63,14 +64,24 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Toilet Wine - A plastic pitcher of questionably-sourced-but-unquestionably-alcoholic red wine.[/INST]`
     };
 
+    // Message State:
+    currentMessageId: string|undefined;
+
+    // Chat State:
     barDescription: string|undefined;
     barImageUrl: string|undefined;
-    alcoholDescription: {[key: string]: string}|undefined;
-    alcoholImageUrl: {[key: string]: string}|undefined;
+    alcoholDescriptions: {[key: string]: string}|undefined;
+    alcoholImageUrls: {[key: string]: string}|undefined;
     loadingProgress: number|undefined;
     loadingDescription: string|undefined;
-    character: Character;
+    messageParentIds: {[key: string]: string}|undefined;
+    messageBodies: {[key: string]: string}|undefined;
+    actors: {[key: string]: Actor};
+    presentActorIds: string[]
+    currentActor: string;
 
+    // Not saved:
+    characterForGeneration: Character;
 
     constructor(data: InitialData<InitStateType, ChatStateType, MessageStateType, ConfigType>) {
         /***
@@ -91,9 +102,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             chatState                              // @type: null | ChatStateType
         } = data;
 
-        this.character = characters[Object.keys(characters)[0]];
-        console.log(this.character);
+        this.characterForGeneration = characters[Object.keys(characters)[0]];
+        console.log(this.characterForGeneration);
         this.readChatState(chatState);
+        this.readMessageState(messageState);
+        this.actors = {};
+        this.presentActorIds = [];
+        this.currentActor = '';
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
@@ -113,8 +128,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         };
     }
 
-    async setState(state: MessageStateType): Promise<void> {
-
+    async setState(messageState: MessageStateType): Promise<void> {
+        this.readMessageState(messageState);
     }
 
     async beforePrompt(userMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
@@ -122,21 +137,25 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
          This is called after someone presses 'send', but before anything is sent to the LLM.
          ***/
         const {
-            content,            /*** @type: string
-             @description Just the last message about to be sent. ***/
-            anonymizedId,       /*** @type: string
-             @description An anonymized ID that is unique to this individual
-              in this chat, but NOT their Chub ID. ***/
-            isBot             /*** @type: boolean
-             @description Whether this is itself from another bot, ex. in a group chat. ***/
+            content,
+            anonymizedId,
+            isBot,
+            identity
         } = userMessage;
+
+        if (this.messageParentIds && this.messageBodies) {
+            this.messageParentIds[identity] = this.currentMessageId ?? '';
+            this.messageBodies[identity] = content;
+        }
+        this.currentMessageId = identity;
+
         return {
             /*** @type null | string @description A string to add to the
              end of the final prompt sent to the LLM,
              but that isn't persisted. ***/
             stageDirections: null,
             /*** @type MessageStateType | null @description the new state after the userMessage. ***/
-            messageState: null,
+            messageState: this.buildMessageState(),
             /*** @type null | string @description If not null, the user's message itself is replaced
              with this value, both in what's sent to the LLM and in the database. ***/
             modifiedMessage: null,
@@ -158,21 +177,24 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
          This is called immediately after a response from the LLM.
          ***/
         const {
-            content,            /*** @type: string
-             @description The LLM's response. ***/
-            anonymizedId,       /*** @type: string
-             @description An anonymized ID that is unique to this individual
-              in this chat, but NOT their Chub ID. ***/
-            isBot             /*** @type: boolean
-             @description Whether this is from a bot, conceivably always true. ***/
+            content,
+            anonymizedId,
+            isBot,
+            identity
         } = botMessage;
+
+        if (this.messageParentIds && this.messageBodies) {
+            this.messageParentIds[identity] = this.currentMessageId ?? '';
+            this.messageBodies[identity] = content;
+        }
+        this.currentMessageId = identity;
         return {
             /*** @type null | string @description A string to add to the
              end of the final prompt sent to the LLM,
              but that isn't persisted. ***/
             stageDirections: null,
             /*** @type MessageStateType | null @description the new state after the botMessage. ***/
-            messageState: null,
+            messageState: this.buildMessageState(),
             /*** @type null | string @description If not null, the bot's response itself is replaced
              with this value, both in what's sent to the LLM subsequently and in the database. ***/
             modifiedMessage: null,
@@ -188,8 +210,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return {
             barDescription: this.barDescription,
             barImageUrl: this.barImageUrl,
-            alcoholDescription: this.alcoholDescription,
-            alcoholImageUrl: this.alcoholImageUrl
+            alcoholDescriptions: this.alcoholDescriptions,
+            alcoholImageUrls: this.alcoholImageUrls,
+            messageParentIds: this.messageParentIds,
+            messageBodies: this.messageBodies
         };
     }
 
@@ -197,8 +221,22 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         if (chatState) {
             this.barDescription = chatState.barDescription;
             this.barImageUrl = chatState.barImageUrl;
-            this.alcoholDescription = chatState.alcoholDescription;
-            this.alcoholImageUrl = chatState.alcoholImageUrl;
+            this.alcoholDescriptions = chatState.alcoholDescriptions;
+            this.alcoholImageUrls = chatState.alcoholImageUrls;
+            this.messageParentIds = chatState.messageParentIds ?? {};
+            this.messageBodies = chatState.messageBodies ?? {};
+        }
+    }
+
+    buildMessageState(): MessageStateType {
+        return {
+            currentMessageId: this.currentMessageId
+        };
+    }
+
+    readMessageState(messageState: MessageStateType) {
+        if (messageState) {
+            this.currentMessageId = messageState.currentMessageId;
         }
     }
 
@@ -208,7 +246,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log('Generating');
 
         let textResponse = await this.generator.textGen({
-            prompt: this.buildBarDescriptionPrompt(this.character.personality + ' ' + this.character.description),
+            prompt: this.buildBarDescriptionPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description),
             max_tokens: 150,
             min_tokens: 50
         });
@@ -231,8 +269,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.loadingProgress = 40;
             this.loadingDescription = 'Generating beverages.';
 
-            this.alcoholDescription = {};
-            this.alcoholImageUrl = {};
+            this.alcoholDescriptions = {};
+            this.alcoholImageUrls = {};
 
             let alcoholResponse = await this.generator.textGen({
                 prompt: this.buildAlcoholDescriptionsPrompt(),
@@ -246,8 +284,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             let count = 0;
             console.log(lines);
             while ((match = regex.exec(lines)) !== null) {
-                this.alcoholDescription[match[1].trim()] = match[2].trim();
-                console.log(`${match[1].trim()} - ${this.alcoholDescription[match[1].trim()]}`);
+                this.alcoholDescriptions[match[1].trim()] = match[2].trim();
+                console.log(`${match[1].trim()} - ${this.alcoholDescriptions[match[1].trim()]}`);
                 if (++count >= 6) {
                     break;
                 }
@@ -256,7 +294,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.loadingProgress = 50;
             this.loadingDescription = 'Generating beverage images.';
 
-            for (const [key, value] of Object.entries(this.alcoholDescription)) {
+            for (const [key, value] of Object.entries(this.alcoholDescriptions)) {
                 console.log(`Generating image for ${key}`)
                 let alcoholImageResponse = await this.generator.makeImage({
                     prompt: `Clean, professional, stylized illustration of a single bottle of alcohol on an empty background, matching this description: ${value}`,
@@ -264,11 +302,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     aspect_ratio: AspectRatio.PHOTO_VERTICAL,
                     remove_background: true
                 });
-                this.alcoholImageUrl[key] = alcoholImageResponse?.url ?? '';
+                this.alcoholImageUrls[key] = alcoholImageResponse?.url ?? '';
                 this.loadingProgress += 5;
             }
         }
         this.loadingProgress = this.loadingDescription = undefined;
+    }
+
+    async continue() {
 
     }
 
@@ -302,8 +343,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 )}
             </div>
             <div>{this.barDescription ?? ''}</div>
+            <div>
+                <button style={{color: '#ffffff'}} onClick={() => this.continue()}>Continue</button>
+            </div>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
-                {Object.entries(this.alcoholImageUrl ?? {}).map(([key, url]) => (
+                {Object.entries(this.alcoholImageUrls ?? {}).map(([key, url]) => (
                     <img key={key} src={url} alt={key} style={{ margin: '0 5px' }} />
                 ))}
             </div>
