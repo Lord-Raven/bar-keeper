@@ -53,8 +53,20 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `ambiance, setting, theming, fixtures, and general clientele of the establishment.[/INST]`
     };
 
+    buildAlcoholDescriptionsPrompt(): string {
+        return `[INST]Thoughtfully consider a bar with the following description:[/INST]\n${this.barDescription}\n` +
+            `[INST]Output six lines, each with the name of a type of alcohol that this bar might serve, as well as a brief description of ` +
+            `its appearance, bottle, and flavor. Follow the format of these examples:\n` +
+            `Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
+            `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like sweetener on cocaine.\n` +
+            `Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with a Eldridge Brewery logo.\n` +
+            `Toilet Wine - A plastic pitcher of questionably-sourced-but-unquestionably-alcoholic red wine.`
+    };
+
     barDescription: string|undefined;
     barImageUrl: string|undefined;
+    alcoholDescription: {[key: string]: string}|undefined;
+    alcoholImageUrl: {[key: string]: string}|undefined;
     loadingProgress: number|undefined;
     loadingDescription: string|undefined;
     character: Character;
@@ -196,8 +208,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             prompt: this.buildBarDescriptionPrompt(this.character.personality + ' ' + this.character.description),
             max_tokens: 150,
             min_tokens: 50
-        })
-        this.loadingProgress = 40;
+        });
+        this.loadingProgress = 20;
         this.loadingDescription = 'Generating bar image.';
 
 
@@ -209,11 +221,42 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             let imageResponse = await this.generator.makeImage({
                 prompt: `Clean, professional, stylized illustration. Visual novel background image of a bar matching this description: ${this.barDescription}`,
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
-            })
+            });
 
             this.barImageUrl = imageResponse?.url;
-        } else {
-            this.barImageUrl = undefined;
+
+            this.alcoholDescription = {};
+            this.alcoholImageUrl = {};
+
+            let alcoholResponse = await this.generator.textGen({
+                prompt: this.buildAlcoholDescriptionsPrompt(),
+                max_tokens: 300,
+                min_tokens: 50
+            });
+
+            const lines = alcoholResponse?.result ?? '';
+            const regex = /^(.+?)\s+-\s+(.+)$/gm;
+            let match;
+            let count = 0;
+            console.log(lines);
+            while ((match = regex.exec(lines)) !== null) {
+                this.alcoholDescription[match[1].trim()] = match[2].trim();
+                console.log(`${match[1].trim()} - ${this.alcoholDescription[match[1].trim()]}`);
+                if (++count >= 6) {
+                    break;
+                }
+            }
+
+            for (const [key, value] of Object.entries(this.alcoholDescription)) {
+                console.log(`Generating image for ${key}`)
+                let alcoholImageResponse = await this.generator.makeImage({
+                    prompt: `Clean, professional, stylized illustration of a bottle of alcohol on a blank background, matching this description: ${value}`,
+                    aspect_ratio: AspectRatio.PHOTO_VERTICAL,
+                    remove_background: true
+                });
+                this.alcoholImageUrl[key] = alcoholImageResponse?.url ?? '';
+            }
+
         }
         //}
         this.loadingProgress = this.loadingDescription = undefined;
@@ -231,7 +274,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             backgroundRepeat: 'no-repeat',
             width: '100vw',
             height: '100vh',
-            display: 'flex',
+            display: 'grid',
             alignItems: 'stretch'
         }}>
             <div>
@@ -242,14 +285,19 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 {this.loadingProgress && (
                     <div>
                         <LoadingBar color="#f11946" height={3} progress={this.loadingProgress}/>
-                        <p style={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                        <p style={{color: '#ffffff', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
                             {this.loadingDescription} - {this.loadingProgress}%
                         </p>
                     </div>
                 )}
             </div>
             <div>{this.barDescription ?? ''}</div>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
+                {Object.entries(this.alcoholImageUrl ?? {}).map(([key, url]) => (
+                    <img key={key} src={url} alt={key} style={{ margin: '0 5px' }} />
+                ))}
+            </div>
         </div>;
-    }
+    };
 
 }
