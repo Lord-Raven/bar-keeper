@@ -85,40 +85,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
-        /***
-         This is called immediately after the constructor, in case there is some asynchronous code you need to
-         run on instantiation.
-         ***/
-        this.loadingProgress = 0;
-        this.loadingDescription = 'Generating bar description.';
-
-
-        //if (!this.barDescription) {
-            // Build a bar description:
-            let textResponse = await this.generator.textGen({
-                prompt: this.buildBarDescriptionPrompt(this.character.personality + ' ' + this.character.description),
-                max_tokens: 150,
-                min_tokens: 50
-            })
-        this.loadingProgress = 40;
-        this.loadingDescription = 'Generating bar image.';
-
-
-        this.barDescription = textResponse?.result ?? undefined;
-
-            if (this.barDescription) {
-                console.log('Generate an image');
-
-                let imageResponse = await this.generator.makeImage({
-                    prompt: `4k, hyperrealistic. Visual novel background image of a bar matching this description: ${this.barDescription}`,
-                    aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
-                })
-
-                this.barImageUrl = imageResponse?.url;
-            }
-        //}
-        this.loadingProgress = this.loadingDescription = undefined;
-
 
         return {
             /*** @type boolean @default null
@@ -220,6 +186,40 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
     }
 
+    async generate() {
+        this.loadingProgress = 0;
+        this.loadingDescription = 'Generating bar description.';
+
+        //if (!this.barDescription) {
+        // Build a bar description:
+        let textResponse = await this.generator.textGen({
+            prompt: this.buildBarDescriptionPrompt(this.character.personality + ' ' + this.character.description),
+            max_tokens: 150,
+            min_tokens: 50
+        })
+        this.loadingProgress = 40;
+        this.loadingDescription = 'Generating bar image.';
+
+
+        this.barDescription = textResponse?.result ?? undefined;
+
+        if (this.barDescription) {
+            console.log('Generate an image');
+
+            let imageResponse = await this.generator.makeImage({
+                prompt: `Clean, professional, stylized illustration. Visual novel background image of a bar matching this description: ${this.barDescription}`,
+                aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
+            })
+
+            this.barImageUrl = imageResponse?.url;
+        } else {
+            this.barImageUrl = undefined;
+        }
+        //}
+        this.loadingProgress = this.loadingDescription = undefined;
+
+    }
+
 
 
     render(): ReactElement {
@@ -229,12 +229,18 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             backgroundPosition: 'center',
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
-            width: '100vw',
-            height: '100vh',
-            display: 'grid',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
             alignItems: 'stretch'
         }}>
             <div>
+                {!this.barDescription && (
+                    <div>
+                        <button onClick={() => this.generate()}>Generate</button>
+                    </div>
+                )}
+
                 {this.loadingProgress && (
                     <div>
                         <LoadingBar color="#f11946" height={3} progress={this.loadingProgress}/>
