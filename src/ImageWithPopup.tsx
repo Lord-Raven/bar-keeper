@@ -52,8 +52,9 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                 }}
                 onClose={handlePopoverClose}
                 disableRestoreFocus
+                style={{backgroundColor: '#111111'}}
             >
-                <b>{popupHeader}</b> - {popupBody}
+                <div style={{color: '#ffffff'}}><h4>{popupHeader}</h4><br/>{popupBody}</div>
             </Popover>
         </div>
     );
