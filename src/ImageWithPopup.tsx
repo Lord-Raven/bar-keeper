@@ -32,20 +32,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                 onMouseLeave={handleMouseLeave}
                 style={style ?? { margin: '0 5px' }}
             />
-            <Popover
-                id={popupHeader}
-                open={showPopup}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-            >
-                <b>{popupHeader}</b> - {popupBody}
-            </Popover>
+
         </div>
     );
 };
