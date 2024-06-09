@@ -14,10 +14,12 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
 
     const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
+        console.log('handlePopoverOpen');
     };
 
     const handlePopoverClose = () => {
         setAnchorEl(null);
+        console.log('handlePopoverClose');
     };
 
     const open = Boolean(anchorEl);
@@ -27,12 +29,17 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
             <img
                 src={src}
                 alt={alt}
+                aria-owns={open ? `mouse-over-popover-${popupHeader}` : undefined}
+                aria-haspopup="true"
                 onMouseEnter={handlePopoverOpen}
                 onMouseLeave={handlePopoverClose}
                 style={style ?? {margin: '0 5px'}}
             />
             <Popover
-                id={popupHeader}
+                id={`mouse-over-popover-${popupHeader}`}
+                sx={{
+                    pointerEvents: 'none',
+                }}
                 open={open}
                 anchorEl={anchorEl}
                 anchorOrigin={{
@@ -43,6 +50,8 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                     vertical: 'top',
                     horizontal: 'left',
                 }}
+                onClose={handlePopoverClose}
+                disableRestoreFocus
             >
                 <b>{popupHeader}</b> - {popupBody}
             </Popover>
