@@ -177,6 +177,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             max_tokens: 150,
             min_tokens: 50
         });
+        console.log('Got a response');
         this.loadingProgress = 20;
         this.loadingDescription = 'Generating bar image.';
 
@@ -265,7 +266,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }}>
             <div>
                 <div>
-                    <button style={{color: '#ffffff'}} disabled={!!this.loadingProgress ?? false} onClick={() => this.generate()}>Generate</button>
+                    <button style={{color: '#ffffff'}} disabled={this.loadingProgress !== undefined} onClick={() => this.generate()}>Generate</button>
                 </div>
 
                 {this.loadingProgress && (
