@@ -15,12 +15,10 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
 
     const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
-        console.log('handlePopoverOpen');
     };
 
     const handlePopoverClose = () => {
         setAnchorEl(null);
-        console.log('handlePopoverClose');
     };
 
     const open = Boolean(anchorEl);
@@ -55,7 +53,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                 onClose={handlePopoverClose}
                 disableRestoreFocus
             >
-                <Typography sx={{p: 2}}>
+                <Typography sx={{p: 2, backgroundColor: '#111111', color: '#ffffff'}}>
                     <h4>{popupHeader}</h4>{popupBody}
                 </Typography>
             </Popover>
