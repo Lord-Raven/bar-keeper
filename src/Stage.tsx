@@ -149,7 +149,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         if (chatState) {
             this.barDescription = chatState.barDescription;
             this.barImageUrl = chatState.barImageUrl;
-            this.beverages = chatState.beverages ?? [];
+            this.beverages = (chatState.beverages ?? []).map((beverage: { name: string, description: string, imageUrl: string }) => new Beverage(beverage.name, beverage.description, beverage.imageUrl));
             this.messageParentIds = chatState.messageParentIds ?? {};
             this.messageBodies = chatState.messageBodies ?? {};
         }
