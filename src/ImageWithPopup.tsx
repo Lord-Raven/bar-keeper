@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import {Popover} from '@mui/material';
+import React from 'react';
+import Popover from '@mui/material/Popover';
 
 interface ImageWithPopupProps {
     src: string;
@@ -10,33 +10,31 @@ interface ImageWithPopupProps {
 }
 
 const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, popupBody, style }) => {
-    const [showPopup, setShowPopup] = useState(false);
+    const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
-    const handleMouseEnter = () => {
-        console.log('handleMouseEnter');
-        // Set a timeout to delay the popup display
-        setTimeout(() => {
-            setShowPopup(true);
-        }, 200); // Adjust time as needed
+    const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
     };
 
-    const handleMouseLeave = () => {
-        console.log('handleMouseLeave');
-        setShowPopup(false);
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
     };
+
+    const open = Boolean(anchorEl);
 
     return (
         <div style={{display: 'flex', alignItems: 'center'}}>
             <img
                 src={src}
                 alt={alt}
-                onMouseOver={handleMouseEnter}
-                onMouseOut={handleMouseLeave}
+                onMouseEnter={handlePopoverOpen}
+                onMouseLeave={handlePopoverClose}
                 style={style ?? {margin: '0 5px'}}
             />
             <Popover
                 id={popupHeader}
-                open={showPopup}
+                open={open}
+                anchorEl={anchorEl}
                 anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'left',
