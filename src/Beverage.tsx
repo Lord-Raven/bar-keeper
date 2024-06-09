@@ -15,7 +15,7 @@ export class Beverage {
     render(): ReactElement {
         return (
             <ImageWithPopup
-                src={this.name}
+                src={this.imageUrl}
                 alt={`${this.name} - ${this.description}`}
                 popupHeader={this.name}
                 popupBody={this.description}
