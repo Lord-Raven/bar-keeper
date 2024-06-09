@@ -1,5 +1,6 @@
 import React from 'react';
 import Popover from '@mui/material/Popover';
+import {Typography} from "@mui/material";
 
 interface ImageWithPopupProps {
     src: string;
@@ -39,6 +40,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                 id={`mouse-over-popover-${popupHeader}`}
                 sx={{
                     pointerEvents: 'none',
+                    backgroundColor: '#111111'
                 }}
                 open={open}
                 anchorEl={anchorEl}
@@ -52,9 +54,10 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                 }}
                 onClose={handlePopoverClose}
                 disableRestoreFocus
-                style={{backgroundColor: '#111111'}}
             >
-                <div style={{backgroundColor: '#111111', color: '#ffffff'}}><h4>{popupHeader}</h4>{popupBody}</div>
+                <Typography sx={{p: 2}}>
+                    <h4>{popupHeader}</h4>{popupBody}
+                </Typography>
             </Popover>
         </div>
     );
