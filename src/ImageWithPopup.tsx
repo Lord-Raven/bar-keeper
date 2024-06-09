@@ -13,13 +13,15 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
     const [showPopup, setShowPopup] = useState(false);
 
     const handleMouseEnter = () => {
+        console.log('handleMouseEnter');
         // Set a timeout to delay the popup display
         setTimeout(() => {
             setShowPopup(true);
-        }, 500); // Adjust time as needed
+        }, 1); // Adjust time as needed
     };
 
     const handleMouseLeave = () => {
+        console.log('handleMouseLeave');
         setShowPopup(false);
     };
 
