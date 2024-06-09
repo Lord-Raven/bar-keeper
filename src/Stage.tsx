@@ -3,54 +3,21 @@ import {AspectRatio, Character, InitialData, Message, StageBase, StageResponse} 
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import LoadingBar from 'react-top-loading-bar';
 import {Actor} from "./Actor";
+import {Beverage} from "./Beverage";
 
-/***
- The type that this stage persists message-level state in.
- This is primarily for readability, and not enforced.
-
- @description This type is saved in the database after each message,
-  which makes it ideal for storing things like positions and statuses,
-  but not for things like history, which is best managed ephemerally
-  in the internal state of the Stage class itself.
- ***/
 type MessageStateType = any;
 
-/***
- The type of the stage-specific configuration of this stage.
-
- @description This is for things you want people to be able to configure,
-  like background color.
- ***/
 type ConfigType = any;
 
-/***
- The type that this stage persists chat initialization state in.
- If there is any 'constant once initialized' static state unique to a chat,
- like procedurally generated terrain that is only created ONCE and ONLY ONCE per chat,
- it belongs here.
- ***/
 type InitStateType = any;
 
-/***
- The type that this stage persists dynamic chat-level state in.
- This is for any state information unique to a chat,
-    that applies to ALL branches and paths such as clearing fog-of-war.
- It is usually unlikely you will need this, and if it is used for message-level
-    data like player health then it will enter an inconsistent state whenever
-    they change branches or jump nodes. Use MessageStateType for that.
- ***/
 type ChatStateType = any;
 
-/***
- A simple example class that implements the interfaces necessary for a Stage.
- If you want to rename it, be sure to modify App.js as well.
- @link https://github.com/CharHubAI/chub-stages-ts/blob/main/src/types/stage.ts
- ***/
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     buildBarDescriptionPrompt(description: string): string {
         return `[INST]Digest and appreciate the vibe, style, and setting of the following flavor text:[/INST]\n${description}\n` +
-            `[INST]Write two or three sentences describing a bar set in the fictional universe of this flavor text; focusing on the ` +
+            `[INST]Write two or three sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
             `ambiance, setting, theming, fixtures, and general clientele of the establishment.[/INST]`
     };
 
@@ -70,8 +37,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     // Chat State:
     barDescription: string|undefined;
     barImageUrl: string|undefined;
-    alcoholDescriptions: {[key: string]: string}|undefined;
-    alcoholImageUrls: {[key: string]: string}|undefined;
+    beverages: Beverage[];
     loadingProgress: number|undefined;
     loadingDescription: string|undefined;
     messageParentIds: {[key: string]: string}|undefined;
@@ -90,21 +56,19 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         const {
             characters,         // @type:  { [key: string]: Character }
             users,                  // @type:  { [key: string]: User}
-            config,                                 //  @type:  ConfigType
             messageState,                           //  @type:  MessageStateType
-            environment,                     // @type: Environment (which is a string)
-            initState,                             // @type: null | InitStateType
             chatState                              // @type: null | ChatStateType
         } = data;
 
         this.characterForGeneration = characters[Object.keys(characters)[0]];
         console.log(this.characterForGeneration);
-        this.readChatState(chatState);
-        this.readMessageState(messageState);
         this.actors = {};
         this.presentActorIds = [];
         this.currentActor = '';
         this.playerId = users[Object.keys(users)[0]].anonymizedId;
+        this.beverages = [];
+        this.readChatState(chatState);
+        this.readMessageState(messageState);
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
@@ -127,8 +91,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
          ***/
         const {
             content,
-            anonymizedId,
-            isBot,
             identity
         } = userMessage;
 
@@ -154,8 +116,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         const {
             content,
-            anonymizedId,
-            isBot,
             identity
         } = botMessage;
 
@@ -179,8 +139,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return {
             barDescription: this.barDescription,
             barImageUrl: this.barImageUrl,
-            alcoholDescriptions: this.alcoholDescriptions,
-            alcoholImageUrls: this.alcoholImageUrls,
+            beverages: this.beverages,
             messageParentIds: this.messageParentIds,
             messageBodies: this.messageBodies
         };
@@ -190,8 +149,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         if (chatState) {
             this.barDescription = chatState.barDescription;
             this.barImageUrl = chatState.barImageUrl;
-            this.alcoholDescriptions = chatState.alcoholDescriptions;
-            this.alcoholImageUrls = chatState.alcoholImageUrls;
+            this.beverages = chatState.beverages;
             this.messageParentIds = chatState.messageParentIds ?? {};
             this.messageBodies = chatState.messageBodies ?? {};
         }
@@ -238,8 +196,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.loadingProgress = 40;
             this.loadingDescription = 'Generating beverages.';
 
-            this.alcoholDescriptions = {};
-            this.alcoholImageUrls = {};
+            this.beverages = [];
 
             let alcoholResponse = await this.generator.textGen({
                 prompt: this.buildAlcoholDescriptionsPrompt(),
@@ -253,8 +210,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             let count = 0;
             console.log(lines);
             while ((match = regex.exec(lines)) !== null) {
-                this.alcoholDescriptions[match[1].trim()] = match[2].trim();
-                console.log(`${match[1].trim()} - ${this.alcoholDescriptions[match[1].trim()]}`);
+                this.beverages.push(new Beverage(match[1].trim(), match[2].trim(), ''));
                 if (++count >= 6) {
                     break;
                 }
@@ -263,15 +219,15 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.loadingProgress = 50;
             this.loadingDescription = 'Generating beverage images.';
 
-            for (const [key, value] of Object.entries(this.alcoholDescriptions)) {
-                console.log(`Generating image for ${key}`)
+            for (const beverage of this.beverages) {
+                console.log(`Generating image for ${beverage.name}`)
                 let alcoholImageResponse = await this.generator.makeImage({
-                    prompt: `Clean, professional, stylized illustration of a single, standalone bottle of alcohol on an empty background, matching this description: ${value}`,
-                    negative_prompt: `background, frame, multiple bottles`,
+                    prompt: `Clean and stylized illustration of a single, standalone bottle of alcohol on an empty background, suiting this description: ${beverage.description}`,
+                    negative_prompt: `background, frame, multiple bottles, realism, out-of-frame, borders`,
                     aspect_ratio: AspectRatio.PHOTO_VERTICAL,
                     remove_background: true
                 });
-                this.alcoholImageUrls[key] = alcoholImageResponse?.url ?? '';
+                beverage.imageUrl = alcoholImageResponse?.url ?? '';
                 this.loadingProgress += 5;
             }
         }
@@ -326,9 +282,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <button style={{color: '#ffffff'}} onClick={() => this.continue()}>Continue</button>
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
-                {Object.entries(this.alcoholImageUrls ?? {}).map(([key, url]) => (
-                    <img key={key} src={url} alt={key} style={{ margin: '0 5px' }} />
-                ))}
+                {this.beverages.map(beverage => beverage.render())}
             </div>
         </div>;
     };
