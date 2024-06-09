@@ -17,7 +17,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
         // Set a timeout to delay the popup display
         setTimeout(() => {
             setShowPopup(true);
-        }, 1); // Adjust time as needed
+        }, 200); // Adjust time as needed
     };
 
     const handleMouseLeave = () => {
@@ -30,8 +30,8 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
             <img
                 src={src}
                 alt={alt}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
+                onMouseOver={handleMouseEnter}
+                onMouseOut={handleMouseLeave}
                 style={style ?? {margin: '0 5px'}}
             />
             <Popover
