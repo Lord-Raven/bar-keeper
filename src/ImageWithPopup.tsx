@@ -23,12 +23,13 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
     };
 
     return (
-        <div style={style ?? { margin: '0 5px' }}>
+        <div>
             <img
                 src={src}
                 alt={alt}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
+                style={style ?? { margin: '0 5px' }}
             />
             {showPopup && (
                 <div style={{position: 'absolute'}}>
