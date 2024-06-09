@@ -25,7 +25,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
     const open = Boolean(anchorEl);
 
     return (
-        <div style={{display: 'flex', alignItems: 'center'}}>
+        <div style={{display: 'flex', alignItems: 'center', color: '#ffffff', backgroundColor: '#111111'}}>
             <img
                 src={src}
                 alt={alt}
@@ -47,7 +47,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                     horizontal: 'left',
                 }}
                 transformOrigin={{
-                    vertical: 'top',
+                    vertical: 'bottom',
                     horizontal: 'left',
                 }}
                 onClose={handlePopoverClose}
