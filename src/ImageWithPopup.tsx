@@ -31,7 +31,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                 onMouseLeave={handleMouseLeave}
             />
             {showPopup && (
-                <div className="popup">
+                <div style={{position: 'absolute'}}>
                     <b>{popupHeader}</b><br/>
                     {popupBody}
                 </div>
