@@ -19,6 +19,7 @@
     "@chub-ai/stages-ts": "^0.3.7",
     "@typescript-eslint/parser": "^7.4.0",
     "@mui/material": "^5.15.19",
+    "@mui/system": "^5.15.15",
     "@emotion/styled": "^11.11.5",
     "@emotion/react": "^11.11.4",
     "react": "^18.2.0",
