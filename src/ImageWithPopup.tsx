@@ -52,7 +52,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                 onClose={handlePopoverClose}
                 disableRestoreFocus
             >
-                <Box component="section" sx={{p: 2, border: '1px dashed grey', backgroundImage: null }}>
+                <Box component="section" sx={{p: 2, border: '1px dashed grey', color: 'primary', backgroundColor: '#00000099'}}>
                         <h4>{popupHeader}</h4>{popupBody}
                 </Box>
             </Popover>
