@@ -1,7 +1,7 @@
 import React, {ReactElement} from "react";
 import {AspectRatio, Character, InitialData, Message, StageBase, StageResponse} from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
-import {Actor} from "./Actor";
+import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
 import {ThemeProvider, createTheme, LinearProgress, Box} from "@mui/material";
 
@@ -42,9 +42,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     loadingDescription: string|undefined;
     messageParentIds: {[key: string]: string}|undefined;
     messageBodies: {[key: string]: string}|undefined;
-    actors: {[key: string]: Actor};
-    presentActorIds: string[]
-    currentActor: string;
+    patrons: {[key: string]: Patron};
+    presentPatronIds: string[]
+    currentPatron: string;
 
     // Not saved:
     characterForGeneration: Character;
@@ -73,9 +73,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         this.characterForGeneration = characters[Object.keys(characters)[0]];
         console.log(this.characterForGeneration);
-        this.actors = {};
-        this.presentActorIds = [];
-        this.currentActor = '';
+        this.patrons = {};
+        this.presentPatronIds = [];
+        this.currentPatron = '';
         this.playerId = users[Object.keys(users)[0]].anonymizedId;
         this.beverages = [];
         this.readChatState(chatState);
@@ -251,6 +251,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         });*/
         await this.messenger.updateChatState(this.buildChatState());
         this.loadingProgress = this.loadingDescription = undefined;
+    }
+
+    async generatePatron() {
+
     }
 
     async continue() {

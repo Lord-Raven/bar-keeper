@@ -1,4 +1,4 @@
-export class Actor {
+export class Patron {
     id: string;
     name: string;
     description: string;
