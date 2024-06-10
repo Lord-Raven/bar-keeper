@@ -265,6 +265,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     render(): ReactElement {
 
         return <div style={{
+            backgroundImage: `url(${this.barImageUrl})`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
             width: '100vw',
             height: '100vh',
             display: 'grid',
