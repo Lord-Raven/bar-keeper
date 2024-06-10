@@ -1,9 +1,9 @@
 import {ReactElement} from "react";
 import {AspectRatio, Character, InitialData, Message, StageBase, StageResponse} from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
-import LoadingBar from 'react-top-loading-bar';
 import {Actor} from "./Actor";
 import {Beverage} from "./Beverage";
+import {LinearProgress} from "@mui/material";
 
 type MessageStateType = any;
 
@@ -271,7 +271,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
                 {this.loadingProgress && (
                     <div>
-                        <LoadingBar color="#f11946" height={30} progress={this.loadingProgress} />
+                        <LinearProgress variant="determinate" color="secondary" value={this.loadingProgress} />
                         <p style={{color: '#ffffff', background: '#111122', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
                             {this.loadingDescription} - {this.loadingProgress}%
                         </p>

@@ -1,6 +1,6 @@
 import React from 'react';
 import Popover from '@mui/material/Popover';
-import {Typography} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 
 interface ImageWithPopupProps {
     src: string;
@@ -54,9 +54,11 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                 onClose={handlePopoverClose}
                 disableRestoreFocus
             >
-                <Typography sx={{p: 2, backgroundColor: '#111111ff', bgcolor: '#111111ff', color: '#ffffff'}}>
-                    <h4>{popupHeader}</h4>{popupBody}
-                </Typography>
+                <Box component="section" sx={{p: 2, border: '1px dashed grey', backgroundColor: '#777777' }}>
+                    <Typography sx={{p: 2, backgroundColor: '#111111ff', bgcolor: '#111111ff', color: '#ffffff'}}>
+                        <h4>{popupHeader}</h4>{popupBody}
+                    </Typography>
+                </Box>
             </Popover>
         </div>
     );
