@@ -276,7 +276,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             color: '#ffffff'
         }}>
             <ThemeProvider theme={this.theme}>
-                <div>
+                <div style={{height: '10vh'}}>
                     <div>
                         <button style={{color: '#ffffff'}} disabled={this.loadingProgress !== undefined} onClick={() => this.generate()}>Generate</button>
                     </div>
@@ -290,12 +290,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         </div>
                     )}
                 </div>
-                <div>{this.getMessageBody(this.currentMessageId)}</div>
-                <div>
+                <div style={{height: '50vh'}}>
+                    {this.getMessageBody(this.currentMessageId)}
+                </div>
+                <div style={{height: '25vh'}}>
                     <button style={{color: '#ffffff'}} onClick={() => this.continue()}>Continue</button>
                 </div>
-                <div style={{height: '10vh'}}>
-                    <Box component="section" sx={{p: 2, border: '1px dashed grey', backgroundColor: '#00000099', '&:hover': {backgroundColor: '#000000BB'}}}>
+                <div style={{height: '15vh'}}>
+                    <Box component="section" sx={{p: 2, border: '1px dashed grey', backgroundColor: '#00000088', '&:hover': {backgroundColor: '#000000BB'}}}>
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
                             {this.beverages.map(beverage => beverage.render())}
                         </div>
