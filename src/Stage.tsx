@@ -1,9 +1,9 @@
-import {ReactElement} from "react";
+import React, {ReactElement} from "react";
 import {AspectRatio, Character, InitialData, Message, StageBase, StageResponse} from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {Actor} from "./Actor";
 import {Beverage} from "./Beverage";
-import {LinearProgress} from "@mui/material";
+import {ThemeProvider, createTheme, LinearProgress} from "@mui/material";
 
 type MessageStateType = any;
 
@@ -49,6 +49,17 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     // Not saved:
     characterForGeneration: Character;
     playerId: string;
+
+    readonly theme = createTheme({
+        palette: {
+            primary: {
+                main: '#ffffeeff'
+            },
+            secondary: {
+                main: '#111111ff'
+            }
+        }
+    });
 
     constructor(data: InitialData<InitStateType, ChatStateType, MessageStateType, ConfigType>) {
 
@@ -223,8 +234,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             for (const beverage of this.beverages) {
                 console.log(`Generating image for ${beverage.name}`)
                 let alcoholImageResponse = await this.generator.makeImage({
-                    prompt: `Clean and stylized illustration of a single, standalone bottle of alcohol on an empty background, suiting this description: ${beverage.description}`,
-                    negative_prompt: `background, frame, multiple bottles, realism, out-of-frame, borders`,
+                    prompt: `Clean and stylized illustration of a single, standalone bottle of alcohol on an empty background, suiting this description: ${beverage.description} Viewed head-on. Bottle upright.`,
+                    negative_prompt: `background, frame, multiple bottles, realism, out-of-frame, borders, dynamic angle, perspective, tilted, skewed`,
                     aspect_ratio: AspectRatio.PHOTO_VERTICAL,
                     remove_background: true
                 });
@@ -264,27 +275,29 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             alignItems: 'stretch',
             color: '#ffffff'
         }}>
-            <div>
+            <ThemeProvider theme={this.theme}>
                 <div>
-                    <button style={{color: '#ffffff'}} disabled={this.loadingProgress !== undefined} onClick={() => this.generate()}>Generate</button>
-                </div>
-
-                {this.loadingProgress && (
                     <div>
-                        <LinearProgress variant="determinate" color="secondary" value={this.loadingProgress} />
-                        <p style={{color: '#ffffff', background: '#111122', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                            {this.loadingDescription} - {this.loadingProgress}%
-                        </p>
+                        <button style={{color: '#ffffff'}} disabled={this.loadingProgress !== undefined} onClick={() => this.generate()}>Generate</button>
                     </div>
-                )}
-            </div>
-            <div>{this.getMessageBody(this.currentMessageId)}</div>
-            <div>
-                <button style={{color: '#ffffff'}} onClick={() => this.continue()}>Continue</button>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
-                {this.beverages.map(beverage => beverage.render())}
-            </div>
+
+                    {this.loadingProgress && (
+                        <div>
+                            <LinearProgress variant="determinate" color="secondary" value={this.loadingProgress} />
+                            <p style={{color: '#ffffff', background: '#111122', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                                {this.loadingDescription} - {this.loadingProgress}%
+                            </p>
+                        </div>
+                    )}
+                </div>
+                <div>{this.getMessageBody(this.currentMessageId)}</div>
+                <div>
+                    <button style={{color: '#ffffff'}} onClick={() => this.continue()}>Continue</button>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
+                    {this.beverages.map(beverage => beverage.render())}
+                </div>
+            </ThemeProvider>
         </div>;
     };
 

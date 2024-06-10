@@ -16,7 +16,7 @@ export class Beverage {
         return (
             <ImageWithPopup
                 src={this.imageUrl}
-                alt={`${this.name} - ${this.description}`}
+                alt={`${this.name}`}
                 popupHeader={this.name}
                 popupBody={this.description}
                 />
