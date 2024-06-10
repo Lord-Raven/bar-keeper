@@ -24,7 +24,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
     const open = Boolean(anchorEl);
 
     return (
-        <div style={{display: 'flex', alignItems: 'center', color: '#ffffff', backgroundColor: '#111111ff'}}>
+        <div style={{display: 'flex', alignItems: 'center'}}>
             <img
                 src={src}
                 alt={alt}
@@ -37,9 +37,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
             <Popover
                 id={`mouse-over-popover-${popupHeader}`}
                 sx={{
-                    pointerEvents: 'none',
-                    backgroundColor: '#111111ff',
-                    bgcolor: '#111111ff'
+                    pointerEvents: 'none'
                 }}
                 open={open}
                 anchorEl={anchorEl}
@@ -54,8 +52,8 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                 onClose={handlePopoverClose}
                 disableRestoreFocus
             >
-                <Box component="section" sx={{p: 2, border: '1px dashed grey', backgroundColor: '#777777' }}>
-                    <Typography sx={{p: 2, backgroundColor: '#111111ff', bgcolor: '#111111ff', color: '#ffffff'}}>
+                <Box component="section" sx={{p: 2, border: '1px dashed grey' }}>
+                    <Typography sx={{p: 2}}>
                         <h4>{popupHeader}</h4>{popupBody}
                     </Typography>
                 </Box>
