@@ -3,7 +3,7 @@ import {AspectRatio, Character, InitialData, Message, StageBase, StageResponse} 
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {Actor} from "./Actor";
 import {Beverage} from "./Beverage";
-import {ThemeProvider, createTheme, LinearProgress} from "@mui/material";
+import {ThemeProvider, createTheme, LinearProgress, Box} from "@mui/material";
 
 type MessageStateType = any;
 
@@ -265,10 +265,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     render(): ReactElement {
 
         return <div style={{
-            backgroundImage: `url(${this.barImageUrl})`,
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
             width: '100vw',
             height: '100vh',
             display: 'grid',
@@ -294,9 +290,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <div>
                     <button style={{color: '#ffffff'}} onClick={() => this.continue()}>Continue</button>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
-                    {this.beverages.map(beverage => beverage.render())}
-                </div>
+                <Box component="section" sx={{p: 2, border: '1px dashed grey', backgroundImage: null }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
+                        {this.beverages.map(beverage => beverage.render())}
+                    </div>
+                </Box>
             </ThemeProvider>
         </div>;
     };
