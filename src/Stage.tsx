@@ -294,7 +294,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <div>
                     <button style={{color: '#ffffff'}} onClick={() => this.continue()}>Continue</button>
                 </div>
-                <Box component="section" sx={{p: 2, border: '1px dashed grey', backgroundImage: null }}>
+                <Box component="section" sx={{p: 2, border: '1px dashed grey', backgroundColor: '#111111' }}>
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
                         {this.beverages.map(beverage => beverage.render())}
                     </div>
