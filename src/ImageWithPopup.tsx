@@ -7,10 +7,11 @@ interface ImageWithPopupProps {
     alt: string;
     popupHeader: string;
     popupBody: string;
+    popupSrc?: string;
     style?: {};
 }
 
-const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, popupBody, style }) => {
+const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, popupBody, popupSrc, style }) => {
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
     const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -53,9 +54,15 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                 disableRestoreFocus
             >
                 <Box component="section" sx={{p: 2, border: '1px dashed grey'}}>
-                    <Typography>
-                        <h4>{popupHeader}</h4>{popupBody}
-                    </Typography>
+                    {popupSrc && (
+                        <div style={{height: '100%', float: 'left'}}>
+                            <img src={popupSrc} alt={alt}/>
+                        </div>
+                    )}
+                    <div>
+                        <Typography><h4>{popupHeader}</h4>{popupBody}
+                        </Typography>
+                    </div>
                 </Box>
             </Popover>
         </div>
