@@ -3,7 +3,9 @@ import {AspectRatio, Character, InitialData, Message, StageBase, StageResponse} 
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
-import {Box, createTheme, LinearProgress, ThemeProvider, Typography} from "@mui/material";
+import {Box, createTheme, LinearProgress, ThemeProvider, Typography, IconButton} from "@mui/material";
+import ReplayIcon from "@mui/icons-material/Replay";
+import ForwardIcon from "@mui/icons-material/Forward";
 //import bottleUrl from './assets/bottle.png'
 
 type MessageStateType = any;
@@ -294,9 +296,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             <ThemeProvider theme={this.theme}>
                 <div style={{height: '10vh'}}>
                     <div>
-                        <button style={{color: '#ffffff'}} disabled={this.loadingProgress !== undefined}
-                                onClick={() => this.generate()}>Generate
-                        </button>
+                        <IconButton disabled={this.loadingProgress !== undefined} color={'primary'} action={() => this.generate()}>
+                            <ReplayIcon/>
+                        </IconButton>
                         {this.loadingProgress && (
                             <div>
                                 <Typography>
@@ -309,7 +311,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 </div>
                 <div style={{height: '50vh'}}>
                     <Box component="section" sx={{p: 2, border: '1px dashed grey', backgroundColor: '#00000088', '&:hover': {backgroundColor: '#000000BB'}}}>
-                        <Typography>{this.getMessageBody(this.currentMessageId)}</Typography>
+                        <div>
+                            <Typography>{this.getMessageBody(this.currentMessageId)}</Typography>
+                        </div>
+                        <div style={{verticalAlign: 'bottom'}}>
+                            <IconButton disabled={false} color={'primary'} action={() => this.continue()}>
+                                <ForwardIcon/>
+                            </IconButton>
+                        </div>
                     </Box>
                 </div>
                 <div style={{height: '25vh'}}>
