@@ -235,7 +235,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             for (const beverage of this.beverages) {
                 console.log(`Generating image for ${beverage.name}`)
                 let alcoholImageResponse = await this.generator.imageToImage({
-                    image: bottleUrl,
+                    image: `https://imgur.com/a/Z2h0FfJ`,
                     strength: 0.9,
                     prompt: `Professional, stylized illustration. Clean linework and vibrant colors. A single, standalone bottle of alcohol on an empty background, suiting this description: ${beverage.description} Viewed head-on. Bottle upright.`,
                     negative_prompt: `background, frame, multiple bottles, realism, out-of-frame, borders, dynamic angle, perspective, tilted, skewed`,
