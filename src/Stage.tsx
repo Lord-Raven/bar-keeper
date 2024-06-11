@@ -236,11 +236,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 console.log(`Generating image for ${beverage.name}`)
                 let alcoholImageResponse = await this.generator.imageToImage({
                     image: `https://imgur.com/a/Z2h0FfJ`,
-                    strength: 0.9,
+                    strength: 0.1,
                     prompt: `Professional, stylized illustration. Clean linework and vibrant colors. A single, standalone bottle of alcohol on an empty background, suiting this description: ${beverage.description} Viewed head-on. Bottle upright.`,
-                    negative_prompt: `background, frame, multiple bottles, realism, out-of-frame, borders, dynamic angle, perspective, tilted, skewed`,
-                    aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
-                    remove_background: true
+                    negative_prompt: `background, frame, multiple bottles, realism, out-of-frame, borders, dynamic angle, perspective, tilted, skewed`
                 });
                 beverage.imageUrl = alcoholImageResponse?.url ?? '';
                 this.loadingProgress += 5;
