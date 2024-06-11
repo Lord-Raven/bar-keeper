@@ -257,7 +257,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             is_main: true,
             stage_directions: `[Write a two-paragraph visual novel style introduction to the bar described here: ${this.barDescription}. {{user}} is a bartender at this bar; refer to {{user}} in second person and set up the beginning of their shift one evening.]`,
             parent_id: `-2`,
-            speaker_id: this.playerId
+            speaker_id: this.characterForGeneration.anonymizedId
         });
         this.currentMessageId = intro.identity;
         this.messageBodies[this.currentMessageId] = this.currentMessageId;
