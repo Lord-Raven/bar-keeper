@@ -259,9 +259,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             parent_id: `-2`,
             speaker_id: this.characterForGeneration.anonymizedId
         });
-        this.currentMessageId = intro.identity;
-        this.messageBodies[this.currentMessageId] = this.currentMessageId;
-        this.messageParentIds[this.currentMessageId] = '-2';
 
         await this.messenger.updateChatState(this.buildChatState());
         this.loadingProgress = this.loadingDescription = undefined;
@@ -322,8 +319,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </Box>
                 </div>
                 <div style={{height: '15vh'}}>
-                    <Box component="section" sx={{height: '100%', p: 2, border: '1px dashed grey', backgroundColor: '#00000088', '&:hover': {backgroundColor: '#000000BB'}}}>
-                        {this.beverages.map(beverage => beverage.render())}
+                    <Box component="section" sx={{
+                        height: '100px',
+                        p: 2,
+                        border: '1px dashed grey',
+                        backgroundColor: '#00000088',
+                        '&:hover': {backgroundColor: '#000000BB'}
+                    }}>
+                        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'flex-end'}}>
+                            {this.beverages.map(beverage => beverage.render())}
+                        </div>
                     </Box>
                 </div>
                 <div style={{height: '5vh'}}>
