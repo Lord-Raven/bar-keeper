@@ -323,9 +323,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 </div>
                 <div style={{height: '15vh'}}>
                     <Box component="section" sx={{height: '100%', p: 2, border: '1px dashed grey', backgroundColor: '#00000088', '&:hover': {backgroundColor: '#000000BB'}}}>
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
-                            {this.beverages.map(beverage => beverage.render())}
-                        </div>
+                        {this.beverages.map(beverage => beverage.render())}
                     </Box>
                 </div>
                 <div style={{height: '5vh'}}>
