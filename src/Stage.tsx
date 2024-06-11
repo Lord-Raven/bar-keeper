@@ -4,6 +4,7 @@ import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
 import {Box, createTheme, LinearProgress, ThemeProvider, Typography} from "@mui/material";
+//import bottleUrl from './assets/bottle.png'
 
 type MessageStateType = any;
 
@@ -223,7 +224,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             console.log(lines);
             while ((match = regex.exec(lines)) !== null) {
                 this.beverages.push(new Beverage(match[1].trim(), match[2].trim(), ''));
-                if (++count >= 6) {
+                if (++count >= 1) {
                     break;
                 }
             }
@@ -233,15 +234,15 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             for (const beverage of this.beverages) {
                 console.log(`Generating image for ${beverage.name}`)
-                let alcoholImageResponse = await this.generator.imageToImage({
-                    image: `https://imgur.com/a/Z2h0FfJ`,
-                    strength: 0.1,
+                let alcoholImageResponse = await this.generator.makeImage({
+                    //image: bottleUrl,
+                    //strength: 0.1,
                     prompt: `Professional, stylized illustration. Clean linework and vibrant colors. A single, standalone bottle of alcohol on an empty background, suiting this description: ${beverage.description} Viewed head-on. Bottle upright.`,
                     negative_prompt: `background, frame, multiple bottles, realism, out-of-frame, borders, dynamic angle, perspective, tilted, skewed`,
                     aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
                     remove_background: true,
-                    seed: null,
-                    item_id: null,
+                    //seed: null,
+                    //item_id: null,
                 });
                 beverage.imageUrl = alcoholImageResponse?.url ?? '';
                 this.loadingProgress += 5;
@@ -293,25 +294,26 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             <ThemeProvider theme={this.theme}>
                 <div style={{height: '10vh'}}>
                     <div>
-                        <button style={{color: '#ffffff'}} disabled={this.loadingProgress !== undefined} onClick={() => this.generate()}>Generate</button>
+                        <button style={{color: '#ffffff'}} disabled={this.loadingProgress !== undefined}
+                                onClick={() => this.generate()}>Generate
+                        </button>
+                        {this.loadingProgress && (
+                            <div>
+                                <Typography>
+                                    {this.loadingDescription} - {this.loadingProgress}%
+                                </Typography>
+                                <LinearProgress variant="determinate" color="secondary" value={this.loadingProgress}/>
+                            </div>
+                        )}
                     </div>
-
-                    {this.loadingProgress && (
-                        <div>
-                            <LinearProgress variant="determinate" color="secondary" value={this.loadingProgress} />
-                            <p style={{color: '#ffffff', background: '#111122', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                                {this.loadingDescription} - {this.loadingProgress}%
-                            </p>
-                        </div>
-                    )}
                 </div>
                 <div style={{height: '50vh'}}>
-                    <Box>
+                    <Box component="section" sx={{p: 2, border: '1px dashed grey', backgroundColor: '#00000088', '&:hover': {backgroundColor: '#000000BB'}}}>
                         <Typography>{this.getMessageBody(this.currentMessageId)}</Typography>
                     </Box>
                 </div>
                 <div style={{height: '25vh'}}>
-                    <button style={{color: '#ffffff'}} onClick={() => this.continue()}>Continue</button>
+                <button style={{color: '#ffffff'}} onClick={() => this.continue()}>Continue</button>
                 </div>
                 <div style={{height: '15vh'}}>
                     <Box component="section" sx={{p: 2, border: '1px dashed grey', backgroundColor: '#00000088', '&:hover': {backgroundColor: '#000000BB'}}}>
