@@ -55,7 +55,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
             >
                 <Box component="section" sx={{p: 2, border: '1px dashed grey'}}>
                     {popupSrc && (
-                        <div style={{height: '100%', float: 'left'}}>
+                        <div style={{height: '10vh', float: 'left'}}>
                             <img src={popupSrc} alt={alt}/>
                         </div>
                     )}

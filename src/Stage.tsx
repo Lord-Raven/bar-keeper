@@ -3,7 +3,7 @@ import {AspectRatio, Character, InitialData, Message, StageBase, StageResponse} 
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
-import {ThemeProvider, createTheme, LinearProgress, Box} from "@mui/material";
+import {ThemeProvider, createTheme, LinearProgress, Box, Typography} from "@mui/material";
 
 type MessageStateType = any;
 
@@ -236,7 +236,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 let alcoholImageResponse = await this.generator.makeImage({
                     prompt: `Clean and stylized illustration of a single, standalone bottle of alcohol on an empty background, suiting this description: ${beverage.description} Viewed head-on. Bottle upright.`,
                     negative_prompt: `background, frame, multiple bottles, realism, out-of-frame, borders, dynamic angle, perspective, tilted, skewed`,
-                    aspect_ratio: AspectRatio.PHOTO_VERTICAL,
+                    aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
                     remove_background: true
                 });
                 beverage.imageUrl = alcoholImageResponse?.url ?? '';
@@ -269,7 +269,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     getMessageBody(messageId: string|undefined): string {
-        return (this.messageBodies ?? {})[messageId ?? ''] ?? '';
+        return this.messageBodies[messageId ?? ''] ?? '';
     }
 
 
@@ -302,7 +302,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     )}
                 </div>
                 <div style={{height: '50vh'}}>
-                    {this.getMessageBody(this.currentMessageId)}
+                    <Box>
+                        <Typography>{this.getMessageBody(this.currentMessageId)}</Typography>
+                    </Box>
                 </div>
                 <div style={{height: '25vh'}}>
                     <button style={{color: '#ffffff'}} onClick={() => this.continue()}>Continue</button>
