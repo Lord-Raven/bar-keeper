@@ -4,6 +4,10 @@ import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
 import {ThemeProvider, createTheme, LinearProgress, Box, Typography} from "@mui/material";
+import * as fs from "node:fs";
+
+const imageBuffer = fs.readFileSync('./src/assets/bottle.png');
+const bottleString = imageBuffer.toString('base64');
 
 type MessageStateType = any;
 
@@ -199,7 +203,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             console.log('Generate an image');
 
             let imageResponse = await this.generator.makeImage({
-                prompt: `Clean, professional, stylized illustration. Visual novel background image of a bar matching this description: ${this.barDescription}`,
+                prompt: `Professional, stylized illustration. Clean linework and vibrant colors. Visual novel background image of a bar matching this description: ${this.barDescription}`,
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             });
 
@@ -233,8 +237,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             for (const beverage of this.beverages) {
                 console.log(`Generating image for ${beverage.name}`)
-                let alcoholImageResponse = await this.generator.makeImage({
-                    prompt: `Clean and stylized illustration of a single, standalone bottle of alcohol on an empty background, suiting this description: ${beverage.description} Viewed head-on. Bottle upright.`,
+                let alcoholImageResponse = await this.generator.imageToImage({
+                    image: bottleString,
+                    strength: 0.9,
+                    prompt: `Professional, stylized illustration. Clean linework and vibrant colors. A single, standalone bottle of alcohol on an empty background, suiting this description: ${beverage.description} Viewed head-on. Bottle upright.`,
                     negative_prompt: `background, frame, multiple bottles, realism, out-of-frame, borders, dynamic angle, perspective, tilted, skewed`,
                     aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
                     remove_background: true
