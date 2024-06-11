@@ -253,10 +253,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         // Finally, display an intro
 
-        let intro = await this.messenger.nudge({
+        let intro = await this.generator.textGen({
+            prompt: `[INST]Write a two-paragraph visual novel style introduction to the bar described here: ${this.barDescription}. {{user}} is a bartender at this bar; refer to {{user}} in second person and set up the beginning of their shift one evening.[/INST]`,
+        });
+
+        let impersonation = await this.messenger.impersonate({
+            message: intro?.result ?? '',
+            parent_id: '-2',
             is_main: true,
-            stage_directions: `[Write a two-paragraph visual novel style introduction to the bar described here: ${this.barDescription}. {{user}} is a bartender at this bar; refer to {{user}} in second person and set up the beginning of their shift one evening.]`,
-            parent_id: `-2`,
             speaker_id: this.characterForGeneration.anonymizedId
         });
 
