@@ -309,13 +309,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         )}
                     </div>
                 </div>
-                <div style={{height: '75vh'}}>
+                <div style={{height: '70vh'}}>
                     <Box component="section" sx={{p: 2, border: '1px dashed grey', backgroundColor: '#00000088', '&:hover': {backgroundColor: '#000000BB'}}}>
                         <div>
                             <Typography>{this.getMessageBody(this.currentMessageId)}</Typography>
                         </div>
                         <div style={{verticalAlign: 'bottom'}}>
-                            <IconButton disabled={false} color={'primary'} onClick={() => this.continue()}>
+                            <IconButton style={{float: 'right'}} disabled={false} color={'primary'} onClick={() => this.continue()}>
                                 <ForwardIcon/>
                             </IconButton>
                         </div>
@@ -327,6 +327,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             {this.beverages.map(beverage => beverage.render())}
                         </div>
                     </Box>
+                </div>
+                <div style={{height: '5vh'}}>
                 </div>
             </ThemeProvider>
         </div>;
