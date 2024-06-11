@@ -40,8 +40,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     beverages: Beverage[];
     loadingProgress: number|undefined;
     loadingDescription: string|undefined;
-    messageParentIds: {[key: string]: string}|undefined;
-    messageBodies: {[key: string]: string}|undefined;
+    messageParentIds: {[key: string]: string};
+    messageBodies: {[key: string]: string};
     patrons: {[key: string]: Patron};
     presentPatronIds: string[]
     currentPatron: string;
@@ -78,6 +78,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.currentPatron = '';
         this.playerId = users[Object.keys(users)[0]].anonymizedId;
         this.beverages = [];
+        this.messageParentIds = {};
+        this.messageBodies = {};
         this.readChatState(chatState);
         this.readMessageState(messageState);
     }
@@ -107,10 +109,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         console.log('beforePrompt()');
 
-        if (this.messageParentIds && this.messageBodies) {
-            this.messageParentIds[identity] = this.currentMessageId ?? '';
-            this.messageBodies[identity] = content;
-        }
+        this.messageParentIds[identity] = this.currentMessageId ?? '';
+        this.messageBodies[identity] = content;
         this.currentMessageId = identity;
 
         return {
@@ -244,11 +244,18 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             }
         }
 
-        /*let finalResponse = await this.messenger.impersonate({
-            message: `[Generated content: ${this.barDescription}]`,
-            parent_id: this.currentMessageId ?? null,
+        // Finally, display an intro
+
+        let intro = await this.messenger.nudge({
+            is_main: true,
+            stage_directions: `[Write a two-paragraph visual novel style introduction to the bar described here: ${this.barDescription}. {{user}} is a bartender at this bar; refer to {{user}} in second person and set up the beginning of their shift one evening.]`,
+            parent_id: `-2`,
             speaker_id: this.playerId
-        });*/
+        });
+        this.currentMessageId = intro.identity;
+        this.messageBodies[this.currentMessageId] = this.currentMessageId;
+        this.messageParentIds[this.currentMessageId] = '-2';
+
         await this.messenger.updateChatState(this.buildChatState());
         this.loadingProgress = this.loadingDescription = undefined;
     }

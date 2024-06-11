@@ -19,7 +19,8 @@ export class Beverage {
                 alt={`${this.name}`}
                 popupHeader={this.name}
                 popupBody={this.description}
-                />
+                popupSrc={this.imageUrl}
+            />
         );
     }
 }
