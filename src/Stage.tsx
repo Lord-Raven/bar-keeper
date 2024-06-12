@@ -1,5 +1,5 @@
 import React, {ReactElement} from "react";
-import {AspectRatio, Character, InitialData, Message, StageBase, StageResponse} from "@chub-ai/stages-ts";
+import {AspectRatio, Character, InitialData, Message, StageBase, StageResponse, User} from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
@@ -51,7 +51,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     // Not saved:
     characterForGeneration: Character;
-    playerId: string;
+    player: User;
 
     readonly theme = createTheme({
         palette: {
@@ -79,7 +79,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.patrons = {};
         this.presentPatronIds = [];
         this.currentPatron = '';
-        this.playerId = users[Object.keys(users)[0]].anonymizedId;
+        this.player = users[Object.keys(users)[0]];
         this.beverages = [];
         this.messageParentIds = {};
         this.messageBodies = {};
@@ -188,13 +188,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         let textResponse = await this.generator.textGen({
             prompt: this.buildBarDescriptionPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description),
-            max_tokens: 150,
+            max_tokens: 200,
             min_tokens: 50
         });
-        console.log('Got a response');
+        console.log(`Bar description: ${textResponse?.result}`);
         this.loadingProgress = 20;
         this.loadingDescription = 'Generating bar image.';
-
 
         this.barDescription = textResponse?.result ?? undefined;
 
@@ -202,7 +201,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             console.log('Generate an image');
 
             let imageResponse = await this.generator.makeImage({
-                prompt: `Professional, stylized illustration. Clean linework and vibrant colors. Visual novel background image of a bar matching this description: ${this.barDescription}`,
+                prompt: `Professional, stylized, painterly illustration. Clean linework and vibrant colors and striking lighting. Visual novel background image of a bar suiting this description: ${this.barDescription}`,
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             });
 
@@ -215,7 +214,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             let alcoholResponse = await this.generator.textGen({
                 prompt: this.buildAlcoholDescriptionsPrompt(),
-                max_tokens: 300,
+                max_tokens: 400,
                 min_tokens: 50
             });
 
@@ -252,14 +251,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             // Finally, display an intro
             console.log('Writing an intro');
             let intro = await this.generator.textGen({
-                prompt: `[INST]Write a two-paragraph visual novel style introduction to the bar described here: ${this.barDescription}. {{user}} is a bartender at this bar; refer to {{user}} in second person and set up the beginning of their shift one evening.[/INST]`,
+                prompt: this.buildStoryPrompt(
+                    this.buildHistory(this.currentMessageId ?? ''),
+                    `[INST]Write a two-paragraph visual novel style introduction to the bar described here: ${this.barDescription}. ${this.player.name} is setting up for the beginning of their shift one evening.[/INST]`)
             });
 
             let impersonation = await this.messenger.impersonate({
                 message: intro?.result ?? '',
                 parent_id: '-2',
                 is_main: true,
-                speaker_id: this.playerId
+                speaker_id: this.player.anonymizedId
             });
 
             this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
@@ -281,25 +282,33 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let depth = 0;
         while(this.messageParentIds[currentId] && depth < 10) {
             currentId = this.messageParentIds[currentId];
-            historyString = `${this.getMessageBody(currentId)}\n\n${historyString}`;
+            historyString = `###Response: ${this.getMessageBody(currentId)}\n\n${historyString}`;
             depth++;
         }
 
         return historyString;
     }
 
+    buildStoryPrompt(history: string, currentInstruction: string): string {
+        return `[SETTING]${this.barDescription}[/SETTING]\n` +
+            `[USER]${this.player.name} is a bartender here. ${this.player.chatProfile}[/USER]\n` +
+            `[LOG]${history}[/LOG]\n` +
+            `[INST]${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}[/INST]`;
+    }
+
     async continue() {
         console.log('continuing');
         let entry = await this.generator.textGen({
-            prompt: `[SETTING]${this.barDescription}[/SETTING][LOG]${this.buildHistory(this.currentMessageId??'')}[/LOG]\n` +
-                `[INST]Write a two-to-three paragraph visual novel style development. {{user}} is a bartender at this bar; refer to {{user}} in second person.[/INST]`,
+            prompt: this.buildStoryPrompt(
+                this.buildHistory(this.currentMessageId ?? ''),
+                `[INST]Write a two-to-three paragraph visual novel style development.[/INST]`),
         });
 
         let impersonation = await this.messenger.impersonate({
             message: entry?.result ?? '',
             parent_id: this.currentMessageId ?? '-2',
             is_main: true,
-            speaker_id: this.playerId
+            speaker_id: this.player.anonymizedId
         });
 
         this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
