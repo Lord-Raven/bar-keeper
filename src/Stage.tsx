@@ -323,9 +323,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async continue() {
         console.log('continuing');
-        if (this.entranceSoundUrl) {
-            useSound(this.entranceSoundUrl);
-        }
+        //if (this.entranceSoundUrl) {
+        //    useSound(this.entranceSoundUrl);
+        //}
         this.director.chooseDirection();
         let entry = await this.generator.textGen({
             prompt: this.buildStoryPrompt(
@@ -372,7 +372,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         {this.loadingProgress && (
                             <div>
                                 <Typography>
-                                    {this.loadingDescription} - {this.loadingProgress}%
+                                    {this.loadingProgress}% - {this.loadingDescription}
                                 </Typography>
                                 <LinearProgress sx={{outline: 'primary'}} variant="determinate" color="success" value={this.loadingProgress}/>
                             </div>
