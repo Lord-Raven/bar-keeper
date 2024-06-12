@@ -249,24 +249,23 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 beverage.imageUrl = alcoholImageResponse?.url ?? '';
                 this.loadingProgress += 5;
             }
+            // Finally, display an intro
+            console.log('Writing an intro');
+            let intro = await this.generator.textGen({
+                prompt: `[INST]Write a two-paragraph visual novel style introduction to the bar described here: ${this.barDescription}. {{user}} is a bartender at this bar; refer to {{user}} in second person and set up the beginning of their shift one evening.[/INST]`,
+            });
+
+            let impersonation = await this.messenger.impersonate({
+                message: intro?.result ?? '',
+                parent_id: '-2',
+                is_main: true,
+                speaker_id: this.characterForGeneration.anonymizedId
+            });
+
+            this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
+            this.messageBodies[impersonation.identity] = intro?.result ?? '';
+            this.currentMessageId = impersonation.identity;
         }
-
-        // Finally, display an intro
-
-        let intro = await this.generator.textGen({
-            prompt: `[INST]Write a two-paragraph visual novel style introduction to the bar described here: ${this.barDescription}. {{user}} is a bartender at this bar; refer to {{user}} in second person and set up the beginning of their shift one evening.[/INST]`,
-        });
-
-        let impersonation = await this.messenger.impersonate({
-            message: intro?.result ?? '',
-            parent_id: '-2',
-            is_main: true,
-            speaker_id: this.characterForGeneration.anonymizedId
-        });
-
-        this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
-        this.messageBodies[impersonation.identity] = intro?.result ?? '';
-        this.currentMessageId = impersonation.identity;
 
         await this.messenger.updateChatState(this.buildChatState());
         this.loadingProgress = this.loadingDescription = undefined;
