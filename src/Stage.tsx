@@ -275,8 +275,36 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     }
 
-    async continue() {
+    buildHistory(messageId: string): string {
+        let currentId = messageId;
+        let historyString = this.getMessageBody(messageId);
+        let depth = 0;
+        while(this.messageParentIds[currentId] && depth < 10) {
+            currentId = this.messageParentIds[currentId];
+            historyString = `${this.getMessageBody(currentId)}\n\n${historyString}`;
+            depth++;
+        }
 
+        return historyString;
+    }
+
+    async continue() {
+        console.log('continuing');
+        let entry = await this.generator.textGen({
+            prompt: `[SETTING]${this.barDescription}[/SETTING][LOG]${this.buildHistory(this.currentMessageId??'')}[/LOG]\n` +
+                `[INST]Write a two-to-three paragraph visual novel style development. {{user}} is a bartender at this bar; refer to {{user}} in second person.[/INST]`,
+        });
+
+        let impersonation = await this.messenger.impersonate({
+            message: entry?.result ?? '',
+            parent_id: this.currentMessageId ?? '-2',
+            is_main: true,
+            speaker_id: this.characterForGeneration.anonymizedId
+        });
+
+        this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
+        this.messageBodies[impersonation.identity] = entry?.result ?? '';
+        this.currentMessageId = impersonation.identity;
     }
 
     getMessageBody(messageId: string|undefined): string {
@@ -300,7 +328,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             <ThemeProvider theme={this.theme}>
                 <div style={{height: '10vh'}}>
                     <div>
-                        <IconButton disabled={this.loadingProgress !== undefined} color={'primary'} onClick={() => this.generate()}>
+                        <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'} onClick={() => this.generate()}>
                             <ReplayIcon/>
                         </IconButton>
                         {this.loadingProgress && (
@@ -319,7 +347,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             <Typography>{this.getMessageBody(this.currentMessageId)}</Typography>
                         </div>
                         <div style={{verticalAlign: 'bottom'}}>
-                            <IconButton style={{float: 'right'}} disabled={false} color={'primary'} onClick={() => this.continue()}>
+                            <IconButton style={{outline: 1, float: 'right'}} disabled={false} color={'primary'} onClick={() => this.continue()}>
                                 <ForwardIcon/>
                             </IconButton>
                         </div>
