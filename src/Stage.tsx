@@ -365,7 +365,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             <ThemeProvider theme={this.theme}>
                 <div style={{height: '10vh'}}>
                     <div>
-                        <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'success'} onClick={() => this.generate()}>
+                        <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'} onClick={() => this.generate()}>
                             <ReplayIcon/>
                         </IconButton>
                         {this.loadingProgress && (
@@ -373,7 +373,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                                 <Typography>
                                     {this.loadingDescription} - {this.loadingProgress}%
                                 </Typography>
-                                <LinearProgress variant="determinate" color="secondary" value={this.loadingProgress}/>
+                                <LinearProgress sx={{outline: 'primary'}} variant="determinate" color="success" value={this.loadingProgress}/>
                             </div>
                         )}
                     </div>
