@@ -194,12 +194,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     setLoadProgress(loadingProgress: number|undefined, loadingDescription: string) {
-        console.log(loadingProgress ? loadingDescription : 'Marking load complete.');
+        console.log(loadingProgress != undefined ? loadingDescription : 'Marking load complete.');
         this.loadingProgress = loadingProgress;
         this.loadingDescription = loadingDescription;
     }
 
     async generate() {
+        if (this.loadingProgress !== undefined) return;
         this.setLoadProgress(0, 'Generating bar description.');
 
         let textResponse = await this.generator.textGen({
