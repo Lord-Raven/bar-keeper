@@ -216,6 +216,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             let imageResponse = await this.generator.makeImage({
                 prompt: `Professional, stylized, painterly illustration. Clean linework and vibrant colors and striking lighting. Visual novel background image of a bar suiting this description: ${this.barDescription}`,
+                negative_prompt: 'grainy, low-resolution, realism',
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             });
 
@@ -250,7 +251,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     //image: bottleUrl,
                     //strength: 0.1,
                     prompt: `Professional, stylized illustration. Clean linework and vibrant colors. A single, standalone bottle of alcohol on an empty background, suiting this description: ${beverage.description} Viewed head-on. Bottle upright.`,
-                    negative_prompt: `background, frame, multiple bottles, realism, out-of-frame, borders, dynamic angle, perspective, tilted, skewed`,
+                    negative_prompt: `background, frame, multiple bottles, realism, out-of-frame, grainy, borders, dynamic angle, perspective, tilted, skewed`,
                     aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
                     remove_background: true,
                     //seed: null,
