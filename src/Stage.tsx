@@ -259,7 +259,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 message: intro?.result ?? '',
                 parent_id: '-2',
                 is_main: true,
-                speaker_id: this.characterForGeneration.anonymizedId
+                speaker_id: this.playerId
             });
 
             this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
@@ -299,7 +299,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             message: entry?.result ?? '',
             parent_id: this.currentMessageId ?? '-2',
             is_main: true,
-            speaker_id: this.characterForGeneration.anonymizedId
+            speaker_id: this.playerId
         });
 
         this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
