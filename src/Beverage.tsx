@@ -13,14 +13,14 @@ export class Beverage {
     }
 
     render(): ReactElement {
-        return (
-            <ImageWithPopup
-                src={this.imageUrl}
-                alt={`${this.name}`}
-                popupHeader={this.name}
-                popupBody={this.description}
-                popupSrc={this.imageUrl}
-            />
-        );
+        return this.imageUrl !== '' ? (
+                <ImageWithPopup
+                    src={this.imageUrl}
+                    alt={`${this.name}`}
+                    popupHeader={this.name}
+                    popupBody={this.description}
+                    popupSrc={this.imageUrl}
+                />) :
+                <></>;
     }
 }

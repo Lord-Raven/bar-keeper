@@ -264,6 +264,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             speaker_id: this.characterForGeneration.anonymizedId
         });
 
+        this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
+        this.messageBodies[impersonation.identity] = intro?.result ?? '';
+        this.currentMessageId = impersonation.identity;
+
         await this.messenger.updateChatState(this.buildChatState());
         this.loadingProgress = this.loadingDescription = undefined;
     }
