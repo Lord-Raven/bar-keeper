@@ -1,4 +1,5 @@
 import React, {ReactElement} from "react";
+import {useSound} from "use-sound";
 import {AspectRatio, Character, InitialData, Message, StageBase, StageResponse, User} from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {Patron} from "./Patron";
@@ -41,6 +42,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     // Chat State:
     barDescription: string|undefined;
     barImageUrl: string|undefined;
+    entranceSoundUrl: string|undefined;
     beverages: Beverage[];
     loadingProgress: number|undefined;
     loadingDescription: string|undefined;
@@ -157,6 +159,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return {
             barDescription: this.barDescription,
             barImageUrl: this.barImageUrl,
+            entranceSoundUrl: this.entranceSoundUrl,
             beverages: this.beverages,
             messageParentIds: this.messageParentIds,
             messageBodies: this.messageBodies,
@@ -169,6 +172,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         if (chatState) {
             this.barDescription = chatState.barDescription;
             this.barImageUrl = chatState.barImageUrl;
+            this.entranceSoundUrl = chatState.entranceSoundUrl;
             this.beverages = (chatState.beverages ?? []).map((beverage: { name: string, description: string, imageUrl: string }) => new Beverage(beverage.name, beverage.description, beverage.imageUrl));
             this.messageParentIds = chatState.messageParentIds ?? {};
             this.messageBodies = chatState.messageBodies ?? {};
@@ -189,10 +193,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
     }
 
+    setLoadProgress(loadingProgress: number|undefined, loadingDescription: string) {
+        console.log(loadingProgress ? loadingDescription : 'Marking load complete.');
+        this.loadingProgress = loadingProgress;
+        this.loadingDescription = loadingDescription;
+    }
+
     async generate() {
-        this.loadingProgress = 0;
-        this.loadingDescription = 'Generating bar description.';
-        console.log('Generating');
+        this.setLoadProgress(0, 'Generating bar description.');
 
         let textResponse = await this.generator.textGen({
             prompt: this.buildBarDescriptionPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description),
@@ -200,13 +208,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             min_tokens: 50
         });
         console.log(`Bar description: ${textResponse?.result}`);
-        this.loadingProgress = 20;
-        this.loadingDescription = 'Generating bar image.';
-
         this.barDescription = textResponse?.result ?? undefined;
 
         if (this.barDescription) {
-            console.log('Generate an image');
+            this.setLoadProgress(10, 'Generating bar image.');
 
             let imageResponse = await this.generator.makeImage({
                 prompt: `Professional, stylized, painterly illustration. Clean linework and vibrant colors and striking lighting. Visual novel background image of a bar suiting this description: ${this.barDescription}`,
@@ -215,11 +220,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             this.barImageUrl = imageResponse?.url;
 
-            this.loadingProgress = 40;
-            this.loadingDescription = 'Generating beverages.';
+            this.setLoadProgress(25, 'Generating beverages.');
 
             this.beverages = [];
-
             let alcoholResponse = await this.generator.textGen({
                 prompt: this.buildAlcoholDescriptionsPrompt(),
                 max_tokens: 400,
@@ -238,8 +241,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 }
             }
 
-            this.loadingProgress = 50;
-            this.loadingDescription = 'Generating beverage images.';
+            this.setLoadProgress(30, 'Generating beverage images.');
 
             for (const beverage of this.beverages) {
                 console.log(`Generating image for ${beverage.name}`)
@@ -254,16 +256,25 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     //item_id: null,
                 });
                 beverage.imageUrl = alcoholImageResponse?.url ?? '';
-                this.loadingProgress += 5;
+                this.setLoadProgress((this.loadingProgress ?? 0) + 5, 'Generating beverage images.');
             }
+
+            // Generate a sound effect
+            this.setLoadProgress(60, 'Generate sounds.');
+            let soundResponse = await this.generator.makeSound({
+                prompt: `[INST]Create a brief sound effect (1-2 seconds) to indicate that someone has entered the following establishment:[/INST}\n${this.barDescription}\n[INST]This can be a chime, bell, or door closing sound that suits the ambiance of the setting.`,
+                seconds: 3
+            });
+            this.entranceSoundUrl = soundResponse?.url;
+
             // Finally, display an intro
             this.director.setDirection(undefined);
             this.director.chooseDirection();
-            console.log('Writing an intro');
+            this.setLoadProgress(70, 'Writing intro.');
             let intro = await this.generator.textGen({
                 prompt: this.buildStoryPrompt(
                     this.buildHistory(this.currentMessageId ?? ''),
-                    `${this.director.getPromptInstruction()}`)
+                    `${this.director.getPromptInstruction(this.barDescription, this.player.name)}`)
             });
 
             let impersonation = await this.messenger.impersonate({
@@ -279,7 +290,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
 
         await this.messenger.updateChatState(this.buildChatState());
-        this.loadingProgress = this.loadingDescription = undefined;
+        this.setLoadProgress(undefined, '');
+
+        // If there was a failure, consider reloading from chatState rather than saving.
     }
 
     async generatePatron() {
@@ -308,11 +321,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async continue() {
         console.log('continuing');
+        if (this.entranceSoundUrl) {
+            useSound(this.entranceSoundUrl);
+        }
         this.director.chooseDirection();
         let entry = await this.generator.textGen({
             prompt: this.buildStoryPrompt(
                 this.buildHistory(this.currentMessageId ?? ''),
-                `${this.director.getPromptInstruction()}`),
+                `${this.director.getPromptInstruction(this.barDescription ?? '', this.player.name)}`),
         });
 
         let impersonation = await this.messenger.impersonate({
@@ -348,7 +364,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             <ThemeProvider theme={this.theme}>
                 <div style={{height: '10vh'}}>
                     <div>
-                        <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'} onClick={() => this.generate()}>
+                        <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'success'} onClick={() => this.generate()}>
                             <ReplayIcon/>
                         </IconButton>
                         {this.loadingProgress && (
