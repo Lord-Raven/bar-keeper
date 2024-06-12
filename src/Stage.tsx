@@ -365,11 +365,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <div style={{height: '15vh'}}>
                     <Box component="section" sx={{
                         p: 2,
+                        height: '15vh',
                         border: '1px dashed grey',
                         backgroundColor: '#00000088',
                         '&:hover': {backgroundColor: '#000000BB'}
                     }}>
-                        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'flex-end'}}>
+                        <div style={{height: '15vh', display: 'flex', justifyContent: 'center', alignItems: 'flex-end'}}>
                             {this.beverages.map(beverage => beverage.render())}
                         </div>
                     </Box>
