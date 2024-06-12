@@ -6,6 +6,7 @@ import {Beverage} from "./Beverage";
 import {Box, createTheme, LinearProgress, ThemeProvider, Typography, IconButton} from "@mui/material";
 import ReplayIcon from "@mui/icons-material/Replay";
 import ForwardIcon from "@mui/icons-material/Forward";
+import {Director} from "./Director";
 //import bottleUrl from './assets/bottle.png'
 
 type MessageStateType = any;
@@ -35,7 +36,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     };
 
     // Message State:
-    currentMessageId: string|undefined;
+    // Eventually move things like currentMessageId: string|undefined;
 
     // Chat State:
     barDescription: string|undefined;
@@ -48,6 +49,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     patrons: {[key: string]: Patron};
     presentPatronIds: string[]
     currentPatron: string;
+    director: Director;
+    currentMessageId: string|undefined;
 
     // Not saved:
     characterForGeneration: Character;
@@ -85,6 +88,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.messageBodies = {};
         this.readChatState(chatState);
         this.readMessageState(messageState);
+        this.director = new Director();
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
@@ -155,7 +159,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             barImageUrl: this.barImageUrl,
             beverages: this.beverages,
             messageParentIds: this.messageParentIds,
-            messageBodies: this.messageBodies
+            messageBodies: this.messageBodies,
+            currentMessageId: this.currentMessageId,
+            director: this.director
         };
     }
 
@@ -166,18 +172,20 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.beverages = (chatState.beverages ?? []).map((beverage: { name: string, description: string, imageUrl: string }) => new Beverage(beverage.name, beverage.description, beverage.imageUrl));
             this.messageParentIds = chatState.messageParentIds ?? {};
             this.messageBodies = chatState.messageBodies ?? {};
+            this.currentMessageId = chatState.currentMessageId ?? undefined;
+            this.director = chatState.director ?? new Director();
         }
     }
 
     buildMessageState(): MessageStateType {
         return {
-            currentMessageId: this.currentMessageId
+            //currentMessageId: this.currentMessageId
         };
     }
 
     readMessageState(messageState: MessageStateType) {
         if (messageState) {
-            this.currentMessageId = messageState.currentMessageId;
+            //this.currentMessageId = messageState.currentMessageId;
         }
     }
 
@@ -249,11 +257,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 this.loadingProgress += 5;
             }
             // Finally, display an intro
+            this.director.setDirection(undefined);
+            this.director.chooseDirection();
             console.log('Writing an intro');
             let intro = await this.generator.textGen({
                 prompt: this.buildStoryPrompt(
                     this.buildHistory(this.currentMessageId ?? ''),
-                    `[INST]Write a two-paragraph visual novel style introduction to the bar described here: ${this.barDescription}. ${this.player.name} is setting up for the beginning of their shift one evening.[/INST]`)
+                    `${this.director.getPromptInstruction()}`)
             });
 
             let impersonation = await this.messenger.impersonate({
@@ -298,10 +308,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async continue() {
         console.log('continuing');
+        this.director.chooseDirection();
         let entry = await this.generator.textGen({
             prompt: this.buildStoryPrompt(
                 this.buildHistory(this.currentMessageId ?? ''),
-                `[INST]Write a two-to-three paragraph visual novel style development.[/INST]`),
+                `${this.director.getPromptInstruction()}`),
         });
 
         let impersonation = await this.messenger.impersonate({
