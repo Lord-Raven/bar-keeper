@@ -327,11 +327,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         //    useSound(this.entranceSoundUrl);
         //}
         this.director.chooseDirection();
+        console.log('choseDirection');
         let entry = await this.generator.textGen({
             prompt: this.buildStoryPrompt(
                 this.buildHistory(this.currentMessageId ?? ''),
                 `${this.director.getPromptInstruction(this.barDescription ?? '', this.player.name)}`),
         });
+        console.log('did textGen');
 
         let impersonation = await this.messenger.impersonate({
             message: entry?.result ?? '',
