@@ -33,7 +33,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                 aria-haspopup="true"
                 onMouseEnter={handlePopoverOpen}
                 onMouseLeave={handlePopoverClose}
-                style={style ?? {height: 'auto', width: 'auto', margin: '0 5px'}}
+                style={style ?? {height: '100%', width: 'auto', margin: '0 0px'}}
             />
             <Popover
                 id={`mouse-over-popover-${popupHeader}`}
