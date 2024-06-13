@@ -1,6 +1,14 @@
 import React, {ReactElement} from "react";
 import {useSound} from "use-sound";
-import {AspectRatio, Character, InitialData, Message, StageBase, StageResponse, User} from "@chub-ai/stages-ts";
+import {
+    AspectRatio,
+    Character,
+    InitialData,
+    Message,
+    StageBase,
+    StageResponse,
+    User
+} from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
@@ -8,7 +16,7 @@ import {Box, createTheme, LinearProgress, ThemeProvider, Typography, IconButton}
 import ReplayIcon from "@mui/icons-material/Replay";
 import ForwardIcon from "@mui/icons-material/Forward";
 import {Director} from "./Director";
-//import bottleUrl from './assets/bottle.png'
+import bottleUrl from './assets/bottle.png'
 
 type MessageStateType = any;
 
@@ -36,6 +44,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Toilet Wine - A plastic pitcher of questionably-sourced-but-unquestionably-alcoholic red wine.[/INST]`
     };
 
+    readonly disableContentGeneration: boolean = true;
     // Message State:
     // Eventually move things like currentMessageId: string|undefined;
 
@@ -214,13 +223,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         if (this.barDescription) {
             this.setLoadProgress(10, 'Generating bar image.');
 
-            let imageResponse = await this.generator.makeImage({
+            this.barImageUrl = await this.makeImage({
                 prompt: `Professional, stylized, painterly illustration. Clean linework and vibrant colors and striking lighting. Visual novel background image of a bar suiting this description: ${this.barDescription}`,
                 negative_prompt: 'grainy, low-resolution, realism',
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
-            });
-
-            this.barImageUrl = imageResponse?.url;
+            }, '');
 
             this.setLoadProgress(25, 'Generating beverages.');
 
@@ -247,7 +254,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             for (const beverage of this.beverages) {
                 console.log(`Generating image for ${beverage.name}`)
-                let alcoholImageResponse = await this.generator.makeImage({
+                beverage.imageUrl = await this.makeImage({
                     //image: bottleUrl,
                     //strength: 0.1,
                     prompt: `Professional, stylized illustration. Clean linework and vibrant colors. A single, standalone bottle of alcohol on an empty background, suiting this description: ${beverage.description} Viewed head-on. Bottle upright.`,
@@ -256,18 +263,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     remove_background: true,
                     //seed: null,
                     //item_id: null,
-                });
-                beverage.imageUrl = alcoholImageResponse?.url ?? '';
+                }, bottleUrl);
                 this.setLoadProgress((this.loadingProgress ?? 0) + 5, 'Generating beverage images.');
             }
 
             // Generate a sound effect
             this.setLoadProgress(60, 'Generate sounds.');
-            let soundResponse = await this.generator.makeSound({
+            this.entranceSoundUrl = await this.makeSound({
                 prompt: `[INST]Create a brief sound effect (1-2 seconds) to indicate that someone has entered the following establishment:[/INST}\n${this.barDescription}\n[INST]This can be a chime, bell, or door closing sound that suits the ambiance of the setting.`,
                 seconds: 3
-            });
-            this.entranceSoundUrl = soundResponse?.url;
+            },'');
 
             // Finally, display an intro
             this.director.setDirection(undefined);
@@ -349,6 +354,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     getMessageBody(messageId: string|undefined): string {
         return this.messageBodies[messageId ?? ''] ?? '';
+    }
+
+    async makeImage(imageRequest: Object, defaultUrl: string): Promise<string> {
+        return !this.disableContentGeneration ? (await this.generator.makeImage(imageRequest))?.url ?? defaultUrl : defaultUrl;
+    }
+
+    async makeSound(foleyRequest: Object, defaultUrl: string): Promise<string> {
+        return !this.disableContentGeneration ? (await this.generator.makeSound(foleyRequest))?.url ?? defaultUrl : defaultUrl;
     }
 
 
