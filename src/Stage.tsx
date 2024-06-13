@@ -281,7 +281,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             let intro = await this.generator.textGen({
                 prompt: this.buildStoryPrompt(
                     this.buildHistory(this.currentMessageId ?? ''),
-                    `${this.director.getPromptInstruction(this.barDescription, this.player.name)}`)
+                    `${this.director.getPromptInstruction(this.barDescription, this.player.name)}`),
+                max_tokens: 400,
+                min_tokens: 50
             });
 
             let impersonation = await this.messenger.impersonate({
@@ -337,6 +339,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             prompt: this.buildStoryPrompt(
                 this.buildHistory(this.currentMessageId ?? ''),
                 `${this.director.getPromptInstruction(this.barDescription ?? '', this.player.name)}`),
+            max_tokens: 400,
+            min_tokens: 50
         });
         console.log('did textGen');
 
@@ -394,8 +398,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         )}
                     </div>
                 </div>
-                <div style={{height: '70vh'}}>
-                    <Box component="section" sx={{p: 2, border: '1px dashed grey', backgroundColor: '#00000088', '&:hover': {backgroundColor: '#000000BB'}}}>
+                <div style={{height: 'auto'}}>
+                </div>
+                <div style={{height: '30vh'}}>
+                    <Box component="section" sx={{height: '100%', p: 2, border: '1px dashed grey', backgroundColor: '#00000088', '&:hover': {backgroundColor: '#000000BB'}}}>
                         <div>
                             <Typography>{this.getMessageBody(this.currentMessageId)}</Typography>
                         </div>
