@@ -378,8 +378,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             backgroundRepeat: 'no-repeat',
             width: '100vw',
             height: '100vh',
-            display: 'grid',
-            alignItems: 'stretch',
             color: '#ffffff'
         }}>
             <ThemeProvider theme={this.theme}>
@@ -398,7 +396,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         )}
                     </div>
                 </div>
-                <div style={{maxHeight: '40%'}}>
+                <div style={{height: '40%'}}>
                 </div>
                 <div style={{height: '30%', overflow: 'hidden'}}>
                     <Box component="section" sx={{height: '100%', p: 2, border: '1px dashed grey', backgroundColor: '#00000088', '&:hover': {backgroundColor: '#000000BB'}}}>
