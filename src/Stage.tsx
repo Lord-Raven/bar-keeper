@@ -381,7 +381,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             color: '#ffffff'
         }}>
             <ThemeProvider theme={this.theme}>
-                <div style={{height: '10%'}}>
+                <div style={{height: '8%'}}>
                     <div>
                         <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'} onClick={() => this.generate()}>
                             <ReplayIcon/>
@@ -396,7 +396,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         )}
                     </div>
                 </div>
-                <div style={{height: '40%'}}>
+                <div style={{maxHeight: '50%'}}>
                 </div>
                 <div style={{height: '30%', overflow: 'hidden'}}>
                     <Box component="section" sx={{height: '100%', p: 2, border: '1px dashed grey', backgroundColor: '#00000088', '&:hover': {backgroundColor: '#000000BB'}}}>
@@ -410,7 +410,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         </div>
                     </Box>
                 </div>
-                <div style={{height: '15%'}}>
+                <div style={{height: '10%'}}>
                     <Box component="section" sx={{
                         p: 2,
                         height: '100%',
@@ -423,7 +423,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         </div>
                     </Box>
                 </div>
-                <div style={{height: '5%'}}>
+                <div style={{height: '2%'}}>
                 </div>
             </ThemeProvider>
         </div>;
