@@ -383,7 +383,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             color: '#ffffff'
         }}>
             <ThemeProvider theme={this.theme}>
-                <div style={{height: '10vh'}}>
+                <div style={{height: '10%'}}>
                     <div>
                         <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'} onClick={() => this.generate()}>
                             <ReplayIcon/>
@@ -400,7 +400,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 </div>
                 <div style={{height: 'auto'}}>
                 </div>
-                <div style={{height: '30vh'}}>
+                <div style={{height: '30%', overflow: 'hidden'}}>
                     <Box component="section" sx={{height: '100%', p: 2, border: '1px dashed grey', backgroundColor: '#00000088', '&:hover': {backgroundColor: '#000000BB'}}}>
                         <div>
                             <Typography>{this.getMessageBody(this.currentMessageId)}</Typography>
@@ -412,20 +412,20 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         </div>
                     </Box>
                 </div>
-                <div style={{height: '15vh'}}>
+                <div style={{height: '15%'}}>
                     <Box component="section" sx={{
                         p: 2,
-                        height: '15vh',
+                        height: '100%',
                         border: '1px dashed grey',
                         backgroundColor: '#00000088',
                         '&:hover': {backgroundColor: '#000000BB'}
                     }}>
-                        <div style={{height: '15vh', display: 'flex', justifyContent: 'center', alignItems: 'flex-end'}}>
+                        <div style={{height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-end'}}>
                             {this.beverages.map(beverage => beverage.render())}
                         </div>
                     </Box>
                 </div>
-                <div style={{height: '5vh'}}>
+                <div style={{height: '5%'}}>
                 </div>
             </ThemeProvider>
         </div>;
