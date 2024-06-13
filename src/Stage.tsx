@@ -400,10 +400,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 </div>
                 <div style={{height: '30%', overflow: 'hidden'}}>
                     <Box component="section" sx={{height: '100%', p: 2, border: '1px dashed grey', backgroundColor: '#00000088', '&:hover': {backgroundColor: '#000000BB'}}}>
-                        <div>
+                        <div style={{maxHeight: '100%'}}>
                             <Typography>{this.getMessageBody(this.currentMessageId)}</Typography>
                         </div>
-                        <div style={{verticalAlign: 'bottom'}}>
+                        <div style={{verticalAlign: 'right'}}>
                             <IconButton style={{outline: 1, float: 'right'}} disabled={false} color={'primary'} onClick={() => this.continue()}>
                                 <ForwardIcon/>
                             </IconButton>
