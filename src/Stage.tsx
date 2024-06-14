@@ -403,8 +403,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <div style={{flexGrow: '1', overflow: 'auto'}}>
                 </div>
                 <div style={{flexShrink: '0'}}>
-                    <Box component="section" sx={{
+                    <Box sx={{
                         height: '100%',
+                        m: 2,
                         border: '1px dashed grey',
                         backgroundColor: '#00000088',
                         '&:hover': {backgroundColor: '#000000BB'}
