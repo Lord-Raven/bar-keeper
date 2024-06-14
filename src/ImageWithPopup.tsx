@@ -25,7 +25,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
     const open = Boolean(anchorEl);
 
     return (
-        <div style={{height: '10vh', display: 'flex', alignItems: 'center'}}>
+        <div style={{maxHeight: '10vh', display: 'flex', alignItems: 'center'}}>
             <img
                 src={src}
                 alt={alt}
