@@ -378,6 +378,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             backgroundRepeat: 'no-repeat',
             width: '100vw',
             height: '100vh',
+            flexDirection: 'column',
             color: '#ffffff'
         }}>
             <ThemeProvider theme={this.theme}>
@@ -396,9 +397,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         )}
                     </div>
                 </div>
-                <div style={{maxHeight: '70%'}}>
+                <div style={{flexGrow: '1', overflow: 'auto'}}>
                 </div>
-                <div style={{overflow: 'hidden'}}>
+                <div style={{flexShrink: '0'}}>
                     <Box component="section" sx={{height: '100%', p: 2, border: '1px dashed grey', backgroundColor: '#00000088', '&:hover': {backgroundColor: '#000000BB'}}}>
                         <div style={{maxHeight: '100%'}}>
                             <Typography>{this.getMessageBody(this.currentMessageId)}</Typography>
@@ -413,7 +414,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <div style={{height: '10%'}}>
                     <Box component="section" sx={{
                         p: 2,
-                        height: '100%',
+                        height: '95%',
                         border: '1px dashed grey',
                         backgroundColor: '#00000088',
                         '&:hover': {backgroundColor: '#000000BB'}
@@ -422,8 +423,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             {this.beverages.map(beverage => beverage.render())}
                         </div>
                     </Box>
-                </div>
-                <div style={{height: '2%'}}>
                 </div>
             </ThemeProvider>
         </div>;
