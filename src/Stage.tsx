@@ -404,7 +404,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 </div>
                 <div style={{flexShrink: '0'}}>
                     <Box sx={{
-                        height: '80%',
+                        height: '100%',
                         p: 2,
                         border: '1px dashed grey',
                         backgroundColor: '#00000088',
