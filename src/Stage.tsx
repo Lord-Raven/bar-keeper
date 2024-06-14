@@ -384,7 +384,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             <ThemeProvider theme={this.theme}>
                 <div style={{height: '8%'}}>
                     <div>
-                        <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'} onClick={() => this.generate()}>
+                        <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'}
+                                    onClick={() => this.generate()}>
                             <ReplayIcon/>
                         </IconButton>
                         {this.loadingProgress && (
@@ -392,7 +393,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                                 <Typography>
                                     {this.loadingProgress}% - {this.loadingDescription}
                                 </Typography>
-                                <LinearProgress sx={{outline: 'primary'}} variant="determinate" color="success" value={this.loadingProgress}/>
+                                <LinearProgress sx={{outline: 'primary'}} variant="determinate" color="success"
+                                                value={this.loadingProgress}/>
                             </div>
                         )}
                     </div>
@@ -400,30 +402,40 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <div style={{flexGrow: '1', overflow: 'auto'}}>
                 </div>
                 <div style={{flexShrink: '0'}}>
-                    <Box component="section" sx={{height: '100%', p: 2, border: '1px dashed grey', backgroundColor: '#00000088', '&:hover': {backgroundColor: '#000000BB'}}}>
+                    <Box component="section" sx={{
+                        height: '100%',
+                        p: 2,
+                        border: '1px dashed grey',
+                        backgroundColor: '#00000088',
+                        '&:hover': {backgroundColor: '#000000BB'}
+                    }}>
                         <div style={{maxHeight: '100%'}}>
                             <Typography>{this.getMessageBody(this.currentMessageId)}</Typography>
                         </div>
                         <div style={{verticalAlign: 'right'}}>
-                            <IconButton style={{outline: 1, float: 'right'}} disabled={false} color={'primary'} onClick={() => this.continue()}>
+                            <IconButton style={{outline: 1, float: 'right'}} disabled={false} color={'primary'}
+                                        onClick={() => this.continue()}>
                                 <ForwardIcon/>
                             </IconButton>
                         </div>
                     </Box>
                 </div>
+                <div style={{height: '2%'}}></div>
                 <div style={{height: '10%'}}>
                     <Box component="section" sx={{
                         p: 2,
-                        height: '95%',
+                        height: '100%',
                         border: '1px dashed grey',
                         backgroundColor: '#00000088',
                         '&:hover': {backgroundColor: '#000000BB'}
                     }}>
-                        <div style={{height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-end'}}>
+                        <div
+                            style={{height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-end'}}>
                             {this.beverages.map(beverage => beverage.render())}
                         </div>
                     </Box>
                 </div>
+                <div style={{height: '2%'}}></div>
             </ThemeProvider>
         </div>;
     };
