@@ -427,7 +427,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     <Box component="section" sx={{
                         m: 2,
                         p: 2,
-                        height: '95%',
+                        height: '50%',
                         border: '1px dashed grey',
                         backgroundColor: '#00000088',
                         '&:hover': {backgroundColor: '#000000BB'}
