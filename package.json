@@ -26,7 +26,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "vite-plugin-dts": "^3.9.1",
-    "use-sound": "^4.0.1"
+    "use-sound": "^4.0.1",
+    "typewriter-effect": "^2.21.0"
   },
   "engines": {
     "node": "21.7.1"

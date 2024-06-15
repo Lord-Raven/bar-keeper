@@ -1,5 +1,6 @@
 import React, {ReactElement} from "react";
 import {useSound} from "use-sound";
+import Typewriter from "typewriter-effect";
 import {
     AspectRatio,
     Character,
@@ -39,9 +40,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `[INST]Output six lines, each with the name of a type of alcohol that this bar might serve, as well as a brief description of ` +
             `its appearance, bottle, and flavor. Follow the format of these examples:\n` +
             `Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
-            `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like sweetener on cocaine.\n` +
-            `Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with a Eldridge Brewery logo.\n` +
-            `Toilet Wine - A plastic pitcher of questionably-sourced-but-unquestionably-alcoholic red wine.[/INST]`
+            `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
+            `Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n` +
+            `Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red wine.[/INST]`
+        // TODO: Add two more, so the example contains six entries.
     };
 
     readonly disableContentGeneration: boolean = true;
@@ -301,11 +303,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         await this.messenger.updateChatState(this.buildChatState());
         this.setLoadProgress(undefined, '');
 
-        // If there was a failure, consider reloading from chatState rather than saving.
+        // TODO: If there was a failure, consider reloading from chatState rather than saving.
     }
 
     async generatePatron() {
-
+        // TODO: Generate a name and description, passing in existing patrons with instruction to make this patron
+        //  distinct from others while potentially having a connection to other established patrons.
+        //  Generate a normal image, then image2image for happy and unhappy image.
     }
 
     buildHistory(messageId: string): string {
@@ -406,11 +410,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     <Box sx={{
                         p: 2,
                         border: '1px dashed grey',
+                        height: '100%',
                         backgroundColor: '#00000088',
                         '&:hover': {backgroundColor: '#000000BB'}
                     }}>
                         <div style={{maxHeight: '100%'}}>
-                            <Typography>{this.getMessageBody(this.currentMessageId)}</Typography>
+                            <Typewriter options={{strings: [`${this.getMessageBody(this.currentMessageId)}`], autoStart: true, cursor: ''}}/>
                         </div>
                         <div style={{verticalAlign: 'right'}}>
                             <IconButton style={{outline: 1, float: 'right'}} disabled={false} color={'primary'}
