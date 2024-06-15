@@ -428,7 +428,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             <Typography color='#000000cc'>
                                 {this.getMessageBody(this.currentMessageId)}
                             </Typography>
-                            <div style={{position: 'absolute', top: '100%', transform: 'translate(0, 100%)', zIndex: 1, userSelect: 'none'}}>
+                            <div style={{position: 'absolute', top: '100%', transform: 'translate(0, -200%)', zIndex: 1, userSelect: 'none'}}>
                                 <MessageWindup message={this.currentMessage}/>
                             </div>
                         </div>
