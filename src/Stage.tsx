@@ -410,12 +410,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     <Box sx={{
                         p: 2,
                         border: '1px dashed grey',
-                        height: '100%',
                         backgroundColor: '#00000088',
                         '&:hover': {backgroundColor: '#000000BB'}
                     }}>
                         <div style={{maxHeight: '100%'}}>
-                            <Typewriter options={{strings: [`${this.getMessageBody(this.currentMessageId)}`], autoStart: true, cursor: ''}}/>
+                            <Typewriter options={{strings: [`${this.getMessageBody(this.currentMessageId)}`], autoStart: true, delay: 5, cursor: ''}}/>
                         </div>
                         <div style={{verticalAlign: 'right'}}>
                             <IconButton style={{outline: 1, float: 'right'}} disabled={false} color={'primary'}
@@ -429,6 +428,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <div style={{height: '10%'}}>
                     <Box component="section" sx={{
                         p: 2,
+                        height: '100%',
                         border: '1px dashed grey',
                         backgroundColor: '#00000088',
                         '&:hover': {backgroundColor: '#000000BB'}
