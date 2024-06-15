@@ -17,6 +17,7 @@ import {Box, createTheme, LinearProgress, ThemeProvider, Typography, IconButton}
 import ReplayIcon from "@mui/icons-material/Replay";
 import ForwardIcon from "@mui/icons-material/Forward";
 import {Director} from "./Director";
+import {MessageWindup} from "./MessageWindup";
 import bottleUrl from './assets/bottle.png'
 
 type MessageStateType = any;
@@ -64,12 +65,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     currentPatron: string;
     director: Director;
     currentMessageId: string|undefined;
-    currentMessage: string;
+    currentMessage: string = '';
 
     // Not saved:
     characterForGeneration: Character;
     player: User;
-    windup: any;
+    readonly windup = () => {
+        const [text] = useWindupString(this.currentMessage);
+        console.log(text);
+        return <div>{text}</div>
+    }
 
     readonly theme = createTheme({
         palette: {
@@ -104,11 +109,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.readChatState(chatState);
         this.readMessageState(messageState);
         this.director = new Director();
-        this.windup = () => {
-            const [text] = useWindupString(this.currentMessage);
-            console.log(text);
-            return <div>{text}</div>
-        }
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
@@ -429,7 +429,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                                 {this.getMessageBody(this.currentMessageId)}
                             </Typography>
                             <div style={{position: 'absolute', top: '100%', transform: 'translate(0, -100%)', zIndex: 1, userSelect: 'none', verticalAlign: 'top'}}>
-                                {this.windup}
+                                <MessageWindup message={this.currentMessage}/>
                             </div>
                         </div>
                         <div style={{verticalAlign: 'right'}}>
