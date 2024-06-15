@@ -417,10 +417,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             <Typography color='#000000cc'>
                                 {this.getMessageBody(this.currentMessageId)}
                             </Typography>
-                            <div style={{position: 'absolute', transform: 'translate(0, -100%)', zIndex: 1, userSelect: 'none'}}>
+                            <div style={{position: 'absolute', transform: 'translate(0, -100%)', zIndex: 1, userSelect: 'none', verticalAlign: 'top'}}>
                                 <Typewriter options={{delay: 4, cursor: ''}}
                                     onInit={(typewriter) => {
-                                    typewriter.typeString(`${this.getMessageBody(this.currentMessageId)}`)
+                                    typewriter.typeString(this.getMessageBody(this.currentMessageId))
                                         .start();
                                 }}/>
                             </div>
