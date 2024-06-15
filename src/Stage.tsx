@@ -1,6 +1,6 @@
 import React, {ReactElement} from "react";
 import {useSound} from "use-sound";
-import Typewriter from "typewriter-effect";
+import {useWindupString} from "windups";
 import {
     AspectRatio,
     Character,
@@ -68,6 +68,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     // Not saved:
     characterForGeneration: Character;
     player: User;
+    windup: any;
 
     readonly theme = createTheme({
         palette: {
@@ -102,6 +103,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.readChatState(chatState);
         this.readMessageState(messageState);
         this.director = new Director();
+        this.windup = () => {
+            const [windup] = useWindupString(this.getMessageBody(this.currentMessageId));
+
+            return <div>{windup}</div>
+        }
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
@@ -418,11 +424,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                                 {this.getMessageBody(this.currentMessageId)}
                             </Typography>
                             <div style={{position: 'absolute', top: '100%', transform: 'translate(0, -100%)', zIndex: 1, userSelect: 'none', verticalAlign: 'top'}}>
-                                <Typewriter options={{delay: 4, cursor: ''}}
-                                    onInit={(typewriter) => {
-                                    typewriter.typeString(this.getMessageBody(this.currentMessageId))
-                                        .start();
-                                }}/>
+                                {this.windup}
                             </div>
                         </div>
                         <div style={{verticalAlign: 'right'}}>
