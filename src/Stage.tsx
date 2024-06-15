@@ -424,7 +424,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         backgroundColor: '#00000088',
                         '&:hover': {backgroundColor: '#000000BB'}
                     }}>
-                        <div style={{maxHeight: '100%'}}>
+                        <div style={{height: '100%'}}>
                             <Typography color='#000000cc'>
                                 {this.getMessageBody(this.currentMessageId)}
                             </Typography>
