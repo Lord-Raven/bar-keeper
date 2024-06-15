@@ -414,14 +414,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         '&:hover': {backgroundColor: '#000000BB'}
                     }}>
                         <div style={{maxHeight: '100%'}}>
-                            <Typography color='#00000000'>
+                            <Typography color='#000000cc'>
                                 {this.getMessageBody(this.currentMessageId)}
                             </Typography>
-                            <Typewriter options={{delay: 4, cursor: ''}}
-                                onInit={(typewriter) => {
-                                typewriter.typeString(`${this.getMessageBody(this.currentMessageId)}`)
-                                    .start();
-                            }}/>
+                            <div style={{position: 'absolute', transform: 'translate(0, -100%)', zIndex: 1, userSelect: 'none'}}>
+                                <Typewriter options={{delay: 4, cursor: ''}}
+                                    onInit={(typewriter) => {
+                                    typewriter.typeString(`${this.getMessageBody(this.currentMessageId)}`)
+                                        .start();
+                                }}/>
+                            </div>
                         </div>
                         <div style={{verticalAlign: 'right'}}>
                             <IconButton style={{outline: 1, float: 'right'}} disabled={false} color={'primary'}
