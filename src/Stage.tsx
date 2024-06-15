@@ -64,6 +64,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     currentPatron: string;
     director: Director;
     currentMessageId: string|undefined;
+    currentMessage: string;
 
     // Not saved:
     characterForGeneration: Character;
@@ -104,9 +105,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.readMessageState(messageState);
         this.director = new Director();
         this.windup = () => {
-            const [windup] = useWindupString(this.getMessageBody(this.currentMessageId));
-            console.log(windup);
-            return <div>{windup}</div>
+            const [text] = useWindupString(this.currentMessage);
+            console.log(text);
+            return <div>{text}</div>
         }
     }
 
@@ -195,6 +196,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.messageBodies = chatState.messageBodies ?? {};
             this.currentMessageId = chatState.currentMessageId ?? undefined;
             this.director = chatState.director ?? new Director();
+
+            this.currentMessage = this.getMessageBody(this.currentMessageId);
         }
     }
 
@@ -304,6 +307,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
             this.messageBodies[impersonation.identity] = intro?.result ?? '';
             this.currentMessageId = impersonation.identity;
+            this.currentMessage = this.getMessageBody(this.currentMessageId);
         }
 
         await this.messenger.updateChatState(this.buildChatState());
@@ -364,6 +368,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
         this.messageBodies[impersonation.identity] = entry?.result ?? '';
         this.currentMessageId = impersonation.identity;
+        this.currentMessage = this.getMessageBody(this.currentMessageId);
     }
 
     getMessageBody(messageId: string|undefined): string {
