@@ -105,7 +105,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.director = new Director();
         this.windup = () => {
             const [windup] = useWindupString(this.getMessageBody(this.currentMessageId));
-
+            console.log(windup);
             return <div>{windup}</div>
         }
     }
