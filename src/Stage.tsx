@@ -424,14 +424,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         backgroundColor: '#00000088',
                         '&:hover': {backgroundColor: '#000000BB'}
                     }}>
-                        <div style={{height: '100%', position: 'relative'}}>
-                            <Typography color='#000000cc'>
-                                {this.getMessageBody(this.currentMessageId)}
-                            </Typography>
-                            <div style={{position: 'absolute', top: '0px', left: '0px', zIndex: 1, userSelect: 'none'}}>
-                                <MessageWindup message={this.currentMessage}/>
-                            </div>
-                        </div>
+                        <MessageWindup message={this.currentMessage}/>
                         <div style={{verticalAlign: 'right'}}>
                             <IconButton style={{outline: 1, float: 'right'}} disabled={false} color={'primary'}
                                         onClick={() => this.continue()}>
