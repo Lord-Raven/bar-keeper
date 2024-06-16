@@ -4,9 +4,10 @@ import React from "react";
 
 interface MessageWindupProps {
     message: string;
+    options: {};
 }
-export function MessageWindup({message}: MessageWindupProps) {
-    const [text] = useWindupString(message);
+export function MessageWindup({message, options}: MessageWindupProps) {
+    const [text] = useWindupString(message, options);
     return (
         <div style={{height: '100%', position: 'relative'}}>
             <Typography color='#00000000'>{message}</Typography>

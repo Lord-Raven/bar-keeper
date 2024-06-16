@@ -1,6 +1,5 @@
 import React, {ReactElement} from "react";
 import {useSound} from "use-sound";
-import {useWindupString} from "windups";
 import {
     AspectRatio,
     Character,
@@ -70,11 +69,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     // Not saved:
     characterForGeneration: Character;
     player: User;
-    readonly windup = () => {
-        const [text] = useWindupString(this.currentMessage);
-        console.log(text);
-        return <div>{text}</div>
-    }
+
+    isWinding: boolean = false;
+    isContinuing: boolean = false;
 
     readonly theme = createTheme({
         palette: {
@@ -286,6 +283,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             },'');
 
             // Finally, display an intro
+            this.currentMessageId = undefined;
             this.director.setDirection(undefined);
             this.director.chooseDirection();
             this.setLoadProgress(70, 'Writing intro.');
@@ -342,8 +340,22 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `[INST]${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}[/INST]`;
     }
 
-    async continue() {
+    continue() {
+        if (this.isWinding) {
+            this.isWinding = false;
+        } else if (!this.isContinuing) {
+            this.isContinuing = true;
+            void this.generateNextResponse();
+        }
+    }
+
+    doneWinding(): void {
+        this.isWinding = false;
+    }
+
+    async generateNextResponse(): Promise<void> {
         console.log('continuing');
+        this.isContinuing = true;
         //if (this.entranceSoundUrl) {
         //    useSound(this.entranceSoundUrl);
         //}
@@ -369,6 +381,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.messageBodies[impersonation.identity] = entry?.result ?? '';
         this.currentMessageId = impersonation.identity;
         this.currentMessage = this.getMessageBody(this.currentMessageId);
+        this.isWinding = true;
+        this.isContinuing = false;
     }
 
     getMessageBody(messageId: string|undefined): string {
@@ -424,9 +438,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         backgroundColor: '#00000088',
                         '&:hover': {backgroundColor: '#000000BB'}
                     }}>
-                        <MessageWindup message={this.currentMessage}/>
+                        <MessageWindup message={this.currentMessage} options={{skipped: !this.isWinding, onFinished: () => this.doneWinding()}}/>
                         <div style={{verticalAlign: 'right'}}>
-                            <IconButton style={{outline: 1, float: 'right'}} disabled={false} color={'primary'}
+                            <IconButton style={{outline: 1, float: 'right'}} disabled={this.isContinuing} color={'primary'}
                                         onClick={() => this.continue()}>
                                 <ForwardIcon/>
                             </IconButton>
