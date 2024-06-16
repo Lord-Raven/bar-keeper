@@ -201,7 +201,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildMessageState(): MessageStateType {
         return {
-            //currentMessageId: this.currentMessageId
+            currentMessageId: this.currentMessageId
         };
     }
 
@@ -346,6 +346,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         if (this.isWinding) {
             console.log('should stop winding');
             this.isWinding = false;
+            const someId = this.currentMessageId;
+            this.currentMessageId = "-1";
+            this.buildMessageState();
+            this.currentMessageId = someId;
         } else if (!this.isContinuing) {
             this.isContinuing = true;
             void this.generateNextResponse();
