@@ -119,6 +119,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async setState(messageState: MessageStateType): Promise<void> {
+        console.log('setState');
         this.readMessageState(messageState);
     }
 
@@ -403,7 +404,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
 
     render(): ReactElement {
-
+        console.log('render');
         return <div style={{
             backgroundImage: `url(${this.barImageUrl})`,
             backgroundPosition: 'center',
