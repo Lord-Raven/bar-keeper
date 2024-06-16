@@ -349,10 +349,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.isContinuing = true;
             void this.generateNextResponse();
         }
-    }
-
-    skipWinding(): boolean {
-        return this.isWinding;
+        this.setState(this.buildMessageState());
     }
 
     doneWinding(): void {
@@ -445,7 +442,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         backgroundColor: '#00000088',
                         '&:hover': {backgroundColor: '#000000BB'}
                     }}>
-                        <MessageWindup message={this.currentMessage} options={{skipped: () => {return !this.isWinding}, onFinished: () => this.doneWinding()}}/>
+                        <MessageWindup message={this.currentMessage} options={{skipped: !this.isWinding, onFinished: () => this.doneWinding()}}/>
                         <div style={{verticalAlign: 'right'}}>
                             <IconButton style={{outline: 1, float: 'right'}} disabled={this.isContinuing} color={'primary'}
                                         onClick={() => this.continue()}>
