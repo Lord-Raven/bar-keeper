@@ -70,7 +70,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     characterForGeneration: Character;
     player: User;
 
-    isWinding: boolean = false;
+    isWinding: boolean = true;
     isContinuing: boolean = false;
 
     readonly theme = createTheme({
@@ -341,6 +341,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     continue() {
+        console.log('continue');
         if (this.isWinding) {
             this.isWinding = false;
         } else if (!this.isContinuing) {
@@ -350,11 +351,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     doneWinding(): void {
+        console.log('doneWinding');
         this.isWinding = false;
     }
 
     async generateNextResponse(): Promise<void> {
-        console.log('continuing');
+        console.log('generateNextResponse');
         this.isContinuing = true;
         //if (this.entranceSoundUrl) {
         //    useSound(this.entranceSoundUrl);
