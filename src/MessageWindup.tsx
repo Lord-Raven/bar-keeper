@@ -6,9 +6,11 @@ import {S} from "vite/dist/node/types.d-aGj9QkWt";
 interface MessageWindupProps {
     message: string;
     options?: {};
+    skipFunction?: () => boolean;
 }
-export function MessageWindup({message, options}: MessageWindupProps) {
-    const [text] = useWindupString(message, options);
+export function MessageWindup({message, options, skipFunction}: MessageWindupProps) {
+    const skipped = skipFunction ? skipFunction() : false;
+    const [text] = useWindupString(message, {...options, skipped: skipped});
     return (
         <div style={{height: '100%', position: 'relative'}}>
             <Typography color='#00000000'>{message}</Typography>
@@ -19,17 +21,55 @@ export function MessageWindup({message, options}: MessageWindupProps) {
     );
 }
 
-/*class MessageWindow extends Component {
+/*
+interface MessageWindupProps {
+    message: string;
+    options?: {};
+    skipFunction?: () => boolean;
+}
+export function MessageWindup({message, options, skipFunction}: MessageWindupProps)
+    const skipped: boolean = skipFunction;
+    const [text] = useWindupString(message, {options, skipped: skipped});
+    return (
+        <div style={{height: '100%', position: 'relative'}}>
+            <Typography color='#00000000'>{message}</Typography>
+            <div style={{position: 'absolute', top: '0px', left: '0px', zIndex: 1, userSelect: 'none'}}>
+                <Typography color='primary'>{text}</Typography>
+            </div>
+        </div>
+    );
+}
+ */
+/*export class MessageWindow extends Component {
 
-    state: MessageWindupProps = {''};
+    constructor(props) {
+        super(props);
 
-    render(): ReactElement {
-        const [currentText] = useWindupString(state.message, options);
+        this.state = {
+
+        }
+    }
+
+    fullText: string = '';
+    options: any = {};
+
+    MessageWindow(fullText: string, options: any) {
+        this.fullText = fullText;
+        this.options = options;
+    }
+
+    setSkipped(skipped: boolean) {
+        this.options.skipped = skipped;
+    }
+
+    render(): {
+        const { fullText: string, options: any} = this.props;
+        const [currentText] = useWindupString(this.fullText, this.options);
         return (
             <div style={{height: '100%', position: 'relative'}}>
                 <Typography color='#00000000'>{this.fullText}</Typography>
                 <div style={{position: 'absolute', top: '0px', left: '0px', zIndex: 1, userSelect: 'none'}}>
-                    <Typography color='primary'>{this.currentText}</Typography>
+                    <Typography color='primary'>{currentText}</Typography>
                 </div>
             </div>
         );

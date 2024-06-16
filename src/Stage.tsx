@@ -16,7 +16,8 @@ import {Box, createTheme, LinearProgress, ThemeProvider, Typography, IconButton}
 import ReplayIcon from "@mui/icons-material/Replay";
 import ForwardIcon from "@mui/icons-material/Forward";
 import {Director} from "./Director";
-import {MessageWindup} from "./MessageWindup";
+import {MessageWindup} from "./MessageWindup"
+//import {MessageWindow} from "./MessageWindup"
 import bottleUrl from './assets/bottle.png'
 
 type MessageStateType = any;
@@ -65,6 +66,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     director: Director;
     currentMessageId: string|undefined;
     currentMessage: string = '';
+    //messageWindow: MessageWindow = new MessageWindow('', {skipped: false, pace: 4, onFinished: () => this.doneWinding()});
 
     // Not saved:
     characterForGeneration: Character;
@@ -346,10 +348,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         if (this.isWinding) {
             console.log('should stop winding');
             this.isWinding = false;
-            const someId = this.currentMessageId;
-            this.currentMessageId = "-1";
-            void this.setState(this.buildMessageState());
-            this.currentMessageId = someId;
+            //this.messageWindow.setSkipped(!this.isWinding);
         } else if (!this.isContinuing) {
             this.isContinuing = true;
             void this.generateNextResponse();
@@ -446,7 +445,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         backgroundColor: '#00000088',
                         '&:hover': {backgroundColor: '#000000BB'}
                     }}>
-                        <MessageWindup message={this.currentMessage} options={{skipped: !this.isWinding, onFinished: () => this.doneWinding()}}/>
+                        <MessageWindup message={this.currentMessage} options={{onFinished: () => this.doneWinding()}} skipFunction={() => {return !this.isWinding}}/>
                         <div style={{verticalAlign: 'right'}}>
                             <IconButton style={{outline: 1, float: 'right'}} disabled={this.isContinuing} color={'primary'}
                                         onClick={() => this.continue()}>
