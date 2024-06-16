@@ -119,7 +119,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async setState(messageState: MessageStateType): Promise<void> {
-        console.log('setState');
+        console.log('setState2');
         this.readMessageState(messageState);
     }
 
@@ -348,13 +348,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.isWinding = false;
             const someId = this.currentMessageId;
             this.currentMessageId = "-1";
-            this.buildMessageState();
+            void this.setState(this.buildMessageState());
             this.currentMessageId = someId;
         } else if (!this.isContinuing) {
             this.isContinuing = true;
             void this.generateNextResponse();
         }
-        this.setState(this.buildMessageState());
     }
 
     doneWinding(): void {
