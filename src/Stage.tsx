@@ -57,13 +57,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     loadingProgress: number|undefined;
     loadingDescription: string|undefined;
     messageParentIds: {[key: string]: string};
-    messageBodies: {[key: string]: string};
+    messageBodies: {[key: string]: string[]};
     patrons: {[key: string]: Patron};
     presentPatronIds: string[]
     currentPatron: string;
     director: Director;
     currentMessageId: string|undefined;
-    currentMessage: string = '';
+    currentMessageIndex: number = 0;
 
     // Not saved:
     characterForGeneration: Character;
@@ -132,7 +132,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log('beforePrompt()');
 
         this.messageParentIds[identity] = this.currentMessageId ?? '';
-        this.messageBodies[identity] = content;
+        this.messageBodies[identity] = this.chopMessage(content);
         this.currentMessageId = identity;
 
         return {
@@ -155,7 +155,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log('afterResponse()');
         if (this.messageParentIds && this.messageBodies) {
             this.messageParentIds[identity] = this.currentMessageId ?? '';
-            this.messageBodies[identity] = content;
+            this.messageBodies[identity] = this.chopMessage(content);
         }
         this.currentMessageId = identity;
         return {
@@ -177,6 +177,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             messageParentIds: this.messageParentIds,
             messageBodies: this.messageBodies,
             currentMessageId: this.currentMessageId,
+            currentMessageIndex: this.currentMessageIndex,
             director: this.director
         };
     }
@@ -190,21 +191,18 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.messageParentIds = chatState.messageParentIds ?? {};
             this.messageBodies = chatState.messageBodies ?? {};
             this.currentMessageId = chatState.currentMessageId ?? undefined;
+            this.currentMessageIndex = chatState.currentMessageIndex ?? 0;
             this.director = chatState.director ?? new Director();
-
-            this.currentMessage = this.getMessageBody(this.currentMessageId);
         }
     }
 
     buildMessageState(): MessageStateType {
         return {
-            currentMessageId: this.currentMessageId
         };
     }
 
     readMessageState(messageState: MessageStateType) {
         if (messageState) {
-            //this.currentMessageId = messageState.currentMessageId;
         }
     }
 
@@ -293,23 +291,34 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 min_tokens: 50
             });
 
-            let impersonation = await this.messenger.impersonate({
-                message: intro?.result ?? '',
-                parent_id: '-2',
-                is_main: true,
-                speaker_id: this.player.anonymizedId
-            });
-
-            this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
-            this.messageBodies[impersonation.identity] = intro?.result ?? '';
-            this.currentMessageId = impersonation.identity;
-            this.currentMessage = this.getMessageBody(this.currentMessageId);
+            await this.addNewMessage(intro?.result ?? '');
         }
+
 
         await this.messenger.updateChatState(this.buildChatState());
         this.setLoadProgress(undefined, '');
 
         // TODO: If there was a failure, consider reloading from chatState rather than saving.
+    }
+
+    async addNewMessage(message: string) {
+        let impersonation = await this.messenger.impersonate({
+            message: message,
+            parent_id: this.currentMessageId ?? '-2',
+            is_main: true,
+            speaker_id: this.player.anonymizedId
+        });
+
+        this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
+        this.messageBodies[impersonation.identity] = this.chopMessage(message);
+        this.currentMessageId = impersonation.identity;
+        this.currentMessageIndex = 0;
+        this.isGenerating = false;
+        await this.messenger.updateChatState(this.buildChatState());
+    }
+
+    chopMessage(message: string): string[] {
+        return message.split(/\r?\n|<br>/).filter(line => line.trim() !== "");
     }
 
     async generatePatron() {
@@ -324,7 +333,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let depth = 0;
         while(this.messageParentIds[currentId] && depth < 10) {
             currentId = this.messageParentIds[currentId];
-            historyString = `###Response: ${this.getMessageBody(currentId)}\n\n${historyString}`;
+            historyString = `${this.getMessageBody(currentId)}\n\n${historyString}`;
             depth++;
         }
 
@@ -336,6 +345,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `[USER]${this.player.name} is a bartender here. ${this.player.chatProfile}[/USER]\n` +
             `[LOG]${history}[/LOG]\n` +
             `[INST]${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}[/INST]`;
+    }
+
+    advanceMessage() {
+        if (this.currentMessageIndex >= this.getMessageBodies(this.currentMessageId).length) {
+            void this.generateNextResponse();
+        } else {
+            this.currentMessageIndex++;
+        }
     }
 
     async generateNextResponse(): Promise<void> {
@@ -355,21 +372,21 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         });
         console.log('did textGen');
 
-        let impersonation = await this.messenger.impersonate({
-            message: entry?.result ?? '',
-            parent_id: this.currentMessageId ?? '-2',
-            is_main: true,
-            speaker_id: this.player.anonymizedId
-        });
+        await this.addNewMessage(entry?.result ?? '');
+        await this.messenger.updateChatState(this.buildChatState());
 
-        this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
-        this.messageBodies[impersonation.identity] = entry?.result ?? '';
-        this.currentMessageId = impersonation.identity;
-        this.currentMessage = this.getMessageBody(this.currentMessageId);
-        this.isGenerating = false;
+        // TODO: If something failed; revert to past state
+    }
+
+    getMessageIndexBody(messageId: string|undefined, messageIndex: number): string {
+        return this.getMessageBodies(messageId)[messageIndex];
     }
 
     getMessageBody(messageId: string|undefined): string {
+        return this.getMessageBodies(messageId).join('\n\n');
+    }
+
+    getMessageBodies(messageId: string|undefined): string[] {
         return this.messageBodies[messageId ?? ''] ?? '';
     }
 
@@ -416,7 +433,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <div style={{flexGrow: '1', overflow: 'auto'}}>
                 </div>
                 <div style={{flexShrink: '0'}}>
-                    <MessageWindow generate={() => {this.generateNextResponse()}} message={this.currentMessage}/>
+                    <MessageWindow advance={() => {this.advanceMessage()}} message={this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex)}/>
                 </div>
                 <div style={{height: '1%'}}></div>
                 <div style={{height: '20%'}}>
