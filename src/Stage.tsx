@@ -416,7 +416,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <div style={{flexGrow: '1', overflow: 'auto'}}>
                 </div>
                 <div style={{flexShrink: '0'}}>
-                    <MessageWindow generate={this.generateNextResponse} message={this.currentMessage}/>
+                    <MessageWindow generate={() => {this.generateNextResponse()}} message={this.currentMessage}/>
                 </div>
                 <div style={{height: '1%'}}></div>
                 <div style={{height: '20%'}}>
