@@ -14,10 +14,8 @@ import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
 import {Box, createTheme, LinearProgress, ThemeProvider, Typography, IconButton} from "@mui/material";
 import ReplayIcon from "@mui/icons-material/Replay";
-import ForwardIcon from "@mui/icons-material/Forward";
 import {Director} from "./Director";
-import {MessageWindup} from "./MessageWindup"
-//import {MessageWindow} from "./MessageWindup"
+import {MessageWindow} from "./MessageWindow"
 import bottleUrl from './assets/bottle.png'
 
 type MessageStateType = any;
@@ -66,14 +64,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     director: Director;
     currentMessageId: string|undefined;
     currentMessage: string = '';
-    //messageWindow: MessageWindow = new MessageWindow('', {skipped: false, pace: 4, onFinished: () => this.doneWinding()});
 
     // Not saved:
     characterForGeneration: Character;
     player: User;
 
-    isWinding: boolean = true;
-    isContinuing: boolean = false;
+    isGenerating: boolean = false;
 
     readonly theme = createTheme({
         palette: {
@@ -121,7 +117,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async setState(messageState: MessageStateType): Promise<void> {
-        console.log('setState2');
         this.readMessageState(messageState);
     }
 
@@ -343,26 +338,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `[INST]${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}[/INST]`;
     }
 
-    continue() {
-        console.log('continue');
-        if (this.isWinding) {
-            console.log('should stop winding');
-            this.isWinding = false;
-            //this.messageWindow.setSkipped(!this.isWinding);
-        } else if (!this.isContinuing) {
-            this.isContinuing = true;
-            void this.generateNextResponse();
-        }
-    }
-
-    doneWinding(): void {
-        console.log('doneWinding');
-        this.isWinding = false;
-    }
-
     async generateNextResponse(): Promise<void> {
         console.log('generateNextResponse');
-        this.isContinuing = true;
+        this.isGenerating = true;
         //if (this.entranceSoundUrl) {
         //    useSound(this.entranceSoundUrl);
         //}
@@ -388,8 +366,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.messageBodies[impersonation.identity] = entry?.result ?? '';
         this.currentMessageId = impersonation.identity;
         this.currentMessage = this.getMessageBody(this.currentMessageId);
-        this.isWinding = true;
-        this.isContinuing = false;
+        this.isGenerating = false;
     }
 
     getMessageBody(messageId: string|undefined): string {
@@ -439,20 +416,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <div style={{flexGrow: '1', overflow: 'auto'}}>
                 </div>
                 <div style={{flexShrink: '0'}}>
-                    <Box sx={{
-                        p: 2,
-                        border: '1px dashed grey',
-                        backgroundColor: '#00000088',
-                        '&:hover': {backgroundColor: '#000000BB'}
-                    }}>
-                        <MessageWindup message={this.currentMessage} options={{onFinished: () => this.doneWinding()}} skipFunction={() => {return !this.isWinding}}/>
-                        <div style={{verticalAlign: 'right'}}>
-                            <IconButton style={{outline: 1, float: 'right'}} disabled={this.isContinuing} color={'primary'}
-                                        onClick={() => this.continue()}>
-                                <ForwardIcon/>
-                            </IconButton>
-                        </div>
-                    </Box>
+                    <MessageWindow generate={this.generateNextResponse} getMessage={() => {return this.currentMessage}}/>
                 </div>
                 <div style={{height: '2%'}}></div>
                 <div style={{height: '10%'}}>
