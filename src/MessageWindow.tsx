@@ -1,6 +1,6 @@
 import {useWindupString} from "windups";
 import {Box, CircularProgress, IconButton, Typography} from "@mui/material";
-import React from "react";
+import React, {FC, useEffect, useState} from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
 
 interface MessageWindupProps {
@@ -21,10 +21,52 @@ function MessageWindup({message, options}: MessageWindupProps) {
 
 interface MessageWindowProps {
     generate: () => void;
-    getMessage: () => string;
+    message: string;
 }
 
-interface MessageWindowState {
+export const MessageWindow: FC<MessageWindowProps> = ({ message, generate }) => {
+    const [generating, setGenerating] = useState<boolean>(false);
+    const [doneWinding, setDoneWinding] = useState<boolean>(false);
+    const proceed = () => {
+        if (doneWinding) {
+            setGenerating(true);
+            generate();
+        } else {
+            setDoneWinding(true);
+        }
+    }
+
+    useEffect(() => {
+        console.log('change?');
+        setDoneWinding(false);
+        setGenerating(false);
+    }, [message]);
+
+    return (
+        <Box sx={{
+            p: 2,
+            border: '1px dashed grey',
+            backgroundColor: '#00000088',
+            '&:hover': {backgroundColor: '#000000BB'}
+        }}>
+            <MessageWindup message={message} options={{onFinished: () => {
+                    setDoneWinding(true);}, skipped: doneWinding}} />
+            <div style={{verticalAlign: 'right'}}>
+                {generating ? (
+                    <CircularProgress />
+                ) : (
+                    <IconButton style={{outline: 1, float: 'right'}} disabled={generating} color={'primary'}
+                                onClick={proceed}>
+                        <ForwardIcon/>
+                    </IconButton>
+                )
+                }
+            </div>
+        </Box>
+    );
+}
+
+/*interface MessageWindowState {
     message: string;
     doneWinding: boolean;
     generating: boolean;
@@ -104,4 +146,4 @@ export class MessageWindow extends React.Component<MessageWindowProps, MessageWi
             </Box>
         );
     }
-}
+}*/
