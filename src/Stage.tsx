@@ -93,6 +93,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             chatState                              // @type: null | ChatStateType
         } = data;
 
+        console.log('constructor');
         this.characterForGeneration = characters[Object.keys(characters)[0]];
         console.log(this.characterForGeneration);
         this.patrons = {};
@@ -106,6 +107,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.readMessageState(messageState);
         this.director = new Director();
         this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
+        console.log('currentMessage: ' + this.currentMessage);
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
@@ -304,6 +306,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async addNewMessage(message: string) {
+        console.log('addNewMessage');
         let impersonation = await this.messenger.impersonate({
             message: message,
             parent_id: this.currentMessageId ?? '-2',
@@ -316,6 +319,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.currentMessageId = impersonation.identity;
         this.currentMessageIndex = 0;
         this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
+        console.log(`addNewMessage: ${this.currentMessage}`);
         this.isGenerating = false;
         await this.messenger.updateChatState(this.buildChatState());
     }
@@ -353,12 +357,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async advanceMessage() {
+        console.log('advanceMessage');
         if (this.currentMessageIndex >= this.getMessageBodies(this.currentMessageId).length) {
             await this.generateNextResponse();
         } else {
             this.currentMessageIndex++;
         }
         this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
+        console.log(`advanceMessage: ${this.currentMessage}`);
     }
 
     async generateNextResponse(): Promise<void> {
@@ -439,6 +445,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <div style={{flexGrow: '1', overflow: 'auto'}}>
                 </div>
                 <div style={{flexShrink: '0'}}>
+                    <MessageWindow advance={() => {void this.advanceMessage()}} message={this.currentMessage}/>
                 </div>
                 <div style={{height: '1%'}}></div>
                 <div style={{height: '20%'}}>
