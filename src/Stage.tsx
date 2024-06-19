@@ -321,7 +321,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     chopMessage(message: string): string[] {
-        return message.split(/\r?\n|<br>/).filter(line => line.trim() !== "");
+        return message?.split(/\r?\n|<br>/).filter(line => line.trim() !== "") ?? [''];
     }
 
     async generatePatron() {
