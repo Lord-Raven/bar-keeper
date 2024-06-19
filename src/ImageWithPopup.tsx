@@ -25,7 +25,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
     const open = Boolean(anchorEl);
 
     return (
-        <div style={{height: '90%', alignItems: 'center'}}>
+        <div style={{height: '90%'}}>
             <img
                 src={src}
                 alt={alt}
@@ -56,7 +56,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                 <Box component="section" sx={{height: '10vh', p: 2, border: '1px dashed grey'}}>
                     {popupSrc && (
                         <div style={{height: '100%', float: 'left'}}>
-                            <img src={popupSrc} style={{height: '100%', width: 'auto', verticalAlign: 'center'}} alt={alt}/>
+                            <img src={popupSrc} style={{height: '100%', width: 'auto'}} alt={alt}/>
                         </div>
                     )}
                     <div>
