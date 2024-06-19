@@ -1,5 +1,5 @@
 import {useWindupString} from "windups";
-import {Box, IconButton, Typography} from "@mui/material";
+import {Box, CircularProgress, IconButton, Typography} from "@mui/material";
 import React from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
 
@@ -43,6 +43,14 @@ export class MessageWindow extends React.Component<MessageWindowProps, MessageWi
 
     constructor(props: MessageWindowProps) {
         super(props);
+        console.log('constructor');
+        this.setState({
+            message: this.state.message,
+            doneWinding: this.state.doneWinding,
+            generating: this.state.generating,
+            generate: props.generate,
+            getMessage: props.getMessage
+        })
     }
 
     setMessage(message: string) {
@@ -80,10 +88,15 @@ export class MessageWindow extends React.Component<MessageWindowProps, MessageWi
                 <MessageWindup message={this.state.message} options={{onFinished: () => {
                         this.state.doneWinding = true;}, skipped: this.state.doneWinding}} />
                 <div style={{verticalAlign: 'right'}}>
-                    <IconButton style={{outline: 1, float: 'right'}} disabled={this.state.generating} color={'primary'}
+                    {this.state.generating ? (
+                            <CircularProgress />
+                        ) : (
+                            <IconButton style={{outline: 1, float: 'right'}} disabled={this.state.generating} color={'primary'}
                                 onClick={() => this.continue()}>
-                        <ForwardIcon/>
-                    </IconButton>
+                                <ForwardIcon/>
+                            </IconButton>
+                        )
+                    }
                 </div>
             </Box>
         );
