@@ -315,6 +315,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.messageBodies[impersonation.identity] = this.chopMessage(message);
         this.currentMessageId = impersonation.identity;
         this.currentMessageIndex = 0;
+        this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
         this.isGenerating = false;
         await this.messenger.updateChatState(this.buildChatState());
     }
@@ -436,7 +437,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <div style={{flexGrow: '1', overflow: 'auto'}}>
                 </div>
                 <div style={{flexShrink: '0'}}>
-                    <MessageWindow advance={() => {this.advanceMessage()}} message={this.currentMessage}/>
+                    <MessageWindow advance={() => {void this.advanceMessage()}} message={this.currentMessage}/>
                 </div>
                 <div style={{height: '1%'}}></div>
                 <div style={{height: '20%'}}>
