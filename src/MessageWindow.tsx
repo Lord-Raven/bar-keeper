@@ -11,8 +11,8 @@ function MessageWindup({message, options}: MessageWindupProps) {
     const [text] = useWindupString(message, options);
     return (
         <div style={{height: '100%', position: 'relative'}}>
-            <Typography color='#00000000'>{message}</Typography>
-            <div style={{position: 'absolute', top: '0px', left: '0px', zIndex: 1, userSelect: 'none'}}>
+            <Typography color='#00000000' style={{userSelect: 'none'}}>{message}</Typography>
+            <div style={{position: 'absolute', top: '0px', left: '0px', zIndex: 1}}>
                 <Typography color='primary'>{text}</Typography>
             </div>
         </div>
@@ -29,9 +29,11 @@ export const MessageWindow: FC<MessageWindowProps> = ({ message, generate }) => 
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
     const proceed = () => {
         if (doneWinding) {
+            console.log('setGenerating');
             setGenerating(true);
             generate();
         } else {
+            console.log('setDoneWinding');
             setDoneWinding(true);
         }
     }
@@ -53,7 +55,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ message, generate }) => 
                     setDoneWinding(true);}, skipped: doneWinding}} />
             <div style={{verticalAlign: 'right'}}>
                 {generating ? (
-                    <CircularProgress />
+                    <CircularProgress style={{float: 'right'}}/>
                 ) : (
                     <IconButton style={{outline: 1, float: 'right'}} disabled={generating} color={'primary'}
                                 onClick={proceed}>
