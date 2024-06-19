@@ -53,7 +53,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ message, generate }) => 
         }}>
             <MessageWindup message={message} options={{onFinished: () => {
                     setDoneWinding(true);}, skipped: doneWinding}} />
-            <div style={{verticalAlign: 'right'}}>
+            <div>
                 {generating ? (
                     <CircularProgress style={{float: 'right'}}/>
                 ) : (
