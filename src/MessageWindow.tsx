@@ -75,6 +75,7 @@ export class MessageWindow extends React.Component<MessageWindowProps, MessageWi
     }
 
     render() {
+        console.log('MessageWindow render()');
         if (this.state.getMessage() !== this.state.message) {
             this.setMessage(this.state.getMessage());
         }

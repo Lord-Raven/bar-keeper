@@ -418,8 +418,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <div style={{flexShrink: '0'}}>
                     <MessageWindow generate={this.generateNextResponse} getMessage={() => {return this.currentMessage}}/>
                 </div>
-                <div style={{height: '2%'}}></div>
-                <div style={{height: '10%'}}>
+                <div style={{height: '1%'}}></div>
+                <div style={{height: '15%'}}>
                     <Box component="section" sx={{
                         p: 2,
                         height: '100%',
@@ -433,7 +433,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         </div>
                     </Box>
                 </div>
-                <div style={{height: '2%'}}></div>
+                <div style={{height: '1%'}}></div>
             </ThemeProvider>
         </div>;
     };
