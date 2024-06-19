@@ -68,6 +68,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     // Not saved:
     characterForGeneration: Character;
     player: User;
+    currentMessage: string;
 
     isGenerating: boolean = false;
 
@@ -104,6 +105,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.readChatState(chatState);
         this.readMessageState(messageState);
         this.director = new Director();
+        this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
@@ -347,12 +349,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `[INST]${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}[/INST]`;
     }
 
-    advanceMessage() {
+    async advanceMessage() {
         if (this.currentMessageIndex >= this.getMessageBodies(this.currentMessageId).length) {
-            void this.generateNextResponse();
+            await this.generateNextResponse();
         } else {
             this.currentMessageIndex++;
         }
+        this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
     }
 
     async generateNextResponse(): Promise<void> {
@@ -433,7 +436,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <div style={{flexGrow: '1', overflow: 'auto'}}>
                 </div>
                 <div style={{flexShrink: '0'}}>
-                    <MessageWindow advance={() => {this.advanceMessage()}} message={this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex)}/>
+                    <MessageWindow advance={() => {this.advanceMessage()}} message={this.currentMessage}/>
                 </div>
                 <div style={{height: '1%'}}></div>
                 <div style={{height: '20%'}}>
