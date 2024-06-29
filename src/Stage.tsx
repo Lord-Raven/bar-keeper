@@ -26,6 +26,10 @@ type InitStateType = any;
 
 type ChatStateType = any;
 
+// nvm use 21.7.1
+// yarn install (if dependencies changed)
+// yarn dev --host --mode staging
+
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     buildBarDescriptionPrompt(description: string): string {
@@ -44,6 +48,15 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red wine.[/INST]`
         // TODO: Add two more, so the example contains six entries.
     };
+
+    buildPatronPrompt(): string {
+        return `[INST]Thoughtfully consider a bar with the following description:[/INST]\n${this.barDescription}\n` +
+        `[INST]Craft a character who might patronize this establishment, giving them a name and one-to-two-paragraph description. ` +
+        `Detail their personality, appearance, style, and motivation (if any) for visiting the bar. Consider the following other known patrons ` +
+        `of the bar, and avoid making this character too similar or include a connection between this new character and one or more existing patrons:[/INST]\n` +
+        `${Object.values(this.patrons).map(patron => `${patron.name} - ${patron.description}`).join('\n') ?? 'No known patrons yet'}\n` +
+        `[INST]Output the name of this new character on the first line, and their description on the remaining lines.[/INST]`;
+    }
 
     readonly disableContentGeneration: boolean = true;
     // Message State:
@@ -87,10 +100,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         super(data);
         const {
-            characters,         // @type:  { [key: string]: Character }
-            users,                  // @type:  { [key: string]: User}
-            messageState,                           //  @type:  MessageStateType
-            chatState                              // @type: null | ChatStateType
+            characters,
+            users,
+            messageState,
+            chatState
         } = data;
 
         console.log('constructor');
@@ -125,9 +138,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async beforePrompt(userMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
-        /***
-         This is called after someone presses 'send', but before anything is sent to the LLM.
-         ***/
         const {
             content,
             identity
@@ -330,10 +340,33 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return subMessages;
     }
 
-    async generatePatron() {
-        // TODO: Generate a name and description, passing in existing patrons with instruction to make this patron
+    async generatePatron(): Promise<Patron|undefined> {
+        // TODO: Generate a name, brief description, and longer description, passing in existing patrons with instruction to make this patron
         //  distinct from others while potentially having a connection to other established patrons.
-        //  Generate a normal image, then image2image for happy and unhappy image.
+        let patronResponse = await this.generator.textGen({
+            prompt: this.buildPatronPrompt(),
+            max_tokens: 400,
+            min_tokens: 50
+        });
+        const splitRegex = /[\r\n]+/;
+        let newPatron: Patron|undefined = undefined;
+        console.log(patronResponse);
+        const lines = patronResponse?.result?.split(splitRegex, 2) ?? [];
+        if (lines.length >= 2) {
+            const nameRegex = /(?:(?:^|[\s\-<\*])name[:\s\-\>]*)*([^\s].*)/i;
+            const descriptionRegex = /(?:(?:^|[\s\-<\*])description[:\s\-\>]*)*([^\s].*)/i
+            const name = nameRegex.exec(lines[0]);
+            const description = descriptionRegex.exec(lines[1]);
+            console.log(description);
+            if (name && name.length > 0 && description && description.length > 0) {
+                console.log(name[0] + ":" + description[0]);
+                newPatron = new Patron(name[0], description[0], '');
+                //  Generate a normal image, then image2image for happy and unhappy image.
+                this.patrons[newPatron.name] = newPatron;
+            }
+        }
+
+        return newPatron;
     }
 
     buildHistory(messageId: string): string {
@@ -358,9 +391,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async advanceMessage() {
         console.log('advanceMessage');
-        if (this.currentMessageIndex >= this.getMessageBodies(this.currentMessageId).length) {
+        if (this.currentMessageIndex >= this.getMessageBodies(this.currentMessageId).length - 1) {
+            console.log('Generate more');
             await this.generateNextResponse();
         } else {
+            console.log('Increment index.')
             this.currentMessageIndex++;
         }
         this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
@@ -369,6 +404,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async generateNextResponse(): Promise<void> {
         console.log('generateNextResponse');
+        let patron = await this.generatePatron();
         this.isGenerating = true;
         //if (this.entranceSoundUrl) {
         //    useSound(this.entranceSoundUrl);
@@ -383,23 +419,22 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             min_tokens: 50
         });
         console.log('did textGen');
-
-        await this.addNewMessage(entry?.result ?? '');
+        if (entry && entry.result) {
+            await this.addNewMessage(entry.result);
+        }
         await this.messenger.updateChatState(this.buildChatState());
-
-        // TODO: If something failed; revert to past state
     }
 
     getMessageIndexBody(messageId: string|undefined, messageIndex: number): string {
-        return this.getMessageBodies(messageId)[messageIndex];
+        return this.getMessageBodies(messageId)[messageIndex] ?? '';
     }
 
     getMessageBody(messageId: string|undefined): string {
-        return this.getMessageBodies(messageId).join('\n\n');
+        return this.getMessageBodies(messageId).join('\n\n') ?? '';
     }
 
     getMessageBodies(messageId: string|undefined): string[] {
-        return this.messageBodies[messageId ?? ''] ?? '';
+        return this.messageBodies[messageId ?? ''] ?? [''];
     }
 
     async makeImage(imageRequest: Object, defaultUrl: string): Promise<string> {
@@ -445,10 +480,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 <div style={{flexGrow: '1', overflow: 'auto'}}>
                 </div>
                 <div style={{flexShrink: '0'}}>
-                    <MessageWindow advance={() => {void this.advanceMessage()}} message={this.currentMessage}/>
+                    <div>
+                        <MessageWindow advance={() => {this.advanceMessage()}} message={() => {return this.currentMessage;}} />
+                    </div>
                 </div>
                 <div style={{height: '1%'}}></div>
-                <div style={{height: '20%'}}>
+                <div style={{height: '15%'}}>
                     <Box component="section" sx={{
                         p: 2,
                         height: '100%',

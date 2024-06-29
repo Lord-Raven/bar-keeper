@@ -1,11 +1,9 @@
 export class Patron {
-    id: string;
     name: string;
     description: string;
     imageUrl: string;
 
-    constructor(id: string, name: string, description: string, imageUrl: string) {
-        this.id = id;
+    constructor(name: string, description: string, imageUrl: string) {
         this.name = name;
         this.description = description;
         this.imageUrl = imageUrl;

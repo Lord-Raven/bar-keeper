@@ -7,6 +7,7 @@ interface MessageWindupProps {
     message: string;
     options?: {};
 }
+
 function MessageWindup({message, options}: MessageWindupProps) {
     const [text] = useWindupString(message, options);
     return (
@@ -20,29 +21,27 @@ function MessageWindup({message, options}: MessageWindupProps) {
 }
 
 interface MessageWindowProps {
-    advance: () => void;
-    message: string;
+    advance:  () => void;
+    message: () => string;
 }
 
-export const MessageWindow: FC<MessageWindowProps> = ({ message, advance }) => {
+export const MessageWindow: FC<MessageWindowProps> = ({ advance, message }) => {
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
     const proceed = () => {
         if (doneWinding) {
-            console.log('setAdvancing');
             setAdvancing(true);
+            setDoneWinding(true);
             advance();
         } else {
-            console.log('setDoneWinding');
             setDoneWinding(true);
         }
     }
 
     useEffect(() => {
-        console.log('change?');
         setDoneWinding(false);
         setAdvancing(false);
-    }, [message]);
+    }, [message()]);
 
     return (
         <Box sx={{
@@ -51,7 +50,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ message, advance }) => {
             backgroundColor: '#00000088',
             '&:hover': {backgroundColor: '#000000BB'}
         }}>
-            <MessageWindup message={message} options={{onFinished: () => {
+            <MessageWindup message={message()} options={{pace: () => {return 4}, onFinished: () => {
                     setDoneWinding(true);}, skipped: doneWinding}} />
             <div>
                 {advancing ? (
