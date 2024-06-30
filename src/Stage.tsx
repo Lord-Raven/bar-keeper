@@ -477,26 +477,34 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 </div>
                 <div style={{flexGrow: '1', overflow: 'auto'}}>
                 </div>
-                <div style={{flexShrink: '0'}}>
-                    <div>
-                        <MessageWindow advance={() => {void this.advanceMessage()}} message={() => {return this.currentMessage;}} />
-                    </div>
-                </div>
-                <div style={{height: '1%'}}></div>
-                <div style={{height: '15%'}}>
-                    <Box component="section" sx={{
-                        p: 2,
-                        height: '100%',
-                        border: '1px dashed grey',
-                        backgroundColor: '#00000088',
-                        '&:hover': {backgroundColor: '#000000BB'}
-                    }}>
-                        <div
-                            style={{height: '100%', display: 'flex', flexDirection: 'row'}}>
-                            {this.beverages.map(beverage => beverage.render())}
+                {this.loadingProgress && (
+                    <div style={{flexShrink: '0'}}>
+                        <div>
+                            <MessageWindow advance={() => {
+                                void this.advanceMessage()
+                            }} message={() => {
+                                return this.currentMessage;
+                            }}/>
                         </div>
-                    </Box>
-                </div>
+                    </div>
+                )}
+                <div style={{height: '1%'}}></div>
+                {this.loadingProgress && (
+                    <div style={{height: '15%'}}>
+                        <Box component="section" sx={{
+                            p: 2,
+                            height: '100%',
+                            border: '1px dashed grey',
+                            backgroundColor: '#00000088',
+                            '&:hover': {backgroundColor: '#000000BB'}
+                        }}>
+                            <div
+                                style={{height: '100%', display: 'flex', flexDirection: 'row'}}>
+                                {this.beverages.map(beverage => beverage.render())}
+                            </div>
+                        </Box>
+                    </div>
+                )}
                 <div style={{height: '1%'}}></div>
             </ThemeProvider>
         </div>;
