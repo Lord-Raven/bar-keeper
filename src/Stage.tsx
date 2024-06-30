@@ -111,6 +111,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             chatState
         } = data;
 
+        this.loadingProgress = 30;
         console.log('constructor');
         this.characterForGeneration = characters[Object.keys(characters)[0]];
         console.log(this.characterForGeneration);
@@ -126,10 +127,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.director = new Director();
         this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
         console.log('currentMessage: ' + this.currentMessage);
+        this.loadingProgress = 50;
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
 
+        this.loadingProgress = undefined;
         return {
             success: true,
             error: null,
@@ -477,7 +480,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 </div>
                 <div style={{flexGrow: '1', overflow: 'auto'}}>
                 </div>
-                {this.loadingProgress && (
+                {!this.loadingProgress && (
                     <div style={{flexShrink: '0'}}>
                         <div>
                             <MessageWindow advance={() => {
@@ -489,7 +492,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </div>
                 )}
                 <div style={{height: '1%'}}></div>
-                {this.loadingProgress && (
+                {!this.loadingProgress && (
                     <div style={{height: '15%'}}>
                         <Box component="section" sx={{
                             p: 2,
