@@ -41,21 +41,26 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     buildAlcoholDescriptionsPrompt(): string {
         return `[INST]Thoughtfully consider a bar with the following description:[/INST]\n${this.barDescription}\n` +
             `[INST]Output six lines, each with the name of a type of alcohol that this bar might serve, as well as a brief description of ` +
-            `its appearance, bottle, and flavor. Follow the format of these examples:\n` +
+            `its appearance, bottle, odor, and flavor. Follow the format of these examples:\n` +
             `Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
             `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
             `Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n` +
-            `Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red wine.[/INST]`
-        // TODO: Add two more, so the example contains six entries.
+            `Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
+            `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
+            `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n` +
+            `[/INST]`;
     };
 
     buildPatronPrompt(): string {
         return `[INST]Thoughtfully consider a bar with the following description:[/INST]\n${this.barDescription}\n` +
-        `[INST]Craft a character who might patronize this establishment, giving them a name and one-to-two-paragraph description. ` +
-        `Detail their personality, appearance, style, and motivation (if any) for visiting the bar. Consider the following other known patrons ` +
-        `of the bar, and avoid making this character too similar or include a connection between this new character and one or more existing patrons:[/INST]\n` +
-        `${Object.values(this.patrons).map(patron => `${patron.name} - ${patron.description}`).join('\n') ?? 'No known patrons yet'}\n` +
-        `[INST]Output the name of this new character on the first line, and their description on the remaining lines.[/INST]`;
+            `[INST]Craft a character who might patronize this establishment, giving them a name and a one-to-two-paragraph description. ` +
+            `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
+            (Object.values(this.patrons).length > 0 ?
+                (`Consider the following other known patrons and avoid making this character too similar or ` +
+                `include a connection between this new character and one or more existing patrons:[/INST]\n` +
+                `${Object.values(this.patrons).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[INST]\n`) :
+                '\n') +
+            `Output the name of this new character on the first line, and their description on the remaining lines.[/INST]`;
     }
 
     readonly disableContentGeneration: boolean = true;
@@ -263,7 +268,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             console.log(lines);
             while ((match = regex.exec(lines)) !== null) {
                 this.beverages.push(new Beverage(match[1].trim(), match[2].trim(), ''));
-                if (++count >= 1) {
+                if (++count >= 6) {
                     break;
                 }
             }
@@ -297,7 +302,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.director.setDirection(undefined);
             this.director.chooseDirection();
             this.setLoadProgress(70, 'Writing intro.');
-            let intro = await this.generator.textGen({
+            /*let intro = await this.generator.textGen({
                 prompt: this.buildStoryPrompt(
                     this.buildHistory(this.currentMessageId ?? ''),
                     `${this.director.getPromptInstruction(this.barDescription, this.player.name)}`),
@@ -305,7 +310,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 min_tokens: 50
             });
 
-            await this.addNewMessage(intro?.result ?? '');
+            await this.addNewMessage(intro?.result ?? '');*/
+            await this.generateNextResponse();
+            this.setLoadProgress(undefined, 'Complete');
         }
 
 
@@ -353,8 +360,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log(patronResponse);
         const lines = patronResponse?.result?.split(splitRegex, 2) ?? [];
         if (lines.length >= 2) {
-            const nameRegex = /(?:(?:^|[\s\-<\*])name[:\s\-\>]*)*([^\s].*)/i;
-            const descriptionRegex = /(?:(?:^|[\s\-<\*])description[:\s\-\>]*)*([^\s].*)/i
+            const nameRegex = /(?:(?:^|[\s\-<*])name[:\s\->]*)*(\S.*)/i;
+            const descriptionRegex = /(?:(?:^|[\s\-<*])description[:\s\->]*)*(\S.*)/i
             const name = nameRegex.exec(lines[0]);
             const description = descriptionRegex.exec(lines[1]);
             console.log(description);
