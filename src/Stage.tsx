@@ -299,20 +299,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             // Finally, display an intro
             this.currentMessageId = undefined;
+            this.currentMessageIndex = 500;
             this.director.setDirection(undefined);
-            this.director.chooseDirection();
             this.setLoadProgress(70, 'Writing intro.');
-            /*let intro = await this.generator.textGen({
-                prompt: this.buildStoryPrompt(
-                    this.buildHistory(this.currentMessageId ?? ''),
-                    `${this.director.getPromptInstruction(this.barDescription, this.player.name)}`),
-                max_tokens: 400,
-                min_tokens: 50
-            });
-
-            await this.addNewMessage(intro?.result ?? '');*/
-            console.log('Direction: ' + this.director.direction);
-            await this.generateNextResponse();
+            await this.advanceMessage()
             this.setLoadProgress(undefined, 'Complete');
         }
 
