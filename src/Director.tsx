@@ -11,7 +11,8 @@ enum Direction {
 }
 
 const directionInstructions: {[direction in Direction]: (barDescription: string, playerName: string, patron: string) => string } = {
-    IntroduceBar: (barDescription, playerName) => `Write a two-paragraph visual novel style introduction to the bar described here: ${barDescription}. ${playerName} is setting up for the beginning of their shift one evening.`,
+    IntroduceBar: (barDescription, playerName) => `Write a visual novel style introduction to the bar described here: ${barDescription}. ` +
+        `Depict a second-person scene where ${playerName} is setting up for the beginning of their shift one evening.`,
     Lull: () => `Write a two-to-three paragraph visual novel style development as the evening slightly progresses.`,
     IntroducePatron: () => `Write a two-to-three paragraph visual novel style development as the evening slightly progresses.`,
     PatronBanter: () => `Write a two-to-three paragraph visual novel style development as the evening slightly progresses.`,

@@ -311,6 +311,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             });
 
             await this.addNewMessage(intro?.result ?? '');*/
+            console.log('Direction: ' + this.director.direction);
             await this.generateNextResponse();
             this.setLoadProgress(undefined, 'Complete');
         }
@@ -488,7 +489,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 </div>
                 <div style={{flexShrink: '0'}}>
                     <div>
-                        <MessageWindow advance={() => {this.advanceMessage()}} message={() => {return this.currentMessage;}} />
+                        <MessageWindow advance={() => {void this.advanceMessage()}} message={() => {return this.currentMessage;}} />
                     </div>
                 </div>
                 <div style={{height: '1%'}}></div>
@@ -501,7 +502,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         '&:hover': {backgroundColor: '#000000BB'}
                     }}>
                         <div
-                            style={{height: '100%'}}>
+                            style={{height: '100%', display: 'flex', flexDirection: 'row'}}>
                             {this.beverages.map(beverage => beverage.render())}
                         </div>
                     </Box>
