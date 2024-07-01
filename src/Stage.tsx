@@ -322,6 +322,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             speaker_id: this.player.anonymizedId
         });
 
+        console.log(`IDs: ${this.currentMessageId}:${impersonation.identity}`);
         this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
         this.messageBodies[impersonation.identity] = this.chopMessage(message);
         this.currentMessageId = impersonation.identity;
