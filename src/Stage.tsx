@@ -232,7 +232,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async generate() {
         if (this.loadingProgress !== undefined) return;
-        this.setLoadProgress(0, 'Generating bar description.');
+        this.setLoadProgress(5, 'Generating bar description.');
 
         let textResponse = await this.generator.textGen({
             prompt: this.buildBarDescriptionPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description),
@@ -435,7 +435,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         } else {
             console.log('Failed to generate new content; try again.');
         }
-
+        this.requestedMessage = null;
         this.isGenerating = false;
     }
 
@@ -461,7 +461,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
 
     render(): ReactElement {
-        console.log('render');
         return <div style={{
             backgroundImage: `url(${this.barImageUrl})`,
             backgroundPosition: 'center',
