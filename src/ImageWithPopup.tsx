@@ -60,8 +60,11 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                                 <img src={popupSrc} style={{height: '100%', width: 'auto'}} alt={alt}/>
                             </div>
                         )}
-                        <div style={{height: '100%'}}>
-                            <h4>{popupHeader}</h4><br/>{popupBody}
+                        <div style={{height: '100%', flexGrow: '1'}}>
+                            <Typography>
+                                <h4>{popupHeader}</h4>
+                                {popupBody}
+                            </Typography>
                         </div>
                     </div>
                 </Box>

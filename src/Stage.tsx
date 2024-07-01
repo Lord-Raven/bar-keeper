@@ -431,7 +431,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         if (result && result !== '') {
             this.director.chooseDirection();
-            console.log('choseDirectionForNextResponse');
+            console.log('choseDirectionForNextResponse:' + this.director.direction);
 
             await this.addNewMessage(result);
             await this.messenger.updateChatState(this.buildChatState());
