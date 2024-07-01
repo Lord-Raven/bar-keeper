@@ -54,13 +54,13 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                 disableRestoreFocus
             >
                 <Box component="section" sx={{height: '10vh', p: 0, border: '1px dashed grey'}}>
-                    <div style={{height: '100%', display: 'flex', flexDirection: 'row', alignItems: 'flex-start'}}>
+                    <div style={{height: '100%'}}>
                         {popupSrc && (
-                            <div style={{height: '100%', width: 'auto'}}>
+                            <div style={{height: '100%', width: 'auto', float: 'left'}}>
                                 <img src={popupSrc} style={{height: '100%', width: 'auto'}} alt={alt}/>
                             </div>
                         )}
-                        <div style={{height: '100%', flexGrow: '1'}}>
+                        <div style={{height: '100%', float: 'right'}}>
                             <Typography>
                                 <h4>{popupHeader}</h4>
                                 {popupBody}
