@@ -421,7 +421,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.isGenerating = true;
         let tries = 3;
         let result = await this.requestedMessage;
-        while ((!result || result !== '') && tries-- >= 0) {
+        while ((!result || result === '') && tries-- >= 0) {
+            console.log(result);
+            console.log('Try again');
             this.requestedMessage = this.generateMessage();
             result = await this.requestedMessage;
         }
