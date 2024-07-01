@@ -24,7 +24,16 @@ const directionInstructions: {[direction in Direction]: (barDescription: string,
 export class Director {
     direction: Direction|undefined;
 
-    patrons: Patron[]|undefined;
+    patrons: {[key: string]: Patron};
+    presentPatronIds: string[];
+    currentPatron: string;
+
+
+    constructor() {
+        this.patrons = {};
+        this.presentPatronIds = [];
+        this.currentPatron = '';
+    }
 
     getPromptInstruction(barDescription: string, playerName: string): string {
         return directionInstructions[this.direction ?? Direction.IntroduceBar](barDescription, playerName, '');

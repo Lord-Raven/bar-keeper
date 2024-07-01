@@ -55,10 +55,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return `[INST]Thoughtfully consider a bar with the following description:[/INST]\n${this.barDescription}\n` +
             `[INST]Craft a character who might patronize this establishment, giving them a name and a one-to-two-paragraph description. ` +
             `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
-            (Object.values(this.patrons).length > 0 ?
+            (Object.values(this.director.patrons).length > 0 ?
                 (`Consider the following other known patrons and avoid making this character too similar or ` +
                 `include a connection between this new character and one or more existing patrons:[/INST]\n` +
-                `${Object.values(this.patrons).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[INST]\n`) :
+                `${Object.values(this.director.patrons).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[INST]\n`) :
                 '\n') +
             `Output the name of this new character on the first line, and their description on the remaining lines.[/INST]`;
     }
@@ -76,18 +76,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     loadingDescription: string|undefined;
     messageParentIds: {[key: string]: string};
     messageBodies: {[key: string]: string[]};
-    patrons: {[key: string]: Patron};
-    presentPatronIds: string[]
-    currentPatron: string;
+
     director: Director;
     currentMessageId: string|undefined;
     currentMessageIndex: number = 0;
+    currentMessage: string;
 
     // Not saved:
     characterForGeneration: Character;
     player: User;
-    currentMessage: string;
-
+    requestedMessage: Promise<string>|null = null;
     isGenerating: boolean = false;
 
     readonly theme = createTheme({
@@ -115,9 +113,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log('constructor');
         this.characterForGeneration = characters[Object.keys(characters)[0]];
         console.log(this.characterForGeneration);
-        this.patrons = {};
-        this.presentPatronIds = [];
-        this.currentPatron = '';
+
         this.player = users[Object.keys(users)[0]];
         this.beverages = [];
         this.messageParentIds = {};
@@ -304,6 +300,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.currentMessageId = undefined;
             this.currentMessageIndex = 500;
             this.director.setDirection(undefined);
+            this.director.chooseDirection();
             this.setLoadProgress(70, 'Writing intro.');
             await this.advanceMessage()
             this.setLoadProgress(undefined, 'Complete');
@@ -331,7 +328,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.currentMessageIndex = 0;
         this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
         console.log(`addNewMessage: ${this.currentMessage}`);
-        this.isGenerating = false;
         await this.messenger.updateChatState(this.buildChatState());
     }
 
@@ -363,7 +359,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 console.log(name[0] + ":" + description[0]);
                 newPatron = new Patron(name[0], description[0], '');
                 //  Generate a normal image, then image2image for happy and unhappy image.
-                this.patrons[newPatron.name] = newPatron;
+                this.director.patrons[newPatron.name] = newPatron;
             }
         }
 
@@ -392,9 +388,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async advanceMessage() {
         console.log('advanceMessage');
+        if (!this.requestedMessage) {
+            console.log('Kick off generation');
+            this.requestedMessage = this.generateMessage();
+        }
         if (this.currentMessageIndex >= this.getMessageBodies(this.currentMessageId).length - 1) {
-            console.log('Generate more');
-            await this.generateNextResponse();
+            await this.processNextResponse();
         } else {
             console.log('Increment index.')
             this.currentMessageIndex++;
@@ -403,15 +402,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log(`advanceMessage: ${this.currentMessage}`);
     }
 
-    async generateNextResponse(): Promise<void> {
+    async generateMessage(): Promise<string> {
         console.log('generateNextResponse');
-        let patron = await this.generatePatron();
-        this.isGenerating = true;
-        //if (this.entranceSoundUrl) {
-        //    useSound(this.entranceSoundUrl);
-        //}
-        this.director.chooseDirection();
-        console.log('choseDirection');
+        //let patron = await this.generatePatron();
         let entry = await this.generator.textGen({
             prompt: this.buildStoryPrompt(
                 this.buildHistory(this.currentMessageId ?? ''),
@@ -420,10 +413,30 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             min_tokens: 50
         });
         console.log('did textGen');
-        if (entry && entry.result) {
-            await this.addNewMessage(entry.result);
+
+        return Promise.resolve(entry?.result ?? '');
+    }
+
+    async processNextResponse() {
+        this.isGenerating = true;
+        let tries = 3;
+        let result = await this.requestedMessage;
+        while ((!result || result !== '') && tries-- >= 0) {
+            this.requestedMessage = this.generateMessage();
+            result = await this.requestedMessage;
         }
-        await this.messenger.updateChatState(this.buildChatState());
+
+        if (result && result !== '') {
+            this.director.chooseDirection();
+            console.log('choseDirectionForNextResponse');
+
+            await this.addNewMessage(result);
+            await this.messenger.updateChatState(this.buildChatState());
+        } else {
+            console.log('Failed to generate new content; try again.');
+        }
+
+        this.isGenerating = false;
     }
 
     getMessageIndexBody(messageId: string|undefined, messageIndex: number): string {
