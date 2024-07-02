@@ -262,10 +262,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             const lines = alcoholResponse?.result ?? '';
             const regex = /^[^\p{L}]*(\p{L}.+?)\s+-\s+(.+)$/gmu;
-            let match;
+            let match: RegExpExecArray|null;
             let count = 0;
             console.log(lines);
             while ((match = regex.exec(lines)) !== null) {
+                if (this.beverages.some(beverage => beverage.name === (match ? match[1].trim() : ''))) {
+                    continue;
+                }
                 this.beverages.push(new Beverage(match[1].trim(), match[2].trim(), ''));
                 if (++count >= 6) {
                     break;
