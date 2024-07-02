@@ -44,7 +44,7 @@ export class Director {
         this.direction = direction;
     }
 
-    async chooseDirection(stage: Stage): Promise<Direction> {
+    chooseDirection(): Direction {
         let newDirection: Direction;
         switch (this.direction) {
             case undefined:
@@ -79,17 +79,9 @@ export class Director {
         switch (this.direction) {
             case Direction.IntroducePatron:
                 // Create a patron or pull an existing one
-                if (Object.values(this.patrons).length <= 5) {
-                    let patron = await stage.generatePatron();
-                    if (patron) {
-                        this.currentPatronId = patron.name;
-                        this.patrons[this.currentPatronId] = patron;
-                    }
-                } else {
+                if (this.presentPatronIds.length < Object.keys(this.patrons).length) {
                     const keys = Object.keys(this.patrons).filter(key => !this.presentPatronIds.includes(key));
                     this.currentPatronId = keys[Math.floor(Math.random() * keys.length)];
-                }
-                if (this.currentPatronId) {
                     this.presentPatronIds.push(this.currentPatronId);
                 } else {
                     this.direction = Direction.Lull;
