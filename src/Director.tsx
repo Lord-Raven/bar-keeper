@@ -1,5 +1,4 @@
 import {Patron} from "./Patron";
-import {Stage} from "./Stage";
 
 enum Direction {
     IntroduceBar = 'IntroduceBar',
@@ -11,15 +10,24 @@ enum Direction {
     PatronLeaves = 'PatronLeaves'
 }
 
-const directionInstructions: {[direction in Direction]: (barDescription: string, playerName: string, patronName: string) => string } = {
-    IntroduceBar: (barDescription, playerName) => `Write a visual novel style introduction to the bar described here: ${barDescription}. ` +
-        `Depict a second-person scene where ${playerName} is setting up for the beginning of their shift one evening.`,
-    Lull: (playerName) => `Write a two-to-three paragraph visual novel style development as the evening slightly progresses; ${playerName} observes the environment or patrons with only trivial events or conversations.`,
-    IntroducePatron: (playerName, patronName) => `Write a two-to-three paragraph visual novel style development as ${patronName} enters the bar. If ${patronName} is new, describe and introduce them in great detail. If they are a regular, focus on their interactions with ${playerName} or other patrons.`,
-    PatronBanter: (playerName) => `Write a two-to-three paragraph visual novel style development as the patrons banter amongst themselves or with ${playerName}.`,
-    PatronProblem: (playerName) => `Write a two-to-three paragraph visual novel style development as one of the patrons describes a personal problem to another patron or ${playerName}.`,
-    PatronDrinkRequest: () => `Write a two-to-three paragraph visual novel style development as a patron requests a drink--one of the bar's specialty beverages.`,
-    PatronLeaves: (playerName, patronName) => `Write a two-to-three paragraph visual novel style development as ${patronName} bids farewell or otherwise departs the bar. Carefully consider their personal style and connections to other patrons or ${playerName}.`,
+interface InstructionInput {
+    barDescription: string;
+    playerName: string;
+    patronName: string
+}
+
+const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
+    IntroduceBar: input => `Write a visual novel style introduction to the bar described here: ${input.barDescription}. ` +
+        `Depict a second-person scene where ${input.playerName} is setting up for the beginning of their shift one evening.`,
+    Lull: input => `Write a two-to-three paragraph visual novel style development as the evening slightly progresses; ${input.playerName} observes the environment or patrons with only trivial events or conversations.`,
+    IntroducePatron: input => `Write a two-to-three paragraph visual novel style development as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
+        `If they are a regular, focus on their interactions with ${input.playerName} or other patrons.`,
+    PatronBanter: input => `Write a two-to-three paragraph visual novel style development as the patrons banter amongst themselves or with ${input.playerName}.`,
+    PatronProblem: input => `Write a two-to-three paragraph visual novel style development as one of the patrons describes a personal problem to another patron or ${input.playerName}.`,
+    PatronDrinkRequest: input => `Write a two-to-three paragraph visual novel style development as ${input.patronName} requests a suitable drink from one of the bar's specialty beverages, ` +
+        `likely by describing what they are in the mood for, rather than requesting the beverage by name. ${input.playerName} will serve them in a future response.`,
+    PatronLeaves: input => `Write a two-to-three paragraph visual novel style development as ${input.patronName} bids farewell or otherwise departs the bar. ` +
+        `Honor their personal style and connections to other patrons or ${input.playerName}.`,
 }
 
 export class Director {
@@ -37,7 +45,7 @@ export class Director {
     }
 
     getPromptInstruction(barDescription: string, playerName: string): string {
-        return directionInstructions[this.direction ?? Direction.IntroduceBar](barDescription, playerName, this.currentPatronId ? this.patrons[this.currentPatronId].name : '');
+        return directionInstructions[this.direction ?? Direction.IntroduceBar]({barDescription: barDescription, playerName: playerName, patronName: this.currentPatronId ? this.patrons[this.currentPatronId].name : ''});
     }
 
     setDirection(direction: Direction|undefined) {
