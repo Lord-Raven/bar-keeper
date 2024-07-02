@@ -401,7 +401,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildPatronDescriptions(): string {
         return `[ABSENT PATRONS]${Object.values(this.director.patrons).filter(patron => !this.director.presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[/ABSENT PATRONS]\n` +
-            `[PRESENT PATRONS]${Object.values(this.director.patrons).filter(patron => !this.director.presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[/PRESENT PATRONS]\n`;
+            `[PRESENT PATRONS]${Object.values(this.director.patrons).filter(patron => this.director.presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[/PRESENT PATRONS]\n`;
     }
 
     buildStoryPrompt(history: string, currentInstruction: string): string {
