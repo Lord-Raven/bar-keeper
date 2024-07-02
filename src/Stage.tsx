@@ -299,8 +299,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 seconds: 3
             },'');
 
-            let tries = 8;
-            while (Object.keys(this.director.patrons).length < 5 && tries-- >= 0) {
+            let tries = 5;
+            while (Object.keys(this.director.patrons).length < 3 && tries-- >= 0) {
                 this.setLoadProgress((this.loadingProgress ?? 0) + 5, 'Generating patrons.');
                 let patron = await this.generatePatron();
                 if (patron) {
@@ -420,7 +420,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async generateMessage(): Promise<string> {
         console.log('generateNextResponse');
-        //let patron = await this.generatePatron();
         let entry = await this.generator.textGen({
             prompt: this.buildStoryPrompt(
                 this.buildHistory(this.currentMessageId ?? ''),

@@ -19,14 +19,14 @@ interface InstructionInput {
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
     IntroduceBar: input => `Write a visual novel style introduction to the bar described here: ${input.barDescription}. ` +
         `Depict a second-person scene where ${input.playerName} is setting up for the beginning of their shift one evening.`,
-    Lull: input => `Write a two-to-three paragraph visual novel style development as the evening slightly progresses; ${input.playerName} observes the environment or patrons with only trivial events or conversations.`,
-    IntroducePatron: input => `Write a two-to-three paragraph visual novel style development as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
+    Lull: input => `Continue the scene with some two-to-three paragraph visual novel style flavor as the evening slightly progresses; ${input.playerName} observes the environment or patrons with only trivial events or conversations.`,
+    IntroducePatron: input => `Continue the scene with a two-to-three paragraph visual novel style development as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
         `If they are a regular, focus on their interactions with ${input.playerName} or other patrons.`,
-    PatronBanter: input => `Write a two-to-three paragraph visual novel style development as the patrons banter amongst themselves or with ${input.playerName}.`,
-    PatronProblem: input => `Write a two-to-three paragraph visual novel style development as one of the patrons describes a personal problem to another patron or ${input.playerName}.`,
-    PatronDrinkRequest: input => `Write a two-to-three paragraph visual novel style development as ${input.patronName} requests a suitable drink from one of the bar's specialty beverages, ` +
+    PatronBanter: input => `Continue the scene with a two-to-three paragraph visual novel style development as the patrons banter amongst themselves or with ${input.playerName}.`,
+    PatronProblem: input => `Continue the scene with a two-to-three paragraph visual novel style development as one of the patrons describes a personal problem to another patron or ${input.playerName}.`,
+    PatronDrinkRequest: input => `Continue the scene with a two-to-three paragraph visual novel style development as ${input.patronName} requests a suitable drink from one of the bar's specialty beverages, ` +
         `likely by describing what they are in the mood for, rather than requesting the beverage by name. ${input.playerName} will serve them in a future response.`,
-    PatronLeaves: input => `Write a two-to-three paragraph visual novel style development as ${input.patronName} bids farewell or otherwise departs the bar. ` +
+    PatronLeaves: input => `Continue the scene with a two-to-three paragraph visual novel style development as ${input.patronName} bids farewell or otherwise departs the bar. ` +
         `Honor their personal style and connections to other patrons or ${input.playerName}.`,
 }
 
@@ -80,6 +80,7 @@ export class Director {
                 newDirection = Math.random() > 0.5 ? Direction.Lull : Direction.IntroducePatron;
                 break;
             default:
+                console.log('Default to Lull');
                 newDirection = Direction.Lull;
         }
         this.direction = newDirection;
@@ -92,6 +93,7 @@ export class Director {
                     this.currentPatronId = keys[Math.floor(Math.random() * keys.length)];
                     this.presentPatronIds.push(this.currentPatronId);
                 } else {
+                    console.log('Was IntroducePatron, but no one new to introduce, so Lull');
                     this.direction = Direction.Lull;
                 }
                 break;
@@ -101,6 +103,7 @@ export class Director {
                     this.currentPatronId = this.presentPatronIds[Math.floor(Math.random() * this.presentPatronIds.length)];
                     this.presentPatronIds.splice(this.presentPatronIds.indexOf(this.currentPatronId), 1);
                 } else {
+                    console.log('Was PatronLeaves, but no one is here, so Lull');
                     this.direction = Direction.Lull;
                 }
                 break;
@@ -110,6 +113,7 @@ export class Director {
                 if (this.presentPatronIds.length > 0) {
                     this.currentPatronId = this.presentPatronIds[Math.floor(Math.random() * this.presentPatronIds.length)];
                 } else {
+                    console.log('Was ' + this.direction + ' but no present patrons, so Lull');
                     this.direction = Direction.Lull;
                 }
                 break;
