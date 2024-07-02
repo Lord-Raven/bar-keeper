@@ -300,7 +300,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.currentMessageId = undefined;
             this.currentMessageIndex = 500;
             this.director.setDirection(undefined);
-            this.director.chooseDirection();
+            await this.director.chooseDirection(this);
             this.setLoadProgress(70, 'Writing intro.');
             await this.advanceMessage()
             this.setLoadProgress(undefined, 'Complete');
@@ -430,7 +430,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
 
         if (result && result !== '') {
-            this.director.chooseDirection();
+            console.log('Choose a direction for the next response after this.');
+            await this.director.chooseDirection(this);
             console.log('choseDirectionForNextResponse:' + this.director.direction);
 
             await this.addNewMessage(result);
