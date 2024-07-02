@@ -24,8 +24,9 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
         `If they are a regular, focus on their interactions with ${input.playerName} or other patrons.`,
     PatronBanter: input => `Continue the scene with a two-to-three paragraph visual novel style development as the patrons banter amongst themselves or with ${input.playerName}.`,
     PatronProblem: input => `Continue the scene with a two-to-three paragraph visual novel style development as one of the patrons describes a personal problem to another patron or ${input.playerName}.`,
-    PatronDrinkRequest: input => `Continue the scene with a two-to-three paragraph visual novel style development as ${input.patronName} requests a suitable drink from one of the bar's specialty beverages, ` +
-        `likely by describing what they are in the mood for, rather than requesting the beverage by name. ${input.playerName} will serve them in a future response.`,
+    PatronDrinkRequest: input => `Continue the scene with a one-to-two paragraph visual novel style development as ${input.patronName} asks the bartender, ${input.playerName}, for a drink. ` +
+        `${input.patronName} will simply describe the flavor or style of drink they are in the mood for, rather than specifying the actual beverage they want--but their description should align with one of the bar's specialty beverages. ` +
+        `Keep ${input.playerName} passive; they'll serve the drink in a future response.`,
     PatronLeaves: input => `Continue the scene with a two-to-three paragraph visual novel style development as ${input.patronName} bids farewell or otherwise departs the bar. ` +
         `Honor their personal style and connections to other patrons or ${input.playerName}.`,
 }

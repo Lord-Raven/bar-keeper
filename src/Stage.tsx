@@ -395,9 +395,20 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return historyString;
     }
 
+    buildBeverageDescriptions(): string {
+        return `[BEVERAGES]${this.beverages.map(beverage => `${beverage.name} - ${beverage.description}`).join('\n')}[/BEVERAGES]\n`;
+    }
+
+    buildPatronDescriptions(): string {
+        return `[ABSENT PATRONS]${Object.values(this.director.patrons).filter(patron => !this.director.presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[/ABSENT PATRONS]\n` +
+            `[PRESENT PATRONS]${Object.values(this.director.patrons).filter(patron => !this.director.presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[/PRESENT PATRONS]\n`;
+    }
+
     buildStoryPrompt(history: string, currentInstruction: string): string {
         return `[SETTING]${this.barDescription}[/SETTING]\n` +
             `[USER]${this.player.name} is a bartender here. ${this.player.chatProfile}[/USER]\n` +
+            this.buildPatronDescriptions() +
+            this.buildBeverageDescriptions() +
             `[LOG]${history}[/LOG]\n` +
             `[INST]${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}[/INST]`;
     }
