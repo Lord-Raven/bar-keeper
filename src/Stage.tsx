@@ -53,11 +53,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildPatronPrompt(): string {
         return `[INST]Thoughtfully consider a bar with the following description:[/INST]\n${this.barDescription}\n` +
-            `[INST]Craft a character who might patronize this establishment, giving them a name and a one-to-two-paragraph description. ` +
+            `[INST]Craft a new character who might patronize this establishment, giving them a name and a one-to-two-paragraph description. ` +
             `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(this.director.patrons).length > 0 ?
-                (`Consider the following other known patrons and avoid making this character too similar or ` +
-                `include a connection between this new character and one or more existing patrons:[/INST]\n` +
+                (`Consider the following existing patrons and ensure that this new character is distinct from the existing ones below. Also consider ` +
+                `connections between this new character and one or more existing patrons:[/INST]\n` +
                 `${Object.values(this.director.patrons).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[INST]\n`) :
                 '\n') +
             `Output the name of this new character on the first line, and their description on the remaining lines.[/INST]`;
@@ -299,7 +299,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 seconds: 3
             },'');
 
-            while (Object.keys(this.director.patrons).length < 5) {
+            let tries = 8;
+            while (Object.keys(this.director.patrons).length < 5 && tries-- >= 0) {
                 this.setLoadProgress((this.loadingProgress ?? 0) + 5, 'Generating patrons.');
                 let patron = await this.generatePatron();
                 if (patron) {
