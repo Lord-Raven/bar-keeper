@@ -384,9 +384,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         //if (lines.length >= 2) {
             const nameRegex = /Name\s*[:\-]?\s*(.*)/i;
             const descriptionRegex = /Description\s*[:\-]?\s*([\s\S]*)/i
-            const name = nameRegex.exec(result);
-            const description = descriptionRegex.exec(result);
-            console.log(description);
+            const name = result.match(nameRegex);
+            const description = result.match(descriptionRegex);
             if (name && name.length > 0 && description && description.length > 0) {
                 console.log(name[0] + ":" + description[0]);
                 newPatron = new Patron(name[0], description[0], '');
