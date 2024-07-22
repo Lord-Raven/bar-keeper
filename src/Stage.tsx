@@ -17,7 +17,7 @@ import ReplayIcon from "@mui/icons-material/Replay";
 import {Director} from "./Director";
 import {MessageWindow} from "./MessageWindow"
 import bottleUrl from './assets/bottle.png'
-import patronUrl from './assets/elf1.png'
+import patronUrl from './assets/elf1_neutral.png'
 
 type MessageStateType = any;
 
