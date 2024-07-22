@@ -85,6 +85,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     currentMessage: string;
 
     // Not saved:
+    patronImagePrompt: string = 'Professional, visual novel, anime, clean linework, vibrant colors, calm expression, neutral pose, front view';
+    patronImageNegativePrompt: string = 'background, frame, realism, out-of-frame, grainy, borders, dynamic angle, perspective, tilted, skewed, dynamic lighting, western artist, close-up';
     characterForGeneration: Character;
     player: User;
     requestedMessage: Promise<string>|null = null;
@@ -109,7 +111,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             characters,
             users,
             messageState,
-            chatState
+            chatState,
+            config
         } = data;
 
         this.loadingProgress = 30;
@@ -128,6 +131,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
         console.log('currentMessage: ' + this.currentMessage);
         this.loadingProgress = 50;
+
+        console.log(config);
+        this.patronImagePrompt = config.patronImagePrompt;
+        this.patronImageNegativePrompt = config.patronImageNegativePrompt;
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
@@ -404,14 +411,15 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let imageUrl = await this.makeImage({
             //image: bottleUrl,
             //strength: 0.1,
-            prompt: `A standing thighs-up portrait of a single character matching this description: '${patronDescription}' Professional, visual novel, anime, clean linework, vibrant colors, calm expression, neutral pose, front view`,
-            negative_prompt: `background, frame, realism, out-of-frame, grainy, borders, dynamic angle, perspective, tilted, skewed, dynamic lighting, western artist, close-up`,
+            prompt: `A standing thighs-up portrait of a single character matching this description: '${patronDescription}' \n${this.patronImagePrompt}`,
+            negative_prompt: this.patronImageNegativePrompt,
             aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
             remove_background: true,
             //seed: null,
             //item_id: null,
         }, patronUrl);
 
+        this.patronImageUrl = imageUrl;
         return Promise.resolve(imageUrl);
     }
 
