@@ -89,6 +89,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     player: User;
     requestedMessage: Promise<string>|null = null;
     isGenerating: boolean = false;
+    patronImageUrl: string = patronUrl;
 
     readonly theme = createTheme({
         palette: {
@@ -397,7 +398,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 this.director.patrons[patron.name] = patron;
             }
         }
-        
+
         let patronId = Object.keys(this.director.patrons)[Math.floor(Math.random() * Object.keys(this.director.patrons).length)];
         let patronDescription = this.director.patrons[patronId].description;
         let imageUrl = await this.makeImage({
@@ -560,7 +561,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </div>
                 </div>
                 <div style={{flexGrow: '1', overflow: 'auto'}}>
-
+                    <Box component='img' src={this.patronImageUrl} alt='' sx={{height: '100%', width: 'auto', objectFit: 'cover'}}/>
                 </div>
                 {!this.loadingProgress && (
                     <div style={{flexShrink: '0'}}>
