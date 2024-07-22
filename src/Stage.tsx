@@ -313,7 +313,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     console.log(patron);
                     this.director.patrons[patron.name] = patron;
                 }
-
             }
 
             // Finally, display an intro
@@ -389,6 +388,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async generatePatronImage(): Promise<string> {
+        // TODO: Only doing this because director state isn't currently saved.
+        if (Object.keys(this.director.patrons).length == 0) {
+            let patron = await this.generatePatron();
+            if (patron) {
+                console.log('Generated patron:');
+                console.log(patron);
+                this.director.patrons[patron.name] = patron;
+            }
+        }
+        
         let patronId = Object.keys(this.director.patrons)[Math.floor(Math.random() * Object.keys(this.director.patrons).length)];
         let patronDescription = this.director.patrons[patronId].description;
         let imageUrl = await this.makeImage({
