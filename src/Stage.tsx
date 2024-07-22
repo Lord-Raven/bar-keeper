@@ -384,11 +384,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         //if (lines.length >= 2) {
             const nameRegex = /Name\s*[:\-]?\s*(.*)/i;
             const descriptionRegex = /Description\s*[:\-]?\s*([\s\S]*)/i
-            const name = result.match(nameRegex);
-            const description = result.match(descriptionRegex);
-            if (name && name.length > 0 && description && description.length > 0) {
-                console.log(name[0] + ":" + description[0]);
-                newPatron = new Patron(name[0], description[0], '');
+            const nameMatches = result.match(nameRegex);
+            const descriptionMatches = result.match(descriptionRegex) ?? [result.substring(nameMatches && nameMatches.length > 0 ? nameMatches?.index ?? 0 + nameMatches[0].length : 0)];
+            if (nameMatches && nameMatches.length > 0 && descriptionMatches && descriptionMatches.length > 0) {
+                console.log(nameMatches[0].trim() + ":" + descriptionMatches[0].trim());
+                newPatron = new Patron(nameMatches[0].trim(), descriptionMatches[0].trim(), '');
                 //  Generate a normal image, then image2image for happy and unhappy image.
                 this.director.patrons[newPatron.name] = newPatron;
             }
