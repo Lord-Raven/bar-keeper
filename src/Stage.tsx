@@ -17,6 +17,7 @@ import ReplayIcon from "@mui/icons-material/Replay";
 import {Director} from "./Director";
 import {MessageWindow} from "./MessageWindow"
 import bottleUrl from './assets/bottle.png'
+import patronUrl from './assets/elf1.png'
 
 type MessageStateType = any;
 
@@ -76,6 +77,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     loadingDescription: string|undefined;
     messageParentIds: {[key: string]: string};
     messageBodies: {[key: string]: string[]};
+    messageDirection: {[key: string]: string};
 
     director: Director;
     currentMessageId: string|undefined;
@@ -118,6 +120,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.beverages = [];
         this.messageParentIds = {};
         this.messageBodies = {};
+        this.messageDirection = {};
         this.readChatState(chatState);
         this.readMessageState(messageState);
         this.director = new Director();
@@ -194,6 +197,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             beverages: this.beverages,
             messageParentIds: this.messageParentIds,
             messageBodies: this.messageBodies,
+            messageDirection: this.messageDirection,
             currentMessageId: this.currentMessageId,
             currentMessageIndex: this.currentMessageIndex,
             director: this.director
@@ -208,6 +212,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.beverages = (chatState.beverages ?? []).map((beverage: { name: string, description: string, imageUrl: string }) => new Beverage(beverage.name, beverage.description, beverage.imageUrl));
             this.messageParentIds = chatState.messageParentIds ?? {};
             this.messageBodies = chatState.messageBodies ?? {};
+            this.messageDirection = chatState.messageDirection ?? {};
             this.currentMessageId = chatState.currentMessageId ?? undefined;
             this.currentMessageIndex = chatState.currentMessageIndex ?? 0;
             this.director = chatState.director ?? new Director();
@@ -279,12 +284,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             for (const beverage of this.beverages) {
                 console.log(`Generating image for ${beverage.name}`)
-                beverage.imageUrl = await this.makeImageFromImage({
-                    image: bottleUrl,
-                    strength: 0.1,
+                beverage.imageUrl = await this.makeImage({
+                    //image: bottleUrl,
+                    //strength: 0.1,
                     prompt: `Professional, stylized illustration. Clean linework and vibrant colors. A single, standalone bottle of alcohol on an empty background, suiting this description: ${beverage.description} Viewed head-on. Bottle upright.`,
                     negative_prompt: `background, frame, multiple bottles, realism, out-of-frame, grainy, borders, dynamic angle, perspective, tilted, skewed`,
-                    //aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
+                    aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
                     remove_background: true,
                     //seed: null,
                     //item_id: null,
@@ -328,7 +333,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         // TODO: If there was a failure, consider reloading from chatState rather than saving.
     }
 
-    async addNewMessage(message: string) {
+    async addNewMessage(message: string, direction: string) {
         console.log('addNewMessage');
         let impersonation = await this.messenger.impersonate({
             message: message,
@@ -340,6 +345,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log(`IDs: ${this.currentMessageId}:${impersonation.identity}`);
         this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
         this.messageBodies[impersonation.identity] = this.chopMessage(message);
+        this.messageDirection[impersonation.identity] = direction;
         this.currentMessageId = impersonation.identity;
         this.currentMessageIndex = 0;
         this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
@@ -380,6 +386,23 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
 
         return newPatron;
+    }
+
+    async generatePatronImage(): Promise<string> {
+        let patronId = Object.keys(this.director.patrons)[Math.floor(Math.random() * Object.keys(this.director.patrons).length)];
+        let patronDescription = this.director.patrons[patronId].description;
+        let imageUrl = await this.makeImage({
+            //image: bottleUrl,
+            //strength: 0.1,
+            prompt: `A standing thighs-up portrait of a single character matching this description: '${patronDescription}' Professional, visual novel, anime, clean linework, vibrant colors, calm expression, neutral pose, front view`,
+            negative_prompt: `background, frame, realism, out-of-frame, grainy, borders, dynamic angle, perspective, tilted, skewed, dynamic lighting, western artist, close-up`,
+            aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
+            remove_background: true,
+            //seed: null,
+            //item_id: null,
+        }, patronUrl);
+
+        return Promise.resolve(imageUrl);
     }
 
     buildHistory(messageId: string): string {
@@ -456,10 +479,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         if (result && result !== '') {
             console.log('Choose a direction for the next response after this.');
+            let direction = `${this.director.direction}`;
             this.director.chooseDirection();
             console.log('choseDirectionForNextResponse:' + this.director.direction);
 
-            await this.addNewMessage(result);
+            await this.addNewMessage(result, direction);
             await this.messenger.updateChatState(this.buildChatState());
         } else {
             console.log('Failed to generate new content; try again.');
@@ -512,6 +536,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                                     onClick={() => this.generate()}>
                             <ReplayIcon/>
                         </IconButton>
+                        <IconButton style={{outline: 1}} onClick={() => this.generatePatronImage()}>
+                            <ReplayIcon/>
+                        </IconButton>
                         {this.loadingProgress && (
                             <div>
                                 <Typography>
@@ -524,6 +551,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </div>
                 </div>
                 <div style={{flexGrow: '1', overflow: 'auto'}}>
+
                 </div>
                 {!this.loadingProgress && (
                     <div style={{flexShrink: '0'}}>
