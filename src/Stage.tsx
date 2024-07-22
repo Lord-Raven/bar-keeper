@@ -385,10 +385,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             const nameRegex = /Name\s*[:\-]?\s*(.*)/i;
             const descriptionRegex = /Description\s*[:\-]?\s*([\s\S]*)/i
             const nameMatches = result.match(nameRegex);
-            const descriptionMatches = result.match(descriptionRegex) ?? [result.substring(nameMatches && nameMatches.length > 0 ? nameMatches?.index ?? 0 + nameMatches[0].length : 0)];
-            if (nameMatches && nameMatches.length > 0 && descriptionMatches && descriptionMatches.length > 0) {
-                console.log(nameMatches[0].trim() + ":" + descriptionMatches[0].trim());
-                newPatron = new Patron(nameMatches[0].trim(), descriptionMatches[0].trim(), '');
+            const descriptionMatches = result.match(descriptionRegex) ?? ['', result.substring(nameMatches && nameMatches.length > 0 ? nameMatches?.index ?? 0 + nameMatches[0].length : 0)];
+            console.log('index: ' + (nameMatches && nameMatches.length > 0 ? nameMatches?.index : -1000));
+            if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1) {
+                console.log(nameMatches[1].trim() + ":" + descriptionMatches[1].trim());
+                newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), '');
                 //  Generate a normal image, then image2image for happy and unhappy image.
                 this.director.patrons[newPatron.name] = newPatron;
             }
@@ -413,7 +414,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let imageUrl = await this.makeImage({
             //image: bottleUrl,
             //strength: 0.1,
-            prompt: `A standing thighs-up portrait of a single character matching this description: '${patronDescription}' \n${this.patronImagePrompt}`,
+            prompt: `${this.patronImagePrompt}. A standing thighs-up portrait of a single character matching this description: '${patronDescription}'`,
             negative_prompt: this.patronImageNegativePrompt,
             aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
             remove_background: true,
