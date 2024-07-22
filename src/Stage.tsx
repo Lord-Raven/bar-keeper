@@ -279,12 +279,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             for (const beverage of this.beverages) {
                 console.log(`Generating image for ${beverage.name}`)
-                beverage.imageUrl = await this.makeImage({
-                    //image: bottleUrl,
-                    //strength: 0.1,
+                beverage.imageUrl = await this.makeImageFromImage({
+                    image: bottleUrl,
+                    strength: 0.1,
                     prompt: `Professional, stylized illustration. Clean linework and vibrant colors. A single, standalone bottle of alcohol on an empty background, suiting this description: ${beverage.description} Viewed head-on. Bottle upright.`,
                     negative_prompt: `background, frame, multiple bottles, realism, out-of-frame, grainy, borders, dynamic angle, perspective, tilted, skewed`,
-                    aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
+                    //aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
                     remove_background: true,
                     //seed: null,
                     //item_id: null,
@@ -482,6 +482,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async makeImage(imageRequest: Object, defaultUrl: string): Promise<string> {
         return !this.disableContentGeneration ? (await this.generator.makeImage(imageRequest))?.url ?? defaultUrl : defaultUrl;
+    }
+
+    async makeImageFromImage(imageToImageRequest: Object, defaultUrl: string): Promise<string> {
+        return !this.disableContentGeneration ? (await this.generator.imageToImage(imageToImageRequest))?.url ?? defaultUrl : defaultUrl;
     }
 
     async makeSound(foleyRequest: Object, defaultUrl: string): Promise<string> {
