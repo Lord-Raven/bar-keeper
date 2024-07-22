@@ -376,15 +376,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             max_tokens: 400,
             min_tokens: 50
         });
-        const splitRegex = /[\r\n]+/;
+        //const splitRegex = /[\r\n]+/;
+        let result = patronResponse?.result ?? '';
         let newPatron: Patron|undefined = undefined;
         console.log(patronResponse);
-        const lines = patronResponse?.result?.split(splitRegex, 2) ?? [];
-        if (lines.length >= 2) {
+        //const lines = patronResponse?.result?.split(splitRegex, 2) ?? [];
+        //if (lines.length >= 2) {
             const nameRegex = /(?:(?:^|[\s\-<*])name[:\s\->]*)*(\S.*)/i;
             const descriptionRegex = /(?:(?:^|[\s\-<*])description[:\s\->]*)*(\S.*)/i
-            const name = nameRegex.exec(lines[0]);
-            const description = descriptionRegex.exec(lines[1]);
+            const name = nameRegex.exec(result);
+            const description = descriptionRegex.exec(result);
             console.log(description);
             if (name && name.length > 0 && description && description.length > 0) {
                 console.log(name[0] + ":" + description[0]);
@@ -392,7 +393,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 //  Generate a normal image, then image2image for happy and unhappy image.
                 this.director.patrons[newPatron.name] = newPatron;
             }
-        }
+        //}
 
         return newPatron;
     }
