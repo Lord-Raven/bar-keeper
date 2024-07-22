@@ -295,8 +295,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             // Generate a sound effect
             this.setLoadProgress(60, 'Generate sounds.');
             this.entranceSoundUrl = await this.makeSound({
-                prompt: `[INST]Create a brief sound effect (1-2 seconds) to indicate that someone has entered the following establishment:[/INST}\n${this.barDescription}\n[INST]This can be a chime, bell, or door closing sound that suits the ambiance of the setting.`,
-                seconds: 3
+                prompt: `[INST]Create a brief sound effect (2-4 seconds) to indicate that someone has entered the following establishment:[/INST}\n${this.barDescription}\n[INST]This sound could be a chime, bell, tone, or door closing sound--something that suits the ambiance of the setting.`,
+                seconds: 5
             },'');
 
             let tries = 5;
