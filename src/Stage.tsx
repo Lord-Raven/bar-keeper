@@ -382,8 +382,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log(patronResponse);
         //const lines = patronResponse?.result?.split(splitRegex, 2) ?? [];
         //if (lines.length >= 2) {
-            const nameRegex = /(?:(?:^|[\s\-<*])name[:\s\->]*)*(\S.*)/i;
-            const descriptionRegex = /(?:(?:^|[\s\-<*])description[:\s\->]*)*(\S.*)/i
+            const nameRegex = /Name\s*[:\-]?\s*(.*)/i;
+            const descriptionRegex = /Description\s*[:\-]?\s*([\s\S]*)/i
             const name = nameRegex.exec(result);
             const description = descriptionRegex.exec(result);
             console.log(description);
