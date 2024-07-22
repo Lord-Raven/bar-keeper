@@ -63,7 +63,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Output the name of this new character on the first line, and their description on the remaining lines.[/INST]`;
     }
 
-    readonly disableContentGeneration: boolean = true;
+    readonly disableContentGeneration: boolean = false;
     // Message State:
     // Eventually move things like currentMessageId: string|undefined;
 
