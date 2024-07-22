@@ -111,9 +111,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         const {
             characters,
             users,
+            config,
             messageState,
-            chatState,
-            config
+            chatState
         } = data;
 
         this.loadingProgress = 30;
@@ -133,9 +133,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log('currentMessage: ' + this.currentMessage);
         this.loadingProgress = 50;
 
+        console.log('Config loaded:');
         console.log(config);
-        this.patronImagePrompt = config.patron_image_prompt ?? this.patronImagePrompt;
-        this.patronImageNegativePrompt = config.patron_image_negative_prompt ?? this.patronImageNegativePrompt;
+        this.patronImagePrompt = config.character_image_prompt ?? this.patronImagePrompt;
+        this.patronImageNegativePrompt = config.character_image_negative_prompt ?? this.patronImageNegativePrompt;
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
@@ -570,7 +571,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </div>
                 </div>
                 <div style={{flexGrow: '1', overflow: 'auto'}}>
-                    <Box component='img' src={this.patronImageUrl} alt='' sx={{height: '90%', width: 'auto', objectFit: 'cover'}}/>
+                    <Box component='img' src={this.patronImageUrl} alt='' sx={{height: '90%', width: 'auto', objectFit: 'cover', verticalAlign: 'bottom'}}/>
                 </div>
                 {!this.loadingProgress && (
                     <div style={{flexShrink: '0'}}>

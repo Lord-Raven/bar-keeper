@@ -31,12 +31,15 @@ position: 'FULLSCREEN'
 # If your stage requires a configuration but has no
 #   defined schema, it won't work.
 config_schema:
+  title: Barkeep Config
   type: object
   properties:
     character_prompt:
+      title: Character prompt
       type: string
       default: 'Professional, visual novel, anime, clean linework, vibrant colors, calm expression, neutral pose, front view'
     character_negative_prompt:
+      title: Character negative prompt
       type: string
       default: 'background, frame, realism, out-of-frame, grainy, borders, dynamic angle, perspective, tilted, skewed, dynamic lighting, western artist, close-up'
 
