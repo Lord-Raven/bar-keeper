@@ -570,8 +570,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         )}
                     </div>
                 </div>
-                <div style={{flexGrow: '1', overflow: 'auto'}}>
-                    <Box component='img' src={this.patronImageUrl} alt='' sx={{height: '90%', width: 'auto', objectFit: 'cover',  position: 'absolute', bottom: '0'}}/>
+                <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end'}}> 
+                    <Box component='img' src={this.patronImageUrl} alt='' sx={{height: '90%', width: 'auto', objectFit: 'cover'}}/>
                 </div>
                 {!this.loadingProgress && (
                     <div style={{flexShrink: '0'}}>
