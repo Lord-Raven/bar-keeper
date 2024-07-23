@@ -414,7 +414,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let imageUrl = await this.makeImage({
             //image: bottleUrl,
             //strength: 0.1,
-            prompt: `${this.patronImagePrompt}. A standing thighs-up portrait of a single character matching this description: '${patronDescription}'`,
+            prompt: `${this.patronImagePrompt}. Thigh-up portrait of this character: (${patronDescription})`,
             negative_prompt: this.patronImageNegativePrompt,
             aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
             remove_background: true,
@@ -572,7 +572,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </div>
                 </div>
                 <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end'}}> 
-                    <Box component='img' src={this.patronImageUrl} alt='' sx={{height: '50%', width: 'auto', objectFit: 'cover'}}/>
+                    <Box component='img' src={this.patronImageUrl} alt='' sx={{height: '20%', width: 'auto', objectFit: 'cover'}}/>
                 </div>
                 {!this.loadingProgress && (
                     <div style={{flexShrink: '0'}}>
