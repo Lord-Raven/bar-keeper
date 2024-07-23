@@ -373,7 +373,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         //  distinct from others while potentially having a connection to other established patrons.
         let patronResponse = await this.generator.textGen({
             prompt: this.buildPatronPrompt(),
-            max_tokens: 400,
+            max_tokens: 250,
             min_tokens: 50
         });
         //const splitRegex = /[\r\n]+/;
@@ -574,7 +574,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </div>
                 </div>
                 <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end'}}> 
-                    <Box component='img' src={this.patronImageUrl} alt='' sx={{height: '20%', width: 'auto', objectFit: 'cover'}}/>
+                    <Box component='img' src={this.patronImageUrl} alt='' sx={{height: '30%', width: 'auto', objectFit: 'cover'}}/>
                 </div>
                 {!this.loadingProgress && (
                     <div style={{flexShrink: '0'}}>
