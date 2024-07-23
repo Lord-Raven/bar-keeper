@@ -55,14 +55,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildPatronPrompt(): string {
         return `[INST]Thoughtfully consider a bar with the following description:[/INST]\n${this.barDescription}\n` +
-            `[INST]Craft a new character who might patronize this establishment, giving them a name and a one-to-two-paragraph description. ` +
+            `[INST]Craft a new character who might patronize this establishment, giving them a name a paragraph about their physical description and a paragraph about their personality, background, habits, and ticks. ` +
             `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(this.director.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that this new character is distinct from the existing ones below. Also consider ` +
                 `connections between this new character and one or more existing patrons:[/INST]\n` +
-                `${Object.values(this.director.patrons).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[INST]\n`) :
+                `${Object.values(this.director.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}[INST]\n`) :
                 '\n') +
-            `Output the name of this new character on the first line, and their description on the remaining lines.[/INST]`;
+            `Output these details in the following format:\nName: Name\nDescription: Physical description here\nPersonality: Personality and background details here.\n[/INST]`;
     }
 
     readonly disableContentGeneration: boolean = false;
@@ -383,13 +383,15 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         //const lines = patronResponse?.result?.split(splitRegex, 2) ?? [];
         //if (lines.length >= 2) {
             const nameRegex = /Name\s*[:\-]?\s*(.*)/i;
-            const descriptionRegex = /Description\s*[:\-]?\s*([\s\S]*)/i
+            const descriptionRegex = /Description\s*[:\-]?\s*(.*)/i;
+            const personalityRegex = /Personality\s*[:\-]?\s*(.*)/i;
             const nameMatches = result.match(nameRegex);
-            const descriptionMatches = result.match(descriptionRegex) ?? ['', result.substring(nameMatches && nameMatches.length > 0 ? nameMatches?.index ?? 0 + nameMatches[0].length : 0)];
-            console.log('index: ' + (nameMatches && nameMatches.length > 0 ? nameMatches?.index : -1000));
-            if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1) {
-                console.log(nameMatches[1].trim() + ":" + descriptionMatches[1].trim());
-                newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), '');
+            const descriptionMatches = result.match(descriptionRegex);// ?? ['', result.substring(nameMatches && nameMatches.length > 0 ? nameMatches?.index ?? 0 + nameMatches[0].length : 0)];
+            const personalityMatches = result.match(personalityRegex);
+            //console.log('index: ' + (nameMatches && nameMatches.length > 0 ? nameMatches?.index : -1000));
+            if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1 && personalityMatches && personalityMatches.length > 1) {
+                console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
+                newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), personalityMatches[1].trim(), '');
                 //  Generate a normal image, then image2image for happy and unhappy image.
                 this.director.patrons[newPatron.name] = newPatron;
             }
