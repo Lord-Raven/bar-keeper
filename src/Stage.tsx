@@ -17,7 +17,7 @@ import ReplayIcon from "@mui/icons-material/Replay";
 import {Director} from "./Director";
 import {MessageWindow} from "./MessageWindow"
 import bottleUrl from './assets/bottle.png'
-import patronUrl from './assets/elf1_neutral.png'
+import patronUrl from './assets/elf2.png'
 import { AccountCircle } from "@mui/icons-material";
 
 type MessageStateType = any;
@@ -55,14 +55,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildPatronPrompt(): string {
         return `[INST]Thoughtfully consider a bar with the following description:[/INST]\n${this.barDescription}\n` +
-            `[INST]Craft a new character who might patronize this establishment, giving them a name a paragraph about their physical description and a paragraph about their personality, background, habits, and ticks. ` +
+            `[INST]Craft a new character who might patronize this establishment, giving them a name, a concise paragraph about their physical description, and a paragraph about their personality, background, habits, and ticks. ` +
             `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(this.director.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that this new character is distinct from the existing ones below. Also consider ` +
                 `connections between this new character and one or more existing patrons:[/INST]\n` +
                 `${Object.values(this.director.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}[INST]\n`) :
                 '\n') +
-            `Output these details in the following format:\nName: Name\nDescription: Physical description here\nPersonality: Personality and background details here.\n[/INST]`;
+            `Output these details in the following format:\nName: Name\nDescription: Focused physical description here\nPersonality: Personality and background details here.\n[/INST]`;
     }
 
     readonly disableContentGeneration: boolean = false;
@@ -86,8 +86,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     currentMessage: string;
 
     // Not saved:
-    patronImagePrompt: string = 'Professional, visual novel, anime, clean linework, vibrant colors, calm expression, neutral pose, front view';
-    patronImageNegativePrompt: string = 'background, frame, realism, out-of-frame, grainy, borders, dynamic angle, perspective, tilted, skewed, dynamic lighting, western artist, close-up';
+    patronImagePrompt: string = 'Professional, visual novel, ((anime)), calm expression, neutral pose, flat shading, in-frame, flat contrasting background color, thighs';
+    patronImageNegativePrompt: string = 'realism, border, dynamic lighting, ((close-up)), portrait, background image, cut off, bad anatomy, amateur, low quality';
     characterForGeneration: Character;
     player: User;
     requestedMessage: Promise<string>|null = null;
@@ -373,7 +373,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         //  distinct from others while potentially having a connection to other established patrons.
         let patronResponse = await this.generator.textGen({
             prompt: this.buildPatronPrompt(),
-            max_tokens: 250,
+            max_tokens: 300,
             min_tokens: 50
         });
         //const splitRegex = /[\r\n]+/;
@@ -416,10 +416,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let imageUrl = await this.makeImage({
             //image: bottleUrl,
             //strength: 0.1,
-            prompt: `${this.patronImagePrompt}. Thigh-up portrait of this character: (${patronDescription})`,
+            prompt: `${this.patronImagePrompt}. Illustration of this character: ${patronDescription}`,
             negative_prompt: this.patronImageNegativePrompt,
             aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
-            remove_background: true,
+            remove_background: true
             //seed: null,
             //item_id: null,
         }, patronUrl);
@@ -574,7 +574,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </div>
                 </div>
                 <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end'}}> 
-                    <Box component='img' src={this.patronImageUrl} alt='' sx={{height: '30%', width: 'auto', objectFit: 'cover'}}/>
+                    <Box component='img' src={this.patronImageUrl} alt='' sx={{height: '75%', width: 'auto', objectFit: 'cover'}}/>
                 </div>
                 {!this.loadingProgress && (
                     <div style={{flexShrink: '0'}}>
