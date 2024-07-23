@@ -62,7 +62,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 `connections between this new character and one or more existing patrons:[/INST]\n` +
                 `${Object.values(this.director.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}[INST]\n`) :
                 '\n') +
-            `Output these details in the following format:\nName: Name\nDescription: Brief physical description here\nAttributes: young woman, human, pink hair, violet eyes, freckles, cute contemporary clothes\nPersonality: Personality and background details here.\n[/INST]`;
+            `Output these details in the following format:\nName: Name\nDescription: Brief physical description here\nAttributes: comma-delimitted, gender, skin tone, hair color, eye color, clothing, other features\nPersonality: Personality and background details here.\n[/INST]`;
     }
 
     readonly disableContentGeneration: boolean = false;
