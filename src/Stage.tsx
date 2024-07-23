@@ -62,7 +62,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 `connections between this new character and one or more existing patrons:[/INST]\n` +
                 `${Object.values(this.director.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}[INST]\n`) :
                 '\n') +
-            `Output these details in the following format:\nName: Name\nDescription: young woman, human, pink hair, violet eyes, freckles, cute contemporary clothes\nPersonality: Personality and background details here.\n[/INST]`;
+            `Output these details in the following format:\nName: Name\nDescription: Brief physical description here\nAttributes: young woman, human, pink hair, violet eyes, freckles, cute contemporary clothes\nPersonality: Personality and background details here.\n[/INST]`;
     }
 
     readonly disableContentGeneration: boolean = false;
@@ -384,14 +384,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         //if (lines.length >= 2) {
             const nameRegex = /Name\s*[:\-]?\s*(.*)/i;
             const descriptionRegex = /Description\s*[:\-]?\s*(.*)/i;
+            const attributesRegex = /Attributes\s*[:\-]?\s*(.*)/i;
             const personalityRegex = /Personality\s*[:\-]?\s*(.*)/i;
             const nameMatches = result.match(nameRegex);
-            const descriptionMatches = result.match(descriptionRegex);// ?? ['', result.substring(nameMatches && nameMatches.length > 0 ? nameMatches?.index ?? 0 + nameMatches[0].length : 0)];
+            const descriptionMatches = result.match(descriptionRegex);
+            const attributesMatches = result.match(attributesRegex);
             const personalityMatches = result.match(personalityRegex);
             //console.log('index: ' + (nameMatches && nameMatches.length > 0 ? nameMatches?.index : -1000));
-            if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1 && personalityMatches && personalityMatches.length > 1) {
+            if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1 && attributesMatches && attributesMatches.length < 1 && personalityMatches && personalityMatches.length > 1) {
                 console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
-                newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), personalityMatches[1].trim(), '');
+                newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), attributesMatches[1].trim(), personalityMatches[1].trim(), '');
                 //  Generate a normal image, then image2image for happy and unhappy image.
                 this.director.patrons[newPatron.name] = newPatron;
             }
@@ -412,11 +414,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
 
         let patronId = Object.keys(this.director.patrons)[Math.floor(Math.random() * Object.keys(this.director.patrons).length)];
-        let patronDescription = this.director.patrons[patronId].description;
         let imageUrl = await this.makeImage({
             //image: bottleUrl,
             //strength: 0.1,
-            prompt: `${this.patronImagePrompt}, ${patronDescription}`,
+            prompt: `${this.patronImagePrompt}, ${this.director.patrons[patronId].attributes}`,
             negative_prompt: this.patronImageNegativePrompt,
             aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
             remove_background: true
