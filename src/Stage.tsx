@@ -416,7 +416,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let imageUrl = await this.makeImage({
             //image: bottleUrl,
             //strength: 0.1,
-            prompt: `${this.patronImagePrompt}. Illustration of this character: ${patronDescription}`,
+            prompt: `${this.patronImagePrompt}, ${patronDescription}`,
             negative_prompt: this.patronImageNegativePrompt,
             aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
             remove_background: true
