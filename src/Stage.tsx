@@ -391,7 +391,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             const attributesMatches = result.match(attributesRegex);
             const personalityMatches = result.match(personalityRegex);
             //console.log('index: ' + (nameMatches && nameMatches.length > 0 ? nameMatches?.index : -1000));
-            if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1 && attributesMatches && attributesMatches.length < 1 && personalityMatches && personalityMatches.length > 1) {
+            if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1 && attributesMatches && attributesMatches.length > 1 && personalityMatches && personalityMatches.length > 1) {
                 console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
                 newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), attributesMatches[1].trim(), personalityMatches[1].trim(), '');
                 //  Generate a normal image, then image2image for happy and unhappy image.
