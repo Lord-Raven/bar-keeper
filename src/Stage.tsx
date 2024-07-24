@@ -517,7 +517,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     getMessageSubSlices(messageId: string|undefined): SubSlice[] {
-        return this.messageSlices[messageId ?? ''].subSlices ?? [];
+        return this.messageSlices[messageId ?? ''].subSlices ?? [new Slice('', undefined, [])];
     }
 
     getMessageIndexSubSlice(messageId: string|undefined, messageIndex: number): SubSlice {
