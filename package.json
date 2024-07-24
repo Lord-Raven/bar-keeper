@@ -27,7 +27,8 @@
     "react-dom": "^18.3.0",
     "vite-plugin-dts": "^3.9.1",
     "use-sound": "^4.0.1",
-    "windups": "^1.2.2"
+    "windups": "^1.2.2",
+    "react-native-fast-image": "^8.6.3"
   },
   "engines": {
     "node": "21.7.1"

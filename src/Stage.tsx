@@ -19,6 +19,7 @@ import {MessageWindow} from "./MessageWindow"
 import bottleUrl from './assets/bottle.png'
 import patronUrl from './assets/elf2.png'
 import { AccountCircle } from "@mui/icons-material";
+import FastImage from "react-native-fast-image";
 
 type MessageStateType = any;
 
@@ -132,6 +133,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log(config);
         this.patronImagePrompt = config.character_prompt ?? this.patronImagePrompt;
         this.patronImageNegativePrompt = config.character_negative_prompt ?? this.patronImageNegativePrompt;
+
+/*        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js').then(registration => {
+                console.log('Service Worker registered with scope:', registration.scope);
+            }).catch(error => {
+                console.error('Service Worker registration failed:', error);
+            });
+        }*/
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
@@ -575,7 +584,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </div>
                 </div>
                 <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end'}}> 
-                    <Box component='img' src={this.patronImageUrl} alt='' sx={{height: '30%', width: 'auto', objectFit: 'cover'}}/>
+                    <FastImage source={this.patronImageUrl} style={{height: '30%', width: 'auto', objectFit: 'cover'}}/>
                 </div>
                 {!this.loadingProgress && (
                     <div style={{flexShrink: '0'}}>
