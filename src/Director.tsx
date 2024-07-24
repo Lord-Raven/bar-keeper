@@ -16,7 +16,7 @@ interface InstructionInput {
     patronName: string
 }
 
-export const sampleScript = `[EXAMPLE]\n[Character Name]: "Character dialog goes in quotations." Actions don't.\n\n[NARRATOR]: General narration goes here. No dialog.\n\n[Another Character Name]: "More dialog for a different character."\n[/EXAMPLE]`
+export const sampleScript = `[EXAMPLE]\n[CHARACTER NAME]: "Character dialog goes in quotations." Actions don't.\n\n[NARRATOR]: General narration goes here. No dialog.\n\n[ANOTHER CHARACTER NAME]: "More dialog for a different character."\n[/EXAMPLE]`
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
     IntroduceBar: input => `Write a visual novel script style introduction to the bar described here: ${input.barDescription}. ` +
@@ -50,6 +50,7 @@ export class Slice {
         let currentDialogue = '';
 
         lines.forEach(line => {
+            console.log('Line:' + line);
             const match = line.match(/^\[(\w+)\]:\s*(.*)$/);
             if (match) {
                 // If there's a current dialogue, push it to the parsedLines array
@@ -79,6 +80,7 @@ export class SubSlice {
     constructor(body: string, speakerId: string) {
         this.body = body;
         this.speakerId = speakerId;
+        console.log('Build a SubSlice: ' + body + ':' + speakerId);
     }
 }
 
