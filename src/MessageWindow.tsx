@@ -2,6 +2,7 @@ import {useWindupString} from "windups";
 import {Box, CircularProgress, IconButton, Typography} from "@mui/material";
 import React, {FC, useEffect, useState} from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
+import { SubSlice } from "./Director";
 
 interface MessageWindupProps {
     message: string;
@@ -22,10 +23,10 @@ function MessageWindup({message, options}: MessageWindupProps) {
 
 interface MessageWindowProps {
     advance:  () => void;
-    message: () => string;
+    subSlice: () => SubSlice;
 }
 
-export const MessageWindow: FC<MessageWindowProps> = ({ advance, message }) => {
+export const MessageWindow: FC<MessageWindowProps> = ({ advance, subSlice }) => {
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
     const proceed = () => {
@@ -41,7 +42,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, message }) => {
     useEffect(() => {
         setDoneWinding(false);
         setAdvancing(false);
-    }, [message()]);
+    }, [subSlice()]);
 
     return (
         <Box sx={{
@@ -50,7 +51,8 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, message }) => {
             backgroundColor: '#00000088',
             '&:hover': {backgroundColor: '#000000BB'}
         }}>
-            <MessageWindup message={message()} options={{pace: () => {return 4}, onFinished: () => {
+            <Typography>{subSlice().speakerId}</Typography>
+            <MessageWindup message={subSlice().body} options={{pace: () => {return 4}, onFinished: () => {
                     setDoneWinding(true);}, skipped: doneWinding}} />
             <div>
                 {advancing ? (

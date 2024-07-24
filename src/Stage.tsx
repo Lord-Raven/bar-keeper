@@ -14,7 +14,7 @@ import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
 import {Box, createTheme, LinearProgress, ThemeProvider, Typography, IconButton} from "@mui/material";
 import ReplayIcon from "@mui/icons-material/Replay";
-import {Director} from "./Director";
+import {Direction, Director, sampleScript, Slice, SubSlice} from "./Director";
 import {MessageWindow} from "./MessageWindow"
 import bottleUrl from './assets/bottle.png'
 import patronUrl from './assets/elf2.png'
@@ -77,13 +77,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     loadingProgress: number|undefined;
     loadingDescription: string|undefined;
     messageParentIds: {[key: string]: string};
-    messageBodies: {[key: string]: string[]};
-    messageDirection: {[key: string]: string};
+    messageSlices: {[key: string]: Slice};
 
     director: Director;
     currentMessageId: string|undefined;
     currentMessageIndex: number = 0;
-    currentMessage: string;
 
     // Not saved:
     patronImagePrompt: string = 'Professional, visual novel, ((anime)), calm expression, neutral pose, flat shading, in-frame, flat contrasting background color, thighs';
@@ -124,13 +122,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.player = users[Object.keys(users)[0]];
         this.beverages = [];
         this.messageParentIds = {};
-        this.messageBodies = {};
-        this.messageDirection = {};
+        this.messageSlices = {};
         this.readChatState(chatState);
         this.readMessageState(messageState);
         this.director = new Director();
-        this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
-        console.log('currentMessage: ' + this.currentMessage);
         this.loadingProgress = 50;
 
         console.log('Config loaded:');
@@ -163,7 +158,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log('beforePrompt()');
 
         this.messageParentIds[identity] = this.currentMessageId ?? '';
-        this.messageBodies[identity] = this.chopMessage(content);
+        this.messageSlices[identity] = new Slice(content, this.director.direction, this.director.presentPatronIds);
         this.currentMessageId = identity;
 
         return {
@@ -184,9 +179,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         } = botMessage;
 
         console.log('afterResponse()');
-        if (this.messageParentIds && this.messageBodies) {
+        if (this.messageParentIds && this.messageSlices) {
             this.messageParentIds[identity] = this.currentMessageId ?? '';
-            this.messageBodies[identity] = this.chopMessage(content);
+            this.messageSlices[identity] = new Slice(content, this.director.direction, this.director.presentPatronIds);
         }
         this.currentMessageId = identity;
         return {
@@ -206,8 +201,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             entranceSoundUrl: this.entranceSoundUrl,
             beverages: this.beverages,
             messageParentIds: this.messageParentIds,
-            messageBodies: this.messageBodies,
-            messageDirection: this.messageDirection,
+            messageSlices: this.messageSlices,
             currentMessageId: this.currentMessageId,
             currentMessageIndex: this.currentMessageIndex,
             director: this.director
@@ -221,8 +215,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.entranceSoundUrl = chatState.entranceSoundUrl;
             this.beverages = (chatState.beverages ?? []).map((beverage: { name: string, description: string, imageUrl: string }) => new Beverage(beverage.name, beverage.description, beverage.imageUrl));
             this.messageParentIds = chatState.messageParentIds ?? {};
-            this.messageBodies = chatState.messageBodies ?? {};
-            this.messageDirection = chatState.messageDirection ?? {};
+            this.messageSlices = chatState.messageSlices ?? {};
             this.currentMessageId = chatState.currentMessageId ?? undefined;
             this.currentMessageIndex = chatState.currentMessageIndex ?? 0;
             this.director = chatState.director ?? new Director();
@@ -342,7 +335,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         // TODO: If there was a failure, consider reloading from chatState rather than saving.
     }
 
-    async addNewMessage(message: string, direction: string) {
+    async addNewMessage(message: string) {
         console.log('addNewMessage');
         let impersonation = await this.messenger.impersonate({
             message: message,
@@ -353,12 +346,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         console.log(`IDs: ${this.currentMessageId}:${impersonation.identity}`);
         this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
-        this.messageBodies[impersonation.identity] = this.chopMessage(message);
-        this.messageDirection[impersonation.identity] = direction;
+        this.messageSlices[impersonation.identity] = new Slice(message, this.director.direction, this.director.presentPatronIds);
         this.currentMessageId = impersonation.identity;
         this.currentMessageIndex = 0;
-        this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
-        console.log(`addNewMessage: ${this.currentMessage}`);
         await this.messenger.updateChatState(this.buildChatState());
     }
 
@@ -419,7 +409,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             //strength: 0.1,
             prompt: `${this.patronImagePrompt}, ${this.director.patrons[patronId].attributes}`,
             negative_prompt: this.patronImageNegativePrompt,
-            aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
+            aspect_ratio: AspectRatio.CINEMATIC_HORIZONTAL,
             remove_background: true
             //seed: null,
             //item_id: null,
@@ -457,7 +447,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.buildPatronDescriptions() +
             this.buildBeverageDescriptions() +
             `[LOG]${history}[/LOG]\n` +
-            `[INST]${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}[/INST]`;
+            `[INST]${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}[/INST]\n` +
+            sampleScript;
     }
 
     async advanceMessage() {
@@ -466,14 +457,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             console.log('Kick off generation');
             this.requestedMessage = this.generateMessage();
         }
-        if (this.currentMessageIndex >= this.getMessageBodies(this.currentMessageId).length - 1) {
+        if (this.currentMessageIndex >= this.getMessageSubSlices(this.currentMessageId).length - 1) {
             await this.processNextResponse();
         } else {
             console.log('Increment index.')
             this.currentMessageIndex++;
         }
-        this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
-        console.log(`advanceMessage: ${this.currentMessage}`);
+        //this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
+        //console.log(`advanceMessage: ${this.currentMessage}`);
     }
 
     async generateMessage(): Promise<string> {
@@ -503,11 +494,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         if (result && result !== '') {
             console.log('Choose a direction for the next response after this.');
-            let direction = `${this.director.direction}`;
+
+            await this.addNewMessage(result);
+
             this.director.chooseDirection();
             console.log('choseDirectionForNextResponse:' + this.director.direction);
 
-            await this.addNewMessage(result, direction);
             await this.messenger.updateChatState(this.buildChatState());
         } else {
             console.log('Failed to generate new content; try again.');
@@ -517,15 +509,19 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     getMessageIndexBody(messageId: string|undefined, messageIndex: number): string {
-        return this.getMessageBodies(messageId)[messageIndex] ?? '';
+        return this.getMessageIndexSubSlice(messageId, messageIndex).body ?? '';
     }
 
     getMessageBody(messageId: string|undefined): string {
-        return this.getMessageBodies(messageId).join('\n\n') ?? '';
+        return this.messageSlices[messageId ?? ''].script ?? '';
     }
 
-    getMessageBodies(messageId: string|undefined): string[] {
-        return this.messageBodies[messageId ?? ''] ?? [''];
+    getMessageSubSlices(messageId: string|undefined): SubSlice[] {
+        return this.messageSlices[messageId ?? ''].subSlices ?? [];
+    }
+
+    getMessageIndexSubSlice(messageId: string|undefined, messageIndex: number): SubSlice {
+        return this.getMessageSubSlices(messageId)[messageIndex];
     }
 
     async makeImage(imageRequest: Object, defaultUrl: string): Promise<string> {
@@ -582,8 +578,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         <div>
                             <MessageWindow advance={() => {
                                 void this.advanceMessage()
-                            }} message={() => {
-                                return this.currentMessage;
+                            }} subSlice={() => {
+                                return this.getMessageIndexSubSlice(this.currentMessageId, this.currentMessageIndex);
                             }}/>
                         </div>
                     </div>
