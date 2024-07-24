@@ -55,14 +55,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildPatronPrompt(): string {
         return `[INST]Thoughtfully consider a bar with the following description:[/INST]\n${this.barDescription}\n` +
-            `[INST]Craft a new character who might patronize this establishment, giving them a name, a concise description, a comma-delimitted list of physical attributes, and a paragraph about their personality, background, habits, and ticks. ` +
+            `[INST]Craft a new character who might patronize this establishment, giving them a name, a concise physical description, a comma-delimitted list of derived physical attributes, and a paragraph about their personality, background, habits, and ticks. ` +
             `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(this.director.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that this new character is distinct from the existing ones below. Also consider ` +
                 `connections between this new character and one or more existing patrons:[/INST]\n` +
                 `${Object.values(this.director.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}[INST]\n`) :
                 '\n') +
-            `Output these details in the following format:\nName: Name\nDescription: Physical description here\nAttributes: comma-delimitted, gender, skin, hair color, eye color, clothing, other feature keywords\nPersonality: Personality and background details here.\n[/INST]`;
+            `Output these details in the following format:\nName: Name\nDescription: Physical description here\nAttributes: comma-delimitted, gender, skin, hair color, hair style, eye color, clothing, other feature keywords\nPersonality: Personality and background details here.\n[/INST]`;
     }
 
     readonly disableContentGeneration: boolean = false;
