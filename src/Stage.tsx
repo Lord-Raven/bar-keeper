@@ -254,8 +254,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.setLoadProgress(10, 'Generating bar image.');
 
             this.barImageUrl = await this.makeImage({
-                prompt: `Professional, stylized, painterly illustration. Clean linework and vibrant colors and striking lighting. Visual novel background image of a bar suiting this description: ${this.barDescription}`,
-                negative_prompt: 'grainy, low-resolution, realism',
+                prompt: `Professional, stylized, painterly illustration, Clean lines, vibrant colors, striking lighting, visual novel, background image of a bar with this description: ${this.barDescription}`,
+                negative_prompt: 'grainy, low-resolution, realism, bad',
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             }, '');
 
@@ -290,8 +290,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 beverage.imageUrl = await this.makeImage({
                     //image: bottleUrl,
                     //strength: 0.1,
-                    prompt: `Professional, stylized illustration. Clean linework and vibrant colors. A single, standalone bottle of alcohol on an empty background, suiting this description: ${beverage.description} Viewed head-on. Bottle upright.`,
-                    negative_prompt: `background, frame, multiple bottles, realism, out-of-frame, grainy, borders, dynamic angle, perspective, tilted, skewed`,
+                    prompt: `Professional, stylized illustration, clean lines, vibrant colors, surrounded by negative space, head-on, upright, flat garish contrasting background color. A single, standalone bottle of alcohol, suiting this description: ${beverage.description}.`,
+                    negative_prompt: `background, frame, realism, out-of-frame, grainy, borders, perspective, effects`,
                     aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
                     remove_background: true,
                     //seed: null,
@@ -423,7 +423,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let currentId = messageId;
         let historyString = this.getMessageBody(messageId);
         let depth = 0;
-        while(this.messageParentIds[currentId] && depth < 10) {
+        while(this.messageParentIds[currentId] && currentId != this.messageParentIds[currentId] && depth < 10) {
             currentId = this.messageParentIds[currentId];
             historyString = `${this.getMessageBody(currentId)}\n\n${historyString}`;
             depth++;

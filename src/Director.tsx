@@ -16,7 +16,7 @@ interface InstructionInput {
     patronName: string
 }
 
-export const sampleScript = `[EXAMPLE]\n[CHARACTER NAME]: "Character dialog goes in quotations." Actions don't.\n\n[NARRATOR]: General narration goes here. No dialog.\n\n[ANOTHER CHARACTER NAME]: "More dialog for a different character."\n[/EXAMPLE]`
+export const sampleScript = `[EXAMPLE RESPONSE]\n[CHARACTER 1]: "Character dialog goes in quotations." Actions don't.\n\n[NARRATOR]: General narration goes here. No dialog. Character 2 walks in.\n\n[CHARACTER 2]: "Hey."\n\n[CHARACTER 1]: "Welcome back, Character 2!" They give a friendly wave.\n[/EXAMPLE RESPONSE]`
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
     IntroduceBar: input => `Write a visual novel script style introduction to the bar described here: ${input.barDescription}. ` +
