@@ -62,7 +62,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 `connections between this new character and one or more existing patrons:[/INST]\n` +
                 `${Object.values(this.director.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}[INST]\n`) :
                 '\n') +
-            `Output these details in the following format:\nName: Name\nDescription: Physical description here\nAttributes: comma-delimitted, gender, skin, hair color, hair style, eye color, clothing, other feature keywords\nPersonality: Personality and background details here.\n[/INST]`;
+            `Output these details in the following format:\nName: Name\nDescription: Physical description here\nAttributes: comma-delimitted, gender, skin, hair color, hair style, eye color, clothing, accessories, other key physical features\nPersonality: Personality and background details here.\n[/INST]`;
     }
 
     readonly disableContentGeneration: boolean = false;
@@ -254,8 +254,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.setLoadProgress(10, 'Generating bar image.');
 
             this.barImageUrl = await this.makeImage({
-                prompt: `Professional, stylized, painterly illustration, Clean lines, vibrant colors, striking lighting, visual novel, interior of a bar with this description: ${this.barDescription}`,
-                negative_prompt: 'grainy, low-resolution, realism, bad',
+                prompt: `Professional, stylized, painterly, illustration, clean lines, vibrant colors, striking lighting, visual novel, (interior), bar with this description: ${this.barDescription}`,
+                negative_prompt: 'grainy, low resolution, realism, low quality',
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             }, '');
 
@@ -409,7 +409,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             //strength: 0.1,
             prompt: `${this.patronImagePrompt}, ${this.director.patrons[patronId].attributes}`,
             negative_prompt: this.patronImageNegativePrompt,
-            aspect_ratio: AspectRatio.CINEMATIC_HORIZONTAL,
+            aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
             remove_background: true
             //seed: null,
             //item_id: null,
@@ -575,7 +575,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </div>
                 </div>
                 <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end'}}> 
-                    <Box component='img' src={this.patronImageUrl} alt='' sx={{height: '75%', width: 'auto', objectFit: 'cover'}}/>
+                    <Box component='img' src={this.patronImageUrl} alt='' sx={{height: '30%', width: 'auto', objectFit: 'cover'}}/>
                 </div>
                 {!this.loadingProgress && (
                     <div style={{flexShrink: '0'}}>
