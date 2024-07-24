@@ -513,11 +513,15 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     getMessageBody(messageId: string|undefined): string {
-        return this.messageSlices[messageId ?? ''].script ?? '';
+        return this.getMessageSlice(messageId).script ?? '';
+    }
+
+    getMessageSlice(messageId: string|undefined): Slice {
+        return this.messageSlices[messageId ?? ''] ?? new Slice('', undefined, []);
     }
 
     getMessageSubSlices(messageId: string|undefined): SubSlice[] {
-        return this.messageSlices[messageId ?? ''].subSlices ?? [new Slice('', undefined, [])];
+        return this.getMessageSlice(messageId).subSlices;
     }
 
     getMessageIndexSubSlice(messageId: string|undefined, messageIndex: number): SubSlice {
