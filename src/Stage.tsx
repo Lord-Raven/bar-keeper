@@ -254,7 +254,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.setLoadProgress(10, 'Generating bar image.');
 
             this.barImageUrl = await this.makeImage({
-                prompt: `Professional, stylized, painterly illustration, Clean lines, vibrant colors, striking lighting, visual novel, background image of a bar with this description: ${this.barDescription}`,
+                prompt: `Professional, stylized, painterly illustration, Clean lines, vibrant colors, striking lighting, visual novel, interior of a bar with this description: ${this.barDescription}`,
                 negative_prompt: 'grainy, low-resolution, realism, bad',
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             }, '');

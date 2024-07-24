@@ -16,7 +16,7 @@ interface InstructionInput {
     patronName: string
 }
 
-export const sampleScript = `[EXAMPLE RESPONSE]\n[NARRATOR]: General narration is provided by NARRATOR.\n\n[CHARACTER 1]: "Character dialog goes in quotations." Their actions don't.\n\n[NARRATOR]: Character 2 walks in.\n\n[CHARACTER 2]: "Hey."\n\n[CHARACTER 1]: "Welcome back, Character 2!" They give a friendly wave.\n[/EXAMPLE RESPONSE]`
+export const sampleScript = `[EXAMPLE RESPONSE]\n**NARRATOR**: General narration is provided by NARRATOR.\n\n**CHARACTER 1**: "Character dialog goes in quotations." Their actions don't.\n\n**NARRATOR**: Character 2 walks in.\n\n**CHARACTER 2**: "Hey."\n\n**CHARACTER 1**: "Welcome back, Character 2!" They give a friendly wave.\n[/EXAMPLE RESPONSE]`
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
     IntroduceBar: input => `Write a script-formatted, visual novel style introduction to the bar described here: ${input.barDescription}. ` +
@@ -51,7 +51,7 @@ export class Slice {
 
         lines.forEach(line => {
             console.log('Line:' + line);
-            const match = line.match(/^\[(\w+)\]:\s*(.*)$/);
+            const match = line.match(/^\**(\w+)\**:\s*(.*)$/i);
             if (match) {
                 // If there's a current dialogue, push it to the parsedLines array
                 if (currentSpeaker) {
