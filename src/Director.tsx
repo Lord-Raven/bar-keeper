@@ -16,20 +16,20 @@ interface InstructionInput {
     patronName: string
 }
 
-export const sampleScript = `[EXAMPLE RESPONSE]\n[CHARACTER 1]: "Character dialog goes in quotations." Actions don't.\n\n[NARRATOR]: General narration goes here. No dialog. Character 2 walks in.\n\n[CHARACTER 2]: "Hey."\n\n[CHARACTER 1]: "Welcome back, Character 2!" They give a friendly wave.\n[/EXAMPLE RESPONSE]`
+export const sampleScript = `[EXAMPLE RESPONSE]\n[NARRATOR]: General narration is provided by NARRATOR.\n\n[CHARACTER 1]: "Character dialog goes in quotations." Their actions don't.\n\n[NARRATOR]: Character 2 walks in.\n\n[CHARACTER 2]: "Hey."\n\n[CHARACTER 1]: "Welcome back, Character 2!" They give a friendly wave.\n[/EXAMPLE RESPONSE]`
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
-    IntroduceBar: input => `Write a visual novel script style introduction to the bar described here: ${input.barDescription}. ` +
+    IntroduceBar: input => `Write a script-formatted, visual novel style introduction to the bar described here: ${input.barDescription}. ` +
         `Depict a second-person scene where ${input.playerName} is setting up for the beginning of their shift one evening.`,
-    Lull: input => `Continue the scene with some two-to-three paragraph visual novel script style flavor as the evening slightly progresses; ${input.playerName} observes the environment or patrons with only trivial events or conversations.`,
-    IntroducePatron: input => `Continue the scene with a two-to-three paragraph visual novel script style development as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
+    Lull: input => `Continue the scene with some script-formatted, visual novel style flavor as the evening slightly progresses; ${input.playerName} observes the environment or patrons with only trivial events or conversations.`,
+    IntroducePatron: input => `Continue the scene with some script-formatted, visual novel style development as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
         `If they are a regular, focus on their interactions with ${input.playerName} or other patrons.`,
-    PatronBanter: input => `Continue the scene with a two-to-three paragraph visual novel script style development as the patrons banter amongst themselves or with ${input.playerName}.`,
-    PatronProblem: input => `Continue the scene with a two-to-three paragraph visual novel script style development as one of the patrons describes a personal problem to another patron or ${input.playerName}.`,
-    PatronDrinkRequest: input => `Continue the scene with a one-to-two paragraph visual novel script style development as ${input.patronName} asks the bartender, ${input.playerName}, for a drink. ` +
+    PatronBanter: input => `Continue the scene with some script-formatted, visual novel style development as the patrons banter amongst themselves or with ${input.playerName}.`,
+    PatronProblem: input => `Continue the scene with some script-formatted, visual novel style development as one of the patrons describes a personal problem to another patron or ${input.playerName}.`,
+    PatronDrinkRequest: input => `Continue the scene with some script-formatted, visual novel style development as ${input.patronName} asks the bartender, ${input.playerName}, for a drink. ` +
         `${input.patronName} will simply describe the flavor or style of drink they are in the mood for, rather than specifying the actual beverage they want--but their description should align with one of the bar's specialty beverages. ` +
         `Keep ${input.playerName} passive; they'll serve the drink in a future response.`,
-    PatronLeaves: input => `Continue the scene with a two-to-three paragraph visual script novel style development as ${input.patronName} bids farewell or otherwise departs the bar. ` +
+    PatronLeaves: input => `Continue the scene with some script-formatted, visual novel style development as ${input.patronName} bids farewell or otherwise departs the bar. ` +
         `Honor their personal style and connections to other patrons or ${input.playerName}.`,
 }
 
