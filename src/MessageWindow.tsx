@@ -52,7 +52,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, subSlice }) => 
             '&:hover': {backgroundColor: '#000000BB'}
         }}>
             <div>
-                <Typography variant="h6">{subSlice()?.speakerId ?? ''}</Typography>
+                <Typography variant="h6" color="#CCCCCC">{subSlice()?.speakerId ?? ''}</Typography>
             </div>
             <div>
                 <MessageWindup message={subSlice()?.body ?? ''} options={{pace: () => {return 3}, onFinished: () => {
