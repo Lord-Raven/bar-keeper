@@ -14,7 +14,7 @@ import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
 import {Box, createTheme, LinearProgress, ThemeProvider, Typography, IconButton} from "@mui/material";
 import ReplayIcon from "@mui/icons-material/Replay";
-import {Direction, Director, sampleScript, Slice, SubSlice} from "./Director";
+import {Director, sampleScript, Slice, SubSlice} from "./Director";
 import {MessageWindow} from "./MessageWindow"
 import bottleUrl from './assets/bottle.png'
 import patronUrl from './assets/elf2.png'
@@ -257,8 +257,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.setLoadProgress(10, 'Generating bar image.');
 
             this.barImageUrl = await this.makeImage({
-                prompt: `Professional, stylized, painterly, illustration, clean lines, vibrant colors, striking lighting, visual novel, (interior), bar with this description: ${this.barDescription}`,
-                negative_prompt: 'grainy, low resolution, realism, low quality',
+                prompt: `Professional, stylized, painterly, fine lines, vibrant colors, striking lighting, interior of bar with this description: ${this.barDescription}`,
+                negative_prompt: 'grainy, low resolution, realism, low quality, exterior',
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             }, '');
 
@@ -578,7 +578,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </div>
                 </div>
                 <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end'}}> 
-                    <img src={this.patronImageUrl} style={{height: '70%', width: 'auto', objectFit: 'cover'}}/>
+                    <img src={this.patronImageUrl} style={{height: '80%', width: 'auto', objectFit: 'cover'}}/>
                 </div>
                 {!this.loadingProgress && (
                     <div style={{flexShrink: '0'}}>
