@@ -19,6 +19,7 @@ import {MessageWindow} from "./MessageWindow"
 import bottleUrl from './assets/bottle.png'
 import patronUrl from './assets/elf2.png'
 import { AccountCircle } from "@mui/icons-material";
+import { register } from "register-service-worker";
 
 type MessageStateType = any;
 
@@ -133,13 +134,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.patronImagePrompt = config.character_prompt ?? this.patronImagePrompt;
         this.patronImageNegativePrompt = config.character_negative_prompt ?? this.patronImageNegativePrompt;
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/service-worker.js').then(registration => {
-                console.log('Service Worker registered with scope:', registration.scope);
-            }).catch(error => {
-                console.error('Service Worker registration failed:', error);
-            });
-        }
+        register('/service-worker.js');
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
@@ -295,7 +290,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             for (const beverage of this.beverages) {
                 console.log(`Generating image for ${beverage.name}`)
-                this.importImage(beverage, await this.makeImage({
+                beverage.imageUrl = await this.makeImage({
                     //image: bottleUrl,
                     //strength: 0.1,
                     prompt: `Professional, stylized illustration, clean lines, vibrant colors, surrounded by negative space, head-on, upright, flat garish contrasting background color. A single, standalone bottle of alcohol, suiting this description: ${beverage.description}.`,
@@ -304,7 +299,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     remove_background: true,
                     //seed: null,
                     //item_id: null,
-                }, bottleUrl));
+                }, bottleUrl);
                 this.setLoadProgress((this.loadingProgress ?? 0) + 5, 'Generating beverage images.');
             }
 
@@ -549,7 +544,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     importImage(object: any, imageUrl: string) {
-        import(imageUrl).then((module) => {object.imageUrl = module.default}).catch((error) => {console.error('Error loading image:', error);});
+        import(imageUrl).then((module) => {console.log('looking at:' + module.default);console.log(module);object.imageUrl = module.default}).catch((error) => {console.error('Error loading image:', error);});
     }
 
 
