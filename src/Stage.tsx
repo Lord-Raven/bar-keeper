@@ -583,7 +583,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </div>
                 </div>
                 <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end'}}> 
-                    <img src={this.patronImageUrl} style={{height: '30%', width: 'auto', objectFit: 'cover'}}/>
+                    <img src={this.patronImageUrl} style={{height: '70%', width: 'auto', objectFit: 'cover'}}/>
                 </div>
                 {!this.loadingProgress && (
                     <div style={{flexShrink: '0'}}>
