@@ -56,7 +56,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildPatronPrompt(): string {
         return `[INST]Thoughtfully consider a bar with the following description:[/INST]\n${this.barDescription}\n` +
-            `[INST]Craft a new character who might patronize this establishment, giving them a name, a concise physical description, a comma-delimitted list of derived physical attributes, and a paragraph about their personality, background, habits, and ticks. ` +
+            `[INST]Craft a new character who might patronize this establishment, giving them a name, a physical description, a comma-delimitted list of concise physical attributes, and a paragraph about their personality, background, habits, and ticks. ` +
             `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(this.director.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that this new character is distinct from the existing ones below. Also consider ` +
@@ -366,7 +366,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         //  distinct from others while potentially having a connection to other established patrons.
         let patronResponse = await this.generator.textGen({
             prompt: this.buildPatronPrompt(),
-            max_tokens: 300,
+            max_tokens: 400,
             min_tokens: 50
         });
         //const splitRegex = /[\r\n]+/;
