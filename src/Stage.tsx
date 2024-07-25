@@ -295,7 +295,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             for (const beverage of this.beverages) {
                 console.log(`Generating image for ${beverage.name}`)
-                beverage.imageUrl = await this.makeImage({
+                this.importImage(beverage, await this.makeImage({
                     //image: bottleUrl,
                     //strength: 0.1,
                     prompt: `Professional, stylized illustration, clean lines, vibrant colors, surrounded by negative space, head-on, upright, flat garish contrasting background color. A single, standalone bottle of alcohol, suiting this description: ${beverage.description}.`,
@@ -304,7 +304,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     remove_background: true,
                     //seed: null,
                     //item_id: null,
-                }, bottleUrl);
+                }, bottleUrl));
                 this.setLoadProgress((this.loadingProgress ?? 0) + 5, 'Generating beverage images.');
             }
 
@@ -546,6 +546,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async makeSound(foleyRequest: Object, defaultUrl: string): Promise<string> {
         return !this.disableContentGeneration ? (await this.generator.makeSound(foleyRequest))?.url ?? defaultUrl : defaultUrl;
+    }
+
+    importImage(object: any, imageUrl: string) {
+        import(imageUrl).then((module) => {object.imageUrl = module.default}).catch((error) => {console.error('Error loading image:', error);});
     }
 
 
