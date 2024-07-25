@@ -18,11 +18,12 @@ self.addEventListener('fetch', (event) => {
         }
         console.log('not cached');
         return fetch(event.request).then((networkResponse) => {
+          const clonedResponse = networkResponse.clone();
           // Cache the fetched image
           caches.open('image-cache').then((cache) => {
-            cache.put(event.request, networkResponse.clone());
+            cache.put(event.request, networkResponse);
           });
-          return networkResponse;
+          return clonedResponse;
         });
       })
     );
