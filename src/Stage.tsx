@@ -543,10 +543,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return !this.disableContentGeneration ? (await this.generator.makeSound(foleyRequest))?.url ?? defaultUrl : defaultUrl;
     }
 
-    importImage(object: any, imageUrl: string) {
-        import(imageUrl).then((module) => {console.log('looking at:' + module.default);console.log(module);object.imageUrl = module.default}).catch((error) => {console.error('Error loading image:', error);});
-    }
-
 
     render(): ReactElement {
         return <div style={{

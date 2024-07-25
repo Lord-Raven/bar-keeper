@@ -1,4 +1,5 @@
 self.addEventListener('install', event => {
+    console.log('installing service worker');
     event.waitUntil(
       caches.open('image-cache').then(cache => {
         return cache.addAll([]);
