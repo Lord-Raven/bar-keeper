@@ -133,13 +133,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.patronImagePrompt = config.character_prompt ?? this.patronImagePrompt;
         this.patronImageNegativePrompt = config.character_negative_prompt ?? this.patronImageNegativePrompt;
 
-/*        if ('serviceWorker' in navigator) {
+        if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/service-worker.js').then(registration => {
                 console.log('Service Worker registered with scope:', registration.scope);
             }).catch(error => {
                 console.error('Service Worker registration failed:', error);
             });
-        }*/
+        }
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
