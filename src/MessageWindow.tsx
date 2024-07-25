@@ -51,9 +51,13 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, subSlice }) => 
             backgroundColor: '#00000088',
             '&:hover': {backgroundColor: '#000000BB'}
         }}>
-            <Typography>{subSlice()?.speakerId ?? ''}</Typography>
-            <MessageWindup message={subSlice()?.body ?? ''} options={{pace: () => {return 4}, onFinished: () => {
-                    setDoneWinding(true);}, skipped: doneWinding}} />
+            <div>
+                <Typography>{subSlice()?.speakerId ?? ''}</Typography>
+            </div>
+            <div>
+                <MessageWindup message={subSlice()?.body ?? ''} options={{pace: () => {return 3}, onFinished: () => {
+                        setDoneWinding(true);}, skipped: doneWinding}} />
+            </div>
             <div>
                 {advancing ? (
                     <CircularProgress style={{float: 'right'}}/>

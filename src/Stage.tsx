@@ -369,28 +369,23 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             max_tokens: 400,
             min_tokens: 50
         });
-        //const splitRegex = /[\r\n]+/;
         let result = patronResponse?.result ?? '';
         let newPatron: Patron|undefined = undefined;
         console.log(patronResponse);
-        //const lines = patronResponse?.result?.split(splitRegex, 2) ?? [];
-        //if (lines.length >= 2) {
-            const nameRegex = /Name\s*[:\-]?\s*(.*)/i;
-            const descriptionRegex = /Description\s*[:\-]?\s*(.*)/i;
-            const attributesRegex = /Attributes\s*[:\-]?\s*(.*)/i;
-            const personalityRegex = /Personality\s*[:\-]?\s*(.*)/i;
-            const nameMatches = result.match(nameRegex);
-            const descriptionMatches = result.match(descriptionRegex);
-            const attributesMatches = result.match(attributesRegex);
-            const personalityMatches = result.match(personalityRegex);
-            //console.log('index: ' + (nameMatches && nameMatches.length > 0 ? nameMatches?.index : -1000));
-            if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1 && attributesMatches && attributesMatches.length > 1 && personalityMatches && personalityMatches.length > 1) {
-                console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
-                newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), attributesMatches[1].trim(), personalityMatches[1].trim(), '');
-                //  Generate a normal image, then image2image for happy and unhappy image.
-                this.director.patrons[newPatron.name] = newPatron;
-            }
-        //}
+        const nameRegex = /Name\s*[:\-]?\s*(.*)/i;
+        const descriptionRegex = /Description\s*[:\-]?\s*(.*)/i;
+        const attributesRegex = /Attributes\s*[:\-]?\s*(.*)/i;
+        const personalityRegex = /Personality\s*[:\-]?\s*(.*)/i;
+        const nameMatches = result.match(nameRegex);
+        const descriptionMatches = result.match(descriptionRegex);
+        const attributesMatches = result.match(attributesRegex);
+        const personalityMatches = result.match(personalityRegex);
+        if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1 && attributesMatches && attributesMatches.length > 1 && personalityMatches && personalityMatches.length > 1) {
+            console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
+            newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), attributesMatches[1].trim(), personalityMatches[1].trim(), '');
+            //  Generate a normal image, then image2image for happy and unhappy image.
+            this.director.patrons[newPatron.name] = newPatron;
+        }
 
         return newPatron;
     }
