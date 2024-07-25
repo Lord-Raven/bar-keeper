@@ -6,15 +6,22 @@ self.addEventListener('install', event => {
     );
   });
   
-  self.addEventListener('fetch', event => {
-    if (event.request.url.includes('your-image-api-endpoint')) {
+  self.addEventListener('fetch', (event) => {
+    if (event.request.destination === 'image') {
+      console.log('service worker fielding request');
       event.respondWith(
-        caches.match(event.request).then(response => {
-          return response || fetch(event.request).then(fetchResponse => {
-            return caches.open('image-cache').then(cache => {
-              cache.put(event.request, fetchResponse.clone());
-              return fetchResponse;
+        caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            console.log('found cached');
+            return cachedResponse;
+          }
+          console.log('not cached');
+          return fetch(event.request).then((networkResponse) => {
+            // Cache the fetched image
+            caches.open('image-cache').then((cache) => {
+              cache.put(event.request, networkResponse.clone());
             });
+            return networkResponse;
           });
         })
       );
