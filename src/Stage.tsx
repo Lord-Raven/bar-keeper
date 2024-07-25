@@ -19,7 +19,6 @@ import {MessageWindow} from "./MessageWindow"
 import bottleUrl from './assets/bottle.png'
 import patronUrl from './assets/elf2.png'
 import { AccountCircle } from "@mui/icons-material";
-import FastImage from "react-native-fast-image";
 
 type MessageStateType = any;
 
@@ -584,7 +583,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </div>
                 </div>
                 <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end'}}> 
-                    <FastImage source={this.patronImageUrl} style={{height: '30%', width: 'auto', objectFit: 'cover'}}/>
+                    <img src={this.patronImageUrl} style={{height: '30%', width: 'auto', objectFit: 'cover'}}/>
                 </div>
                 {!this.loadingProgress && (
                     <div style={{flexShrink: '0'}}>
