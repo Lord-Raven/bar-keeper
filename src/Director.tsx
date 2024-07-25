@@ -76,7 +76,7 @@ export class SubSlice {
     body: string;
     speakerId: string|undefined;
 
-    constructor(peakerId: string, body: string) {
+    constructor(speakerId: string, body: string) {
         this.body = body;
         this.speakerId = speakerId;
         console.log('Build a SubSlice: ' + body + ':' + speakerId);
