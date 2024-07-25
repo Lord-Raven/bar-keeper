@@ -43,7 +43,6 @@ export class Slice {
         this.script = script;
         this.direction = direction;
         this.presentPatronIds = presentPatronIds;
-
         const lines = script.trim().split('\n');
         this.subSlices = [];
         let currentSpeaker = '';
@@ -51,7 +50,7 @@ export class Slice {
 
         lines.forEach(line => {
             console.log('Line:' + line);
-            const match = line.match(/^\**(.+)\**:\s*(.*)$/i);
+            const match = line.match(/^\*+(.[^*]+)\*+:\s*(.+)$/i);
             if (match) {
                 // If there's a current dialogue, push it to the parsedLines array
                 if (currentSpeaker) {
@@ -77,7 +76,7 @@ export class SubSlice {
     body: string;
     speakerId: string|undefined;
 
-    constructor(body: string, speakerId: string) {
+    constructor(peakerId: string, body: string) {
         this.body = body;
         this.speakerId = speakerId;
         console.log('Build a SubSlice: ' + body + ':' + speakerId);
