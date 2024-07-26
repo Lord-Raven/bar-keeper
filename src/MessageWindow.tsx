@@ -75,13 +75,13 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                     }
                 </div>
             </Box>
-            <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end', zIndex: 2, position: 'relative'}}> 
+            <div style={{overflow: 'auto', display: 'flex', alignItems: 'flex-end', zIndex: 2, position: 'relative'}}> 
                 {slice()?.presentPatronIds.map(patronId => {
                         if (stage().patrons[patronId]) {
                             if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
-                                return <div style={{position: 'relative'}}>Main: {patronId}<img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '35vh', width: 'auto'}}/></div>;
+                                return <div style={{position: 'relative'}}>Main2: {patronId}<img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '35vh', width: 'auto'}}/></div>;
                             } else {
-                                return <div style={{position: 'relative'}}>Other: {patronId}<img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '30vh', width: 'auto', color: '#BBBBBB'}}/></div>;
+                                return <div style={{position: 'relative'}}>Other2: {patronId}<img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '30vh', width: 'auto', color: '#BBBBBB'}}/></div>;
                             }
                         } else {
                             return <div></div>;
