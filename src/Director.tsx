@@ -60,7 +60,7 @@ export class Slice {
         const lines = script.trim().split('\n');
         lines.forEach(line => {
             console.log('Line:' + line);
-            const match = line.match(/^\*+(.[^*]+)\*+:\s*(.+)$/i);
+            const match = line.match(/^\**(.[^*]+)\**:\s*(.+)$/i);
             if (match) {
                 // If there's a current dialogue, push it to the parsedLines array
                 if (currentSpeaker) {
