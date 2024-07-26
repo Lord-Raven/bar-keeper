@@ -53,7 +53,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                 p: 2,
                 border: '1px dashed grey',
                 backgroundColor: '#00000088',
-                zIndex: 3,
                 '&:hover': {backgroundColor: '#000000BB'}
             }}>
                 <div>
@@ -76,13 +75,13 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                 </div>
             </Box>
             <div style={{position: 'relative', overflow: 'visible'}}>
-                Test7
+                Test8
                 {slice()?.presentPatronIds.map(patronId => {
                         if (stage().patrons[patronId]) {
                             if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
-                                return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, left: 0, height: '60vh', width: 'auto', overflow: 'visible'}}/>;
+                                return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, left: 0, height: '60vh', width: 'auto'}}/>;
                             } else {
-                                return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, right: 0, height: '55vh', width: 'auto', overflow: 'visible'}}/>;
+                                return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, right: 0, height: '55vh', width: 'auto'}}/>;
                             }
                         } else {
                             return <div></div>;
