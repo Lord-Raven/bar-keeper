@@ -222,7 +222,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.currentMessageIndex = chatState.currentMessageIndex ?? 0;
             this.director = chatState.director ?? new Director();
             console.log('Loaded director:');
-            console.log(this.director);
+            console.log(chatState.director);
         }
     }
 
