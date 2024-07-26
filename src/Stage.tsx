@@ -197,7 +197,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildChatState(): ChatStateType {
-        return {
+
+        let chatState = {
             barDescription: this.barDescription,
             barImageUrl: this.barImageUrl,
             entranceSoundUrl: this.entranceSoundUrl,
@@ -207,7 +208,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             currentMessageId: this.currentMessageId,
             currentMessageIndex: this.currentMessageIndex,
             director: this.director
-        };
+        }
+
+        console.log('Saved director:');
+        console.log(chatState.director);
+        console.log(chatState.director.patrons);
+        console.log(Object.keys(chatState.director.patrons));
+
+        return chatState;
     }
 
     readChatState(chatState: ChatStateType) {
@@ -260,7 +268,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.setLoadProgress(10, 'Generating bar image.');
 
             this.barImageUrl = await this.makeImage({
-                prompt: `Professional, stylized, painterly, fine lines, vibrant colors, striking lighting, interior of bar with this description: ${this.barDescription}`,
+                prompt: `Professional, stylized, illustration, fine lines, vibrant colors, dynamic lighting, interior of bar with this description: ${this.barDescription}`,
                 negative_prompt: 'grainy, low resolution, realism, low quality, exterior',
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             }, '');
@@ -296,7 +304,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 beverage.imageUrl = await this.makeImage({
                     //image: bottleUrl,
                     //strength: 0.1,
-                    prompt: `Professional, stylized illustration, clean lines, vibrant colors, surrounded by negative space, head-on, upright, flat garish contrasting background color. A single, standalone bottle of alcohol, suiting this description: ${beverage.description}.`,
+                    prompt: `Professional, illustration, clean lines, vibrant colors, surrounded by negative space, head-on, upright, empty contrasting color-keyed background. A single, standalone bottle of alcohol, suiting this description: ${beverage.description}.`,
                     negative_prompt: `background, frame, realism, out-of-frame, grainy, borders, perspective, effects`,
                     aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
                     remove_background: true,
