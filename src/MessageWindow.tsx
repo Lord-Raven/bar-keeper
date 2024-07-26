@@ -76,14 +76,14 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                 </div>
             </Box>
             <div style={{position: 'relative'}}>
-                Test2 
+                Test3 
                 <div style={{position: 'absolute', bottom: '0px', left: '0px'}}>Okay</div>
                 {slice()?.presentPatronIds.map(patronId => {
                         if (stage().patrons[patronId]) {
                             if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
                                 return <div style={{position: 'relative'}}>Main7: {patronId}<img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '35vh', width: 'auto'}}/></div>;
                             } else {
-                                return <div style={{position: 'absolute', bottom: '0px'}}>Other7: {patronId}<img src={stage().patrons[patronId].imageUrl} style={{height: '30vh', width: 'auto'}}/></div>;
+                                return <div style={{position: 'absolute', bottom: '0px', left: '0px'}}>Other7: {patronId}<img src={stage().patrons[patronId].imageUrl} style={{height: '30vh', width: 'auto'}}/></div>;
                             }
                         } else {
                             return <div></div>;
