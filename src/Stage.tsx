@@ -230,7 +230,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.currentMessageIndex = chatState.currentMessageIndex ?? 0;
             this.patrons = chatState.patrons ?? {};
             console.log('Loaded patrons:');
-            console.log(Object.keys(chatState.patrons));
+            console.log(Object.keys(this.patrons));
         }
     }
 
