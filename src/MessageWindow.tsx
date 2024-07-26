@@ -64,13 +64,13 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                 </div>
                 <div>
                     {advancing ? (
-                        <CircularProgress style={{float: 'right'}}/>
-                    ) : (
-                        <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
+                            <CircularProgress style={{float: 'right'}}/>
+                        ) : (
+                            <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
                                     onClick={proceed}>
-                            <ForwardIcon/>
-                        </IconButton>
-                    )
+                                <ForwardIcon/>
+                            </IconButton>
+                        )
                     }
                 </div>
             </Box>
