@@ -76,7 +76,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
             </Box>
             <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end', zIndex: 1, position: 'relative'}}> 
                 {slice()?.presentPatronIds.map(patronId => {
-                        if (subSlice().speakerId == patronId) {
+                        if (subSlice().speakerId?.toLowerCase() == patronId.toLowerCase()) {
                             return <div>Main: {patronId}<img src={director().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '35vh', width: 'auto'}}/></div>;
                         } else {
                             return <div>Other: {patronId}<img src={director().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '30vh', width: 'auto', color: '#BBBBBB'}}/></div>;
