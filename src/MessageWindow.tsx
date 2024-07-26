@@ -2,7 +2,7 @@ import {useWindupString} from "windups";
 import {Box, CircularProgress, IconButton, Typography} from "@mui/material";
 import React, {FC, useEffect, useState} from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
-import { SubSlice } from "./Director";
+import { Director, Slice, SubSlice } from "./Director";
 
 interface MessageWindupProps {
     message: string;
@@ -23,10 +23,12 @@ function MessageWindup({message, options}: MessageWindupProps) {
 
 interface MessageWindowProps {
     advance:  () => void;
+    slice: () => Slice;
     subSlice: () => SubSlice;
+    director: () => Director;
 }
 
-export const MessageWindow: FC<MessageWindowProps> = ({ advance, subSlice }) => {
+export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice, director }) => {
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
     const proceed = () => {
@@ -45,30 +47,44 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, subSlice }) => 
     }, [subSlice()]);
 
     return (
-        <Box sx={{
-            p: 2,
-            border: '1px dashed grey',
-            backgroundColor: '#00000088',
-            '&:hover': {backgroundColor: '#000000BB'}
-        }}>
-            <div>
-                <Typography variant="h6" color="#CCCCCC">{subSlice()?.speakerId ?? ''}</Typography>
+        <div>
+            <div
+                style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end', zIndex: 1}}> 
+                {slice()?.presentPatronIds.map(patronId => {
+                        if (subSlice().speakerId == patronId) {
+                            return <img src={director().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '35vh', width: 'auto'}}/>;
+                        } else {
+                            return <img src={director().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '30vh', width: 'auto', color: '#BBBBBB'}}/>;
+                        }
+                })}
             </div>
-            <div>
-                <MessageWindup message={subSlice()?.body ?? ''} options={{pace: () => {return 3}, onFinished: () => {
-                        setDoneWinding(true);}, skipped: doneWinding}} />
-            </div>
-            <div>
-                {advancing ? (
-                    <CircularProgress style={{float: 'right'}}/>
-                ) : (
-                    <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
-                                onClick={proceed}>
-                        <ForwardIcon/>
-                    </IconButton>
-                )
-                }
-            </div>
-        </Box>
+
+            <Box sx={{
+                p: 2,
+                border: '1px dashed grey',
+                backgroundColor: '#00000088',
+                zIndex: 2,
+                '&:hover': {backgroundColor: '#000000BB'}
+            }}>
+                <div>
+                    <Typography variant="h6" color="#AAAAAA">{subSlice()?.speakerId ?? ''}</Typography>
+                </div>
+                <div>
+                    <MessageWindup message={subSlice()?.body ?? ''} options={{pace: () => {return 3}, onFinished: () => {
+                            setDoneWinding(true);}, skipped: doneWinding}} />
+                </div>
+                <div>
+                    {advancing ? (
+                        <CircularProgress style={{float: 'right'}}/>
+                    ) : (
+                        <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
+                                    onClick={proceed}>
+                            <ForwardIcon/>
+                        </IconButton>
+                    )
+                    }
+                </div>
+            </Box>
+        </div>
     );
 }

@@ -91,7 +91,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     player: User;
     requestedMessage: Promise<string>|null = null;
     isGenerating: boolean = false;
-    patronImageUrl: string = patronUrl;
 
     readonly theme = createTheme({
         palette: {
@@ -161,7 +160,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log('beforePrompt()');
 
         this.messageParentIds[identity] = this.currentMessageId ?? '';
-        this.messageSlices[identity] = new Slice(content, this.director.direction, this.director.presentPatronIds);
+        this.messageSlices[identity] = new Slice(content, this.director.direction, this.director.presentPatronIds, this.director.currentPatronId ?? undefined);
         this.currentMessageId = identity;
 
         return {
@@ -184,7 +183,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log('afterResponse()');
         if (this.messageParentIds && this.messageSlices) {
             this.messageParentIds[identity] = this.currentMessageId ?? '';
-            this.messageSlices[identity] = new Slice(content, this.director.direction, this.director.presentPatronIds);
+            this.messageSlices[identity] = new Slice(content, this.director.direction, this.director.presentPatronIds, this.director.currentPatronId ?? undefined);
         }
         this.currentMessageId = identity;
         return {
@@ -318,6 +317,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     console.log('Generated patron:');
                     console.log(patron);
                     this.director.patrons[patron.name] = patron;
+                    this.generatePatronImage(patron).then(result => patron.imageUrl = result);
+                } else {
+                    console.log('Failed a patron generation');
                 }
             }
 
@@ -349,7 +351,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         console.log(`IDs: ${this.currentMessageId}:${impersonation.identity}`);
         this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
-        this.messageSlices[impersonation.identity] = new Slice(message, this.director.direction, this.director.presentPatronIds);
+        this.messageSlices[impersonation.identity] = new Slice(message, this.director.direction, this.director.presentPatronIds, this.director.currentPatronId ?? undefined);
         this.currentMessageId = impersonation.identity;
         this.currentMessageIndex = 0;
         await this.messenger.updateChatState(this.buildChatState());
@@ -390,22 +392,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return newPatron;
     }
 
-    async generatePatronImage(): Promise<string> {
-        // TODO: Only doing this because director state isn't currently saved.
-        if (Object.keys(this.director.patrons).length == 0) {
-            let patron = await this.generatePatron();
-            if (patron) {
-                console.log('Generated patron:');
-                console.log(patron);
-                this.director.patrons[patron.name] = patron;
-            }
-        }
-
-        let patronId = Object.keys(this.director.patrons)[Math.floor(Math.random() * Object.keys(this.director.patrons).length)];
+    async generatePatronImage(patron: Patron): Promise<string> {
         let imageUrl = await this.makeImage({
             //image: bottleUrl,
             //strength: 0.1,
-            prompt: `${this.patronImagePrompt}, ${this.director.patrons[patronId].attributes}`,
+            prompt: `${this.patronImagePrompt}, ${patron.attributes}`,
             negative_prompt: this.patronImageNegativePrompt,
             aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
             remove_background: true
@@ -413,7 +404,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             //item_id: null,
         }, patronUrl);
 
-        this.patronImageUrl = imageUrl;
         return Promise.resolve(imageUrl);
     }
 
@@ -515,7 +505,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     getMessageSlice(messageId: string|undefined): Slice {
-        return this.messageSlices[messageId ?? ''] ?? new Slice('', undefined, []);
+        return this.messageSlices[messageId ?? ''] ?? new Slice('', undefined, [], undefined);
     }
 
     getMessageSubSlices(messageId: string|undefined): SubSlice[] {
@@ -558,7 +548,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                                     onClick={() => this.generate()}>
                             <ReplayIcon/>
                         </IconButton>
-                        <IconButton style={{outline: 1}} color={'primary'} onClick={() => this.generatePatronImage()}>
+                        <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
+                                let presentPatronIds = this.getMessageSlice(this.currentMessageId).presentPatronIds;
+                                let patronId = this.getMessageSlice(this.currentMessageId).selectedPatronId ?? presentPatronIds[Math.floor(Math.random() * presentPatronIds.length)] ?? null;
+                                if (patronId) {
+                                    this.generatePatronImage(this.director.patrons[patronId]).then(imageUrl => this.director.patrons[patronId].imageUrl = imageUrl);
+                                }
+                            }
+                        }>
                             <AccountCircle/>
                         </IconButton>
                         {this.loadingProgress && (
@@ -572,17 +569,15 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         )}
                     </div>
                 </div>
-                <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end'}}> 
-                    <img src={this.patronImageUrl} style={{height: '80%', width: 'auto', objectFit: 'cover'}}/>
-                </div>
                 {!this.loadingProgress && (
                     <div style={{flexShrink: '0'}}>
                         <div>
-                            <MessageWindow advance={() => {
-                                void this.advanceMessage()
-                            }} subSlice={() => {
-                                return this.getMessageIndexSubSlice(this.currentMessageId, this.currentMessageIndex);
-                            }}/>
+                            <MessageWindow 
+                                advance={() => {void this.advanceMessage()}}
+                                slice={() => {return this.getMessageSlice(this.currentMessageId)}}
+                                subSlice={() => {return this.getMessageIndexSubSlice(this.currentMessageId, this.currentMessageIndex)}}
+                                director={() => {return this.director}}
+                            />
                         </div>
                     </div>
                 )}
