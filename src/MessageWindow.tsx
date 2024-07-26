@@ -53,7 +53,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                 p: 2,
                 border: '1px dashed grey',
                 backgroundColor: '#00000088',
-                zIndex: 2,
+                zIndex: 3,
                 '&:hover': {backgroundColor: '#000000BB'}
             }}>
                 <div>
@@ -75,13 +75,13 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                     }
                 </div>
             </Box>
-            <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end', zIndex: 1, position: 'relative'}}> 
+            <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end', zIndex: 2, position: 'relative'}}> 
                 {slice()?.presentPatronIds.map(patronId => {
                         if (stage().patrons[patronId]) {
-                            if (subSlice().speakerId?.toLowerCase() == patronId.toLowerCase()) {
-                                return <div>Main: {patronId}<img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '35vh', width: 'auto'}}/></div>;
+                            if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
+                                return <div style={{position: 'relative'}}>Main: {patronId}<img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '35vh', width: 'auto'}}/></div>;
                             } else {
-                                return <div>Other: {patronId}<img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '30vh', width: 'auto', color: '#BBBBBB'}}/></div>;
+                                return <div style={{position: 'relative'}}>Other: {patronId}<img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '30vh', width: 'auto', color: '#BBBBBB'}}/></div>;
                             }
                         } else {
                             return <div></div>;

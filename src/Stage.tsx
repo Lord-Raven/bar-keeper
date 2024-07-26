@@ -575,6 +575,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         )}
                     </div>
                 </div>
+                <div style={{flexGrow: '100%'}}>
+                    
+                </div>
                 {!this.loadingProgress && (
                     <div style={{flexShrink: '0'}}>
                         <div>
