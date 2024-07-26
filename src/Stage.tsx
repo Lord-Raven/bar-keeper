@@ -458,7 +458,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         if (this.currentMessageIndex >= this.getMessageSubSlices(this.currentMessageId).length - 1) {
             await this.processNextResponse();
         } else {
-            console.log('Increment index.')
             this.currentMessageIndex++;
         }
         //this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
