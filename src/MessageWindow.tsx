@@ -1,6 +1,6 @@
 import {useWindupString} from "windups";
 import {Box, CircularProgress, IconButton, Typography} from "@mui/material";
-import React, {FC, useEffect, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
 import { Director, Slice, SubSlice } from "./Director";
 
@@ -48,17 +48,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
 
     return (
         <div>
-            <div
-                style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end', zIndex: 1}}> 
-                {slice()?.presentPatronIds.map(patronId => {
-                        if (subSlice().speakerId == patronId) {
-                            return <img src={director().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '35vh', width: 'auto'}}/>;
-                        } else {
-                            return <img src={director().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '30vh', width: 'auto', color: '#BBBBBB'}}/>;
-                        }
-                })}
-            </div>
-
             <Box sx={{
                 p: 2,
                 border: '1px dashed grey',
@@ -85,6 +74,15 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                     }
                 </div>
             </Box>
+            <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end', zIndex: 1, position: 'relative'}}> 
+                {slice()?.presentPatronIds.map(patronId => {
+                        if (subSlice().speakerId == patronId) {
+                            return <img src={director().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '35vh', width: 'auto'}}/>;
+                        } else {
+                            return <img src={director().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '30vh', width: 'auto', color: '#BBBBBB'}}/>;
+                        }
+                })}
+            </div>
         </div>
     );
 }
