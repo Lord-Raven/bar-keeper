@@ -83,7 +83,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                             if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
                                 return <div style={{position: 'relative'}}>Main7: {patronId}<img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '35vh', width: 'auto'}}/></div>;
                             } else {
-                                return <div style={{position: 'absolute', bottom: '0px', left: '0px'}}>Other7: {patronId}<img src={stage().patrons[patronId].imageUrl} style={{height: '30vh', width: 'auto'}}/></div>;
+                                return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, right: 0, height: '30vh', width: 'auto'}}/>;
                             }
                         } else {
                             return <div></div>;
