@@ -2,7 +2,8 @@ import {useWindupString} from "windups";
 import {Box, CircularProgress, IconButton, Typography} from "@mui/material";
 import {FC, useEffect, useState} from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
-import { Director, Slice, SubSlice } from "./Director";
+import { Slice, SubSlice } from "./Director";
+import { Stage } from "./Stage";
 
 interface MessageWindupProps {
     message: string;
@@ -25,10 +26,10 @@ interface MessageWindowProps {
     advance:  () => void;
     slice: () => Slice;
     subSlice: () => SubSlice;
-    director: () => Director;
+    stage: () => Stage;
 }
 
-export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice, director }) => {
+export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice, stage }) => {
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
     const proceed = () => {
@@ -76,11 +77,11 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
             </Box>
             <div style={{flexGrow: '1', overflow: 'auto', display: 'flex', alignItems: 'flex-end', zIndex: 1, position: 'relative'}}> 
                 {slice()?.presentPatronIds.map(patronId => {
-                        if (director().patrons[patronId]) {
+                        if (stage().patrons[patronId]) {
                             if (subSlice().speakerId?.toLowerCase() == patronId.toLowerCase()) {
-                                return <div>Main: {patronId}<img src={director().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '35vh', width: 'auto'}}/></div>;
+                                return <div>Main: {patronId}<img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '35vh', width: 'auto'}}/></div>;
                             } else {
-                                return <div>Other: {patronId}<img src={director().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '30vh', width: 'auto', color: '#BBBBBB'}}/></div>;
+                                return <div>Other: {patronId}<img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, height: '30vh', width: 'auto', color: '#BBBBBB'}}/></div>;
                             }
                         } else {
                             return <div></div>;

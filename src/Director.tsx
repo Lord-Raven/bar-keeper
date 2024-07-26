@@ -1,4 +1,4 @@
-import {Patron} from "./Patron";
+import { Stage } from "./Stage";
 
 export enum Direction {
     IntroduceBar = 'IntroduceBar',
@@ -40,16 +40,24 @@ export class Slice {
     presentPatronIds: string[];
     selectedPatronId: string|undefined;
 
-    constructor(script: string, direction: Direction|undefined, presentPatronIds: string[], selectedPatronId: string|undefined) {
-        this.script = script;
+    constructor(direction: Direction|undefined, presentPatronIds: string[], selectedPatronId: string|undefined, script?: string) {
         this.direction = direction;
         this.presentPatronIds = presentPatronIds;
         this.selectedPatronId = selectedPatronId;
-        const lines = script.trim().split('\n');
         this.subSlices = [];
+        this.script = '';
+        
+        if (script) {
+            this.setScript(script);
+        }
+    }
+
+    setScript(script: string) {
+        this.script = script;
         let currentSpeaker = '';
         let currentDialogue = '';
-
+        this.subSlices = [];
+        const lines = script.trim().split('\n');
         lines.forEach(line => {
             console.log('Line:' + line);
             const match = line.match(/^\*+(.[^*]+)\*+:\s*(.+)$/i);
@@ -69,8 +77,6 @@ export class Slice {
         if (currentSpeaker) {
             this.subSlices.push(new SubSlice(currentSpeaker, currentDialogue.trim()));
         }
-
-        
     }
 }
 
@@ -86,30 +92,16 @@ export class SubSlice {
 }
 
 export class Director {
-    direction: Direction|undefined;
 
-    patrons: {[key: string]: Patron};
-    presentPatronIds: string[];
-    currentPatronId: string|null;
+    constructor() { }
 
-
-    constructor() {
-        this.patrons = {};
-        this.presentPatronIds = [];
-        this.currentPatronId = null;
+    getPromptInstruction(stage: Stage, slice: Slice): string {
+        return directionInstructions[slice.direction ?? Direction.IntroduceBar]({barDescription: stage.barDescription ?? '', playerName: stage.player.name ?? '', patronName: slice.selectedPatronId ? stage.patrons[slice.selectedPatronId].name : ''});
     }
 
-    getPromptInstruction(barDescription: string, playerName: string): string {
-        return directionInstructions[this.direction ?? Direction.IntroduceBar]({barDescription: barDescription, playerName: playerName, patronName: this.currentPatronId ? this.patrons[this.currentPatronId].name : ''});
-    }
-
-    setDirection(direction: Direction|undefined) {
-        this.direction = direction;
-    }
-
-    chooseDirection(): Direction {
+    generateSlice(stage: Stage, currentSlice: Slice): Slice {
         let newDirection: Direction;
-        switch (this.direction) {
+        switch (currentSlice.direction) {
             case undefined:
                 newDirection = Direction.IntroduceBar;
                 break;
@@ -117,7 +109,7 @@ export class Director {
                 newDirection = Direction.IntroducePatron;
                 break;
             case Direction.Lull:
-                newDirection = this.presentPatronIds.length < 5 ? Direction.IntroducePatron : Direction.PatronBanter;
+                newDirection = currentSlice.presentPatronIds.length < 5 ? Direction.IntroducePatron : Direction.PatronBanter;
                 break;
             case Direction.IntroducePatron:
                 newDirection = Math.random() > 0.5 ? Direction.PatronBanter : Direction.PatronProblem;
@@ -138,44 +130,44 @@ export class Director {
                 console.log('Default to Lull');
                 newDirection = Direction.Lull;
         }
-        this.direction = newDirection;
-        this.currentPatronId = null;
-        switch (this.direction) {
+        let selectedPatronId = undefined;
+        let newPresentPatronIds = [...currentSlice.presentPatronIds];
+        switch (newDirection) {
             case Direction.IntroducePatron:
                 // Create a patron or pull an existing one
-                if (this.presentPatronIds.length < Object.keys(this.patrons).length) {
-                    const keys = Object.keys(this.patrons).filter(key => !this.presentPatronIds.includes(key));
-                    this.currentPatronId = keys[Math.floor(Math.random() * keys.length)];
-                    this.presentPatronIds.push(this.currentPatronId);
+                if (newPresentPatronIds.length < Object.keys(stage.patrons).length) {
+                    const keys = Object.keys(stage.patrons).filter(key => !newPresentPatronIds.includes(key));
+                    selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
+                    newPresentPatronIds.push(selectedPatronId);
                 } else {
-                    console.log('Was IntroducePatron, but no one new to introduce, so Lull');
-                    this.direction = Direction.Lull;
+                    console.log('Was IntroducePatron, but no one new to introduce, so patron banter');
+                    newDirection = Direction.PatronBanter;
                 }
                 break;
             case Direction.PatronLeaves:
                 // Select a patron to leave
-                if (this.presentPatronIds.length > 0) {
-                    this.currentPatronId = this.presentPatronIds[Math.floor(Math.random() * this.presentPatronIds.length)];
-                    this.presentPatronIds.splice(this.presentPatronIds.indexOf(this.currentPatronId), 1);
+                if (newPresentPatronIds.length > 0) {
+                    selectedPatronId = newPresentPatronIds[Math.floor(Math.random() * newPresentPatronIds.length)];
+                    newPresentPatronIds.splice(newPresentPatronIds.indexOf(selectedPatronId), 1);
                 } else {
                     console.log('Was PatronLeaves, but no one is here, so Lull');
-                    this.direction = Direction.Lull;
+                    newDirection = Direction.Lull;
                 }
                 break;
             case Direction.PatronBanter:
             case Direction.PatronProblem:
             case Direction.PatronDrinkRequest:
-                if (this.presentPatronIds.length > 0) {
-                    this.currentPatronId = this.presentPatronIds[Math.floor(Math.random() * this.presentPatronIds.length)];
+                if (newPresentPatronIds.length > 0) {
+                    selectedPatronId = newPresentPatronIds[Math.floor(Math.random() * newPresentPatronIds.length)];
                 } else {
-                    console.log('Was ' + this.direction + ' but no present patrons, so Lull');
-                    this.direction = Direction.Lull;
+                    console.log('Was ' + newDirection + ' but no present patrons, so Lull');
+                    newDirection = Direction.Lull;
                 }
                 break;
             default:
                 break;
         }
 
-        return newDirection;
+        return new Slice(newDirection, newPresentPatronIds, selectedPatronId);
     }
 }

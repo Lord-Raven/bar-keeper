@@ -58,10 +58,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return `[INST]Thoughtfully consider a bar with the following description:[/INST]\n${this.barDescription}\n` +
             `[INST]Craft a new character who might patronize this establishment, giving them a name, a physical description, a comma-delimitted list of concise physical attributes, and a paragraph about their personality, background, habits, and ticks. ` +
             `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
-            (Object.values(this.director.patrons).length > 0 ?
+            (Object.values(this.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
                 `connections between this new character and one or more existing patrons:[/INST]\n` +
-                `${Object.values(this.director.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n[INST]\n`) :
+                `${Object.values(this.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n[INST]\n`) :
                 '\n') +
             `Output the details for a new character in the following format:\nName: Name\nDescription: Physical description here\nAttributes: comma-delimitted, gender, skin, hair color, hair style, eye color, clothing, accessories, other key physical features\nPersonality: Personality and background details here.\n[/INST]`;
     }
@@ -79,8 +79,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     loadingDescription: string|undefined;
     messageParentIds: {[key: string]: string};
     messageSlices: {[key: string]: Slice};
+    patrons: {[key: string]: Patron};
 
-    director: Director;
     currentMessageId: string|undefined;
     currentMessageIndex: number = 0;
 
@@ -89,8 +89,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     patronImageNegativePrompt: string = 'realism, border, dynamic lighting, ((close-up)), portrait, background image, cut off, bad anatomy, amateur, low quality';
     characterForGeneration: Character;
     player: User;
-    requestedMessage: Promise<string>|null = null;
+    requestedSlice: Promise<Slice>|null = null;
     isGenerating: boolean = false;
+    director: Director;
 
     readonly theme = createTheme({
         palette: {
@@ -121,6 +122,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         this.player = users[Object.keys(users)[0]];
         this.beverages = [];
+        this.patrons = {};
         this.messageParentIds = {};
         this.messageSlices = {};
         this.readChatState(chatState);
@@ -160,7 +162,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log('beforePrompt()');
 
         this.messageParentIds[identity] = this.currentMessageId ?? '';
-        this.messageSlices[identity] = new Slice(content, this.director.direction, this.director.presentPatronIds, this.director.currentPatronId ?? undefined);
+        this.messageSlices[identity] = new Slice(undefined, [], undefined, content);
         this.currentMessageId = identity;
 
         return {
@@ -183,7 +185,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log('afterResponse()');
         if (this.messageParentIds && this.messageSlices) {
             this.messageParentIds[identity] = this.currentMessageId ?? '';
-            this.messageSlices[identity] = new Slice(content, this.director.direction, this.director.presentPatronIds, this.director.currentPatronId ?? undefined);
+            this.messageSlices[identity] = new Slice(undefined, [], undefined, content);
         }
         this.currentMessageId = identity;
         return {
@@ -207,13 +209,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             messageSlices: this.messageSlices,
             currentMessageId: this.currentMessageId,
             currentMessageIndex: this.currentMessageIndex,
-            director: this.director
+            patrons: this.patrons
         }
 
-        console.log('Saved director:');
-        console.log(chatState.director);
-        console.log(chatState.director.patrons);
-        console.log(Object.keys(chatState.director.patrons));
+        console.log('Saved patrons:');
+        console.log(Object.keys(chatState.patrons));
 
         return chatState;
     }
@@ -228,11 +228,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.messageSlices = chatState.messageSlices ?? {};
             this.currentMessageId = chatState.currentMessageId ?? undefined;
             this.currentMessageIndex = chatState.currentMessageIndex ?? 0;
-            this.director = chatState.director ?? new Director();
-            console.log('Loaded director:');
-            console.log(chatState.director);
-            console.log(chatState.director.patrons);
-            console.log(Object.keys(chatState.director.patrons));
+            this.patrons = chatState.patrons ?? {};
+            console.log('Loaded patrons:');
+            console.log(Object.keys(chatState.patrons));
         }
     }
 
@@ -268,8 +266,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.setLoadProgress(10, 'Generating bar image.');
 
             this.barImageUrl = await this.makeImage({
-                prompt: `Professional, stylized, illustration, fine lines, vibrant colors, dynamic lighting, interior of bar with this description: ${this.barDescription}`,
-                negative_prompt: 'grainy, low resolution, realism, low quality, exterior',
+                prompt: `Professional, stylized, slightly painterly, hyperrealism, fine lines, vibrant colors, dynamic lighting, interior of bar with this description: ${this.barDescription}`,
+                negative_prompt: 'grainy, low resolution, low quality, exterior',
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             }, '');
 
@@ -322,13 +320,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             },'');
 
             let tries = 5;
-            while (Object.keys(this.director.patrons).length < 3 && tries-- >= 0) {
+            this.patrons = {};
+            while (Object.keys(this.patrons).length < 3 && tries-- >= 0) {
                 this.setLoadProgress((this.loadingProgress ?? 0) + 5, 'Generating patrons.');
                 let patron = await this.generatePatron();
                 if (patron) {
                     console.log('Generated patron:');
                     console.log(patron);
-                    this.director.patrons[patron.name] = patron;
+                    this.patrons[patron.name] = patron;
                     this.generatePatronImage(patron).then(result => patron.imageUrl = result);
                 } else {
                     console.log('Failed a patron generation');
@@ -338,8 +337,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             // Finally, display an intro
             this.currentMessageId = undefined;
             this.currentMessageIndex = 500;
-            this.director.setDirection(undefined);
-            this.director.chooseDirection();
             this.setLoadProgress(95, 'Writing intro.');
             await this.advanceMessage()
             this.setLoadProgress(undefined, 'Complete');
@@ -352,10 +349,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         // TODO: If there was a failure, consider reloading from chatState rather than saving.
     }
 
-    async addNewMessage(message: string) {
-        console.log('addNewMessage');
+    async addNewSlice(slice: Slice) {
+        console.log('addNewSlice');
         let impersonation = await this.messenger.impersonate({
-            message: message,
+            message: slice.script,
             parent_id: this.currentMessageId ?? '-2',
             is_main: true,
             speaker_id: this.player.anonymizedId
@@ -363,7 +360,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         console.log(`IDs: ${this.currentMessageId}:${impersonation.identity}`);
         this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
-        this.messageSlices[impersonation.identity] = new Slice(message, this.director.direction, this.director.presentPatronIds, this.director.currentPatronId ?? undefined);
+        this.messageSlices[impersonation.identity] = slice;
         this.currentMessageId = impersonation.identity;
         this.currentMessageIndex = 0;
         await this.messenger.updateChatState(this.buildChatState());
@@ -398,7 +395,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
             newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), attributesMatches[1].trim(), personalityMatches[1].trim(), '');
             //  Generate a normal image, then image2image for happy and unhappy image.
-            this.director.patrons[newPatron.name] = newPatron;
+            this.patrons[newPatron.name] = newPatron;
         }
 
         return newPatron;
@@ -437,8 +434,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildPatronDescriptions(): string {
-        return `[ABSENT PATRONS]${Object.values(this.director.patrons).filter(patron => !this.director.presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[/ABSENT PATRONS]\n` +
-            `[PRESENT PATRONS]${Object.values(this.director.patrons).filter(patron => this.director.presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[/PRESENT PATRONS]\n`;
+        const presentPatronIds = this.getMessageSlice(this.currentMessageId).presentPatronIds;
+        return `[ABSENT PATRONS]${Object.values(this.patrons).filter(patron => !presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[/ABSENT PATRONS]\n` +
+            `[PRESENT PATRONS]${Object.values(this.patrons).filter(patron => presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[/PRESENT PATRONS]\n`;
     }
 
     buildStoryPrompt(history: string, currentInstruction: string): string {
@@ -453,9 +451,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async advanceMessage() {
         console.log('advanceMessage');
-        if (!this.requestedMessage) {
+        if (!this.requestedSlice) {
             console.log('Kick off generation');
-            this.requestedMessage = this.generateMessage();
+            this.requestedSlice = this.generateSlice();
         }
         if (this.currentMessageIndex >= this.getMessageSubSlices(this.currentMessageId).length - 1) {
             await this.processNextResponse();
@@ -467,44 +465,40 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         //console.log(`advanceMessage: ${this.currentMessage}`);
     }
 
-    async generateMessage(): Promise<string> {
-        console.log('generateNextResponse');
-        let entry = await this.generator.textGen({
-            prompt: this.buildStoryPrompt(
-                this.buildHistory(this.currentMessageId ?? ''),
-                `${this.director.getPromptInstruction(this.barDescription ?? '', this.player.name)}`),
-            max_tokens: 400,
-            min_tokens: 50
-        });
-        console.log('did textGen');
+    async generateSlice(): Promise<Slice> {
+        console.log('generateSlice');
+        let newSlice: Slice = this.director.generateSlice(this, this.getMessageSlice(this.currentMessageId));
 
-        return Promise.resolve(entry?.result ?? '');
+        let retries = 3;
+        while (retries-- > 0) {
+            let textGen = await this.generator.textGen({
+                prompt: this.buildStoryPrompt(
+                    this.buildHistory(this.currentMessageId ?? ''),
+                    `${this.director.getPromptInstruction(this, this.getMessageSlice(this.currentMessageId))}`),
+                max_tokens: 400,
+                min_tokens: 50
+            });
+            if (textGen?.result?.length) {
+                newSlice.setScript(textGen.result);
+                return Promise.resolve(newSlice);
+            }
+        }
+        console.error('Failed to generate next slice.');
+        return Promise.reject(null);
     }
 
     async processNextResponse() {
         this.isGenerating = true;
         let tries = 3;
-        let result = await this.requestedMessage;
-        while ((!result || result === '') && tries-- >= 0) {
-            console.log(result);
-            console.log('Try again');
-            this.requestedMessage = this.generateMessage();
-            result = await this.requestedMessage;
-        }
-
-        if (result && result !== '') {
-            console.log('Choose a direction for the next response after this.');
-
-            await this.addNewMessage(result);
-
-            this.director.chooseDirection();
-            console.log('choseDirectionForNextResponse:' + this.director.direction);
-
+        let result = await this.requestedSlice;
+        
+        if (result) {
+            await this.addNewSlice(result);
             await this.messenger.updateChatState(this.buildChatState());
         } else {
-            console.log('Failed to generate new content; try again.');
+            console.error('Failed to generate new content; try again.');
         }
-        this.requestedMessage = null;
+        this.requestedSlice = null;
         this.isGenerating = false;
     }
 
@@ -517,7 +511,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     getMessageSlice(messageId: string|undefined): Slice {
-        return this.messageSlices[messageId ?? ''] ?? new Slice('', undefined, [], undefined);
+        return this.messageSlices[messageId ?? ''] ?? new Slice(undefined, [], undefined);
     }
 
     getMessageSubSlices(messageId: string|undefined): SubSlice[] {
@@ -564,7 +558,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                                 let presentPatronIds = this.getMessageSlice(this.currentMessageId).presentPatronIds;
                                 let patronId = this.getMessageSlice(this.currentMessageId).selectedPatronId ?? presentPatronIds[Math.floor(Math.random() * presentPatronIds.length)] ?? null;
                                 if (patronId) {
-                                    this.generatePatronImage(this.director.patrons[patronId]).then(imageUrl => this.director.patrons[patronId].imageUrl = imageUrl);
+                                    this.generatePatronImage(this.patrons[patronId]).then(imageUrl => this.patrons[patronId].imageUrl = imageUrl);
                                 }
                             }
                         }>
@@ -588,7 +582,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                                 advance={() => {void this.advanceMessage()}}
                                 slice={() => {return this.getMessageSlice(this.currentMessageId)}}
                                 subSlice={() => {return this.getMessageIndexSubSlice(this.currentMessageId, this.currentMessageIndex)}}
-                                director={() => {return this.director}}
+                                stage={() => {return this}}
                             />
                         </div>
                     </div>
