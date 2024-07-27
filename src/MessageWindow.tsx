@@ -68,7 +68,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                                 setDoneWinding(true);}, skipped: doneWinding}} />
                     </div>
                     <div>
-                        test2
                         {advancing ? (
                                 <CircularProgress style={{float: 'right'}}/>
                             ) : (
@@ -86,13 +85,16 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                         if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
                             return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, 
                                 left: (index % 2 == 0) ? `${index * 30}vh` : 'auto', 
-                                right: (index % 2 == 1) ? `${index * 30}vh` : 'auto',
-                                height: '60vh', width: 'auto', overflow: 'visible', zIndex: 4}}/>;
+                                right: (index % 2 == 1) ? `${(index - 1) * 30}vh` : 'auto',
+                                zIndex: (index < 2 ? 4 : 3),
+                                height: '60vh', width: 'auto', overflow: 'visible'}}/>;
                         } else {
                             return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, 
                                 left: (index % 2 == 0) ? `${index * 30}vh` : 'auto', 
-                                right: (index % 2 == 1) ? `${index * 30}vh` : 'auto',
-                                height: '55vh', width: 'auto', overflow: 'visible', zIndex: 4, color: '#CCCCCC'}}/>;
+                                right: (index % 2 == 1) ? `${(index - 1) * 30}vh` : 'auto',
+                                zIndex: (index < 2 ? 4 : 3),
+                                filter: 'brightness(80%)',
+                                height: '55vh', width: 'auto', overflow: 'visible'}}/>;
                         }
                     } else {
                         return <div></div>;

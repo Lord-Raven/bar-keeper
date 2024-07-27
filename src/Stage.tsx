@@ -199,8 +199,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildChatState(): ChatStateType {
-
-        let chatState = {
+        return {
             barDescription: this.barDescription,
             barImageUrl: this.barImageUrl,
             entranceSoundUrl: this.entranceSoundUrl,
@@ -210,12 +209,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             currentMessageId: this.currentMessageId,
             currentMessageIndex: this.currentMessageIndex,
             patrons: this.patrons
-        }
-
-        console.log('Saved patrons:');
-        console.log(Object.keys(chatState.patrons));
-
-        return chatState;
+        };
     }
 
     readChatState(chatState: ChatStateType) {
@@ -229,19 +223,15 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.currentMessageId = chatState.currentMessageId ?? undefined;
             this.currentMessageIndex = chatState.currentMessageIndex ?? 0;
             this.patrons = chatState.patrons ?? {};
-            console.log('Loaded patrons:');
-            console.log(Object.keys(this.patrons));
         }
     }
 
     buildMessageState(): MessageStateType {
-        return {
-        };
+        return {};
     }
 
     readMessageState(messageState: MessageStateType) {
-        if (messageState) {
-        }
+        if (messageState) {};
     }
 
     setLoadProgress(loadingProgress: number|undefined, loadingDescription: string) {
