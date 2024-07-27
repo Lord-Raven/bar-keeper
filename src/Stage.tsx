@@ -89,7 +89,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     patronImageNegativePrompt: string = 'realism, border, dynamic lighting, ((close-up)), portrait, background image, cut off, bad anatomy, amateur, low quality';
     characterForGeneration: Character;
     player: User;
-    requestedSlice: Promise<Slice>|null = null;
+    requestedSlice: Promise<Slice|null>|null = null;
     isGenerating: boolean = false;
     director: Director;
 
@@ -450,30 +450,32 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         } else {
             this.currentMessageIndex++;
         }
-        //this.currentMessage = this.getMessageIndexBody(this.currentMessageId, this.currentMessageIndex);
-        //console.log(`advanceMessage: ${this.currentMessage}`);
     }
 
-    async generateSlice(): Promise<Slice> {
+    async generateSlice(): Promise<Slice|null> {
         console.log('generateSlice');
         let newSlice: Slice = this.director.generateSlice(this, this.getMessageSlice(this.currentMessageId));
 
         let retries = 3;
         while (retries-- > 0) {
-            let textGen = await this.generator.textGen({
-                prompt: this.buildStoryPrompt(
-                    this.buildHistory(this.currentMessageId ?? ''),
-                    `${this.director.getPromptInstruction(this, this.getMessageSlice(this.currentMessageId))}`),
-                max_tokens: 400,
-                min_tokens: 50
-            });
-            if (textGen?.result?.length) {
-                newSlice.setScript(textGen.result);
-                return Promise.resolve(newSlice);
+            try {
+                let textGen = await this.generator.textGen({
+                    prompt: this.buildStoryPrompt(
+                        this.buildHistory(this.currentMessageId ?? ''),
+                        `${this.director.getPromptInstruction(this, this.getMessageSlice(this.currentMessageId))}`),
+                    max_tokens: 400,
+                    min_tokens: 50
+                });
+                if (textGen?.result?.length) {
+                    newSlice.setScript(textGen.result);
+                    return Promise.resolve(newSlice);
+                }
+            } catch(error) {
+                console.error("Failed to generate message: " + error);
             }
         }
         console.error('Failed to generate next slice.');
-        return Promise.reject(null);
+        return Promise.resolve(null);
     }
 
     async processNextResponse() {
