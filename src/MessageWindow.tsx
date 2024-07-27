@@ -81,12 +81,18 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                     </div>
                 </Box>
             </div>
-            {slice()?.presentPatronIds.map(patronId => {
+            {slice()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
                         if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
-                            return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, left: 0, height: '60vh', width: 'auto', overflow: 'visible', zIndex: 4}}/>;
+                            return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, 
+                                left: (index % 2 == 0) ? `${index * 30}vh` : 'auto', 
+                                right: (index % 2 == 1) ? `${index * 30}vh` : 'auto',
+                                height: '60vh', width: 'auto', overflow: 'visible', zIndex: 4}}/>;
                         } else {
-                            return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, right: 0, height: '55vh', width: 'auto', overflow: 'visible', zIndex: 4}}/>;
+                            return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, 
+                                left: (index % 2 == 0) ? `${index * 30}vh` : 'auto', 
+                                right: (index % 2 == 1) ? `${index * 30}vh` : 'auto',
+                                height: '55vh', width: 'auto', overflow: 'visible', zIndex: 4, color: '#CCCCCC'}}/>;
                         }
                     } else {
                         return <div></div>;
