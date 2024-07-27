@@ -584,7 +584,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             advance={() => {void this.advanceMessage()}}
                             slice={() => {return this.getMessageSlice(this.currentMessageId)}}
                             subSlice={() => {return this.getMessageIndexSubSlice(this.currentMessageId, this.currentMessageIndex)}}
-                            stage={() => {return this}
+                            stage={() => {return this}}
                         />
                     </div>
                 )}
