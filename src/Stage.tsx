@@ -397,7 +397,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             //strength: 0.1,
             prompt: `${this.patronImagePrompt}, ${patron.attributes}`,
             negative_prompt: this.patronImageNegativePrompt,
-            aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
+            aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL, //.PHOTO_HORIZONTAL,
             remove_background: true
             //seed: null,
             //item_id: null,

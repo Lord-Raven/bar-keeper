@@ -83,18 +83,20 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
             {slice()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
                         if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
-                            return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, 
+                            return <img src={stage().patrons[patronId].imageUrl} style={{
+                                position: 'absolute', bottom: 0, 
                                 left: (index % 2 == 0) ? `${index * 30}vh` : 'auto', 
                                 right: (index % 2 == 1) ? `${(index - 1) * 30}vh` : 'auto',
                                 zIndex: (index < 2 ? 4 : 3),
-                                height: '60vh', width: 'auto', overflow: 'visible'}}/>;
+                                height: '54vh', width: 'auto'}}/>;
                         } else {
-                            return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, 
-                                left: (index % 2 == 0) ? `${index * 30}vh` : 'auto', 
-                                right: (index % 2 == 1) ? `${(index - 1) * 30}vh` : 'auto',
+                            return <img src={stage().patrons[patronId].imageUrl} style={{
+                                position: 'absolute', bottom: 0, 
+                                left: (index % 2 == 0) ? `${index * 30 + 2}vh` : 'auto', 
+                                right: (index % 2 == 1) ? `${(index - 1) * 30 - 2}vh` : 'auto',
                                 zIndex: (index < 2 ? 4 : 3),
                                 filter: 'brightness(80%)',
-                                height: '55vh', width: 'auto', overflow: 'visible'}}/>;
+                                height: '50vh', width: 'auto'}}/>;
                         }
                     } else {
                         return <div></div>;
