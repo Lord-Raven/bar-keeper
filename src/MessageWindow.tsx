@@ -53,7 +53,10 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                 p: 2,
                 border: '1px dashed grey',
                 backgroundColor: '#00000088',
-                '&:hover': {backgroundColor: '#000000BB'}
+                '&:hover': {backgroundColor: '#000000BB',
+                overflow: 'visible',
+                position: 'relative'
+                }
             }}>
                 <div>
                     <Typography variant="h6" color="#AAAAAA">{subSlice()?.speakerId ?? ''}</Typography>
@@ -73,20 +76,21 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                         )
                     }
                 </div>
-            </Box>
-            <div style={{position: 'relative', overflow: 'visible'}}>
-                {slice()?.presentPatronIds.map(patronId => {
-                        if (stage().patrons[patronId]) {
-                            if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
-                                return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, left: 0, height: '60vh', width: 'auto', zIndex: 4, overflow: 'visible'}}/>;
+                <div style={{position: 'relative', overflow: 'visible'}}>
+                    {slice()?.presentPatronIds.map(patronId => {
+                            if (stage().patrons[patronId]) {
+                                if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
+                                    return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, left: 0, height: '60vh', width: 'auto', zIndex: 4, overflow: 'visible'}}/>;
+                                } else {
+                                    return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, right: 0, height: '55vh', width: 'auto', zIndex: 4, overflow: 'visible'}}/>;
+                                }
                             } else {
-                                return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, right: 0, height: '55vh', width: 'auto', zIndex: 4, overflow: 'visible'}}/>;
+                                return <div></div>;
                             }
-                        } else {
-                            return <div></div>;
-                        }
-                })}
-            </div>
+                    })}
+                </div>
+            </Box>
+
         </div>
     );
 }
