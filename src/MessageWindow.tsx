@@ -77,7 +77,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                     }
                 </div>
             </Box>
-            Test8
             {slice()?.presentPatronIds.map(patronId => {
                     if (stage().patrons[patronId]) {
                         if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
