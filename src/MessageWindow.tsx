@@ -55,7 +55,8 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                 backgroundColor: '#00000088',
                 '&:hover': {backgroundColor: '#000000BB',
                 overflow: 'visible',
-                position: 'relative'
+                position: 'relative',
+                zIndex: '2'
                 }
             }}>
                 <div>
