@@ -43,7 +43,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildAlcoholDescriptionsPrompt(): string {
         return `[INST]Thoughtfully consider a bar with the following description:[/INST]\n${this.barDescription}\n` +
-            `[INST]Output six lines, each with the name of a type of alcohol that this bar might serve, as well as a brief description of ` +
+            `[INST]Output seven lines, each with the name of a type of alcohol that this bar might serve, as well as a brief description of ` +
             `its appearance, bottle, odor, and flavor. Follow the format of these examples:\n` +
             `Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
             `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
@@ -256,8 +256,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.setLoadProgress(10, 'Generating bar image.');
 
             this.barImageUrl = await this.makeImage({
-                prompt: `Professional, stylized, slightly painterly, hyperrealism, fine lines, vibrant colors, dynamic lighting, interior of bar with this description: ${this.barDescription}`,
-                negative_prompt: 'grainy, low resolution, low quality, exterior',
+                prompt: `masterpiece, hyperrealism, fine lines, vibrant colors, dynamic lighting, illustration, interior of bar with this description: ${this.barDescription}`,
+                negative_prompt: 'grainy, low resolution, low quality, exterior, person',
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             }, '');
 
@@ -266,7 +266,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.beverages = [];
             let alcoholResponse = await this.generator.textGen({
                 prompt: this.buildAlcoholDescriptionsPrompt(),
-                max_tokens: 400,
+                max_tokens: 500,
                 min_tokens: 50
             });
 
@@ -292,8 +292,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 beverage.imageUrl = await this.makeImage({
                     //image: bottleUrl,
                     //strength: 0.1,
-                    prompt: `Professional, illustration, clean lines, vibrant colors, surrounded by negative space, head-on, upright, empty contrasting color-keyed background. A single, standalone bottle of alcohol, suiting this description: ${beverage.description}.`,
-                    negative_prompt: `background, frame, realism, out-of-frame, grainy, borders, perspective, effects`,
+                    prompt: `Professional, illustration, clean lines, vibrant colors, head-on, centered, upright, empty contrasting color-keyed background. A single standalone bottle of alcohol suiting this description: ${beverage.description}.`,
+                    negative_prompt: `background, frame, realism, grainy, borders, perspective, effects`,
                     aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
                     remove_background: true,
                     //seed: null,
@@ -304,10 +304,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             // Generate a sound effect
             this.setLoadProgress(60, 'Generate sounds.');
-            this.entranceSoundUrl = await this.makeSound({
+            /*this.entranceSoundUrl = await this.makeSound({
                 prompt: `[INST]Create a brief sound effect (2-4 seconds) to indicate that someone has entered the following establishment:[/INST}\n${this.barDescription}\n[INST]This sound could be a chime, bell, tone, or door closing sound--something that suits the ambiance of the setting.`,
                 seconds: 5
-            },'');
+            },'');*/
 
             let tries = 5;
             this.patrons = {};
