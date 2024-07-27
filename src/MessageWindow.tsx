@@ -48,14 +48,15 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
     }, [subSlice()]);
 
     return (
-        <div style={{position: 'relative', overflow: 'visible', zIndex: 5}}>
+        <div style={{position: 'relative', overflow: 'visible'}}>
             <Box sx={{
                 p: 2,
                 border: '1px dashed grey',
                 backgroundColor: '#00000088',
                 '&:hover': {backgroundColor: '#000000BB',
                 overflow: 'visible',
-                position: 'relative'
+                position: 'relative',
+                zIndex: 5
                 }
             }}>
                 <div>
@@ -77,7 +78,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                     }
                 </div>
             </Box>
-            Test5
+            Test6
             {slice()?.presentPatronIds.map(patronId => {
                     if (stage().patrons[patronId]) {
                         if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
