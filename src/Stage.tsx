@@ -14,7 +14,7 @@ import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
 import {Box, createTheme, LinearProgress, ThemeProvider, Typography, IconButton} from "@mui/material";
 import ReplayIcon from "@mui/icons-material/Replay";
-import {Director, sampleScript, Slice, SubSlice} from "./Director";
+import {Director, generalInstruction, sampleScript, Slice, SubSlice} from "./Director";
 import {MessageWindow} from "./MessageWindow"
 import bottleUrl from './assets/bottle.png'
 import patronUrl from './assets/elf2.png'
@@ -434,9 +434,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `[USER]${this.player.name} is a bartender here. ${this.player.chatProfile}[/USER]\n` +
             this.buildPatronDescriptions() +
             this.buildBeverageDescriptions() +
+            `\n${sampleScript}\n` +
             `[LOG]${history}[/LOG]\n` +
             `[INST]${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}[/INST]\n` +
-            sampleScript;
+            generalInstruction;
     }
 
     async advanceMessage() {

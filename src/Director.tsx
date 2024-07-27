@@ -16,7 +16,8 @@ interface InstructionInput {
     patronName: string
 }
 
-export const sampleScript = `[INST]Responses should follow a simple stageplay script format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions.[/INST][EXAMPLE RESPONSE]\n**NARRATOR**: General narration is provided by NARRATOR.\n\n**CHARACTER 1**: "Character dialog goes in quotations." Their actions don't.\n\n**NARRATOR**: Character 2 walks in.\n\n**CHARACTER 2**: "Hey."\n\n**CHARACTER 1**: "Welcome back, Character 2!" They give a friendly wave.\n[/EXAMPLE RESPONSE]`
+export const generalInstruction = `[INST]Responses should follow a simple stageplay script format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions.[/INST]`
+export const sampleScript = `[EXAMPLE RESPONSE]\n**NARRATOR**: General narration is provided by NARRATOR.\n\n**CHARACTER 1**: "Character dialog goes in quotations." Their actions don't.\n\n**NARRATOR**: Character 2 walks in.\n\n**CHARACTER 2**: "Hey."\n\n**CHARACTER 1**: "Welcome back, Character 2!" They give a friendly wave.\n[/EXAMPLE RESPONSE]`
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
     IntroduceBar: input => `Write a stageplay-script-formatted, visual novel style introduction to the bar described here: ${input.barDescription}. ` +
