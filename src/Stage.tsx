@@ -544,7 +544,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             height: '100vh',
             display: 'flex',
             flexDirection: 'column',
-            color: '#ffffff'
+            color: '#ffffff',
+            overflow: 'visible'
         }}>
             <ThemeProvider theme={this.theme}>
                 <div style={{height: '8%'}}>
