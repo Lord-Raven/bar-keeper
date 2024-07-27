@@ -575,16 +575,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         )}
                     </div>
                 </div>
-                <div style={{position: 'relative', flexGrow: '1'}}>
-                    {!this.loadingProgress && (
-                            <MessageWindow 
-                                advance={() => {void this.advanceMessage()}}
-                                slice={() => {return this.getMessageSlice(this.currentMessageId)}}
-                                subSlice={() => {return this.getMessageIndexSubSlice(this.currentMessageId, this.currentMessageIndex)}}
-                                stage={() => {return this}}
-                            />
-                    )}
-                </div>
+                {!this.loadingProgress && (
+                        <MessageWindow 
+                            advance={() => {void this.advanceMessage()}}
+                            slice={() => {return this.getMessageSlice(this.currentMessageId)}}
+                            subSlice={() => {return this.getMessageIndexSubSlice(this.currentMessageId, this.currentMessageIndex)}}
+                            stage={() => {return this}}
+                        />
+                )}
                 <div style={{height: '1%'}}></div>
                 {!this.loadingProgress && (
                     <div style={{height: '15%'}}>
