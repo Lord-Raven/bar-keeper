@@ -76,20 +76,19 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                         )
                     }
                 </div>
-                Test3
-                {slice()?.presentPatronIds.map(patronId => {
-                        if (stage().patrons[patronId]) {
-                            if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
-                                return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, left: 0, height: '60vh', width: 'auto', overflow: 'visible'}}/>;
-                            } else {
-                                return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, right: 0, height: '55vh', width: 'auto', overflow: 'visible'}}/>;
-                            }
-                        } else {
-                            return <div></div>;
-                        }
-                })}
             </Box>
-
+            Test4
+            {slice()?.presentPatronIds.map(patronId => {
+                    if (stage().patrons[patronId]) {
+                        if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
+                            return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, left: 0, height: '60vh', width: 'auto', overflow: 'visible'}}/>;
+                        } else {
+                            return <img src={stage().patrons[patronId].imageUrl} style={{position: 'absolute', bottom: 0, right: 0, height: '55vh', width: 'auto', overflow: 'visible'}}/>;
+                        }
+                    } else {
+                        return <div></div>;
+                    }
+            })}
         </div>
     );
 }
