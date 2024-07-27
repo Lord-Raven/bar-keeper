@@ -575,6 +575,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         )}
                     </div>
                 </div>
+                <div style={{flexGrow: '1', overflow: 'visible'}}>
+
+                </div>
                 {!this.loadingProgress && (
                     <div style={{overflow: 'visible'}}>
                         <MessageWindow 
