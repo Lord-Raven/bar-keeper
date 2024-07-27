@@ -575,7 +575,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         )}
                     </div>
                 </div>
-                <div style={{position: 'relative', flexGrow: '1', overflow: 'visible'}}>
+                <div style={{position: 'relative', flexGrow: '1'}}>
                     {!this.loadingProgress && (
                             <MessageWindow 
                                 advance={() => {void this.advanceMessage()}}

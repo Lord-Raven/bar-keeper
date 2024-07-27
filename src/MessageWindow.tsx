@@ -48,14 +48,13 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
     }, [subSlice()]);
 
     return (
-        <div style={{position: 'absolute', bottom: '0', overflow: 'visible', width: '100%'}}>
+        <div style={{position: 'absolute', bottom: '0', left: '0', overflow: 'visible', width: '100%'}}>
             <Box sx={{
                 p: 2,
                 border: '1px dashed grey',
                 backgroundColor: '#00000088',
                 overflow: 'visible',
                 position: 'relative',
-                width: '100%',
                 zIndex: 5,
                 '&:hover': {backgroundColor: '#000000BB'}
             }}>
@@ -67,7 +66,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                             setDoneWinding(true);}, skipped: doneWinding}} />
                 </div>
                 <div>
-                    test1
+                    test2
                     {advancing ? (
                             <CircularProgress style={{float: 'right'}}/>
                         ) : (
