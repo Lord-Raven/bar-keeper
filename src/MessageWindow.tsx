@@ -83,17 +83,18 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
             {slice()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
                         if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
+                            console.log(index);
                             return <img src={stage().patrons[patronId].imageUrl} style={{
                                 position: 'absolute', bottom: 0, 
                                 left: (index % 2 == 0) ? `${index * 30}vh` : 'auto', 
                                 right: (index % 2 == 1) ? `${(index - 1) * 30}vh` : 'auto',
                                 zIndex: (index < 2 ? 4 : 3),
-                                height: '54vh', width: 'auto'}}/>;
+                                height: '52vh', width: 'auto'}}/>;
                         } else {
                             return <img src={stage().patrons[patronId].imageUrl} style={{
                                 position: 'absolute', bottom: 0, 
-                                left: (index % 2 == 0) ? `${index * 30 + 2}vh` : 'auto', 
-                                right: (index % 2 == 1) ? `${(index - 1) * 30 - 2}vh` : 'auto',
+                                left: (index % 2 == 0) ? `${index * 30 + 1}vh` : 'auto', 
+                                right: (index % 2 == 1) ? `${(index - 1) * 30 - 1}vh` : 'auto',
                                 zIndex: (index < 2 ? 4 : 3),
                                 filter: 'brightness(80%)',
                                 height: '50vh', width: 'auto'}}/>;

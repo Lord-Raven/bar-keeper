@@ -266,7 +266,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.beverages = [];
             let alcoholResponse = await this.generator.textGen({
                 prompt: this.buildAlcoholDescriptionsPrompt(),
-                max_tokens: 500,
+                max_tokens: 400,
                 min_tokens: 50
             });
 
@@ -280,7 +280,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     continue;
                 }
                 this.beverages.push(new Beverage(match[1].trim(), match[2].trim(), ''));
-                if (++count >= 6) {
+                if (++count >= 5) {
                     break;
                 }
             }
@@ -292,8 +292,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 beverage.imageUrl = await this.makeImage({
                     //image: bottleUrl,
                     //strength: 0.1,
-                    prompt: `Professional, illustration, clean lines, vibrant colors, head-on, centered, upright, (empty contrasting color-keyed background). (A single standalone bottle of alcohol suiting this description: ${beverage.description})`,
-                    negative_prompt: `background, frame, realism, grainy, borders, perspective, effects`,
+                    prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty contrasting color-keyed background. (A standalone bottle suiting this description: ${beverage.description})`,
+                    negative_prompt: `background, frame, realism, borders, perspective, effects, props`,
                     aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
                     remove_background: true,
                     //seed: null,
