@@ -83,7 +83,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
             {slice()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
                         if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
-                            console.log(index);
+                            console.log(index + ';' + (index % 2) + ';' + (index * 30));
                             return <img src={stage().patrons[patronId].imageUrl} style={{
                                 position: 'absolute', bottom: 0, 
                                 left: (index % 2 == 0) ? `${index * 30}vh` : 'auto', 

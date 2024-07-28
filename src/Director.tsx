@@ -70,9 +70,11 @@ export class Slice {
                 // Start a new dialogue
                 currentSpeaker = match[1];
                 currentDialogue = match[2];
-            } else if (currentSpeaker) {
+            } else if (currentSpeaker && currentDialogue.trim().length > 0) {
                 // Continue the current dialogue
-                currentDialogue += '\n\n' + line.trim();
+                this.subSlices.push(new SubSlice(currentSpeaker, currentDialogue.trim()));
+                currentDialogue = '';
+                //currentDialogue += '\n\n' + line.trim();
             }
         });
         if (currentSpeaker) {
