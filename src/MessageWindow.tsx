@@ -2,7 +2,7 @@ import {useWindupString} from "windups";
 import {Box, CircularProgress, IconButton, Typography} from "@mui/material";
 import {FC, useEffect, useState} from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
-import { Slice, SubSlice } from "./Director";
+import { Direction, Slice, SubSlice } from "./Director";
 import { Stage } from "./Stage";
 
 interface MessageWindupProps {
@@ -50,36 +50,52 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
     return (
         
         <div style={{position: 'relative', flexGrow: '1'}}>
-            <div style={{position: 'absolute', bottom: '0', left: '0', overflow: 'visible', width: '100%'}}>
-                <Box sx={{
-                    p: 2,
-                    border: '1px dashed grey',
-                    backgroundColor: '#00000088',
-                    overflow: 'visible',
-                    position: 'relative',
-                    zIndex: 5,
-                    '&:hover': {backgroundColor: '#000000BB'}
-                }}>
-                    <div>
-                        <Typography variant="h6" color="#AAAAAA">{subSlice()?.speakerId ?? ''}</Typography>
-                    </div>
-                    <div>
-                        <MessageWindup message={subSlice()?.body ?? ''} options={{pace: () => {return 3}, onFinished: () => {
-                                setDoneWinding(true);}, skipped: doneWinding}} />
-                    </div>
-                    <div>
-                        {advancing ? (
-                                <CircularProgress style={{float: 'right'}}/>
-                            ) : (
-                                <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
-                                        onClick={proceed}>
-                                    <ForwardIcon/>
-                                </IconButton>
-                            )
-                        }
-                    </div>
-                </Box>
-            </div>
+            <Box sx={{
+                p: 2,
+                border: '1px dashed grey',
+                backgroundColor: '#00000088',
+                overflow: 'visible',
+                position: 'absolute',
+                bottom: '0',
+                left: '0',
+                width: '100%',
+                zIndex: 5,
+                '&:hover': {backgroundColor: '#000000BB'}
+            }}>
+                {slice()?.direction === Direction.Choice ? 
+                    (
+                        <div>
+                            {slice()?.subSlices.map(subSlice => {
+                                return <div onClick = {() => stage().advanceMessageChoice(subSlice)}>
+                                    <MessageWindup message={subSlice.body} options={{pace: () => {return 3}}} />
+                                </div>
+                            })}
+                        </div>
+                    ) :
+                    (
+                        <div>
+                            <div>
+                                <Typography variant="h6" color="#AAAAAA">{subSlice()?.speakerId ?? ''}</Typography>
+                            </div>
+                            <div>
+                                <MessageWindup message={subSlice()?.body ?? ''} options={{pace: () => {return 3}, onFinished: () => {
+                                        setDoneWinding(true);}, skipped: doneWinding}} />
+                            </div>
+                            <div>
+                                {advancing ? (
+                                        <CircularProgress style={{float: 'right'}}/>
+                                    ) : (
+                                        <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
+                                                onClick={proceed}>
+                                            <ForwardIcon/>
+                                        </IconButton>
+                                    )
+                                }
+                            </div>
+                        </div>
+                    )
+                }
+            </Box>
             {slice()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
                         if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {

@@ -7,7 +7,9 @@ export enum Direction {
     PatronBanter = 'PatronBanter',
     PatronProblem = 'PatronProblem',
     PatronDrinkRequest = 'PatronDrinkRequest',
-    PatronLeaves = 'PatronLeaves'
+    PatronLeaves = 'PatronLeaves',
+    Choice = 'Choice',
+    Outcome = 'Outcome'
 }
 
 interface InstructionInput {
@@ -25,13 +27,16 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
     Lull: input => `Continue the scene some visual novel style flavor as the evening slightly progresses; ${input.playerName} observes the environment or ancillary patrons with only trivial events or conversations--established patrons remain absent or passive.`,
     IntroducePatron: input => `Continue the scene with visual novel style development as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
         `If they are a regular, focus on their interactions with ${input.playerName} or other patrons.`,
-    PatronBanter: input => `Continue the scene with some visual novel style development as the present patrons banter amongst themselves or with ${input.playerName}.`,
-    PatronProblem: input => `Continue the scene with some visual novel style development as one of the present patrons describes a personal problem to another present patron or ${input.playerName}.`,
+    PatronBanter: input => `Continue the scene with some visual novel style development as the PRESENT PATRONS banter amongst themselves or with ${input.playerName}.`,
+    PatronProblem: input => `Continue the scene with some visual novel style development as one of the PRESENT PATRONS describes a personal problem to another PRESENT PATRON or ${input.playerName}.`,
     PatronDrinkRequest: input => `Continue the scene with some visual novel style development as ${input.patronName} asks the bartender, ${input.playerName}, for a drink. ` +
         `${input.patronName} will simply describe the flavor or style of drink they are in the mood for, rather than specifying the actual beverage they want--but their description should align with one of the bar's specialty beverages. ` +
         `Keep ${input.playerName} passive; the drink will be served in a future response.`,
     PatronLeaves: input => `Continue the scene with some visual novel style development as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar. ` +
         `Honor their personal style and connections to other patrons or ${input.playerName}.`,
+    Choice: input => `Rather than develop the current story, use this response to generate two or three options for actions or dialog that ${input.playerName} can choose to pursue at this juncture. ` +
+        `Always use this example format: **OPTION 1**: Agree with your friend.\n\n**OPTION 2**: Refuse to help.\n\n**OPTION 3**: Ask what's in it for you.`,
+    Outcome: input => `Continue the scene by depicting the course of action ${input.playerName} has chosen, following up with the reactions, consequences, and other outcomes.`
 }
 
 export class Slice {
@@ -40,6 +45,7 @@ export class Slice {
     script: string;
     presentPatronIds: string[];
     selectedPatronId: string|undefined;
+
 
     constructor(direction: Direction|undefined, presentPatronIds: string[], selectedPatronId: string|undefined, script?: string) {
         this.direction = direction;
@@ -116,11 +122,15 @@ export class Director {
             case Direction.IntroducePatron:
                 newDirection = Math.random() > 0.5 ? Direction.PatronBanter : Direction.PatronProblem;
                 break;
+            case Direction.Choice:
+                newDirection = Direction.Outcome;
+                break;
+            case Direction.Outcome:
             case Direction.PatronBanter:
-                newDirection = Math.random() > 0.33 ? Direction.PatronProblem : (Math.random() > 0.5 ? Direction.IntroducePatron : Direction.PatronDrinkRequest);
+                newDirection = Math.random() > 0.3 ? Direction.PatronProblem : (Math.random() > 0.3 ? Direction.IntroducePatron : (Math.random() > 0.5 ? Direction.Choice : Direction.PatronDrinkRequest));
                 break;
             case Direction.PatronProblem:
-                newDirection = Math.random() > 0.5 ? Direction.PatronBanter : Direction.PatronDrinkRequest;
+                newDirection = Math.random() > 0.5 ? Direction.Choice : (Math.random() > 0.5 ? Direction.PatronBanter : Direction.PatronDrinkRequest);
                 break;
             case Direction.PatronDrinkRequest:
                 newDirection = Math.random() > 0.33 ? Direction.PatronBanter : (Math.random() > 0.5 ? Direction.IntroducePatron : Direction.PatronLeaves);

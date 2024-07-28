@@ -443,7 +443,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log('advanceMessage');
         if (!this.requestedSlice) {
             console.log('Kick off generation');
-            this.requestedSlice = this.generateSlice();
+            this.requestedSlice = this.generateSlice('');
         }
         if (this.currentMessageIndex >= this.getMessageSubSlices(this.currentMessageId).length - 1) {
             await this.processNextResponse();
@@ -452,7 +452,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
     }
 
-    async generateSlice(): Promise<Slice|null> {
+    async advanceMessageChoice(subSlice: SubSlice) {
+        console.log('advanceMessageChoice');
+        if (!this.requestedSlice) {
+            console.log('Kick off generation');
+            this.requestedSlice = this.generateSlice(`${this.player.name} has selected the following action: ${subSlice.body}`);
+        }
+        await this.processNextResponse();
+    }
+
+    async generateSlice(additionalContext: string): Promise<Slice|null> {
         console.log('generateSlice');
         let newSlice: Slice = this.director.generateSlice(this, this.getMessageSlice(this.currentMessageId));
 
@@ -462,7 +471,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 let textGen = await this.generator.textGen({
                     prompt: this.buildStoryPrompt(
                         this.buildHistory(this.currentMessageId ?? ''),
-                        `${this.director.getPromptInstruction(this, newSlice)}`),
+                        `${this.director.getPromptInstruction(this, newSlice)}\n${additionalContext}`),
                     max_tokens: 400,
                     min_tokens: 50
                 });
