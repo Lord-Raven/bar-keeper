@@ -16,21 +16,21 @@ interface InstructionInput {
     patronName: string
 }
 
-export const generalInstruction = `[INST]Responses should follow a simple stageplay script format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions.[/INST]`
-export const sampleScript = `[EXAMPLE RESPONSE]\n**NARRATOR**: General narration is provided by NARRATOR.\n\n**CHARACTER 1**: "Character dialog goes in quotations." Their actions don't.\n\n**NARRATOR**: Character 2 walks in.\n\n**CHARACTER 2**: "Hey."\n\n**CHARACTER 1**: "Welcome back, Character 2!" They give a friendly wave.\n[/EXAMPLE RESPONSE]`
+export const generalInstruction = `[INST]Responses follow a simple stageplay style format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Refer to {{user}} in second-person.[/INST]`
+export const sampleScript = `[EXAMPLE RESPONSE]\n**NARRATOR**: General narration is provided here.\n\n**CHARACTER 1**: "Character dialog goes in quotations." Their actions don't.\n\n**NARRATOR**: Character 2 walks in.\n\n**CHARACTER 2**: "Hey, Character 1."\n\n**CHARACTER 1**: "Welcome back, Character 2!" They give a friendly wave.\n[/EXAMPLE RESPONSE]`
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
-    IntroduceBar: input => `Write a stageplay-script-formatted, visual novel style introduction to the bar described here: ${input.barDescription}. ` +
+    IntroduceBar: input => `Write a visual novel style introduction to the bar described here: ${input.barDescription}. ` +
         `Depict a second-person scene where ${input.playerName} is setting up for the beginning of their shift one evening; do not introduce established patrons to the scene yet.`,
-    Lull: input => `Continue the scene with some stageplay-script-formatted, visual novel style flavor as the evening slightly progresses; ${input.playerName} observes the environment or patrons with only trivial events or conversations--established patrons do not appear.`,
-    IntroducePatron: input => `Continue the scene with some stageplay-script-formatted, visual novel style development as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
+    Lull: input => `Continue the scene some visual novel style flavor as the evening slightly progresses; ${input.playerName} observes the environment or ancillary patrons with only trivial events or conversations--established patrons remain absent or passive.`,
+    IntroducePatron: input => `Continue the scene with visual novel style development as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
         `If they are a regular, focus on their interactions with ${input.playerName} or other patrons.`,
-    PatronBanter: input => `Continue the scene with some stageplay-script-formatted, visual novel style development as the present patrons banter amongst themselves or with ${input.playerName}.`,
-    PatronProblem: input => `Continue the scene with some stageplay-script-formatted, visual novel style development as one of the present patrons describes a personal problem to another patron or ${input.playerName}.`,
-    PatronDrinkRequest: input => `Continue the scene with some stageplay-script-formatted, visual novel style development as ${input.patronName} asks the bartender, ${input.playerName}, for a drink. ` +
+    PatronBanter: input => `Continue the scene with some visual novel style development as the present patrons banter amongst themselves or with ${input.playerName}.`,
+    PatronProblem: input => `Continue the scene with some visual novel style development as one of the present patrons describes a personal problem to another present patron or ${input.playerName}.`,
+    PatronDrinkRequest: input => `Continue the scene with some visual novel style development as ${input.patronName} asks the bartender, ${input.playerName}, for a drink. ` +
         `${input.patronName} will simply describe the flavor or style of drink they are in the mood for, rather than specifying the actual beverage they want--but their description should align with one of the bar's specialty beverages. ` +
-        `Keep ${input.playerName} passive; they'll serve the drink in a future response.`,
-    PatronLeaves: input => `Continue the scene with some stageplay-script-formatted, visual novel style development as ${input.patronName} bids farewell or otherwise departs the bar. ` +
+        `Keep ${input.playerName} passive; the drink will be served in a future response.`,
+    PatronLeaves: input => `Continue the scene with some visual novel style development as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar. ` +
         `Honor their personal style and connections to other patrons or ${input.playerName}.`,
 }
 
@@ -64,7 +64,7 @@ export class Slice {
             const match = line.match(/^\**(.[^*]+)\**:\s*(.+)$/i);
             if (match) {
                 // If there's a current dialogue, push it to the parsedLines array
-                if (currentSpeaker) {
+                if (currentSpeaker && currentDialogue.trim().length > 0) {
                     this.subSlices.push(new SubSlice(currentSpeaker, currentDialogue.trim()));
                 }
                 // Start a new dialogue
@@ -89,7 +89,7 @@ export class SubSlice {
     constructor(speakerId: string, body: string) {
         this.body = body;
         this.speakerId = speakerId;
-        console.log('Build a SubSlice: ' + body + ':' + speakerId);
+        console.log('Build a SubSlice: ' + speakerId + ':' + body);
     }
 }
 
@@ -117,13 +117,13 @@ export class Director {
                 newDirection = Math.random() > 0.5 ? Direction.PatronBanter : Direction.PatronProblem;
                 break;
             case Direction.PatronBanter:
-                newDirection = Math.random() > 0.5 ? Direction.PatronProblem : Direction.PatronDrinkRequest;
+                newDirection = Math.random() > 0.33 ? Direction.PatronProblem : (Math.random() > 0.5 ? Direction.IntroducePatron : Direction.PatronDrinkRequest);
                 break;
             case Direction.PatronProblem:
                 newDirection = Math.random() > 0.5 ? Direction.PatronBanter : Direction.PatronDrinkRequest;
                 break;
             case Direction.PatronDrinkRequest:
-                newDirection = Math.random() > 0.5 ? Direction.PatronBanter : Direction.PatronLeaves;
+                newDirection = Math.random() > 0.33 ? Direction.PatronBanter : (Math.random() > 0.5 ? Direction.IntroducePatron : Direction.PatronDrinkRequest);
                 break;
             case Direction.PatronLeaves:
                 newDirection = Math.random() > 0.5 ? Direction.Lull : Direction.IntroducePatron;
