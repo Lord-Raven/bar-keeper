@@ -292,7 +292,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 beverage.imageUrl = await this.makeImage({
                     //image: bottleUrl,
                     //strength: 0.1,
-                    prompt: `Professional, illustration, clean lines, vibrant colors, head-on, centered, upright, empty contrasting color-keyed background. A single standalone bottle of alcohol suiting this description: ${beverage.description}.`,
+                    prompt: `Professional, illustration, clean lines, vibrant colors, head-on, centered, upright, (empty contrasting color-keyed background). (A single standalone bottle of alcohol suiting this description: ${beverage.description})`,
                     negative_prompt: `background, frame, realism, grainy, borders, perspective, effects`,
                     aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
                     remove_background: true,
