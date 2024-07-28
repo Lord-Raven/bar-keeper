@@ -67,14 +67,14 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                                 {slice()?.subSlices.map(subSlice => {
                                     return (
                                             <div>
-                                                <Button variant="outlined" onClick = {() => {if(!advancing) {stage().advanceMessageChoice(subSlice)}}}>
+                                                <Button variant="outlined" disabled={advancing} onClick = {() => {stage().advanceMessageChoice(subSlice)}}>
                                                     <MessageWindup message={subSlice.body} options={{pace: () => {return 3}}} />
                                                 </Button>
                                                 <br/>
                                             </div>
                                         );
                                 })}
-                                <CircularProgress variant={advancing ? 'indeterminate' : 'determinate'} value={0} style={{float: 'right'}}/>
+                                <CircularProgress variant={advancing ? 'indeterminate' : 'indeterminate'} value={0} style={{float: 'right'}}/>
                             </div>
                         ) :
                         (
