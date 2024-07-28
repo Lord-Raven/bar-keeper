@@ -48,7 +48,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
     }, [subSlice()]);
 
     return (
-        
         <div style={{position: 'relative', flexGrow: '1'}}>
             <Box sx={{
                 p: 2,
@@ -68,13 +67,14 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                                 {slice()?.subSlices.map(subSlice => {
                                     return (
                                             <div>
-                                                <div onClick = {() => stage().advanceMessageChoice(subSlice)}>
+                                                <div onClick = {() => {if(!advancing) {stage().advanceMessageChoice(subSlice)}}}>
                                                     <MessageWindup message={subSlice.body} options={{pace: () => {return 3}}} />
                                                 </div>
                                                 <br/>
                                             </div>
                                         );
                                 })}
+                                <CircularProgress hidden={!advancing} style={{float: 'right'}}/>
                             </div>
                         ) :
                         (
