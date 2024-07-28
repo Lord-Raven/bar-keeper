@@ -332,7 +332,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.setLoadProgress(undefined, 'Complete');
         }
 
-
         await this.messenger.updateChatState(this.buildChatState());
         this.setLoadProgress(undefined, '');
 
@@ -463,7 +462,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 let textGen = await this.generator.textGen({
                     prompt: this.buildStoryPrompt(
                         this.buildHistory(this.currentMessageId ?? ''),
-                        `${this.director.getPromptInstruction(this, this.getMessageSlice(this.currentMessageId))}`),
+                        `${this.director.getPromptInstruction(this, newSlice)}`),
                     max_tokens: 400,
                     min_tokens: 50
                 });
