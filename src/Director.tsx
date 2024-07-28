@@ -76,7 +76,7 @@ export class Slice {
                 currentDialogue = line.trim();
             }
         });
-        if (currentSpeaker) {
+        if (currentSpeaker && currentDialogue.trim().length > 0) {
             this.subSlices.push(new SubSlice(currentSpeaker, currentDialogue.trim()));
         }
     }
