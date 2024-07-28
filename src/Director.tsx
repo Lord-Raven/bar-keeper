@@ -141,6 +141,7 @@ export class Director {
                     const keys = Object.keys(stage.patrons).filter(key => !newPresentPatronIds.includes(key));
                     selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
                     newPresentPatronIds.push(selectedPatronId);
+                    console.log('Introduce ' + selectedPatronId);
                 } else {
                     console.log('Was IntroducePatron, but no one new to introduce, so patron banter');
                     newDirection = Direction.PatronBanter;
@@ -151,6 +152,7 @@ export class Director {
                 if (newPresentPatronIds.length > 0) {
                     selectedPatronId = newPresentPatronIds[Math.floor(Math.random() * newPresentPatronIds.length)];
                     newPresentPatronIds.splice(newPresentPatronIds.indexOf(selectedPatronId), 1);
+                    console.log('depart ' + selectedPatronId);
                 } else {
                     console.log('Was PatronLeaves, but no one is here, so Lull');
                     newDirection = Direction.Lull;
