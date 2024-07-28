@@ -73,8 +73,7 @@ export class Slice {
             } else if (currentSpeaker && currentDialogue.trim().length > 0) {
                 // Continue the current dialogue
                 this.subSlices.push(new SubSlice(currentSpeaker, currentDialogue.trim()));
-                currentDialogue = '';
-                //currentDialogue += '\n\n' + line.trim();
+                currentDialogue = line.trim();
             }
         });
         if (currentSpeaker) {
