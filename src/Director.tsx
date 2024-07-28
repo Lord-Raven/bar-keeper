@@ -18,26 +18,34 @@ interface InstructionInput {
     patronName: string
 }
 
-export const generalInstruction = `[INST]Responses follow a simple stageplay style format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Refer to {{user}} in second-person.[/INST]`
+const generalInstruction = 'Responses follow a simple stageplay style format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Refer to ${input.playerName} in second-person.'
 export const sampleScript = `[EXAMPLE RESPONSE]\n**NARRATOR**: General narration is provided here.\n\n**CHARACTER 1**: "Character dialog goes in quotations." Their actions don't.\n\n**NARRATOR**: Character 2 walks in.\n\n**CHARACTER 2**: "Hey, Character 1."\n\n**CHARACTER 1**: "Welcome back, Character 2!" They give a friendly wave.\n[/EXAMPLE RESPONSE]`
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
     IntroduceBar: input => `Write a visual novel style introduction to the bar described here: ${input.barDescription}. ` +
-        `Depict a second-person scene where ${input.playerName} is setting up for the beginning of their shift one evening; do not introduce established patrons to the scene yet.`,
-    Lull: input => `Continue the scene some visual novel style flavor as the evening slightly progresses; ${input.playerName} observes the environment or ancillary patrons with only trivial events or conversations--established patrons remain absent or passive.`,
+        `Depict a second-person scene where ${input.playerName} is setting up for the beginning of their shift one evening; do not introduce established patrons to the scene yet. ${generalInstruction}`,
+    
+    Lull: input => `Continue the scene some visual novel style flavor as the evening slightly progresses; ${input.playerName} observes the environment or ancillary patrons with only trivial events or conversations--established patrons remain absent or passive.  ${generalInstruction}`,
+
     IntroducePatron: input => `Continue the scene with visual novel style development as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
-        `If they are a regular, focus on their interactions with ${input.playerName} or other patrons.`,
-    PatronBanter: input => `Continue the scene with some visual novel style development as the PRESENT PATRONS banter amongst themselves or with ${input.playerName}.`,
-    PatronProblem: input => `Continue the scene with some visual novel style development as one of the PRESENT PATRONS describes a personal problem to another PRESENT PATRON or ${input.playerName}.`,
+        `If they are a regular, focus on their interactions with ${input.playerName} or other patrons. ${generalInstruction}`,
+    
+    PatronBanter: input => `Continue the scene with some visual novel style development as the PRESENT PATRONS banter amongst themselves or with ${input.playerName}. ${generalInstruction}`,
+
+    PatronProblem: input => `Continue the scene with some visual novel style development as one of the PRESENT PATRONS describes a personal problem to another PRESENT PATRON or ${input.playerName}. ${generalInstruction}`,
+
     PatronDrinkRequest: input => `Continue the scene with some visual novel style development as ${input.patronName} asks the bartender, ${input.playerName}, for a drink. ` +
         `${input.patronName} will simply describe the flavor or style of drink they are in the mood for, rather than specifying the actual beverage they want--but their description should align with one of the bar's specialty beverages. ` +
-        `Keep ${input.playerName} passive; the drink will be served in a future response.`,
+        `Keep ${input.playerName} passive; the drink will be served in a future response. ${generalInstruction}`,
+    
     PatronLeaves: input => `Continue the scene with some visual novel style development as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar. ` +
-        `Honor their personal style and connections to other patrons or ${input.playerName}.`,
-    Choice: input => `Rather than develop the current story, use this response to generate two or three options for actions or dialog that ${input.playerName} could choose to pursue at this juncture. ` +
-        `Each option should just be a single-sentence description of the action or dialog that ${input.playerName} may choose. ` +
+        `Honor their personal style and connections to other patrons or ${input.playerName}. ${generalInstruction}`,
+    
+    Choice: input => `Rather than develop the current story, use this response to generate two or three distinct options for actions or dialog that ${input.playerName} could choose to pursue at this juncture. ` +
+        `Each option is a single-sentence description of the action or dialog that ${input.playerName} may choose. ` +
         `Always use this example format: **OPTION 1**: Agree with your friend.\n\n**OPTION 2**: Refuse to help.\n\n**OPTION 3**: Ask what's in it for you.`,
-    Outcome: input => `Continue the scene by depicting the course of action ${input.playerName} has chosen, following up with the reactions, consequences, and other outcomes.`
+    
+    Outcome: input => `Continue the scene by depicting the course of action ${input.playerName} has chosen, following up with the reactions, consequences, and other outcomes. ${generalInstruction}`
 }
 
 export class Slice {

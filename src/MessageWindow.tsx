@@ -1,5 +1,5 @@
 import {useWindupString} from "windups";
-import {Box, CircularProgress, IconButton, Typography} from "@mui/material";
+import {Box, Button, CircularProgress, IconButton, Typography} from "@mui/material";
 import {FC, useEffect, useState} from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
 import { Direction, Slice, SubSlice } from "./Director";
@@ -67,14 +67,14 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                                 {slice()?.subSlices.map(subSlice => {
                                     return (
                                             <div>
-                                                <div onClick = {() => {if(!advancing) {stage().advanceMessageChoice(subSlice)}}}>
+                                                <Button variant="outlined" onClick = {() => {if(!advancing) {stage().advanceMessageChoice(subSlice)}}}>
                                                     <MessageWindup message={subSlice.body} options={{pace: () => {return 3}}} />
-                                                </div>
+                                                </Button>
                                                 <br/>
                                             </div>
                                         );
                                 })}
-                                <CircularProgress hidden={!advancing} style={{float: 'right'}}/>
+                                <CircularProgress variant={advancing ? 'indeterminate' : 'determinate'} value={0} style={{float: 'right'}}/>
                             </div>
                         ) :
                         (
