@@ -123,7 +123,7 @@ export class Director {
                 newDirection = Math.random() > 0.5 ? Direction.PatronBanter : Direction.PatronDrinkRequest;
                 break;
             case Direction.PatronDrinkRequest:
-                newDirection = Math.random() > 0.33 ? Direction.PatronBanter : (Math.random() > 0.5 ? Direction.IntroducePatron : Direction.PatronDrinkRequest);
+                newDirection = Math.random() > 0.33 ? Direction.PatronBanter : (Math.random() > 0.5 ? Direction.IntroducePatron : Direction.PatronLeaves);
                 break;
             case Direction.PatronLeaves:
                 newDirection = Math.random() > 0.5 ? Direction.Lull : Direction.IntroducePatron;
