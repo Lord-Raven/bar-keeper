@@ -159,11 +159,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             identity
         } = userMessage;
 
-        console.log('beforePrompt()');
+        /*console.log('beforePrompt()');
 
         this.messageParentIds[identity] = this.currentMessageId ?? '';
         this.messageSlices[identity] = new Slice(undefined, [], undefined, content);
-        this.currentMessageId = identity;
+        this.currentMessageId = identity;*/
 
         return {
             stageDirections: null,
@@ -181,12 +181,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             content,
             identity
         } = botMessage;
-
+/*
         console.log('afterResponse()');
         if (this.messageParentIds && this.messageSlices) {
             this.messageParentIds[identity] = this.currentMessageId ?? '';
             this.messageSlices[identity] = new Slice(undefined, [], undefined, content);
-        }
+        }*/
         this.currentMessageId = identity;
         return {
             stageDirections: null,
