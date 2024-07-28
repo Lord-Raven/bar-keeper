@@ -58,43 +58,49 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                 position: 'absolute',
                 bottom: '0',
                 left: '0',
-                width: '100%',
                 zIndex: 5,
                 '&:hover': {backgroundColor: '#000000BB'}
             }}>
-                {slice()?.direction === Direction.Choice ? 
-                    (
-                        <div>
-                            {slice()?.subSlices.map(subSlice => {
-                                return <div onClick = {() => stage().advanceMessageChoice(subSlice)}>
-                                    <MessageWindup message={subSlice.body} options={{pace: () => {return 3}}} />
+                <div style = {{width: '100%'}}>
+                    {slice()?.direction === Direction.Choice ? 
+                        (
+                            <div>
+                                {slice()?.subSlices.map(subSlice => {
+                                    return (
+                                            <div>
+                                                <div onClick = {() => stage().advanceMessageChoice(subSlice)}>
+                                                    <MessageWindup message={subSlice.body} options={{pace: () => {return 3}}} />
+                                                </div>
+                                                <br/>
+                                            </div>
+                                        );
+                                })}
+                            </div>
+                        ) :
+                        (
+                            <div>
+                                <div>
+                                    <Typography variant="h6" color="#AAAAAA">{subSlice()?.speakerId ?? ''}</Typography>
                                 </div>
-                            })}
-                        </div>
-                    ) :
-                    (
-                        <div>
-                            <div>
-                                <Typography variant="h6" color="#AAAAAA">{subSlice()?.speakerId ?? ''}</Typography>
+                                <div>
+                                    <MessageWindup message={subSlice()?.body ?? ''} options={{pace: () => {return 3}, onFinished: () => {
+                                            setDoneWinding(true);}, skipped: doneWinding}} />
+                                </div>
+                                <div>
+                                    {advancing ? (
+                                            <CircularProgress style={{float: 'right'}}/>
+                                        ) : (
+                                            <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
+                                                    onClick={proceed}>
+                                                <ForwardIcon/>
+                                            </IconButton>
+                                        )
+                                    }
+                                </div>
                             </div>
-                            <div>
-                                <MessageWindup message={subSlice()?.body ?? ''} options={{pace: () => {return 3}, onFinished: () => {
-                                        setDoneWinding(true);}, skipped: doneWinding}} />
-                            </div>
-                            <div>
-                                {advancing ? (
-                                        <CircularProgress style={{float: 'right'}}/>
-                                    ) : (
-                                        <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
-                                                onClick={proceed}>
-                                            <ForwardIcon/>
-                                        </IconButton>
-                                    )
-                                }
-                            </div>
-                        </div>
-                    )
-                }
+                        )
+                    }
+                </div>
             </Box>
             {slice()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
