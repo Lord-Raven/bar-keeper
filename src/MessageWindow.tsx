@@ -41,6 +41,11 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
             setDoneWinding(true);
         }
     }
+    const proceedWith = (subSlice: SubSlice) => {
+        setAdvancing(true);
+        setDoneWinding(true);
+        stage().advanceMessageChoice(subSlice);
+    }
 
     useEffect(() => {
         setDoneWinding(false);
@@ -66,15 +71,15 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                             <div>
                                 {slice()?.subSlices.map(subSlice => {
                                     return (
-                                            <div>
-                                                <Button variant="outlined" disabled={advancing} onClick = {() => {stage().advanceMessageChoice(subSlice)}}>
+                                            <div style={{marginTop: '5px', marginBottom: '5px'}}>
+                                                <Button variant="outlined" disabled={advancing} onClick = {() => {proceedWith(subSlice)}}>
                                                     <MessageWindup message={subSlice.body} options={{pace: () => {return 3}}} />
                                                 </Button>
                                                 <br/>
                                             </div>
                                         );
                                 })}
-                                <CircularProgress variant={advancing ? 'indeterminate' : 'indeterminate'} value={0} style={{float: 'right'}}/>
+                                <CircularProgress variant={advancing ? 'indeterminate' : 'determinate'} value={5} style={{float: 'right'}}/>
                             </div>
                         ) :
                         (

@@ -14,7 +14,7 @@ import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
 import {Box, createTheme, LinearProgress, ThemeProvider, Typography, IconButton} from "@mui/material";
 import ReplayIcon from "@mui/icons-material/Replay";
-import {Director, sampleScript, Slice, SubSlice} from "./Director";
+import {Direction, Director, sampleScript, Slice, SubSlice} from "./Director";
 import {MessageWindow} from "./MessageWindow"
 import bottleUrl from './assets/bottle.png'
 import patronUrl from './assets/elf2.png'
@@ -411,7 +411,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let depth = 0;
         while(this.messageParentIds[currentId] && currentId != this.messageParentIds[currentId] && depth < 10) {
             currentId = this.messageParentIds[currentId];
-            historyString = `${this.getMessageBody(currentId)}\n\n${historyString}`;
+            if (this.getMessageSlice(currentId).direction !== Direction.Choice) {
+                historyString = `${this.getMessageBody(currentId)}\n\n${historyString}`;
+            }
             depth++;
         }
 
