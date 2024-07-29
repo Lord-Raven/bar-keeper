@@ -256,7 +256,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.setLoadProgress(10, 'Generating bar image.');
 
             this.barImageUrl = await this.makeImage({
-                prompt: `masterpiece, hyperrealism, fine lines, vibrant colors, dynamic lighting, illustration, interior of bar with this description: ${this.barDescription}`,
+                prompt: `masterpiece, high resolution, hyperrealism, fine lines, vibrant colors, dynamic lighting, illustration, (interior of bar with this description: ${this.barDescription})`,
                 negative_prompt: 'grainy, low resolution, low quality, exterior, person',
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             }, '');
@@ -292,8 +292,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 beverage.imageUrl = await this.makeImage({
                     //image: bottleUrl,
                     //strength: 0.1,
-                    prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty contrasting color-keyed background. (A standalone bottle suiting this description: ${beverage.description})`,
-                    negative_prompt: `background, frame, realism, borders, perspective, effects, props`,
+                    prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty background, negative space, contrasting color-keyed background, (a standalone bottle of the alcohol in this description: ${beverage.description})`,
+                    negative_prompt: `background, frame, realism, borders, perspective, effects`,
                     aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
                     remove_background: true,
                     //seed: null,
