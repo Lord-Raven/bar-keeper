@@ -109,7 +109,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                                 position: 'absolute', bottom: 0, 
                                 left: ((index % 2) == 0) ? `${index * 30}vw` : 'auto', 
                                 right: ((index % 2) == 1) ? `${(index - 1) * 30}vw` : 'auto',
-                                zIndex: (index < 2 ? 4 : 3),
+                                zIndex: (index < 2 ? 6 : 5),
                                 height: '52vh', width: 'auto'}}/>;
                         } else {
                             return <img src={stage().patrons[patronId].imageUrl} style={{
