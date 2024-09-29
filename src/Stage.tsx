@@ -245,9 +245,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.setLoadProgress(5, 'Generating bar description.');
 
         let textResponse = await this.generator.textGen({
-            prompt: `;{{system_prompt}};{{prefix}};{{suffix}};{{jailbreak}};{{history}};{{jailbreak}};${this.buildBarDescriptionPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description)}`,
-            include_history: true,
-            template: ";{{system_prompt}};{{prefix}};{{suffix}};{{jailbreak}};{{history}};",
+            prompt: `system_prompt:\n{{system_prompt}}\nprefix:\n{{prefix}}\nsuffix:\n{{suffix}}\njailbreak:\n{{jailbreak}}\n;{{history}};post_history_instructions:\n{{post_history_instructions}}\ntemplate:\n{{template}}\njailbreak_prompt:\n{{jailbreak_prompt}}\n\n${this.buildBarDescriptionPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description)}`,
             max_tokens: 200,
             min_tokens: 50
         });
