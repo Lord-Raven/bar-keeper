@@ -43,16 +43,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     };
 
     buildAlcoholDescriptionsPrompt(): string {
-        return `[EXAMPLE DIALOG]<START>{{char}}: Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
+        return `[LOG]<START>{{char}}: Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
             `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
             `Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n` +
             `Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
             `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
             `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n"` +
-            `[/EXAMPLE DIALOG]\n` +
+            `[/LOG]\n` +
             `[INSTRUCTION OVERRIDE]Instead of continuing the narrative, thoughtfully consider a bar with the following description:[/INSTRUCTION OVERRIDE]\n${this.barDescription}\n` +
             `[INSTRUCTION OVERRIDE]For this response, output seven lines, each with the name of a type of alcohol that this bar might serve, as well as a brief description of ` +
-            `its appearance, bottle, odor, and flavor. Follow the format of historic examples.\n` +
+            `its appearance, bottle, odor, and flavor. Follow the format of logged examples.\n` +
             `[/INSTRUCTION OVERRIDE]\n` +
             `[PREVIOUS INSTRUCTION]`
     };
@@ -271,7 +271,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.beverages = [];
             let alcoholResponse = await this.generator.textGen({
                 prompt: this.buildAlcoholDescriptionsPrompt(),
-                max_tokens: 400,
+                max_tokens: 500,
                 min_tokens: 50
             });
 
@@ -294,9 +294,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             for (const beverage of this.beverages) {
                 console.log(`Generating image for ${beverage.name}`)
-                beverage.imageUrl = await this.makeImage({
-                    //image: bottleUrl,
-                    //strength: 0.1,
+                beverage.imageUrl = await this.makeImageFromImage({
+                    image: bottleUrl,
+                    strength: 0.1,
                     prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty background, negative space, contrasting color-keyed background, (a standalone bottle of the alcohol in this description: ${beverage.description})`,
                     negative_prompt: `background, frame, realism, borders, perspective, effects`,
                     aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
@@ -371,7 +371,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         //  distinct from others while potentially having a connection to other established patrons.
         let patronResponse = await this.generator.textGen({
             prompt: this.buildPatronPrompt(),
-            max_tokens: 400,
+            max_tokens: 500,
             min_tokens: 50
         });
         let result = patronResponse?.result ?? '';
