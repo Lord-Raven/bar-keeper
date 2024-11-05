@@ -53,7 +53,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
     }, [subSlice()]);
 
     return (
-        <div style={{position: 'relative', flexGrow: '1', width: '100%'}}>
+        <div style={{position: 'relative', flexGrow: '1'}}>
             <Box sx={{
                 p: 2,
                 border: '1px dashed grey',
@@ -63,6 +63,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                 bottom: '0',
                 left: '0',
                 zIndex: 5,
+                width: '100%',
                 '&:hover': {backgroundColor: '#000000BB'}
             }}>
                 <div style = {{width: '100%'}}>
@@ -114,14 +115,14 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                                 position: 'absolute', bottom: 0, 
                                 left: ((index % 2) == 0) ? `${index * 30}vw` : 'auto', 
                                 right: ((index % 2) == 1) ? `${(index - 1) * 30}vw` : 'auto',
-                                zIndex: (index < 2 ? 6 : 5),
+                                zIndex: (index < 2 ? 4 : 3),
                                 height: '52vh', width: 'auto'}}/>;
                         } else {
                             return <img src={stage().patrons[patronId].imageUrl} style={{
                                 position: 'absolute', bottom: 0, 
                                 left: ((index % 2) == 0) ? `${index * 30 + 1}vw` : 'auto', 
                                 right: ((index % 2) == 1) ? `${(index - 1) * 30 - 1}vw` : 'auto',
-                                zIndex: (index < 2 ? 4 : 3),
+                                zIndex: (index < 2 ? 2 : 1),
                                 filter: 'brightness(80%)',
                                 height: '50vh', width: 'auto'}}/>;
                         }

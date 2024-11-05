@@ -36,13 +36,13 @@ type ChatStateType = any;
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     buildBarDescriptionPrompt(description: string): string {
-        return `[INST]Digest and appreciate the vibe, style, and setting of the following flavor text:[/INST]\n${description}\n` +
-            `[INST]Write two or three sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
-            `ambiance, setting, theming, fixtures, and general clientele of the establishment.[/INST]`
+        return `[INSTRUCTION OVERRIDE]Digest and appreciate the vibe, style, and setting of the following flavor text:\n${description}\n` +
+            `Write two or three sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
+            `ambiance, setting, theming, fixtures, and general clientele of the establishment.[/INSTRUCTION OVERRIDE]`
     };
 
     buildAlcoholDescriptionsPrompt(): string {
-        return `[INST]Instead of continuing the narrative, thoughtfully consider a bar with the following description:\n${this.barDescription}\n` +
+        return `[INSTRUCTION OVERRIDE]Instead of continuing the narrative, thoughtfully consider a bar with the following description:\n${this.barDescription}\n` +
             `For this response, output seven lines, each with the name of a type of alcohol that this bar might serve, as well as a brief description of ` +
             `its appearance, bottle, odor, and flavor. Follow the format of these examples:\n` +
             `Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
@@ -51,19 +51,19 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
             `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
             `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n` +
-            `[/INST]`;
+            `[/INSTRUCTION OVERRIDE]`;
     };
 
     buildPatronPrompt(): string {
-        return `[INST]Thoughtfully consider a bar with the following description:[/INST]\n${this.barDescription}\n` +
-            `[INST]Craft a new character who might patronize this establishment, giving them a name, a physical description, a comma-delimitted list of concise physical attributes, and a paragraph about their personality, background, habits, and ticks. ` +
+        return `[INSTRUCTION OVERRIDE]Thoughtfully consider a bar with the following description:\n${this.barDescription}\n` +
+            `Craft a new character who might patronize this establishment, giving them a name, a physical description, a comma-delimitted list of concise physical attributes, and a paragraph about their personality, background, habits, and ticks. ` +
             `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(this.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
-                `connections between this new character and one or more existing patrons:[/INST]\n` +
-                `${Object.values(this.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n[INST]\n`) :
+                `connections between this new character and one or more existing patrons:\n` +
+                `${Object.values(this.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n') +
-            `Output the details for a new character in the following format:\nName: Name\nDescription: Physical description here\nAttributes: comma-delimitted, gender, skin, hair color, hair style, eye color, clothing, accessories, other key physical features\nPersonality: Personality and background details here.\n[/INST]`;
+            `Output the details for a new character in the following format:\nName: Name\nDescription: Physical description here\nAttributes: comma-delimitted, gender, skin, hair color, hair style, eye color, clothing, accessories, other key physical features\nPersonality: Personality and background details here.\n[/INSTRUCTION OVERRIDE]`;
     }
 
     readonly disableContentGeneration: boolean = false;
@@ -245,8 +245,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.setLoadProgress(5, 'Generating bar description.');
 
         let textResponse = await this.generator.textGen({
-            prompt: `system_prompt:\n{{system_prompt}}\nprefix:\n{{prefix}}\nsuffix:\n{{suffix}}\njailbreak:\n{{jailbreak}}\n;{{history}};post_history_instructions:\n{{post_history_instructions}}\ntemplate:\n{{template}}\njailbreak_prompt:\n{{jailbreak_prompt}}\n\n${this.buildBarDescriptionPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description)}`,
-            max_tokens: 200,
+            prompt: this.buildBarDescriptionPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description),
+            max_tokens: 250,
             min_tokens: 50
         });
         console.log(`Bar description: ${textResponse?.result}`);
@@ -305,7 +305,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             // Generate a sound effect
             this.setLoadProgress(60, 'Generate sounds.');
             /*this.entranceSoundUrl = await this.makeSound({
-                prompt: `[INST]Create a brief sound effect (2-4 seconds) to indicate that someone has entered the following establishment:[/INST}\n${this.barDescription}\n[INST]This sound could be a chime, bell, tone, or door closing sound--something that suits the ambiance of the setting.`,
+                prompt: `[INSTRUCTION OVERRIDE]Create a brief sound effect (2-4 seconds) to indicate that someone has entered the following establishment:\n${this.barDescription}\nThis sound could be a chime, bell, tone, or door closing sound--something that suits the ambiance of the setting.[/INSTRUCTION OVERRIDE]`,
                 seconds: 5
             },'');*/
 
@@ -437,7 +437,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.buildBeverageDescriptions() +
             `\n${sampleScript}\n` +
             `[LOG]${history}[/LOG]\n` +
-            `[INST]${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}[/INST]`;
+            `[INSTRUCTION OVERRIDE]${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}[/INSTRUCTION OVERRIDE]`;
     }
 
     async advanceMessage() {
