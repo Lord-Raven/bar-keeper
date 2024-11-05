@@ -36,14 +36,15 @@ type ChatStateType = any;
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     buildBarDescriptionPrompt(description: string): string {
-        return `[INSTRUCTION OVERRIDE]Digest and appreciate the vibe, style, and setting of the following flavor text:\n${description}\n` +
-            `Write two or three sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
-            `ambiance, setting, theming, fixtures, and general clientele of the establishment.[/INSTRUCTION OVERRIDE]`
+        return `[INSTRUCTION OVERRIDE]Digest and appreciate the vibe, style, and setting of the following flavor text:[/INSTRUCTION OVERRIDE]\n${description}\n` +
+            `[INSTRUCTION OVERRIDE]Write two or three sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
+            `ambiance, setting, theming, fixtures, and general (rather than specific) clientele of the establishment.[/INSTRUCTION OVERRIDE]\n` +
+            `[GENERAL INSTRUCTION]`
     };
 
     buildAlcoholDescriptionsPrompt(): string {
-        return `[INSTRUCTION OVERRIDE]Instead of continuing the narrative, thoughtfully consider a bar with the following description:\n${this.barDescription}\n` +
-            `For this response, output seven lines, each with the name of a type of alcohol that this bar might serve, as well as a brief description of ` +
+        return `[INSTRUCTION OVERRIDE]Instead of continuing the narrative, thoughtfully consider a bar with the following description:[/INSTRUCTION OVERRIDE]\n${this.barDescription}\n` +
+            `[INSTRUCTION OVERRIDE]For this exceptional response, output seven lines, each with the name of a type of alcohol that this bar might serve, as well as a brief description of ` +
             `its appearance, bottle, odor, and flavor. Follow the format of these examples:\n` +
             `Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
             `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
@@ -51,20 +52,23 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
             `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
             `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n` +
-            `[/INSTRUCTION OVERRIDE]`;
+            `[/INSTRUCTION OVERRIDE]\n` +
+            `[GENERAL INSTRUCTION]`
     };
 
     buildPatronPrompt(): string {
-        return `[INSTRUCTION OVERRIDE]Thoughtfully consider a bar with the following description:\n${this.barDescription}\n` +
-            `Craft a new character who might patronize this establishment, giving them a name, a physical description, a comma-delimitted list of concise physical attributes, and a paragraph about their personality, background, habits, and ticks. ` +
+        return `[INSTRUCTION OVERRIDE]Thoughtfully consider a bar with the following description:[/INSTRUCTION OVERRIDE]\n${this.barDescription}\n` +
+            `[INSTRUCTION OVERRIDE]Craft a new character who might patronize this establishment, giving them a name, a physical description, a comma-delimitted list of concise physical attributes, and a paragraph about their personality, background, habits, and ticks. ` +
             `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(this.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
                 `connections between this new character and one or more existing patrons:\n` +
                 `${Object.values(this.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n') +
-            `Output the details for a new character in the following format:\nName: Name\nDescription: Physical description here\nAttributes: comma-delimitted, gender, skin, hair color, hair style, eye color, clothing, accessories, other key physical features\nPersonality: Personality and background details here.\n[/INSTRUCTION OVERRIDE]`;
-    }
+            `Output the details for a new character in the following format:\nName: Name\nDescription: Physical description here\nAttributes: comma-delimitted, gender, skin, hair color, hair style, eye color, clothing, accessories, other key physical features\nPersonality: Personality and background details here.` +
+            `\n[/INSTRUCTION OVERRIDE]\n` +
+            `[GENERAL INSTRUCTION]`
+    };
 
     readonly disableContentGeneration: boolean = false;
     // Message State:
