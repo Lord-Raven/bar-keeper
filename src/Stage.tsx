@@ -297,8 +297,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             for (const beverage of this.beverages) {
                 console.log(`Generating image for ${beverage.name}`)
                 beverage.imageUrl = await this.makeImageFromImage({
-                    image: bottleUrl,
-                    strength: 0.1,
+                    image: '/bottle.png',
+                    strength: 0.75,
                     prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty background, negative space, contrasting color-keyed background, (a standalone bottle of the alcohol in this description: ${beverage.description})`,
                     negative_prompt: `background, frame, realism, borders, perspective, effects`,
                     aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
