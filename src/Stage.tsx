@@ -42,8 +42,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     };
 
     buildAlcoholDescriptionsPrompt(): string {
-        return `[INST]Thoughtfully consider a bar with the following description:[/INST]\n${this.barDescription}\n` +
-            `[INST]Output seven lines, each with the name of a type of alcohol that this bar might serve, as well as a brief description of ` +
+        return `[INST]Instead of continuing the narrative, thoughtfully consider a bar with the following description:\n${this.barDescription}\n` +
+            `For this response, output seven lines, each with the name of a type of alcohol that this bar might serve, as well as a brief description of ` +
             `its appearance, bottle, odor, and flavor. Follow the format of these examples:\n` +
             `Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
             `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
@@ -257,7 +257,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             this.barImageUrl = await this.makeImage({
                 prompt: `masterpiece, high resolution, hyperrealism, fine lines, vibrant colors, dynamic lighting, illustration, (interior of bar with this description: ${this.barDescription})`,
-                negative_prompt: 'grainy, low resolution, low quality, exterior, person',
+                negative_prompt: 'grainy, low resolution, low quality, exterior, person, outside',
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             }, '');
 

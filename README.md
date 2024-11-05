@@ -1,5 +1,3 @@
-![](demo.GIF)
-
 # Stage Template for Chub
 
 This is a template stage that does nothing, to be used as a base
