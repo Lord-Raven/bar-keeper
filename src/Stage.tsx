@@ -3,6 +3,7 @@ import {useSound} from "use-sound";
 import {
     AspectRatio,
     Character,
+    ImageToImageRequest,
     InitialData,
     Message,
     StageBase,
@@ -291,6 +292,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             }
 
             this.setLoadProgress(30, 'Generating beverage images.');
+            let blah: ImageToImageRequest;
 
             for (const beverage of this.beverages) {
                 console.log(`Generating image for ${beverage.name}`)
@@ -301,8 +303,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     negative_prompt: `background, frame, realism, borders, perspective, effects`,
                     aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
                     remove_background: true,
-                    //seed: null,
-                    //item_id: null,
+                    seed: null,
+                    item_id: null,
                 }, bottleUrl);
                 this.setLoadProgress((this.loadingProgress ?? 0) + 5, 'Generating beverage images.');
             }
