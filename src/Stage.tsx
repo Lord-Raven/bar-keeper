@@ -245,6 +245,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.loadingProgress = loadingProgress;
         this.loadingDescription = loadingDescription;
     }
+    async regenerateBeverages() {
+        this.setLoadProgress(0, 'Generating beverages.');
+        await this.generateBeverages();
+        this.setLoadProgress(undefined, '');
+    }
 
     async generateBeverages() {
         this.beverages = [];
@@ -567,7 +572,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             <ReplayIcon/>
                         </IconButton>
                         <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'}
-                                    onClick={() => this.generateBeverages()}>
+                                    onClick={() => this.regenerateBeverages()}>
                             <ReplayIcon/>
                         </IconButton>
                         <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
