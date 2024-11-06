@@ -310,7 +310,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             this.setLoadProgress(25, 'Generating beverages.');
 
-            await generateBeverages();
+            await this.generateBeverages();
 
             // Generate a sound effect
             this.setLoadProgress(60, 'Generate sounds.');
