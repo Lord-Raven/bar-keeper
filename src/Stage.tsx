@@ -52,10 +52,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
             `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n` +
             `[/SAMPLES]\n` +
-            `[SPECIFIC INSTRUCTION]Thoughtfully consider a bar with the following description:\n${this.barDescription}\n` +
-            `Instead of narrating, use this response to define several types of alcohol that this bar might serve, as well as a brief description of ` +
-            `its appearance, bottle, odor, and flavor. Follow the format of logged samples:\n` +
-            `Alcohol Name - Brief description of the alcohol\n` +
+            `[SPECIFIC INSTRUCTION]Thoughtfully consider a fictional bar with the following description:\n${this.barDescription}\n` +
+            `General instruction is to narrate, but this specific response should instead focus on defining several types of alcohol that this bar might serve, as well as a brief description of ` +
+            `each's appearance, bottle, odor, and flavor. Follow the format of samples:\n` +
+            `Some Alcohol - A brief description of the alcohol and bottle it comes in.\n` +
+            `A Different Alcohol - Another brief description that differs from the other beverages.\n` +
+            `Wildly Different Beverage - The description of yet another alcohol that stands out from the others.\n` +
             `[/SPECIFIC INSTRUCTION]\n` +
             `[GENERAL INSTRUCTION]`;
     };
