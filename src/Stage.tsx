@@ -255,7 +255,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async generateBeverages() {
         this.beverages = [];
-        let alcoholResponse = await this.generator.textGen({
+        /*let alcoholResponse = await this.generator.textGen({
             prompt: this.buildAlcoholDescriptionsPrompt(),
 
             max_tokens: 500,
@@ -275,7 +275,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             if (++count >= 5) {
                 break;
             }
-        }
+        }*/
+       
+        this.beverages.push(new Beverage('Test Beer', 'Delicious golden ale', ''));
 
         this.setLoadProgress(30, 'Generating beverage images.');
 
