@@ -19,7 +19,7 @@ const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text }) => {
         <span> 
             {parts.map((part, index) => 
                 index % 2 === 1 ? (
-                    <span className="quoted-text" key={index}>
+                    <span className="quote-color" key={index}>
                         "{part}"
                     </span>
                 ) : (
@@ -77,7 +77,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
     return (
         <div style={{position: 'relative', flexGrow: '1'}}>
             <Box sx={{
-                p: 2,
+                p: 1,
                 position: 'absolute',
                 bottom: '0',
                 left: '0',
@@ -85,7 +85,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                 backgroundColor: '#00000088',
                 overflow: 'visible',
                 zIndex: 5,
-                width: '100%',
+                width: '99%',
                 '&:hover': {backgroundColor: '#000000BB'}
             }}>
                 <div style = {{width: '100%'}}>
