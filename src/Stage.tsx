@@ -44,22 +44,23 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     };
 
     buildAlcoholDescriptionsPrompt(): string {
-        return `[LOG]\n` +
-            `### Response: {{char}}: Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
-            `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
-            `Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n` +
-            `### Response: {{char}}: Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
-            `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
-            `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n` +
-            `[/LOG]\n` +
-            `[CURRENT DIRECTIVE]Disregard your general narrative instruction and thoughtfully consider a fictional bar with the following description:\n${this.barDescription}\n` +
-            `In lieu of narration, utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
-            `each's appearance, bottle, odor, and flavor. Follow the format of logged samples where each line presents a new beverage:\n` +
-            `Some Alcohol - A brief description of the alcohol and bottle it comes in.\n` +
-            `A Different Alcohol - Another brief description that differs from the other beverages.\n` +
-            `Wildly Different Beverage - The description of yet another alcohol that stands out from the others.\n` +
-            `[/CURRENT DIRECTIVE]\n` +
-            `[PAST DIRECTIVE]`;
+        return `[LOCATION]\n \
+            ${this.barDescription}\n \
+            [/LOCATION]\n \
+            [EXAMPLE RESPONSES]\n \
+            ### Response: {{char}}: Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n \
+            Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n \
+            Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n \
+            ### Response: {{char}}: Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n \
+            Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n \
+            Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n \
+            [/EXAMPLE RESPONSES]\n \
+            [RESPONSE INSTRUCTION]Instead of continuing the story, specifically utilize this response to define several types of alcohol that this bar might serve, providing a brief description of \
+            each's appearance, bottle, odor, and flavor. Follow the format of examples, where each line presents a new beverage name and description:\n \
+            "Some Alcohol - A brief description of the alcohol and bottle it comes in.\n \
+            A Different Alcohol - Another brief description that differs from the other beverages.\n \
+            Wildly Different Beverage - The description of yet another alcohol that stands out from the others."\n \
+            [/RESPONSE INSTRUCTION]\n`;
     };
 
     buildPatronPrompt(): string {
