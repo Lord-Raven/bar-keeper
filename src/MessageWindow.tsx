@@ -17,9 +17,9 @@ const spanQuotes = (text: string) => {
     return (
         parts.map((part: string, index: number) => 
             index % 2 === 1 ? (
-                <span className="quoted-text" key={index}>
-                    "{part}"
-                </span>
+                `<span className="quoted-text" key={index}> \
+                    ${part} \
+                </span>`
             ) : (
                 part
             )
@@ -76,7 +76,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
         <div style={{position: 'relative', flexGrow: '1'}}>
             <Box sx={{
                 p: 2,
-                m: 1,
+                m: -1,
                 position: 'absolute',
                 bottom: '0',
                 left: '0',
