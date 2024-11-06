@@ -619,7 +619,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             '&:hover': {backgroundColor: '#000000BB'}
                         }}>
                             <div
-                                style={{height: '100%', display: 'flex', flexDirection: 'row'}}>
+                                style={{height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
                                 {this.beverages.map(beverage => beverage.render())}
                             </div>
                         </Box>

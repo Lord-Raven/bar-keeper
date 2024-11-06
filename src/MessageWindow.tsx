@@ -10,8 +10,28 @@ interface MessageWindupProps {
     options?: {};
 }
 
+const spanQuotes = (text: string) => {
+    const regex = /"([^"]*)"/g;
+    const parts = text.split(regex);
+    
+    return (
+        parts.map((part: string, index: number) => 
+            index % 2 === 1 ? (
+                <span className="quoted-text" key={index}>
+                    "{part}"
+                </span>
+            ) : (
+                part
+            )
+        ).join('')
+    );
+}; 
+
 function MessageWindup({message, options}: MessageWindupProps) {
-    const [text] = useWindupString(message, options);
+
+    let spannedMessage = spanQuotes(message);
+    console.log(spannedMessage);
+    const [text] = useWindupString(spannedMessage, options);
     return (
         <div style={{height: '100%', position: 'relative'}}>
             <Typography color='#00000000' style={{userSelect: 'none'}}>{message}</Typography>
@@ -56,6 +76,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
         <div style={{position: 'relative', flexGrow: '1'}}>
             <Box sx={{
                 p: 2,
+                m: 1,
                 position: 'absolute',
                 bottom: '0',
                 left: '0',
