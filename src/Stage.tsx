@@ -50,7 +50,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n` +
             `Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
             `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
-            `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n"` +
+            `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n` +
             `[/LOG]\n` +
             `{{jailbreak}}` +
             `[INSTRUCTION OVERRIDE]Thoughtfully consider a bar with the following description:[/INSTRUCTION OVERRIDE]\n${this.barDescription}\n` +
@@ -58,7 +58,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `its appearance, bottle, odor, and flavor. Follow the format of logged samples:\n` +
             `Alcohol Name - Brief description of the alcohol\n` +
             `[/INSTRUCTION OVERRIDE]\n` +
-            `[GENERAL INSTRUCTION]`
+            `[GENERAL INSTRUCTION]`;
     };
 
     buildPatronPrompt(): string {
