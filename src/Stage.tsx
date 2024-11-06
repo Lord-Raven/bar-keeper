@@ -255,7 +255,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async generateBeverages() {
         this.beverages = [];
-        /*let alcoholResponse = await this.generator.textGen({
+        let alcoholResponse = await this.generator.textGen({
             prompt: this.buildAlcoholDescriptionsPrompt(),
 
             max_tokens: 500,
@@ -275,18 +275,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             if (++count >= 5) {
                 break;
             }
-        }*/
-       
-        this.beverages.push(new Beverage('Test Beer', 'Delicious golden ale', ''));
+        }
 
         this.setLoadProgress(30, 'Generating beverage images.');
 
         console.log(new URL(bottleUrl, import.meta.url).href);
         for (const beverage of this.beverages) {
             console.log(`Generating image for ${beverage.name}`)
-            beverage.imageUrl = await this.makeImageFromImage({
-                image: new URL(bottleUrl, import.meta.url).href,
-                strength: 0.75,
+            beverage.imageUrl = await this.makeImage({
+                //image: new URL(bottleUrl, import.meta.url).href,
+                //strength: 0.75,
                 prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty background, negative space, contrasting color-keyed background, (a standalone bottle of the alcohol in this description: ${beverage.description})`,
                 negative_prompt: `background, frame, realism, borders, perspective, effects`,
                 remove_background: true,
