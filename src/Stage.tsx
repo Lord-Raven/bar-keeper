@@ -37,10 +37,9 @@ type ChatStateType = any;
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     buildBarDescriptionPrompt(description: string): string {
-        return `[INSTRUCTION OVERRIDE]Digest and appreciate the vibe, style, and setting of the following flavor text:[/INSTRUCTION OVERRIDE]\n${description}\n` +
-            `[INSTRUCTION OVERRIDE]Instead of narrating, write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
-            `ambiance, setting, theming, fixtures, and general clientele of the establishment.[/INSTRUCTION OVERRIDE]\n` +
-            `[GENERAL INSTRUCTION]`
+        return `[RESPONSE INSTRUCTION]Digest and appreciate the vibe, style, and setting of the following flavor text:[/RESPONSE INSTRUCTION]\n${description}\n \
+            [RESPONSE INSTRUCTION]Instead of narrating, write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the \
+            ambiance, setting, theming, fixtures, and general clientele of the establishment.[/RESPONSE INSTRUCTION]\n`;
     };
 
     buildAlcoholDescriptionsPrompt(): string {
@@ -64,17 +63,19 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     };
 
     buildPatronPrompt(): string {
-        return `[INSTRUCTION OVERRIDE]Thoughtfully consider a bar with the following description:[/INSTRUCTION OVERRIDE]\n${this.barDescription}\n` +
-            `[INSTRUCTION OVERRIDE]Craft a new character who might patronize this establishment, giving them a name, a physical description, a comma-delimitted list of concise physical attributes, and a paragraph about their personality, background, habits, and ticks. ` +
-            `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
+        return `[LOCATION]\n \
+            ${this.barDescription}\n \
+            [/LOCATION]\n \
+            [RESPONSE INSTRUCTION]Instead of continuing the story, specifically utilize this response to craft a new character who might patronize this establishment, \
+            giving them a name, a physical description, a comma-delimitted list of concise physical attributes, and a paragraph about their personality, background, habits, and ticks. \
+            Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(this.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
                 `connections between this new character and one or more existing patrons:\n` +
                 `${Object.values(this.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n') +
             `Output the details for a new character in the following format:\nName: Name\nDescription: Physical description here\nAttributes: comma-delimitted, gender, skin, hair color, hair style, eye color, clothing, accessories, other key physical features\nPersonality: Personality and background details here.` +
-            `\n[/INSTRUCTION OVERRIDE]\n` +
-            `[GENERAL INSTRUCTION]`
+            `\n[/RESPONSE INSTRUCTION]\n`;
     };
 
     readonly disableContentGeneration: boolean = false;
