@@ -246,6 +246,47 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.loadingDescription = loadingDescription;
     }
 
+    async generateBeverages() {
+        this.beverages = [];
+        let alcoholResponse = await this.generator.textGen({
+            prompt: this.buildAlcoholDescriptionsPrompt(),
+            max_tokens: 500,
+            min_tokens: 50
+        });
+
+        const lines = alcoholResponse?.result ?? '';
+        const regex = /^[^\p{L}]*(\p{L}.+?)\s+-\s+(.+)$/gmu;
+        let match: RegExpExecArray|null;
+        let count = 0;
+        console.log(lines);
+        while ((match = regex.exec(lines)) !== null) {
+            if (this.beverages.some(beverage => beverage.name === (match ? match[1].trim() : ''))) {
+                continue;
+            }
+            this.beverages.push(new Beverage(match[1].trim(), match[2].trim(), ''));
+            if (++count >= 5) {
+                break;
+            }
+        }
+
+        this.setLoadProgress(30, 'Generating beverage images.');
+
+        for (const beverage of this.beverages) {
+            console.log(`Generating image for ${beverage.name}`)
+            beverage.imageUrl = await this.makeImageFromImage({
+                image: 'https://imgur.com/HrYnS3B.png',
+                strength: 0.75,
+                prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty background, negative space, contrasting color-keyed background, (a standalone bottle of the alcohol in this description: ${beverage.description})`,
+                negative_prompt: `background, frame, realism, borders, perspective, effects`,
+                aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
+                remove_background: true,
+                seed: null,
+                item_id: null,
+            }, bottleUrl);
+            this.setLoadProgress((this.loadingProgress ?? 0) + 5, 'Generating beverage images.');
+        }
+    }
+
     async generate() {
         if (this.loadingProgress !== undefined) return;
         this.setLoadProgress(5, 'Generating bar description.');
@@ -269,45 +310,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             this.setLoadProgress(25, 'Generating beverages.');
 
-            this.beverages = [];
-            let alcoholResponse = await this.generator.textGen({
-                prompt: this.buildAlcoholDescriptionsPrompt(),
-                max_tokens: 500,
-                min_tokens: 50
-            });
-
-            const lines = alcoholResponse?.result ?? '';
-            const regex = /^[^\p{L}]*(\p{L}.+?)\s+-\s+(.+)$/gmu;
-            let match: RegExpExecArray|null;
-            let count = 0;
-            console.log(lines);
-            while ((match = regex.exec(lines)) !== null) {
-                if (this.beverages.some(beverage => beverage.name === (match ? match[1].trim() : ''))) {
-                    continue;
-                }
-                this.beverages.push(new Beverage(match[1].trim(), match[2].trim(), ''));
-                if (++count >= 5) {
-                    break;
-                }
-            }
-
-            this.setLoadProgress(30, 'Generating beverage images.');
-            let blah: ImageToImageRequest;
-
-            for (const beverage of this.beverages) {
-                console.log(`Generating image for ${beverage.name}`)
-                beverage.imageUrl = await this.makeImageFromImage({
-                    image: 'https://imgur.com/HrYnS3B',
-                    strength: 0.75,
-                    prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty background, negative space, contrasting color-keyed background, (a standalone bottle of the alcohol in this description: ${beverage.description})`,
-                    negative_prompt: `background, frame, realism, borders, perspective, effects`,
-                    aspect_ratio: AspectRatio.PHOTO_HORIZONTAL,
-                    remove_background: true,
-                    seed: null,
-                    item_id: null,
-                }, bottleUrl);
-                this.setLoadProgress((this.loadingProgress ?? 0) + 5, 'Generating beverage images.');
-            }
+            await generateBeverages();
 
             // Generate a sound effect
             this.setLoadProgress(60, 'Generate sounds.');
@@ -561,6 +564,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     <div>
                         <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'}
                                     onClick={() => this.generate()}>
+                            <ReplayIcon/>
+                        </IconButton>
+                        <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'}
+                                    onClick={() => this.generateBeverages()}>
                             <ReplayIcon/>
                         </IconButton>
                         <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
