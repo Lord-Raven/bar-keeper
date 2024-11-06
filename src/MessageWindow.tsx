@@ -55,7 +55,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
     return (
         <div style={{position: 'relative', flexGrow: '1'}}>
             <Box sx={{
-                p: 0,
+                p: 2,
                 position: 'absolute',
                 bottom: '0',
                 left: '0',
@@ -112,14 +112,14 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                     if (stage().patrons[patronId]) {
                         if (patronId.toLowerCase().includes(subSlice().speakerId?.toLowerCase() ?? 'nevereverever')) {
                             return <img src={stage().patrons[patronId].imageUrl} style={{
-                                position: 'absolute', bottom: 0, 
+                                position: 'absolute', bottom: '-1vh', 
                                 left: ((index % 2) == 0) ? `${index * 30}vw` : 'auto', 
                                 right: ((index % 2) == 1) ? `${(index - 1) * 30}vw` : 'auto',
                                 zIndex: (index < 2 ? 4 : 3),
                                 height: '52vh', width: 'auto'}}/>;
                         } else {
                             return <img src={stage().patrons[patronId].imageUrl} style={{
-                                position: 'absolute', bottom: 0, 
+                                position: 'absolute', bottom: '-1vh', 
                                 left: ((index % 2) == 0) ? `${index * 30 + 1}vw` : 'auto', 
                                 right: ((index % 2) == 1) ? `${(index - 1) * 30 - 1}vw` : 'auto',
                                 zIndex: (index < 2 ? 2 : 1),

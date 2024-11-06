@@ -569,7 +569,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             overflow: 'visible'
         }}>
             <ThemeProvider theme={this.theme}>
-                <div style={{height: '8%'}}>
+                <div style={{height: '8vh'}}>
                     <div>
                         <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'}
                                     onClick={() => this.generate()}>
@@ -608,9 +608,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             stage={() => {return this}}
                         />
                 )}
-                <div style={{height: '1%'}}></div>
+                <div style={{height: '1vh'}}></div>
                 {!this.loadingProgress && (
-                    <div style={{height: '15%'}}>
+                    <div style={{height: '15vh'}}>
                         <Box component="section" sx={{
                             p: 2,
                             height: '100%',
@@ -625,7 +625,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         </Box>
                     </div>
                 )}
-                <div style={{height: '1%'}}></div>
+                <div style={{height: '1vh'}}></div>
             </ThemeProvider>
         </div>;
     };
