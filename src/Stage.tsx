@@ -38,9 +38,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildBarDescriptionPrompt(description: string): string {
         return `[INSTRUCTION OVERRIDE]Digest and appreciate the vibe, style, and setting of the following flavor text:[/INSTRUCTION OVERRIDE]\n${description}\n` +
-            `[INSTRUCTION OVERRIDE]Write two or three sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
-            `ambiance, setting, theming, fixtures, and general (rather than specific) clientele of the establishment.[/INSTRUCTION OVERRIDE]\n` +
-            `[PREVIOUS INSTRUCTION]`
+            `[INSTRUCTION OVERRIDE]Instead of narrating, write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
+            `ambiance, setting, theming, fixtures, and general clientele of the establishment.[/INSTRUCTION OVERRIDE]\n` +
+            `[GENERAL INSTRUCTION]`
     };
 
     buildAlcoholDescriptionsPrompt(): string {
@@ -52,13 +52,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
             `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n` +
             `[/SAMPLES]\n` +
-            `[SPECIFIC INSTRUCTION]Thoughtfully consider a fictional bar with the following description:\n${this.barDescription}\n` +
+            `[INSTRUCTION OVERRIDE]Thoughtfully consider a fictional bar with the following description:\n${this.barDescription}\n` +
             `General instruction is to narrate, but this specific response should instead focus on defining several types of alcohol that this bar might serve, as well as a brief description of ` +
             `each's appearance, bottle, odor, and flavor. Follow the format of samples:\n` +
             `Some Alcohol - A brief description of the alcohol and bottle it comes in.\n` +
             `A Different Alcohol - Another brief description that differs from the other beverages.\n` +
             `Wildly Different Beverage - The description of yet another alcohol that stands out from the others.\n` +
-            `[/SPECIFIC INSTRUCTION]\n` +
+            `[/INSTRUCTION OVERRIDE]\n` +
             `[GENERAL INSTRUCTION]`;
     };
 
@@ -73,7 +73,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 '\n') +
             `Output the details for a new character in the following format:\nName: Name\nDescription: Physical description here\nAttributes: comma-delimitted, gender, skin, hair color, hair style, eye color, clothing, accessories, other key physical features\nPersonality: Personality and background details here.` +
             `\n[/INSTRUCTION OVERRIDE]\n` +
-            `[PREVIOUS INSTRUCTION]`
+            `[GENERAL INSTRUCTION]`
     };
 
     readonly disableContentGeneration: boolean = false;
