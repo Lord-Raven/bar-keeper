@@ -17,4 +17,4 @@ html, body, #root {
   padding: 0;
 }
 
-.quoted-text { color: blue;}
+.quoted-text { color: var(--quote-color);}

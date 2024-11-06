@@ -19,7 +19,7 @@ const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text }) => {
         <span> 
             {parts.map((part, index) => 
                 index % 2 === 1 ? (
-                    <span className="quote-color" key={index}>
+                    <span className="quoted-text" key={index}>
                         "{part}"
                     </span>
                 ) : (
