@@ -1,4 +1,4 @@
-import {useWindupString} from "windups";
+import {useWindupString, WindupChildren} from "windups";
 import {Box, Button, CircularProgress, IconButton, Typography} from "@mui/material";
 import {FC, useEffect, useState} from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
@@ -10,7 +10,7 @@ interface MessageWindupProps {
     options?: {};
 }
 
-const spanQuotes = (text: string) => {
+/*const spanQuotes = (text: string) => {
     const regex = /"([^"]*)"/g;
     const parts = text.split(regex);
     
@@ -25,18 +25,37 @@ const spanQuotes = (text: string) => {
             )
         ).join('')
     );
+}; */
+
+interface TextWithQuotesProps { text: string; }
+
+const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text }) => {
+    const regex = /"([^"]*)"/g;
+    const parts = text.split(regex);
+    return (
+        <p> 
+            {parts.map((part, index) => 
+                index % 2 === 1 ? (
+                    <span className="quoted-text" key={index}>
+                        "{part}"
+                    </span>
+                ) : (
+                    part
+                )
+            )} 
+        </p>
+    );
 }; 
 
 function MessageWindup({message, options}: MessageWindupProps) {
 
-    let spannedMessage = spanQuotes(message);
-    console.log(spannedMessage);
-    const [text] = useWindupString(spannedMessage, options);
     return (
         <div style={{height: '100%', position: 'relative'}}>
             <Typography color='#00000000' style={{userSelect: 'none'}}>{message}</Typography>
             <div style={{position: 'absolute', top: '0px', left: '0px', zIndex: 1}}>
-                <Typography color='primary'>{text}</Typography>
+                <WindupChildren>
+                    <Typography color='primary'>{TextWithQuotes({text: message})}</Typography>
+                </WindupChildren>
             </div>
         </div>
     );
@@ -75,8 +94,8 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
     return (
         <div style={{position: 'relative', flexGrow: '1'}}>
             <Box sx={{
-                p: 2,
-                m: -1,
+                p: 4,
+                m: 2,
                 position: 'absolute',
                 bottom: '0',
                 left: '0',
