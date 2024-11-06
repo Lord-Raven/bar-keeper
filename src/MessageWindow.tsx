@@ -16,7 +16,7 @@ const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text }) => {
     const regex = /"([^"]*)"/g;
     const parts = text.split(regex);
     return (
-        <p> 
+        <span> 
             {parts.map((part, index) => 
                 index % 2 === 1 ? (
                     <span className="quoted-text" key={index}>
@@ -26,7 +26,7 @@ const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text }) => {
                     part
                 )
             )} 
-        </p>
+        </span>
     );
 }; 
 
