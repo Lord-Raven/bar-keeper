@@ -281,10 +281,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         this.setLoadProgress(30, 'Generating beverage images.');
 
+        console.log(bottleUrl);
         for (const beverage of this.beverages) {
             console.log(`Generating image for ${beverage.name}`)
             beverage.imageUrl = await this.makeImageFromImage({
-                image: btoa(bottleUrl),
+                image: bottleUrl,
                 strength: 0.75,
                 prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty background, negative space, contrasting color-keyed background, (a standalone bottle of the alcohol in this description: ${beverage.description})`,
                 negative_prompt: `background, frame, realism, borders, perspective, effects`,
