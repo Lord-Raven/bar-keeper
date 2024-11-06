@@ -52,7 +52,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
             `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n"` +
             `[/SAMPLE]\n` +
-            `{{suffix}}`
+            `{{suffix}}` +
             `[INSTRUCTION OVERRIDE]Thoughtfully consider a bar with the following description:[/INSTRUCTION OVERRIDE]\n${this.barDescription}\n` +
             `[INSTRUCTION OVERRIDE]Ignore the narrative for this response and instead output seven lines, each with the name of a type of alcohol that this bar might serve, as well as a brief description of ` +
             `its appearance, bottle, odor, and flavor. Follow the format of logged samples.\n` +
