@@ -83,6 +83,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                 position: 'absolute',
                 bottom: '1vh',
                 left: '0%',
+                width: '100%',
                 border: '1px dashed grey',
                 backgroundColor: '#00000088',
                 overflow: 'visible',
