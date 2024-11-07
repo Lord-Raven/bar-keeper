@@ -609,14 +609,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         />
                 )}
                 {!this.loadingProgress && (
-                    <div style={{position: 'relative', height: '15vh', left: '1%', width: '98%', alignContent: 'center'}}>
+                    <div style={{position: 'relative', height: '15vh', left: '1%', bottom: '1vh', width: '98%', alignContent: 'center'}}>
                         <Box component="section" sx={{
                             p: 1,
                             position: 'absolute',
                             height: '100%',
                             width: '100%',
                             left: '0%',
-                            bottom: '1vh',
+                            bottom: '0%',
                             verticalAlign: 'middle',
                             alignContent: 'center',
                             border: '1px dashed grey',
