@@ -612,7 +612,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     <div style={{height: '15vh'}}>
                         <Box component="section" sx={{
                             p: 1,
-                            position: 'absolute',
                             height: '95%',
                             width: '98%',
                             left: '1%',
