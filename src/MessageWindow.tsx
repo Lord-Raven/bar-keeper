@@ -37,7 +37,7 @@ function MessageWindup({message, options}: MessageWindupProps) {
     return (
         <div style={{height: '100%', position: 'relative'}}>
             <Typography color='#00000000' style={{userSelect: 'none'}}>{message}</Typography>
-            <div style={{position: 'absolute', top: '0px', left: '0px', zIndex: 6}}>
+            <div style={{position: 'absolute', top: '0px', left: '0px', zIndex: 10}}>
                 <WindupChildren {...options}>
                     <Typography color='primary'>{TextWithQuotes({text: message})}</Typography>
                 </WindupChildren>
@@ -89,7 +89,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                 border: '1px dashed grey',
                 backgroundColor: '#00000088',
                 overflow: 'visible',
-                zIndex: 5,
+                zIndex: 8,
                 boxSizing: 'border-box',
                 '&:hover': {backgroundColor: '#000000BB'}
             }}>
@@ -142,16 +142,16 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                                 position: 'absolute', bottom: '-16vh', 
                                 left: ((index % 2) == 0) ? `${index * 30}vw` : 'auto', 
                                 right: ((index % 2) == 1) ? `${(index - 1) * 30}vw` : 'auto',
-                                zIndex: (index < 2 ? 4 : 3),
-                                height: '62vh', width: 'auto'}}/>;
+                                zIndex: (index < 2 ? 7 : 6),
+                                height: '67vh', width: 'auto'}}/>;
                         } else {
                             return <img src={stage().patrons[patronId].imageUrl} style={{
                                 position: 'absolute', bottom: '-16vh', 
                                 left: ((index % 2) == 0) ? `${index * 30 + 1}vw` : 'auto', 
                                 right: ((index % 2) == 1) ? `${(index - 1) * 30 - 1}vw` : 'auto',
-                                zIndex: (index < 2 ? 2 : 1),
+                                zIndex: (index < 2 ? 5 : 4),
                                 filter: 'brightness(80%)',
-                                height: '60vh', width: 'auto'}}/>;
+                                height: '65vh', width: 'auto'}}/>;
                         }
                     } else {
                         return <div></div>;

@@ -37,7 +37,7 @@ config_schema:
     character_prompt:
       title: Character prompt
       type: string
-      default: 'Professional, visual novel, anime, clean linework, vibrant colors, calm expression, neutral pose, front view'
+      default: 'Professional, visual novel, anime, clean linework, vibrant colors, calm expression, neutral pose, standing, front view'
     character_negative_prompt:
       title: Character negative prompt
       type: string
