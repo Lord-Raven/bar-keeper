@@ -79,8 +79,8 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
             <Box sx={{
                 p: 1,
                 position: 'absolute',
-                bottom: '0',
-                left: '0',
+                bottom: '1%',
+                left: '1%',
                 width: '98%',
                 alignContent: 'center',
                 border: '1px dashed grey',
