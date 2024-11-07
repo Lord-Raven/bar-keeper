@@ -37,38 +37,38 @@ type ChatStateType = any;
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     buildBarDescriptionPrompt(description: string): string {
-        return `[RESPONSE INSTRUCTION]Digest and appreciate the vibe, style, and setting of the following flavor text:[/RESPONSE INSTRUCTION]\n${description}\n \
-            [RESPONSE INSTRUCTION]Instead of narrating, write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the \
-            ambiance, setting, theming, fixtures, and general clientele of the establishment.[/RESPONSE INSTRUCTION]\n`;
+        return `[RESPONSE INSTRUCTION]Digest and appreciate the vibe, style, and setting of the following flavor text:[/RESPONSE INSTRUCTION]\n${description}\n` +
+            `[RESPONSE INSTRUCTION]Instead of narrating, write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
+            `ambiance, setting, theming, fixtures, and general clientele of the establishment.[/RESPONSE INSTRUCTION]\n`;
     };
 
     buildAlcoholDescriptionsPrompt(): string {
-        return `[LOCATION]\n \
-            ${this.barDescription}\n \
-            [/LOCATION]\n \
-            [EXAMPLE RESPONSES]\n \
-            ### Response: {{char}}: Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n \
-            Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n \
-            Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n \
-            ### Response: {{char}}: Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n \
-            Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n \
-            Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n \
-            [/EXAMPLE RESPONSES]\n \
-            [RESPONSE INSTRUCTION]Instead of continuing the story, specifically utilize this response to define several types of alcohol that this bar might serve, providing a brief description of \
-            each's appearance, bottle, odor, and flavor. Follow the format of examples, where each line presents a new beverage name and description:\n \
-            "Some Alcohol - A brief description of the alcohol and bottle it comes in.\n \
-            A Different Alcohol - Another brief description that differs from the other beverages.\n \
-            Wildly Different Beverage - The description of yet another alcohol that stands out from the others."\n \
-            [/RESPONSE INSTRUCTION]\n`;
+        return `[LOCATION]\n` +
+            `${this.barDescription}\n` +
+            `[/LOCATION]\n` +
+            `[EXAMPLE RESPONSES]\n` +
+            `### Response: {{char}}: Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
+            `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
+            `Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n` +
+            `### Response: {{char}}: Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
+            `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
+            `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n` +
+            `[/EXAMPLE RESPONSES]\n` +
+            `[RESPONSE INSTRUCTION]Instead of continuing the story, specifically utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
+            `each's appearance, bottle, odor, and flavor. Follow the format of examples, where each line presents a new beverage name and description:\n` +
+            `"Some Alcohol - A brief description of the alcohol and bottle it comes in.\n` +
+            `A Different Alcohol - Another brief description that differs from the other beverages.\n` +
+            `Wildly Different Beverage - The description of yet another alcohol that stands out from the others."\n` +
+            `[/RESPONSE INSTRUCTION]\n`;
     };
 
     buildPatronPrompt(): string {
-        return `[LOCATION]\n \
-            ${this.barDescription}\n \
-            [/LOCATION]\n \
-            [RESPONSE INSTRUCTION]Instead of continuing the story, specifically utilize this response to craft a new character who might patronize this establishment, \
-            giving them a name, a physical description, a comma-delimitted list of concise physical attributes, and a paragraph about their personality, background, habits, and ticks. \
-            Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
+        return `[LOCATION]\n` +
+            `${this.barDescription}\n` +
+            `[/LOCATION]\n` +
+            `[RESPONSE INSTRUCTION]Instead of continuing the story, specifically utilize this response to craft a new character who might patronize this establishment, ` +
+            `giving them a name, a physical description, a comma-delimitted list of concise physical attributes, and a paragraph about their personality, background, habits, and ticks. ` +
+            `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(this.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
                 `connections between this new character and one or more existing patrons:\n` +
