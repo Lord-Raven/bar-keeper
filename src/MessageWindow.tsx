@@ -75,14 +75,12 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
     }, [subSlice()]);
 
     return (
-        <div style={{position: 'relative', flexGrow: '1'}}>
+        <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center'}}>
             <Box sx={{
                 p: 1,
                 position: 'absolute',
-                bottom: '1%',
-                left: '1%',
-                width: '98%',
-                alignContent: 'center',
+                bottom: '1vh',
+                left: '0%',
                 border: '1px dashed grey',
                 backgroundColor: '#00000088',
                 overflow: 'visible',
