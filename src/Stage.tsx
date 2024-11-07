@@ -608,12 +608,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             stage={() => {return this}}
                         />
                 )}
-                <div style={{height: '1vh'}}></div>
                 {!this.loadingProgress && (
                     <div style={{height: '15vh'}}>
                         <Box component="section" sx={{
                             p: 2,
-                            height: '100%',
+                            height: '95%',
+                            width: '98%',
+                            verticalAlign: 'middle',
+                            alignContent: 'center',
                             border: '1px dashed grey',
                             backgroundColor: '#00000088',
                             '&:hover': {backgroundColor: '#000000BB'}
@@ -625,7 +627,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         </Box>
                     </div>
                 )}
-                <div style={{height: '1vh'}}></div>
             </ThemeProvider>
         </div>;
     };

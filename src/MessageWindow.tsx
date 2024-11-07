@@ -81,11 +81,14 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                 position: 'absolute',
                 bottom: '0',
                 left: '0',
+                height: '95%',
+                width: '98%',
+                verticalAlign: 'middle',
+                alignContent: 'center',
                 border: '1px dashed grey',
                 backgroundColor: '#00000088',
                 overflow: 'visible',
                 zIndex: 5,
-                width: '99%',
                 '&:hover': {backgroundColor: '#000000BB'}
             }}>
                 <div style = {{width: '100%'}}>
