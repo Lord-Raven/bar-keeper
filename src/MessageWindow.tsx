@@ -7,7 +7,7 @@ import { Stage } from "./Stage";
 
 interface MessageWindupProps {
     message: string;
-    options?: {};
+    options: {};
 }
 
 interface TextWithQuotesProps { text: string; }
@@ -30,13 +30,15 @@ const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text }) => {
     );
 }; 
 
+//const [text] = useWindupString(spannedMessage, options);
+
 function MessageWindup({message, options}: MessageWindupProps) {
 
     return (
         <div style={{height: '100%', position: 'relative'}}>
             <Typography color='#00000000' style={{userSelect: 'none'}}>{message}</Typography>
             <div style={{position: 'absolute', top: '0px', left: '0px', zIndex: 6}}>
-                <WindupChildren>
+                <WindupChildren {...options}>
                     <Typography color='primary'>{TextWithQuotes({text: message})}</Typography>
                 </WindupChildren>
             </div>
