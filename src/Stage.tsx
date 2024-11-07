@@ -97,8 +97,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     currentMessageIndex: number = 0;
 
     // Not saved:
-    patronImagePrompt: string = 'Professional, visual novel, ((anime)), calm expression, neutral pose, flat shading, in-frame, flat contrasting background color, thighs';
-    patronImageNegativePrompt: string = 'realism, border, dynamic lighting, ((close-up)), portrait, background image, cut off, bad anatomy, amateur, low quality';
+    patronImagePrompt: string = 'Professional, visual novel, ((anime)), calm expression, neutral pose, flat shading, in-frame, flat contrasting background color, head-to-toe, entire body';
+    patronImageNegativePrompt: string = 'realism, border, dynamic lighting, ((close-up)), portrait, background image, cut off, bad anatomy, amateur, low quality, action';
     characterForGeneration: Character;
     player: User;
     requestedSlice: Promise<Slice|null>|null = null;
@@ -415,7 +415,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             //strength: 0.1,
             prompt: `${this.patronImagePrompt}, ${patron.attributes}`,
             negative_prompt: this.patronImageNegativePrompt,
-            aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL, //.PHOTO_HORIZONTAL,
+            aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL, //.PHOTO_HORIZONTAL,
             remove_background: true
             //seed: null,
             //item_id: null,
@@ -616,7 +616,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             height: '98%',
                             width: '100%',
                             left: '0%',
-                            bottom: '0%',
+                            bottom: '1%',
                             verticalAlign: 'middle',
                             alignContent: 'center',
                             border: '1px dashed grey',
