@@ -67,14 +67,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `${this.barDescription}\n` +
             `[/LOCATION]\n` +
             `[RESPONSE INSTRUCTION]Instead of continuing the story, specifically utilize this response to craft a new character who might patronize this establishment, ` +
-            `giving them a name, a physical description, a comma-delimitted list of concise physical attributes, and a paragraph about their personality, background, habits, and ticks. ` +
+            `giving them a name, a physical description, and a paragraph about their personality, background, habits, and ticks. ` +
             `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(this.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
                 `connections between this new character and one or more existing patrons:\n` +
                 `${Object.values(this.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n') +
-            `Output the details for a new character in the following format:\nName: Name\nDescription: Physical description here\nAttributes: comma-delimitted, gender, skin, hair color, hair style, eye color, clothing, accessories, other key physical features\nPersonality: Personality and background details here.` +
+            `Output the details for a new character in the following format:\nName: Name\nDescription: Physical description covering gender, skin tone, hair color, hair style, eye color, clothing, accessories, and other obvious traits.\nPersonality: Personality and background details here.` +
             `\n[/RESPONSE INSTRUCTION]\n`;
     };
 
@@ -97,8 +97,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     currentMessageIndex: number = 0;
 
     // Not saved:
-    patronImagePrompt: string = 'Professional, visual novel, ((anime)), calm expression, neutral pose, flat shading, in-frame, flat contrasting background color, head-to-toe, entire body';
-    patronImageNegativePrompt: string = 'realism, border, dynamic lighting, ((close-up)), portrait, background image, cut off, bad anatomy, amateur, low quality, action';
+    patronImagePrompt: string = 'Professional, visual novel, ((anime)), calm expression, neutral pose, flat shading, in-frame, flat contrasting background color, thigh-up portrait, head-to-hips';
+    patronImageNegativePrompt: string = 'realism, border, dynamic lighting, ((close-up)), background image, cut off, bad anatomy, amateur, low quality, action';
     characterForGeneration: Character;
     player: User;
     requestedSlice: Promise<Slice|null>|null = null;
@@ -393,15 +393,15 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log(patronResponse);
         const nameRegex = /Name\s*[:\-]?\s*(.*)/i;
         const descriptionRegex = /Description\s*[:\-]?\s*(.*)/i;
-        const attributesRegex = /Attributes\s*[:\-]?\s*(.*)/i;
+        //const attributesRegex = /Attributes\s*[:\-]?\s*(.*)/i;
         const personalityRegex = /Personality\s*[:\-]?\s*(.*)/i;
         const nameMatches = result.match(nameRegex);
         const descriptionMatches = result.match(descriptionRegex);
-        const attributesMatches = result.match(attributesRegex);
+        //const attributesMatches = result.match(attributesRegex);
         const personalityMatches = result.match(personalityRegex);
-        if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1 && attributesMatches && attributesMatches.length > 1 && personalityMatches && personalityMatches.length > 1) {
+        if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1 && /*attributesMatches && attributesMatches.length > 1 &&*/ personalityMatches && personalityMatches.length > 1) {
             console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
-            newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), attributesMatches[1].trim(), personalityMatches[1].trim(), '');
+            newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), /*attributesMatches[1].trim(),*/ personalityMatches[1].trim(), '');
             //  Generate a normal image, then image2image for happy and unhappy image.
             this.patrons[newPatron.name] = newPatron;
         }
@@ -413,7 +413,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let imageUrl = await this.makeImage({
             //image: bottleUrl,
             //strength: 0.1,
-            prompt: `${this.patronImagePrompt}, ${patron.attributes}`,
+            prompt: `${this.patronImagePrompt}, ${patron.description}`,
             negative_prompt: this.patronImageNegativePrompt,
             aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL, //.PHOTO_HORIZONTAL,
             remove_background: true
