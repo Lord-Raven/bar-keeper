@@ -88,6 +88,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                 backgroundColor: '#00000088',
                 overflow: 'visible',
                 zIndex: 5,
+                boxSizing: 'border-box',
                 '&:hover': {backgroundColor: '#000000BB'}
             }}>
                 <div style = {{width: '100%'}}>
