@@ -37,10 +37,11 @@ type ChatStateType = any;
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     buildDistillationPrompt(description: string): string {
-        return `###FLAVOR TEXT: ${description}\n\n` +
-            `###PRIORITY INSTRUCTION: The FLAVOR TEXT is inspirational material that you will use to establish vibe, style, themes, and setting for the upcoming narration. ` +
-            `This initial response should be used to construct and output a comma-delimitted list of adjectives that distill the FLAVOR TEXT into discrete concepts that can be leveraged by future narrative responses. ` +
-            `Output a long, single line of comma-delimitted adjectives that describe these aspects of the FLAVOR TEXT, then end your response.\n` +
+        return `{{prefix}}\n\n` +
+            `###FLAVOR TEXT: ${description}\n\n` +
+            `###PRIORITY INSTRUCTION: The FLAVOR TEXT is inspirational material that you will use to establish vibe, art style, themes, and setting for the upcoming narration and illustrations. ` +
+            `This initial response should be used to construct and output a comma-delimitted list of adjectives or concepts that distill the FLAVOR TEXT into discrete concepts that can be leveraged by future narrative responses. ` +
+            `Output a long, single line of comma-delimitted adjectives or concepts that describe these aspects of the FLAVOR TEXT, then end your response.\n` +
             `\n` +
             `###EXAMPLE RESPONSES:\n` +
             `"fantasy, dark, gritty, realistic, mystical, raunchy, Lovecraftian, Geiger, alien, violent"\n` +
@@ -48,44 +49,48 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `"clean, sci-fi, pristine, clinical, lens flares, 3D renders, vibrant, high-contrast"\n` +
             `"wholesome, spirited, Studio Ghibli, family-friendly, colorful, cel-shaded"\n` +
             `"wild, untamed, barren, bright, wasteland, Frank Frazetta, Conan, barbaric, hedonistic"\n` +
+            `"domination, comic book, vampires, underground, neon lights, slayers, killers, metaphysics, psychics, lycans"\n` +
             `\n` +
-            `###SECONDARY INSTRUCTION: `;
+            `###STANDARD INSTRUCTION: {{suffix}}`;
     }
 
     buildBarDescriptionPrompt(description: string): string {
-        return `{{jailbreak}}\n` +
-            `[THEMES]${description}[/THEMES]\n` +
-            `[PRIORITY INSTRUCTION]This is a unique response; rather than continuing the narrative, you should instead utilize this response to write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
+        return `{{prefix}}\n\n` +
+            `###THEMES: ${description}\n\n` +
+            `###PRIORITY INSTRUCTION: This is a unique response; rather than continuing the narrative, you should instead utilize this response to write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
             `ambience, setting, theming, fixtures, and general clientele of the establishment.\n` +
-            `[/PRIORITY INSTRUCTION]\n` +
-            `[FORMER INSTRUCTION]`;
+            `\n` +
+            `###STANDARD INSTRUCTION: {{suffix}}`;
     };
 
     buildAlcoholDescriptionsPrompt(): string {
-        return `[LOCATION]\n` +
+        return `{{prefix}}\n\n` +
+            `###LOCATION: ` +
             `${this.barDescription}\n` +
-            `[/LOCATION]\n` +
-            `[EXAMPLE RESPONSES]\n` +
-            `### Response: {{char}}: Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
+            `\n` +
+            `###EXAMPLE RESPONSES:\n` +
+            `"Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
             `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
-            `Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n` +
-            `### Response: {{char}}: Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
+            `Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo."\n` +
+            `"Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
             `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
-            `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n` +
-            `[/EXAMPLE RESPONSES]\n` +
-            `[OVERRIDE INSTRUCTION]This is a unique response; rather than continuing the narrative, you should instead utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
+            `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle."\n` +
+            `\n` +
+            `###PRIORITY INSTRUCTION: This is a unique response; rather than continuing the narrative, you should instead utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
             `each's appearance, bottle, odor, and flavor. Follow the format of examples, where each line presents a new beverage name and description:\n` +
             `"Some Alcohol - A brief description of the alcohol and bottle it comes in.\n` +
             `A Different Alcohol - Another brief description that differs from the other beverages.\n` +
             `Wildly Different Beverage - The description of yet another alcohol that stands out from the others."\n` +
-            `[STANDARD INSTRUCTION]`;
+            `\n` +
+            `###STANDARD INSTRUCTION: {{suffix}}`;
     };
 
     buildPatronPrompt(): string {
-        return `[LOCATION]\n` +
+        return `{{prefix}}\n\n` +
+            `###LOCATION: ` +
             `${this.barDescription}\n` +
-            `[/LOCATION]\n` +
-            `[RESPONSE INSTRUCTION]This is a unique response; rather than continuing the narrative, you should instead utilize this response to craft a new character who might patronize this establishment, ` +
+            `\n` +
+            `###PRIORITY INSTRUCTION: This is a unique response; rather than continuing the narrative, you should instead utilize this response to craft a new character who might patronize this establishment, ` +
             `giving them a name, a physical description, and a paragraph about their personality, background, habits, and ticks. ` +
             `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(this.patrons).length > 0 ?
@@ -94,7 +99,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 `${Object.values(this.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n') +
             `Output the details for a new character in the following format:\nName: Name\nDescription: Physical description covering gender, skin tone, hair color, hair style, eye color, clothing, accessories, and other obvious traits.\nPersonality: Personality and background details here.` +
-            `\n[/RESPONSE INSTRUCTION]\n`;
+            `\n\n` +
+            `###STANDARD INSTRUCTION: {{suffix}}`;
     };
 
     readonly disableContentGeneration: boolean = false;
@@ -341,7 +347,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     
             this.barDescription = textResponse?.result ?? '';
 
-            /*this.setLoadProgress(10, 'Generating bar image.');
+            this.setLoadProgress(10, 'Generating bar image.');
             this.barImageUrl = await this.makeImage({
                 prompt: `masterpiece, high resolution, hyperrealism, fine lines, vibrant colors, dynamic lighting, illustration, ${this.styleSummary}, (interior of bar with this description: ${this.barDescription})`,
                 negative_prompt: 'grainy, low resolution, low quality, exterior, person, outside, daytime, outdoors',
@@ -354,13 +360,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             // Generate a sound effect
             this.setLoadProgress(60, 'Generate sounds.');
-            */
+            
             /*this.entranceSoundUrl = await this.makeSound({
                 prompt: `[INSTRUCTION OVERRIDE]Create a brief sound effect (2-4 seconds) to indicate that someone has entered the following establishment:\n${this.barDescription}\nThis sound could be a chime, bell, tone, or door closing sound--something that suits the ambiance of the setting.[/INSTRUCTION OVERRIDE]`,
                 seconds: 5
             },'');*/
-/*
-            let tries = 3;
+
+            let tries = 2;
             this.patrons = {};
             while (Object.keys(this.patrons).length < 3 && tries-- >= 0) {
                 this.setLoadProgress((this.loadingProgress ?? 0) + 5, 'Generating patrons.');
@@ -373,7 +379,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 } else {
                     console.log('Failed a patron generation');
                 }
-            }*/
+            }
 
             // Finally, display an intro
             this.currentMessageId = undefined;
