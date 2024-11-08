@@ -38,9 +38,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildBarDescriptionPrompt(description: string): string {
         return `[RESPONSE INSTRUCTION]Digest and appreciate the vibe, style, and setting of the following flavor text:[/RESPONSE INSTRUCTION]\n${description}\n` +
-            `[RESPONSE INSTRUCTION]Instead of narrating, write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
-            `ambiance, setting, theming, fixtures, and general clientele of the establishment. Finish the response with a single line summarizing the style or themes of this setting, comma-delimitted.\n` +
-            `Example: "STYLE: gritty, cartoony, exaggerated, vibrant, fantasy, sci-fi, modern"[/RESPONSE INSTRUCTION]\n`;
+            `[RESPONSE INSTRUCTION]Instead of continuing the story, write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
+            `ambiance, setting, theming, fixtures, and general clientele of the establishment. Finish the response with a line of comma-delimitted adjectives which summarize the style or themes of this setting.\n` +
+            `Examples:\n"STYLE: gritty, exaggerated, fantasy, modern"\n"STYLE: cartoony, vibrant, sci-fi"[/RESPONSE INSTRUCTION]\n`;
     };
 
     buildAlcoholDescriptionsPrompt(): string {
@@ -306,14 +306,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         let textResponse = await this.generator.textGen({
             prompt: this.buildBarDescriptionPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description),
-            max_tokens: 300,
+            max_tokens: 400,
             min_tokens: 50
         });
         console.log(`Bar description: ${textResponse?.result}`);
 
 
         if (textResponse && textResponse.result) {
-            const regex = /([\s\S]*?)(?:STYLE:\s*(.*))?$/; 
+            const regex = /([\s\S]*?)\nSTYLE:\s*([^\n.]*)/; 
             const matches = textResponse.result.match(regex);
             this.barDescription = matches?.[1] || '';
             this.styleSummary = matches?.[2] || '';
@@ -336,7 +336,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 seconds: 5
             },'');*/
 
-            let tries = 5;
+            let tries = 3;
             this.patrons = {};
             while (Object.keys(this.patrons).length < 3 && tries-- >= 0) {
                 this.setLoadProgress((this.loadingProgress ?? 0) + 5, 'Generating patrons.');
