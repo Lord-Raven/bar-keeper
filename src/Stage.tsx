@@ -36,11 +36,18 @@ type ChatStateType = any;
 
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
+    buildDistillationPrompt(description: string): string {
+        return `[BACKGROUND]\n${description}\n[/BACKGROUND]\n` +
+            `[OVERRIDE INSTRUCTION]Use this response to digest and distill the vibe, style, themes, and setting of the BACKGROUND flavor text; output a comma-delimitted list of adjectives.\n` +
+            `[STANDARD INSTRUCTION]`;
+    }
+
     buildBarDescriptionPrompt(description: string): string {
-        return `[OVERRIDING INSTRUCTION]Digest and appreciate the vibe, style, and setting of the following flavor text:[/OVERRIDING INSTRUCTION]\n${description}\n` +
-            `[OVERRIDING INSTRUCTION]This is a unique response; rather than continuing the narrative, you should instead utilize this response to write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
-            `ambience, setting, theming, fixtures, and general clientele of the establishment. Definitively end the response with a line of comma-delimitted adjectives which summarize the style or themes of this setting.\n` +
-            `Examples:\n"STYLE: gritty, exaggerated, fantasy, modern"\n"STYLE: cartoony, vibrant, sci-fi"\n[/OVERRIDING INSTRUCTION]\n`;
+        return `[THEMES]${description}[/THEMES]\n` +
+            `[OVERRIDE INSTRUCTION]This is a unique response; rather than continuing the narrative, you should instead utilize this response to write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
+            `ambience, setting, theming, fixtures, and general clientele of the establishment.\n` +
+            `[/OVERRIDE INSTRUCTION]\n` +
+            `[STANDARD INSTRUCTION]`;
     };
 
     buildAlcoholDescriptionsPrompt(): string {
@@ -55,12 +62,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
             `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n` +
             `[/EXAMPLE RESPONSES]\n` +
-            `This is a unique response; rather than continuing the narrative, you should instead utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
+            `[OVERRIDE INSTRUCTION]This is a unique response; rather than continuing the narrative, you should instead utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
             `each's appearance, bottle, odor, and flavor. Follow the format of examples, where each line presents a new beverage name and description:\n` +
             `"Some Alcohol - A brief description of the alcohol and bottle it comes in.\n` +
             `A Different Alcohol - Another brief description that differs from the other beverages.\n` +
             `Wildly Different Beverage - The description of yet another alcohol that stands out from the others."\n` +
-            `\n`;
+            `[STANDARD INSTRUCTION]`;
     };
 
     buildPatronPrompt(): string {
@@ -305,18 +312,23 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.setLoadProgress(5, 'Generating bar description.');
 
         let textResponse = await this.generator.textGen({
-            prompt: this.buildBarDescriptionPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description),
-            max_tokens: 400,
-            min_tokens: 50
+            prompt: this.buildDistillationPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description),
+            max_tokens: 100,
+            min_tokens: 30
         });
-        console.log(`Bar description: ${textResponse?.result}`);
-
-
+        console.log(`Distillation: ${textResponse?.result}`);
+        
         if (textResponse && textResponse.result) {
-            const regex = /([\s\S]*?)\nSTYLE:\s*([^\n.]*)/; 
-            const matches = textResponse.result.match(regex);
-            this.barDescription = matches?.[1] || '';
-            this.styleSummary = matches?.[2] || '';
+
+            this.styleSummary = textResponse.result;
+            textResponse = await this.generator.textGen({
+                prompt: this.buildBarDescriptionPrompt(this.styleSummary),
+                max_tokens: 400,
+                min_tokens: 50
+            });
+            console.log(`Bar description: ${textResponse?.result}`);
+    
+            this.barDescription = textResponse?.result ?? '';
 
             this.setLoadProgress(10, 'Generating bar image.');
             this.barImageUrl = await this.makeImage({
