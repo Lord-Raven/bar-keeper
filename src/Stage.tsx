@@ -39,13 +39,15 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     buildDistillationPrompt(description: string): string {
         return `[BACKGROUND]\n${description}\n[/BACKGROUND]\n` +
             `[EXAMPLE RESPONSES]\n` +
-            `### Response: {{char}}: Fantasy, dark, gritty, realistic, mystical\n` +
-            `### Response: {{char}}: Goofy, fantasy, colorful, magical, sparkly\n` +
-            `### Response: {{char}}: Clean, sci-fi, Lovecraftian, vibrant, high-contrast\n` +
+            `### Response: {{char}}: fantasy, dark, gritty, realistic, mystical, raunchy, Lovecraftian\n` +
+            `### Response: {{char}}: goofy, fantasy, colorful, magical, sparkly, funny, fantastic\n` +
+            `### Response: {{char}}: clean, sci-fi, pristine, clinical, lens flares, 3D renders, vibrant, high-contrast\n` +
+            `### Response: {{char}}: wholesome, spirited, Studio Ghibli, family-friendly, colorful, cel-shaded\n` +
+            `### Response: {{char}}: wild, untamed, barren, bright, wasteland, Frank Frazetta, Conan, barbaric, hedonistic\n` +
             `[/EXAMPLE RESPONSES]\n` +
-            `[PRIORITY INSTRUCTION]Rather than continuing the narrative, utilize this response to digest and distill the vibe, style, themes, and setting of the BACKGROUND flavor text. Output a single line of comma-delimitted adjectives that describe these aspects of the flavor text.\n` +
-            `[/PRIORITY INSTRUCTION]\n` +
-            `[FORMER INSTRUCTION]`;
+            `[CRITICAL INSTRUCTION]Rather than continuing the narrative, utilize this response to digest and distill the vibe, style, themes, and setting of the BACKGROUND flavor text. Output a single line of comma-delimitted adjectives that describe these aspects of the flavor text.\n` +
+            `[/CRITICAL INSTRUCTION]\n` +
+            `[FORMER INSTRUCTION]\n`;
     }
 
     buildBarDescriptionPrompt(description: string): string {
