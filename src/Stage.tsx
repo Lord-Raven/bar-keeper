@@ -38,7 +38,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildBarDescriptionPrompt(description: string): string {
         return `[RESPONSE INSTRUCTION]Digest and appreciate the vibe, style, and setting of the following flavor text:[/RESPONSE INSTRUCTION]\n${description}\n` +
-            `[RESPONSE INSTRUCTION]This is a special request; instead of continuing the story in this response, write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
+            `[RESPONSE INSTRUCTION]This is a unique response; rather than continuing the narrative, you should utilize this response to write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
             `ambience, setting, theming, fixtures, and general clientele of the establishment. Finish the response with a line of comma-delimitted adjectives which summarize the style or themes of this setting.\n` +
             `Examples:\n"STYLE: gritty, exaggerated, fantasy, modern"\n"STYLE: cartoony, vibrant, sci-fi"\n[/RESPONSE INSTRUCTION]\n`;
     };
@@ -55,7 +55,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
             `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n` +
             `[/EXAMPLE RESPONSES]\n` +
-            `[RESPONSE INSTRUCTION]This is a special request; instead of continuing the story, specifically utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
+            `[RESPONSE INSTRUCTION]This is a unique response; rather than continuing the narrative, you should utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
             `each's appearance, bottle, odor, and flavor. Follow the format of examples, where each line presents a new beverage name and description:\n` +
             `"Some Alcohol - A brief description of the alcohol and bottle it comes in.\n` +
             `A Different Alcohol - Another brief description that differs from the other beverages.\n` +
@@ -67,7 +67,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return `[LOCATION]\n` +
             `${this.barDescription}\n` +
             `[/LOCATION]\n` +
-            `[RESPONSE INSTRUCTION]This is a special request; instead of continuing the story, specifically utilize this response to craft a new character who might patronize this establishment, ` +
+            `[RESPONSE INSTRUCTION]This is a unique response; rather than continuing the narrative, you should utilize this response to craft a new character who might patronize this establishment, ` +
             `giving them a name, a physical description, and a paragraph about their personality, background, habits, and ticks. ` +
             `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(this.patrons).length > 0 ?
