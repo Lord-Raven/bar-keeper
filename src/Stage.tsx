@@ -41,11 +41,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `[EXAMPLE RESPONSES]\n` +
             `### Response: {{char}}: Fantasy, dark, gritty, realistic, mystical\n` +
             `### Response: {{char}}: Goofy, fantasy, colorful, magical, sparkly\n` +
-            `### Response: {{char}}: Clean, sci-fi, Lovecraft, vibrant, high-contrast\n` +
+            `### Response: {{char}}: Clean, sci-fi, Lovecraftian, vibrant, high-contrast\n` +
             `[/EXAMPLE RESPONSES]\n` +
-            `[PRIORITY INSTRUCTION]Use this response to digest and distill the vibe, style, themes, and setting of the BACKGROUND flavor text; output a single list of comma-delimitted adjectives.\n` +
+            `[PRIORITY INSTRUCTION]Rather than continuing the narrative, utilize this response to digest and distill the vibe, style, themes, and setting of the BACKGROUND flavor text. Output a single line of comma-delimitted adjectives that describe these aspects of the flavor text.\n` +
             `[/PRIORITY INSTRUCTION]\n` +
-            `[PAST INSTRUCTION]`;
+            `[FORMER INSTRUCTION]`;
     }
 
     buildBarDescriptionPrompt(description: string): string {
@@ -53,7 +53,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `[PRIORITY INSTRUCTION]This is a unique response; rather than continuing the narrative, you should instead utilize this response to write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
             `ambience, setting, theming, fixtures, and general clientele of the establishment.\n` +
             `[/PRIORITY INSTRUCTION]\n` +
-            `[PAST INSTRUCTION]`;
+            `[FORMER INSTRUCTION]`;
     };
 
     buildAlcoholDescriptionsPrompt(): string {
