@@ -48,7 +48,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `"Domination, comic book, vampires, underground, neon lights, slayers, killers, metaphysics, psychics, lycans."\n` +
             `\n` +
             `###PRIORITY INSTRUCTION: The FLAVOR TEXT is merely inspirational material that you will use to establish a vibe, art style, themes, or source material for upcoming narration and illustration. ` +
-            `This initial response should be used to output a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT; include appropriate art style or themes that reduce the FLAVOR TEXT into discrete concepts that can be used to guide the nature of future narrative responses. ` +
+            `This initial response should be used to output a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT; be sure to include appropriate art style and themes that reduce the FLAVOR TEXT into discrete concepts that can be used to guide the nature of future narrative responses. ` +
             `You will output a single line of comma-delimitted adjectives or concepts that describe these aspects of the FLAVOR TEXT, then promptly end your response with a period.\n` +
             `\n` +
             `###STANDARD INSTRUCTION: {{suffix}}`;
@@ -77,10 +77,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle."\n` +
             `\n` +
             `###PRIORITY INSTRUCTION: This is a unique response; rather than continuing the narrative, you should instead utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
-            `each's appearance, bottle, odor, and flavor. Follow the format of examples, where each line presents a new beverage name and description:\n` +
-            `"Some Alcohol - A brief description of the alcohol and bottle it comes in.\n` +
-            `A Different Alcohol - Another brief description that differs from the other beverages.\n` +
-            `Wildly Different Beverage - The description of yet another alcohol that stands out from the others."\n` +
+            `each's appearance, bottle, odor, and flavor. Follow the format of examples, where each line presents a new beverage name and description.\n` +
             `\n` +
             `###STANDARD INSTRUCTION: {{suffix}}`;
     };
