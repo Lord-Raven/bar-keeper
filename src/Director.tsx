@@ -41,7 +41,7 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
     PatronLeaves: input => `Continue the scene with some visual novel style development as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar. ` +
         `Honor their personal style and connections to other patrons or ${input.playerName}. ${generalInstruction}`,
     
-    Choice: input => `Rather than continue the narrative, utilize this response to generate two or three distinct options for actions or dialog that ${input.playerName} could choose to pursue at this juncture. ` +
+    Choice: input => `Rather than continuing the narrative, start this response by generating two or three distinct options for actions or dialog that ${input.playerName} could choose to pursue at this juncture. ` +
         `Each option is a single-sentence description of the action or dialog that ${input.playerName} may choose. ` +
         `Always use this example format: **OPTION 1**: Agree with your friend.\n\n**OPTION 2**: Refuse to help.\n\n**OPTION 3**: Ask what's in it for you.`,
     
@@ -54,7 +54,6 @@ export class Slice {
     script: string;
     presentPatronIds: string[];
     selectedPatronId: string|undefined;
-
 
     constructor(direction: Direction|undefined, presentPatronIds: string[], selectedPatronId: string|undefined, script?: string) {
         this.direction = direction;
@@ -93,6 +92,9 @@ export class Slice {
         });
         if (currentSpeaker && currentDialogue.trim().length > 0) {
             this.subSlices.push(new SubSlice(currentSpeaker, currentDialogue.trim()));
+        }
+        if (this.direction == Direction.Choice) {
+            this.subSlices = this.subSlices.filter(subSlice => subSlice.speakerId == 'OPTION');
         }
     }
 }

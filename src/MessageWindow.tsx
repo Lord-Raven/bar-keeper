@@ -1,4 +1,4 @@
-import {useWindupString, WindupChildren} from "windups";
+import {Pace, useWindupString, WindupChildren} from "windups";
 import {Box, Button, CircularProgress, IconButton, Typography} from "@mui/material";
 import {FC, useEffect, useState} from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
@@ -39,7 +39,9 @@ function MessageWindup({message, options}: MessageWindupProps) {
             <Typography color='#00000000' style={{userSelect: 'none'}}>{message}</Typography>
             <div style={{position: 'absolute', top: '0px', left: '0px', zIndex: 10}}>
                 <WindupChildren {...options}>
-                    <Typography color='primary'>{TextWithQuotes({text: message})}</Typography>
+                    <Pace ms={3}>
+                        <Typography color='primary'>{TextWithQuotes({text: message})}</Typography>
+                    </Pace>
                 </WindupChildren>
             </div>
         </div>
@@ -101,7 +103,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                                     return (
                                             <div style={{marginTop: '5px', marginBottom: '5px'}}>
                                                 <Button variant="outlined" disabled={advancing} onClick = {() => {proceedWith(subSlice)}}>
-                                                    <MessageWindup message={subSlice.body} options={{pace: () => {return 3}}} />
+                                                    <MessageWindup message={subSlice.body} options={{}} />
                                                 </Button>
                                                 <br/>
                                             </div>
@@ -116,8 +118,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                                     <Typography variant="h6" color="#AAAAAA">{subSlice()?.speakerId ?? ''}</Typography>
                                 </div>
                                 <div>
-                                    <MessageWindup message={subSlice()?.body ?? ''} options={{pace: () => {return 3}, onFinished: () => {
-                                            setDoneWinding(true);}, skipped: doneWinding}} />
+                                    <MessageWindup message={subSlice()?.body ?? ''} options={{onFinished: () => {setDoneWinding(true);}, skipped: doneWinding}} />
                                 </div>
                                 <div>
                                     {advancing ? (

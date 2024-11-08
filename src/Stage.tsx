@@ -39,7 +39,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     buildBarDescriptionPrompt(description: string): string {
         return `[RESPONSE INSTRUCTION]Digest and appreciate the vibe, style, and setting of the following flavor text:[/RESPONSE INSTRUCTION]\n${description}\n` +
             `[RESPONSE INSTRUCTION]Instead of narrating, write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
-            `ambiance, setting, theming, fixtures, and general clientele of the establishment.[/RESPONSE INSTRUCTION]\n`;
+            `ambiance, setting, theming, fixtures, and general clientele of the establishment. Finish the response with a single line summarizing the style or themes of this setting, comma-delimitted.\n` +
+            `Example: "STYLE: gritty, cartoony, exaggerated, vibrant, fantasy, sci-fi, modern"[/RESPONSE INSTRUCTION]\n`;
     };
 
     buildAlcoholDescriptionsPrompt(): string {
@@ -84,6 +85,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     // Chat State:
     barDescription: string|undefined;
+    styleSummary: string|undefined;
     barImageUrl: string|undefined;
     entranceSoundUrl: string|undefined;
     beverages: Beverage[];
@@ -213,6 +215,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     buildChatState(): ChatStateType {
         return {
             barDescription: this.barDescription,
+            styleSummary: this.styleSummary,
             barImageUrl: this.barImageUrl,
             entranceSoundUrl: this.entranceSoundUrl,
             beverages: this.beverages,
@@ -227,6 +230,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     readChatState(chatState: ChatStateType) {
         if (chatState) {
             this.barDescription = chatState.barDescription;
+            this.styleSummary = chatState.styleSummary;
             this.barImageUrl = chatState.barImageUrl;
             this.entranceSoundUrl = chatState.entranceSoundUrl;
             this.beverages = (chatState.beverages ?? []).map((beverage: { name: string, description: string, imageUrl: string }) => new Beverage(beverage.name, beverage.description, beverage.imageUrl));
@@ -302,18 +306,22 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         let textResponse = await this.generator.textGen({
             prompt: this.buildBarDescriptionPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description),
-            max_tokens: 250,
+            max_tokens: 300,
             min_tokens: 50
         });
         console.log(`Bar description: ${textResponse?.result}`);
-        this.barDescription = textResponse?.result ?? undefined;
 
-        if (this.barDescription) {
+
+        if (textResponse && textResponse.result) {
+            const regex = /([\s\S]*?)(?:STYLE:\s*(.*))?$/; 
+            const matches = textResponse.result.match(regex);
+            this.barDescription = matches?.[1] || '';
+            this.styleSummary = matches?.[2] || '';
+
             this.setLoadProgress(10, 'Generating bar image.');
-
             this.barImageUrl = await this.makeImage({
-                prompt: `masterpiece, high resolution, hyperrealism, fine lines, vibrant colors, dynamic lighting, illustration, (interior of bar with this description: ${this.barDescription})`,
-                negative_prompt: 'grainy, low resolution, low quality, exterior, person, outside',
+                prompt: `masterpiece, high resolution, hyperrealism, fine lines, vibrant colors, dynamic lighting, illustration, ${this.styleSummary}, (interior of bar with this description: ${this.barDescription})`,
+                negative_prompt: 'grainy, low resolution, low quality, exterior, person, outside, daytime, outdoors',
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             }, '');
 
@@ -413,7 +421,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let imageUrl = await this.makeImage({
             //image: bottleUrl,
             //strength: 0.1,
-            prompt: `${this.patronImagePrompt}, ${patron.description}`,
+            prompt: `${this.patronImagePrompt}, ${this.styleSummary}, ${patron.description}`,
             negative_prompt: this.patronImageNegativePrompt,
             aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL, //.PHOTO_HORIZONTAL,
             remove_background: true
