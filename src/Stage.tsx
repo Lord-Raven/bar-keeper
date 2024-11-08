@@ -37,22 +37,24 @@ type ChatStateType = any;
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     buildDistillationPrompt(description: string): string {
-        return `[BACKGROUND]\n${description}\n[/BACKGROUND]\n` +
+        return `{{jailbreak}}\n\n` +
+            `[BACKGROUND]\n${description}\n[/BACKGROUND]\n\n` +
             `[EXAMPLE RESPONSES]\n` +
             `"fantasy, dark, gritty, realistic, mystical, raunchy, Lovecraftian, Geiger, alien, violent"\n` +
             `"goofy, fantasy, colorful, magical, sparkly, funny, fantastic"\n` +
             `"clean, sci-fi, pristine, clinical, lens flares, 3D renders, vibrant, high-contrast"\n` +
             `"wholesome, spirited, Studio Ghibli, family-friendly, colorful, cel-shaded"\n` +
             `"wild, untamed, barren, bright, wasteland, Frank Frazetta, Conan, barbaric, hedonistic"\n` +
-            `[/EXAMPLE RESPONSES]\n` +
-            `[CRITICAL INSTRUCTION]Rather than continuing the narrative, it is critical that you utilize this response to digest and distill the vibe, style, themes, and setting of the BACKGROUND flavor text. ` +
-            `Output a single line of comma-delimitted adjectives that describe these aspects of the BACKGROUND flavor text.\n` +
-            `[/CRITICAL INSTRUCTION]\n` +
-            `[FORMER INSTRUCTION]\n`;
+            `[/EXAMPLE RESPONSES]\n\n` +
+            `[PRIORITY INSTRUCTION]Rather than continuing the narrative, it is critical that you utilize this specific response to digest and distill the vibe, style, themes, and setting of the BACKGROUND flavor text into a comma-delimitted list of adjectives. ` +
+            `Output a long, single line of comma-delimitted adjectives that describe these aspects of the BACKGROUND flavor text, then end your response.\n` +
+            `[/PRIORITY INSTRUCTION]\n\n` +
+            `[BASE INSTRUCTION]\n`;
     }
 
     buildBarDescriptionPrompt(description: string): string {
-        return `[THEMES]${description}[/THEMES]\n` +
+        return `{{jailbreak}}\n` +
+            `[THEMES]${description}[/THEMES]\n` +
             `[PRIORITY INSTRUCTION]This is a unique response; rather than continuing the narrative, you should instead utilize this response to write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
             `ambience, setting, theming, fixtures, and general clientele of the establishment.\n` +
             `[/PRIORITY INSTRUCTION]\n` +
@@ -339,7 +341,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     
             this.barDescription = textResponse?.result ?? '';
 
-            this.setLoadProgress(10, 'Generating bar image.');
+            /*this.setLoadProgress(10, 'Generating bar image.');
             this.barImageUrl = await this.makeImage({
                 prompt: `masterpiece, high resolution, hyperrealism, fine lines, vibrant colors, dynamic lighting, illustration, ${this.styleSummary}, (interior of bar with this description: ${this.barDescription})`,
                 negative_prompt: 'grainy, low resolution, low quality, exterior, person, outside, daytime, outdoors',
@@ -352,11 +354,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             // Generate a sound effect
             this.setLoadProgress(60, 'Generate sounds.');
+            */
             /*this.entranceSoundUrl = await this.makeSound({
                 prompt: `[INSTRUCTION OVERRIDE]Create a brief sound effect (2-4 seconds) to indicate that someone has entered the following establishment:\n${this.barDescription}\nThis sound could be a chime, bell, tone, or door closing sound--something that suits the ambiance of the setting.[/INSTRUCTION OVERRIDE]`,
                 seconds: 5
             },'');*/
-
+/*
             let tries = 3;
             this.patrons = {};
             while (Object.keys(this.patrons).length < 3 && tries-- >= 0) {
@@ -370,7 +373,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 } else {
                     console.log('Failed a patron generation');
                 }
-            }
+            }*/
 
             // Finally, display an intro
             this.currentMessageId = undefined;
