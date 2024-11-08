@@ -37,19 +37,19 @@ type ChatStateType = any;
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     buildDistillationPrompt(description: string): string {
-        return `[FLAVOR]\n${description}\n[/FLAVOR]\n\n` +
-            `[PRIORITY INSTRUCTION]The FLAVOR text is inspirational material that you will use to establish vibe, style, themes, and setting for the upcoming narration. ` +
-            `This initial response should be used to construct and output a comma-delimitted list of adjectives that distill the FLAVOR text into discrete concepts that can be leveraged by future narrative responses. ` +
-            `Output a long, single line of comma-delimitted adjectives that describe these aspects of the FLAVOR text, then end your response.\n` +
-            `[/PRIORITY INSTRUCTION]\n\n` +
-            `[EXAMPLE RESPONSES]\n` +
+        return `###FLAVOR TEXT: ${description}\n\n` +
+            `###PRIORITY INSTRUCTION: The FLAVOR TEXT is inspirational material that you will use to establish vibe, style, themes, and setting for the upcoming narration. ` +
+            `This initial response should be used to construct and output a comma-delimitted list of adjectives that distill the FLAVOR TEXT into discrete concepts that can be leveraged by future narrative responses. ` +
+            `Output a long, single line of comma-delimitted adjectives that describe these aspects of the FLAVOR TEXT, then end your response.\n` +
+            `\n` +
+            `###EXAMPLE RESPONSES:\n` +
             `"fantasy, dark, gritty, realistic, mystical, raunchy, Lovecraftian, Geiger, alien, violent"\n` +
             `"goofy, fantasy, colorful, magical, sparkly, funny, fantastic"\n` +
             `"clean, sci-fi, pristine, clinical, lens flares, 3D renders, vibrant, high-contrast"\n` +
             `"wholesome, spirited, Studio Ghibli, family-friendly, colorful, cel-shaded"\n` +
             `"wild, untamed, barren, bright, wasteland, Frank Frazetta, Conan, barbaric, hedonistic"\n` +
-            `[/EXAMPLE RESPONSES]\n\n` +
-            `[TYPICAL INSTRUCTION]\n`;
+            `\n` +
+            `###SECONDARY INSTRUCTION: `;
     }
 
     buildBarDescriptionPrompt(description: string): string {
