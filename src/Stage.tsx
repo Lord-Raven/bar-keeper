@@ -48,7 +48,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `"Domination, comic book, vampires, underground, neon lights, slayers, killers, metaphysics, psychics, lycans."\n` +
             `\n` +
             `###PRIORITY INSTRUCTION: The FLAVOR TEXT is merely inspirational material that you will use to establish a vibe, art style, themes, or source material for upcoming narration and illustration. ` +
-            `This initial response should be used to output a comma-delimitted list of words or phrases that distill the spirit of the setting; establish appropriate art style or themes that reduce the FLAVOR TEXT into discrete concepts that can be used to guide the nature of future narrative responses. ` +
+            `This initial response should be used to output a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT; include appropriate art style or themes that reduce the FLAVOR TEXT into discrete concepts that can be used to guide the nature of future narrative responses. ` +
             `You will output a single line of comma-delimitted adjectives or concepts that describe these aspects of the FLAVOR TEXT, then promptly end your response with a period.\n` +
             `\n` +
             `###STANDARD INSTRUCTION: {{suffix}}`;
@@ -57,8 +57,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     buildBarDescriptionPrompt(description: string): string {
         return `` +
             `###THEMES: ${description}\n\n` +
-            `###PRIORITY INSTRUCTION: You will use this initial response to write a few sentences describing a fictional pub, bar, club, or tavern set in a universe that honors the THEMES. This descriptive paragraph should focus on the ` +
-            `ambience, setting, theming, fixtures, and general clientele of the establishment. This informative bar description will later be used in future narrative responses.\n` +
+            `###PRIORITY INSTRUCTION: You will use this initial response to write a few sentences describing a fictional pub, bar, club, or tavern set in a universe that is inspired by the THEMES. This descriptive paragraph should focus on the ` +
+            `ambience, setting, theming, fixtures, and general clientele of the establishment. This informative and flavorful description will later be used in future, narrative responses.\n` +
             `\n` +
             `###STANDARD INSTRUCTION: {{suffix}}`;
     };
@@ -331,7 +331,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let textResponse = await this.generator.textGen({
             prompt: this.buildDistillationPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description),
             stop: ['.', '/n'],
-            max_tokens: 75,
+            max_tokens: 60,
             min_tokens: 25
         });
         console.log(`Distillation: ${textResponse?.result}`);
@@ -341,7 +341,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.styleSummary = textResponse.result;
             textResponse = await this.generator.textGen({
                 prompt: this.buildBarDescriptionPrompt(this.styleSummary),
-                max_tokens: 400,
+                max_tokens: 200,
                 min_tokens: 50
             });
             console.log(`Bar description: ${textResponse?.result}`);
