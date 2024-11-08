@@ -37,10 +37,10 @@ type ChatStateType = any;
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     buildBarDescriptionPrompt(description: string): string {
-        return `[RESPONSE INSTRUCTION]Digest and appreciate the vibe, style, and setting of the following flavor text:[/RESPONSE INSTRUCTION]\n${description}\n` +
-            `[RESPONSE INSTRUCTION]This is a unique response; rather than continuing the narrative, you should utilize this response to write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
-            `ambience, setting, theming, fixtures, and general clientele of the establishment. Finish the response with a line of comma-delimitted adjectives which summarize the style or themes of this setting.\n` +
-            `Examples:\n"STYLE: gritty, exaggerated, fantasy, modern"\n"STYLE: cartoony, vibrant, sci-fi"\n[/RESPONSE INSTRUCTION]\n`;
+        return `[OVERRIDING INSTRUCTION]Digest and appreciate the vibe, style, and setting of the following flavor text:[/OVERRIDING INSTRUCTION]\n${description}\n` +
+            `[OVERRIDING INSTRUCTION]This is a unique response; rather than continuing the narrative, you should instead utilize this response to write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
+            `ambience, setting, theming, fixtures, and general clientele of the establishment. Definitively end the response with a line of comma-delimitted adjectives which summarize the style or themes of this setting.\n` +
+            `Examples:\n"STYLE: gritty, exaggerated, fantasy, modern"\n"STYLE: cartoony, vibrant, sci-fi"\n[/OVERRIDING INSTRUCTION]\n`;
     };
 
     buildAlcoholDescriptionsPrompt(): string {
@@ -55,19 +55,19 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
             `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n` +
             `[/EXAMPLE RESPONSES]\n` +
-            `[RESPONSE INSTRUCTION]This is a unique response; rather than continuing the narrative, you should utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
+            `[OVERRIDING INSTRUCTION]This is a unique response; rather than continuing the narrative, you should instead utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
             `each's appearance, bottle, odor, and flavor. Follow the format of examples, where each line presents a new beverage name and description:\n` +
             `"Some Alcohol - A brief description of the alcohol and bottle it comes in.\n` +
             `A Different Alcohol - Another brief description that differs from the other beverages.\n` +
             `Wildly Different Beverage - The description of yet another alcohol that stands out from the others."\n` +
-            `[/RESPONSE INSTRUCTION]\n`;
+            `[/OVERRIDING INSTRUCTION]\n`;
     };
 
     buildPatronPrompt(): string {
         return `[LOCATION]\n` +
             `${this.barDescription}\n` +
             `[/LOCATION]\n` +
-            `[RESPONSE INSTRUCTION]This is a unique response; rather than continuing the narrative, you should utilize this response to craft a new character who might patronize this establishment, ` +
+            `[OVERRIDING INSTRUCTION]This is a unique response; rather than continuing the narrative, you should instead utilize this response to craft a new character who might patronize this establishment, ` +
             `giving them a name, a physical description, and a paragraph about their personality, background, habits, and ticks. ` +
             `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(this.patrons).length > 0 ?
@@ -76,7 +76,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 `${Object.values(this.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n') +
             `Output the details for a new character in the following format:\nName: Name\nDescription: Physical description covering gender, skin tone, hair color, hair style, eye color, clothing, accessories, and other obvious traits.\nPersonality: Personality and background details here.` +
-            `\n[/RESPONSE INSTRUCTION]\n`;
+            `\n[/OVERRIDING INSTRUCTION]\n`;
     };
 
     readonly disableContentGeneration: boolean = false;
