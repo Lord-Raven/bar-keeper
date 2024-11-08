@@ -37,8 +37,11 @@ type ChatStateType = any;
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     buildDistillationPrompt(description: string): string {
-        return `{{jailbreak}}\n\n` +
-            `[BACKGROUND]\n${description}\n[/BACKGROUND]\n\n` +
+        return `[FLAVOR]\n${description}\n[/FLAVOR]\n\n` +
+            `[PRIORITY INSTRUCTION]The FLAVOR text is inspirational material that you will use to establish vibe, style, themes, and setting for the upcoming narration. ` +
+            `This initial response should be used to construct and output a comma-delimitted list of adjectives that distill the FLAVOR text into discrete concepts that can be leveraged by future narrative responses. ` +
+            `Output a long, single line of comma-delimitted adjectives that describe these aspects of the FLAVOR text, then end your response.\n` +
+            `[/PRIORITY INSTRUCTION]\n\n` +
             `[EXAMPLE RESPONSES]\n` +
             `"fantasy, dark, gritty, realistic, mystical, raunchy, Lovecraftian, Geiger, alien, violent"\n` +
             `"goofy, fantasy, colorful, magical, sparkly, funny, fantastic"\n` +
@@ -46,10 +49,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `"wholesome, spirited, Studio Ghibli, family-friendly, colorful, cel-shaded"\n` +
             `"wild, untamed, barren, bright, wasteland, Frank Frazetta, Conan, barbaric, hedonistic"\n` +
             `[/EXAMPLE RESPONSES]\n\n` +
-            `[PRIORITY INSTRUCTION]Rather than continuing the narrative, it is critical that you utilize this specific response to digest and distill the vibe, style, themes, and setting of the BACKGROUND flavor text into a comma-delimitted list of adjectives. ` +
-            `Output a long, single line of comma-delimitted adjectives that describe these aspects of the BACKGROUND flavor text, then end your response.\n` +
-            `[/PRIORITY INSTRUCTION]\n\n` +
-            `[BASE INSTRUCTION]\n`;
+            `[TYPICAL INSTRUCTION]\n`;
     }
 
     buildBarDescriptionPrompt(description: string): string {
