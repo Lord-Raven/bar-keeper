@@ -39,17 +39,17 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     buildDistillationPrompt(description: string): string {
         return `` +
             `###FLAVOR TEXT: ${description}\n\n` +
-            `###PRIORITY INSTRUCTION: The FLAVOR TEXT is merely inspirational material that you will use to establish vibe, art style, themes, and setting for the upcoming narration and illustrations. ` +
-            `This initial response should be used to construct and output a comma-delimitted list of words or phrases that distill the setting, style, or themes (but not specific characters) of the FLAVOR TEXT into discrete concepts that can be leveraged by future narrative responses. ` +
-            `Output a long, single line of comma-delimitted adjectives or concepts that describe these aspects of the FLAVOR TEXT, then promptly end your response with a period.\n` +
-            `\n` +
             `###EXAMPLE RESPONSES:\n` +
-            `"fantasy, dark, gritty, realistic, mystical, raunchy, Lovecraftian, Geiger, alien, violent."\n` +
-            `"goofy, fantasy, colorful, magical, sparkly, funny, fantastic."\n` +
-            `"clean, sci-fi, pristine, clinical, lens flares, 3D renders, vibrant, high-contrast."\n` +
-            `"wholesome, spirited, Studio Ghibli, family-friendly, colorful, cel-shaded."\n` +
-            `"wild, untamed, barren, bright, wasteland, Frank Frazetta, Conan, barbaric, hedonistic."\n` +
-            `"domination, comic book, vampires, underground, neon lights, slayers, killers, metaphysics, psychics, lycans."\n` +
+            `"Fantasy, dark, gritty, realistic, mystical, raunchy, Lovecraftian, Geiger, alien, violent."\n` +
+            `"Goofy, fantasy, colorful, magical, sparkly, funny, fantastic, over-the-top, non-violent."\n` +
+            `"Clean, sci-fi, pristine, clinical, lens flares, 3D renders, vibrant, high-contrast."\n` +
+            `"Wholesome, spirited, Studio Ghibli, family-friendly, colorful, cel-shaded, anime."\n` +
+            `"Wild, untamed, barren, bright, wasteland, Frank Frazetta, Conan, barbaric, hedonistic."\n` +
+            `"Domination, comic book, vampires, underground, neon lights, slayers, killers, metaphysics, psychics, lycans."\n` +
+            `\n` +
+            `###PRIORITY INSTRUCTION: The FLAVOR TEXT is merely inspirational material that you will use to establish vibe, art style, themes, or source material for the upcoming narration and illustrations. ` +
+            `This initial response should be used to output a comma-delimitted list of words or phrases that distill the setting, style, or themes (but not specific characters) of the FLAVOR TEXT into discrete concepts that can be used to guide the style of future narrative responses. ` +
+            `Output a single line of comma-delimitted adjectives or concepts that describe these aspects of the FLAVOR TEXT, then promptly end your response with a period.\n` +
             `\n` +
             `###STANDARD INSTRUCTION: {{suffix}}`;
     }
