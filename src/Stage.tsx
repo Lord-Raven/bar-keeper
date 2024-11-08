@@ -37,7 +37,7 @@ type ChatStateType = any;
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     buildDistillationPrompt(description: string): string {
-        return `{{prefix}}\n\n` +
+        return `` +
             `###FLAVOR TEXT: ${description}\n\n` +
             `###PRIORITY INSTRUCTION: The FLAVOR TEXT is inspirational material that you will use to establish vibe, art style, themes, and setting for the upcoming narration and illustrations. ` +
             `This initial response should be used to construct and output a comma-delimitted list of adjectives or concepts that distill the FLAVOR TEXT into discrete concepts that can be leveraged by future narrative responses. ` +
@@ -55,9 +55,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildBarDescriptionPrompt(description: string): string {
-        return `{{prefix}}\n\n` +
+        return `` +
             `###THEMES: ${description}\n\n` +
-            `###PRIORITY INSTRUCTION: This is a unique response; rather than continuing the narrative, you should instead utilize this response to write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
+            `###PRIORITY INSTRUCTION: This is a unique response; rather than continuing the narrative, you should instead utilize this response to write a few sentences describing a pub, bar, club, or tavern set in the universe of this flavor text, focusing on the ` +
             `ambience, setting, theming, fixtures, and general clientele of the establishment.\n` +
             `\n` +
             `###STANDARD INSTRUCTION: {{suffix}}`;
@@ -385,7 +385,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.currentMessageId = undefined;
             this.currentMessageIndex = 500;
             this.setLoadProgress(95, 'Writing intro.');
-            await this.advanceMessage()
+            //await this.advanceMessage()
             this.setLoadProgress(undefined, 'Complete');
         }
 
