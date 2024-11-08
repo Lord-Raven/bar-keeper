@@ -38,6 +38,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildDistillationPrompt(description: string): string {
         return `[BACKGROUND]\n${description}\n[/BACKGROUND]\n` +
+            `[EXAMPLE RESPONSES]\n` +
+            `### Response: {{char}}: Fantasy, dark, gritty, realistic, mystical\n` +
+            `### Response: {{char}}: Goofy, fantasy, colorful, magical, sparkly\n` +
+            `### Response: {{char}}: Clean, sci-fi, Lovecraft, vibrant, high-contrast\n` +
+            `[/EXAMPLE RESPONSES]\n` +
             `[PRIORITY INSTRUCTION]Use this response to digest and distill the vibe, style, themes, and setting of the BACKGROUND flavor text; output a single list of comma-delimitted adjectives.\n` +
             `[/PRIORITY INSTRUCTION]\n` +
             `[PAST INSTRUCTION]`;
@@ -315,7 +320,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let textResponse = await this.generator.textGen({
             prompt: this.buildDistillationPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description),
             max_tokens: 100,
-            min_tokens: 30
+            min_tokens: 25
         });
         console.log(`Distillation: ${textResponse?.result}`);
         
