@@ -38,16 +38,17 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildDistillationPrompt(description: string): string {
         return `[BACKGROUND]\n${description}\n[/BACKGROUND]\n` +
-            `[OVERRIDE INSTRUCTION]Use this response to digest and distill the vibe, style, themes, and setting of the BACKGROUND flavor text; output a comma-delimitted list of adjectives.\n` +
-            `[STANDARD INSTRUCTION]`;
+            `[PRIORITY INSTRUCTION]Use this response to digest and distill the vibe, style, themes, and setting of the BACKGROUND flavor text; output a single list of comma-delimitted adjectives.\n` +
+            `[/PRIORITY INSTRUCTION]\n` +
+            `[PAST INSTRUCTION]`;
     }
 
     buildBarDescriptionPrompt(description: string): string {
         return `[THEMES]${description}[/THEMES]\n` +
-            `[OVERRIDE INSTRUCTION]This is a unique response; rather than continuing the narrative, you should instead utilize this response to write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
+            `[PRIORITY INSTRUCTION]This is a unique response; rather than continuing the narrative, you should instead utilize this response to write a few sentences describing a pub, bar, or tavern set in the universe of this flavor text, focusing on the ` +
             `ambience, setting, theming, fixtures, and general clientele of the establishment.\n` +
-            `[/OVERRIDE INSTRUCTION]\n` +
-            `[STANDARD INSTRUCTION]`;
+            `[/PRIORITY INSTRUCTION]\n` +
+            `[PAST INSTRUCTION]`;
     };
 
     buildAlcoholDescriptionsPrompt(): string {
