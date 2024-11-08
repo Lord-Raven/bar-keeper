@@ -47,9 +47,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `"Wild, untamed, barren, bright, wasteland, Frank Frazetta, Conan, barbaric, hedonistic."\n` +
             `"Domination, comic book, vampires, underground, neon lights, slayers, killers, metaphysics, psychics, lycans."\n` +
             `\n` +
-            `###PRIORITY INSTRUCTION: The FLAVOR TEXT is merely inspirational material that you will use to establish vibe, art style, themes, or source material for the upcoming narration and illustrations. ` +
-            `This initial response should be used to output a comma-delimitted list of words or phrases that distill the setting, style, or themes (but not specific characters) of the FLAVOR TEXT into discrete concepts that can be used to guide the style of future narrative responses. ` +
-            `Output a single line of comma-delimitted adjectives or concepts that describe these aspects of the FLAVOR TEXT, then promptly end your response with a period.\n` +
+            `###PRIORITY INSTRUCTION: The FLAVOR TEXT is merely inspirational material that you will use to establish a vibe, art style, themes, or source material for upcoming narration and illustration. ` +
+            `This initial response should be used to output a comma-delimitted list of words or phrases that distill the spirit of the setting; establish appropriate art style or themes that reduce the FLAVOR TEXT into discrete concepts that can be used to guide the nature of future narrative responses. ` +
+            `You will output a single line of comma-delimitted adjectives or concepts that describe these aspects of the FLAVOR TEXT, then promptly end your response with a period.\n` +
             `\n` +
             `###STANDARD INSTRUCTION: {{suffix}}`;
     }
@@ -57,8 +57,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     buildBarDescriptionPrompt(description: string): string {
         return `` +
             `###THEMES: ${description}\n\n` +
-            `###PRIORITY INSTRUCTION: This is a unique response; rather than continuing the narrative, you should instead utilize this response to write a few sentences describing a pub, bar, club, or tavern set in the universe of this flavor text, focusing on the ` +
-            `ambience, setting, theming, fixtures, and general clientele of the establishment.\n` +
+            `###PRIORITY INSTRUCTION: You will use this initial response to write a few sentences describing a fictional pub, bar, club, or tavern set in a universe that honors the THEMES. This descriptive paragraph should focus on the ` +
+            `ambience, setting, theming, fixtures, and general clientele of the establishment. This informative bar description will later be used in future narrative responses.\n` +
             `\n` +
             `###STANDARD INSTRUCTION: {{suffix}}`;
     };
@@ -331,7 +331,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let textResponse = await this.generator.textGen({
             prompt: this.buildDistillationPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description),
             stop: ['.', '/n'],
-            max_tokens: 100,
+            max_tokens: 75,
             min_tokens: 25
         });
         console.log(`Distillation: ${textResponse?.result}`);
