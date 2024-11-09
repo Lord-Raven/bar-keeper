@@ -45,9 +45,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.buildSection('Priority Instruction', 
                 `The FLAVOR TEXT is merely inspirational material that you will use to establish a Setting, Themes, and Art style for upcoming narration and illustration. ` +
                 `This initial response should include three fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
-                `"Setting" should briefly summarize the overarching location, vibe, time period, or source material derived from the FLAVOR TEXT.\n` +
-                `"Themes" should list some of the prevaling themes or concepts from the FLAVOR TEXT.\n` +
-                `"Art" should describe a target artist, style, or genre that suits the setting and themes of the FLAVOR TEXT.\n` +
+                `"Setting" should briefly summarize the overarching location, vibe, time period, or identify the source material derived from the FLAVOR TEXT.\n` +
+                `"Themes" should list some of the prominent themes or concepts from the FLAVOR TEXT.\n` +
+                `"Art" should describe a target artist, artistic style, artistic genre, medium, strokes, or other style choices that suits the setting and themes of the FLAVOR TEXT; this will be used to generate appropriate images later.\n` +
                 `Define these three fields and promptly end your response.\n`) +
             this.buildSection('Example Responses', 
                 `"Setting: Lovecraftian 1930s, gritty, noir, mystical\nThemes: Mind control, dementia, gore, mysticism, Old Ones\nArt: noir, dark, gritty, hyperrealism, moist"\n` +
