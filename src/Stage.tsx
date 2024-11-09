@@ -343,9 +343,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         
         if (textResponse && textResponse.result) {
 
-            const settingMatch = textResponse.result.match(/Setting:\s*(.*)/);
-            const themeMatch = textResponse.result.match(/Themes:\s*(.*)/);
-            const artMatch = textResponse.result.match(/Art:\s*(.*)/);
+            const settingMatch = textResponse.result.match(/Setting:\s*(.*)/i);
+            const themeMatch = textResponse.result.match(/Themes:\s*(.*)/i);
+            const artMatch = textResponse.result.match(/Art:\s*(.*)/i);
 
             this.settingSummary = settingMatch ? settingMatch[1].trim() : '';
             this.themeSummary = themeMatch ? themeMatch[1].trim() : '';
