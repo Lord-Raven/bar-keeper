@@ -116,7 +116,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     beverages: Beverage[];
     loadingProgress: number|undefined;
     loadingDescription: string|undefined;
-    messageParentIds: {[key: string]: string};
     messageSlices: {[key: string]: Slice};
     patrons: {[key: string]: Patron};
 
@@ -162,7 +161,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.player = users[Object.keys(users)[0]];
         this.beverages = [];
         this.patrons = {};
-        this.messageParentIds = {};
         this.messageSlices = {};
         this.readChatState(chatState);
         this.readMessageState(messageState);
@@ -198,12 +196,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             identity
         } = userMessage;
 
-        /*console.log('beforePrompt()');
-
-        this.messageParentIds[identity] = this.currentMessageId ?? '';
-        this.messageSlices[identity] = new Slice(undefined, [], undefined, content);
-        this.currentMessageId = identity;*/
-
         return {
             stageDirections: null,
             messageState: this.buildMessageState(),
@@ -220,12 +212,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             content,
             identity
         } = botMessage;
-/*
-        console.log('afterResponse()');
-        if (this.messageParentIds && this.messageSlices) {
-            this.messageParentIds[identity] = this.currentMessageId ?? '';
-            this.messageSlices[identity] = new Slice(undefined, [], undefined, content);
-        }*/
         this.currentMessageId = identity;
         return {
             stageDirections: null,
@@ -246,7 +232,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             barImageUrl: this.barImageUrl,
             entranceSoundUrl: this.entranceSoundUrl,
             beverages: this.beverages,
-            messageParentIds: this.messageParentIds,
             messageSlices: this.messageSlices,
             currentMessageId: this.currentMessageId,
             currentMessageIndex: this.currentMessageIndex,
@@ -263,7 +248,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.barImageUrl = chatState.barImageUrl;
             this.entranceSoundUrl = chatState.entranceSoundUrl;
             this.beverages = (chatState.beverages ?? []).map((beverage: { name: string, description: string, imageUrl: string }) => new Beverage(beverage.name, beverage.description, beverage.imageUrl));
-            this.messageParentIds = chatState.messageParentIds ?? {};
             this.messageSlices = chatState.messageSlices ?? {};
             this.currentMessageId = chatState.currentMessageId ?? undefined;
             this.currentMessageIndex = chatState.currentMessageIndex ?? 0;
@@ -415,14 +399,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             message: slice.script,
             parent_id: this.currentMessageId ?? '-2',
             is_main: true,
-            speaker_id: this.player.anonymizedId
+            speaker_id: this.characterForGeneration.anonymizedId
         });
 
         console.log(`IDs: ${this.currentMessageId}:${impersonation.identity}`);
-        this.messageParentIds[impersonation.identity] = this.currentMessageId ?? '';
         this.messageSlices[impersonation.identity] = slice;
         this.currentMessageId = impersonation.identity;
         this.currentMessageIndex = 0;
+        this.messenger.up
         await this.messenger.updateChatState(this.buildChatState());
     }
 
@@ -476,39 +460,23 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return Promise.resolve(imageUrl);
     }
 
-    buildHistory(messageId: string): string {
-        let currentId = messageId;
-        let historyString = this.getMessageBody(messageId);
-        let depth = 0;
-        while(this.messageParentIds[currentId] && currentId != this.messageParentIds[currentId] && depth < 10) {
-            currentId = this.messageParentIds[currentId];
-            if (this.getMessageSlice(currentId).direction !== Direction.Choice) {
-                historyString = `${this.getMessageBody(currentId)}\n\n${historyString}`;
-            }
-            depth++;
-        }
-
-        return historyString;
-    }
-
     buildBeverageDescriptions(): string {
-        return `[BEVERAGES]${this.beverages.map(beverage => `${beverage.name} - ${beverage.description}`).join('\n')}[/BEVERAGES]\n`;
+        return this.buildSection('Beverages', `${this.beverages.map(beverage => `${beverage.name} - ${beverage.description}`).join('\n')}`);
     }
 
     buildPatronDescriptions(): string {
         const presentPatronIds = this.getMessageSlice(this.currentMessageId).presentPatronIds;
-        return `[ABSENT PATRONS]${Object.values(this.patrons).filter(patron => !presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[/ABSENT PATRONS]\n` +
-            `[PRESENT PATRONS]${Object.values(this.patrons).filter(patron => presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}[/PRESENT PATRONS]\n`;
+        return this.buildSection('Absent Patrons', `${Object.values(this.patrons).filter(patron => !presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}`) +
+            this.buildSection('Present Patrons', `${Object.values(this.patrons).filter(patron => presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}`);
     }
 
-    buildStoryPrompt(history: string, currentInstruction: string): string {
-        return `[SETTING]${this.barDescription}[/SETTING]\n` +
-            `[USER]${this.player.name} is a bartender here. ${this.player.chatProfile}[/USER]\n` +
+    buildStoryPrompt(currentInstruction: string): string {
+        return this.buildSection('Setting', this.barDescription ?? '') +
+            this.buildSection('User', `${this.player.name} is a bartender here. ${this.player.chatProfile}`) +
             this.buildPatronDescriptions() +
             this.buildBeverageDescriptions() +
-            `\n${sampleScript}\n` +
-            //`[LOG]${history}[/LOG]\n` +
-            `[INSTRUCTION OVERRIDE]${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}[/INSTRUCTION OVERRIDE]`;
+            this.buildSection('Sample Response', sampleScript) +
+            this.buildSection('Instruction Override', `${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}`);
     }
 
     async advanceMessage() {
@@ -541,9 +509,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         while (retries-- > 0) {
             try {
                 let textGen = await this.generator.textGen({
-                    prompt: this.buildStoryPrompt(
-                        this.buildHistory(this.currentMessageId ?? ''),
-                        `${this.director.getPromptInstruction(this, newSlice)}\n${additionalContext}`),
+                    prompt: this.buildStoryPrompt(`${this.director.getPromptInstruction(this, newSlice)}\n${additionalContext}`),
                     max_tokens: 400,
                     min_tokens: 50,
                     include_history: true
