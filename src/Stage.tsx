@@ -483,6 +483,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.buildPatronDescriptions() +
             this.buildBeverageDescriptions() +
             this.buildSection('Sample Response', sampleScript) +
+            this.buildSection('Log', '{{messages}}') +
             this.buildSection('Instruction Override', `${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}`);
     }
 
@@ -518,8 +519,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 let textGen = await this.generator.textGen({
                     prompt: this.buildStoryPrompt(`${this.director.getPromptInstruction(this, newSlice)}\n${additionalContext}`),
                     max_tokens: 400,
-                    min_tokens: 50,
-                    include_history: true
+                    min_tokens: 50
                 });
                 if (textGen?.result?.length) {
                     newSlice.setScript(textGen.result);
