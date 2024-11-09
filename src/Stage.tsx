@@ -82,7 +82,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 `Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo."\n` +
                 `"Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
                 `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
-                `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle."\n`) +
+                `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle."\n` +
+                `"Synth Mead - Bees died out long ago, but hypervikings still live for the sweet taste of synthetic honey wine.\n` +
+                `Super Hazy Imperial Double IPA - More IBUs than anyone's ever cared about. This bottle's got a buttload of cute bullshit about the local microbrewery that produced it, too.\n` +
+                `USB Port - Alcohol for wannabe techbros. Not legally a 'port' because of legal protections surrounding the term."`) +
             this.buildSection('Standard Instruction', '{{suffix}}');
     };
 
