@@ -40,16 +40,19 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return `` +
             `###FLAVOR TEXT: ${description}\n\n` +
             `###EXAMPLE RESPONSES:\n` +
-            `"Fantasy, dark, gritty, realistic, mystical, raunchy, Lovecraftian, Geiger, alien, violent."\n` +
-            `"Goofy, fantasy, colorful, magical, sparkly, funny, fantastic, over-the-top, non-violent."\n` +
-            `"Clean, sci-fi, pristine, clinical, lens flares, 3D renders, vibrant, high-contrast."\n` +
-            `"Wholesome, spirited, Studio Ghibli, family-friendly, colorful, cel-shaded, anime."\n` +
-            `"Wild, untamed, barren, bright, wasteland, Frank Frazetta, Conan, barbaric, hedonistic."\n` +
-            `"Domination, comic book, vampires, underground, neon lights, slayers, killers, metaphysics, psychics, lycans."\n` +
+            `"Setting: Lovecraftian 1930s, gritty, noir, mystical\nThemes: Mind control, dementia, gore, Old Ones\nArt: dark, gritty, hyperrealism, moist"\n` +
+            `"Setting: Dark fantasy, gritty, wasteland, barren, wild, robert e. howard\nThemes: barbarians, hedonism, violence\nArt: dark fantasy, oil painting, Frank Frazetta, hypersexualized"\n` +
+            `"Setting: Quirky, modern, fantasy\nThemes: magical, fantasy modern, non-violence, exaggerated, silly, funny\nArt: Studio Ghibli, bright, anime, vibrant, sparkly"\n` +
+            `"Setting: Hard sci-fi, isolated space station\nThemes: Slow burn, danger, alien infestation, psychological horror\nArt: Creepy, greebling, gross, hyperrealism, H. R. Geiger"\n` +
+            `"Setting: Space opera, Mass Effect, The Citadel\nThemes: Friendship, trying times, relationships\nArt: Clean, 3D render, vibrant, pristine, lens flares"\n` +
+            `"Setting: Underground, 80s vampire bar\nThemes: vampires, lycans, underworld, domination, murder\nArt: Comic book, neon, exaggerated linework"\n` +
             `\n` +
-            `###PRIORITY INSTRUCTION: The FLAVOR TEXT is merely inspirational material that you will use to establish a vibe, art style, themes, or source material for upcoming narration and illustration. ` +
-            `This initial response should be used to output a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT; be sure to include appropriate art style and themes that reduce the FLAVOR TEXT into discrete concepts that can be used to guide the nature of future narrative responses. ` +
-            `You will output a single line of comma-delimitted adjectives or concepts that describe these aspects of the FLAVOR TEXT, then promptly end your response with a period.\n` +
+            `###PRIORITY INSTRUCTION: The FLAVOR TEXT is merely inspirational material that you will use to establish a Setting, Themes, and Art style for upcoming narration and illustration. ` +
+            `This initial response should include three fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
+            `"Setting" should briefly describe any overarching location, vibe, time period, or source material derived from the FLAVOR TEXT.\n` +
+            `"Themes" should list some of the prevaling themes or concepts from the FLAVOR TEXT.\n` +
+            `"Art" should describe a target art style that suits the setting and themes of the FLAVOR TEXT.\n` +
+            `Define these three fields and promptly end your response.\n` +
             `\n` +
             `###STANDARD INSTRUCTION: {{suffix}}`;
     }
@@ -106,7 +109,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     // Chat State:
     barDescription: string|undefined;
-    styleSummary: string|undefined;
+    settingSummary: string|undefined;
+    themeSummary: string|undefined;
+    artSummary: string|undefined;
     barImageUrl: string|undefined;
     entranceSoundUrl: string|undefined;
     beverages: Beverage[];
@@ -236,7 +241,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     buildChatState(): ChatStateType {
         return {
             barDescription: this.barDescription,
-            styleSummary: this.styleSummary,
+            settingSummary: this.settingSummary,
+            themeSummary: this.themeSummary,
+            artSummary: this.artSummary,
             barImageUrl: this.barImageUrl,
             entranceSoundUrl: this.entranceSoundUrl,
             beverages: this.beverages,
@@ -251,7 +258,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     readChatState(chatState: ChatStateType) {
         if (chatState) {
             this.barDescription = chatState.barDescription;
-            this.styleSummary = chatState.styleSummary;
+            this.settingSummary = chatState.settingSummary;
+            this.themeSummary = chatState.themeSummary;
+            this.artSummary = chatState.artSummary;
             this.barImageUrl = chatState.barImageUrl;
             this.entranceSoundUrl = chatState.entranceSoundUrl;
             this.beverages = (chatState.beverages ?? []).map((beverage: { name: string, description: string, imageUrl: string }) => new Beverage(beverage.name, beverage.description, beverage.imageUrl));
@@ -327,17 +336,25 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         let textResponse = await this.generator.textGen({
             prompt: this.buildDistillationPrompt(this.characterForGeneration.personality + ' ' + this.characterForGeneration.description),
-            stop: ['.', '/n'],
-            max_tokens: 60,
-            min_tokens: 25
+            max_tokens: 100,
+            min_tokens: 50
         });
         console.log(`Distillation: ${textResponse?.result}`);
         
         if (textResponse && textResponse.result) {
 
-            this.styleSummary = textResponse.result;
+            const settingMatch = textResponse.result.match(/Setting:\s*(.*)/);
+            const themeMatch = textResponse.result.match(/Themes:\s*(.*)/);
+            const artMatch = textResponse.result.match(/Art:\s*(.*)/);
+
+            this.settingSummary = settingMatch ? settingMatch[1].trim() : '';
+            this.themeSummary = themeMatch ? themeMatch[1].trim() : '';
+            this.artSummary = artMatch ? artMatch[1].trim() : '';
+
+            console.log(`Setting: ${this.settingSummary}\nTheme: ${this.themeSummary}\nArt: ${this.artSummary}`);
+
             textResponse = await this.generator.textGen({
-                prompt: this.buildBarDescriptionPrompt(this.styleSummary),
+                prompt: this.buildBarDescriptionPrompt(this.settingSummary),
                 max_tokens: 200,
                 min_tokens: 50
             });
@@ -347,8 +364,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             this.setLoadProgress(10, 'Generating bar image.');
             this.barImageUrl = await this.makeImage({
-                prompt: `masterpiece, high resolution, hyperrealism, fine lines, vibrant colors, dynamic lighting, illustration, ${this.styleSummary}, (interior of bar with this description: ${this.barDescription})`,
-                negative_prompt: 'grainy, low resolution, low quality, exterior, person, outside, daytime, outdoors',
+                prompt: `masterpiece, high resolution, ${this.artSummary}, (${this.settingSummary}), (interior of a bar with this description: ${this.barDescription})`,
+                negative_prompt: 'grainy, low resolution, low quality, exterior, person, people, crowd, outside, daytime, outdoors',
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             }, '');
 
@@ -449,7 +466,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let imageUrl = await this.makeImage({
             //image: bottleUrl,
             //strength: 0.1,
-            prompt: `${this.patronImagePrompt}, ${this.styleSummary}, ${patron.description}`,
+            prompt: `${this.patronImagePrompt}, (character from this setting: ${this.settingSummary}), ${this.artSummary}, (${patron.description})`,
             negative_prompt: this.patronImageNegativePrompt,
             aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL, //.PHOTO_HORIZONTAL,
             remove_background: true
