@@ -64,7 +64,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return `` +
             this.buildSection('Themes', description) +
             this.buildSection('Priority Instruction', 
-                'You will use this initial response to write a few sentences describing a fictional pub, bar, club, or tavern set in a universe that is inspired by the THEMES. ' +
+                'You are doing prep work for a narrative. You will use this initial response to write a few sentences describing a fictional pub, bar, club, or tavern set in a universe that is inspired by the THEMES. ' +
                 'This descriptive paragraph should focus on the ambience, setting, theming, fixtures, and general clientele of the establishment. ' +
                 'This informative and flavorful description will later be used in future, narrative responses.\n') +
             this.buildSection('Standard Instruction', '{{suffix}}');
@@ -74,8 +74,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return `` +
             this.buildSection('Location', this.barDescription ?? '') +
             this.buildSection('Priority Instruction', 
-                `This is a unique response; rather than continuing the narrative, you should instead utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
-                `each's appearance, bottle, odor, and flavor. Define a beverage's name followed by its description, with a separate and distinct beverage on each line of your response, then promptly end the response.\n`) +
+                `You are doing prep work for a narrative. You will use this initial response to define several types of alcohol that this bar might serve, providing a brief description of ` +
+                `each's appearance, bottle, odor, and flavor. Output several lines; each line should start with the beverage's name, followed by its description, with each drink occupying a separate line in your response.\n`) +
             this.buildSection('Example Responses', 
                 `"Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
                 `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
