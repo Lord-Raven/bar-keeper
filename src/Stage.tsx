@@ -40,7 +40,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return `` +
             `###FLAVOR TEXT: ${description}\n\n` +
             `###EXAMPLE RESPONSES:\n` +
-            `"Setting: Lovecraftian 1930s, gritty, noir, mystical\nThemes: Mind control, dementia, gore, Old Ones\nArt: dark, gritty, hyperrealism, moist"\n` +
+            `"Setting: Lovecraftian 1930s, gritty, noir, mystical\nThemes: Mind control, dementia, gore, mysticism, Old Ones\nArt: noir, dark, gritty, hyperrealism, moist"\n` +
             `"Setting: Dark fantasy, gritty, wasteland, barren, wild, robert e. howard\nThemes: barbarians, hedonism, violence\nArt: dark fantasy, oil painting, Frank Frazetta, hypersexualized"\n` +
             `"Setting: Quirky, modern, fantasy\nThemes: magical, fantasy modern, non-violence, exaggerated, silly, funny\nArt: Studio Ghibli, bright, anime, vibrant, sparkly"\n` +
             `"Setting: Hard sci-fi, isolated space station\nThemes: Slow burn, danger, alien infestation, psychological horror\nArt: Creepy, greebling, gross, hyperrealism, H. R. Geiger"\n` +
@@ -49,7 +49,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `\n` +
             `###PRIORITY INSTRUCTION: The FLAVOR TEXT is merely inspirational material that you will use to establish a Setting, Themes, and Art style for upcoming narration and illustration. ` +
             `This initial response should include three fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
-            `"Setting" should briefly describe any overarching location, vibe, time period, or source material derived from the FLAVOR TEXT.\n` +
+            `"Setting" should briefly summarize the overarching location, vibe, time period, or source material derived from the FLAVOR TEXT.\n` +
             `"Themes" should list some of the prevaling themes or concepts from the FLAVOR TEXT.\n` +
             `"Art" should describe a target art style that suits the setting and themes of the FLAVOR TEXT.\n` +
             `Define these three fields and promptly end your response.\n` +
@@ -80,7 +80,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle."\n` +
             `\n` +
             `###PRIORITY INSTRUCTION: This is a unique response; rather than continuing the narrative, you should instead utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
-            `each's appearance, bottle, odor, and flavor. Follow the format of examples, where each line presents a new beverage name and description.\n` +
+            `each's appearance, bottle, odor, and flavor. Define a beverage's name followed by its description, with a separate and distinct beverage on each line of your response, then promptly end the response.\n` +
             `\n` +
             `###STANDARD INSTRUCTION: {{suffix}}`;
     };
