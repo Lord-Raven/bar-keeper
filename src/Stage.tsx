@@ -45,14 +45,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.buildSection('Priority Instruction', 
                 `The FLAVOR TEXT is merely inspirational material that you will use to establish a Setting, Themes, and Art style for upcoming narration and illustration. ` +
                 `This initial response should include three fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
-                `"Setting" should briefly summarize the overarching location, vibe, time period, or identify the source material derived from the FLAVOR TEXT.\n` +
+                `"Setting" should briefly summarize the overarching location, vibe, or time period derived from the FLAVOR TEXT; clearly call out any known source material for FLAVOR TEXT.\n` +
                 `"Themes" should list some of the prominent themes or concepts from the FLAVOR TEXT.\n` +
                 `"Art" should describe a target artist, artistic style, artistic genre, medium, strokes, or other style choices that suits the setting and themes of the FLAVOR TEXT; this will be used to generate appropriate images later.\n` +
                 `Define these three fields and promptly end your response.\n`) +
             this.buildSection('Example Responses', 
-                `"Setting: Lovecraftian 1930s, gritty, noir, mystical\nThemes: Mind control, dementia, gore, mysticism, Old Ones\nArt: noir, dark, gritty, hyperrealism, moist"\n` +
-                `"Setting: Dark fantasy, gritty, wasteland, barren, wild, robert e. howard\nThemes: barbarians, hedonism, violence\nArt: dark fantasy, oil painting, Frank Frazetta, hypersexualized"\n` +
-                `"Setting: Quirky, modern, fantasy\nThemes: magical, fantasy modern, non-violence, exaggerated, silly, funny\nArt: Studio Ghibli, bright, anime, vibrant, sparkly"\n` +
+                `"Setting: Lovecraftian 1930s, gritty, mystical New Orleans\nThemes: Mind control, dementia, gore, mysticism, Old Ones\nArt: noir, dark, gritty, hyperrealism, wet"\n` +
+                `"Setting: Dark fantasy wasteland, Robert E. Howard\nThemes: barbarians, hedonism, violence, domination\nArt: dark fantasy, oil painting, Frank Frazetta, hypersexualized"\n` +
+                `"Setting: Quirky, fantastic modern Japanese countryside\nThemes: magical, fantasy modern, non-violence, exaggerated, silly, funny\nArt: Studio Ghibli, bright, anime, vibrant, sparkly"\n` +
                 `"Setting: Hard sci-fi, isolated space station\nThemes: Slow burn, danger, alien infestation, psychological horror\nArt: Creepy, greebling, gross, hyperrealism, H. R. Geiger"\n` +
                 `"Setting: Space opera, Mass Effect, The Citadel\nThemes: Friendship, trying times, relationships\nArt: Clean, 3D render, vibrant, pristine, lens flares"\n` +
                 `"Setting: Underground, 80s biker bar\nThemes: turf war, drug running, machismo, brutality\nArt: Comic book, neon, chrome, exaggerated linework"\n` +
