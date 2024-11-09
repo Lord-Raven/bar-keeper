@@ -465,9 +465,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let imageUrl = await this.makeImage({
             //image: bottleUrl,
             //strength: 0.1,
-            prompt: `${this.patronImagePrompt}, (character from this setting: ${this.settingSummary}), ${this.artSummary}, (${patron.description})`,
+            prompt: `${this.patronImagePrompt}, (character from this setting: ${this.settingSummary}), (art style notes: ${this.artSummary}), (${patron.description})`,
             negative_prompt: this.patronImageNegativePrompt,
-            aspect_ratio: AspectRatio.PHOTO_VERTICAL, //.PHOTO_HORIZONTAL,
+            aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL, //.PHOTO_HORIZONTAL,
             remove_background: true
             //seed: null,
             //item_id: null,
@@ -507,7 +507,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.buildPatronDescriptions() +
             this.buildBeverageDescriptions() +
             `\n${sampleScript}\n` +
-            `[LOG]${history}[/LOG]\n` +
+            //`[LOG]${history}[/LOG]\n` +
             `[INSTRUCTION OVERRIDE]${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}[/INSTRUCTION OVERRIDE]`;
     }
 
@@ -545,7 +545,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         this.buildHistory(this.currentMessageId ?? ''),
                         `${this.director.getPromptInstruction(this, newSlice)}\n${additionalContext}`),
                     max_tokens: 400,
-                    min_tokens: 50
+                    min_tokens: 50,
+                    include_history: true
                 });
                 if (textGen?.result?.length) {
                     newSlice.setScript(textGen.result);
