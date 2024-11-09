@@ -37,7 +37,7 @@ type ChatStateType = any;
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     buildSection(name: string, body: string) {
-        return `###${name.toUpperCase}: ${body}\n\n`;
+        return `###${name.toUpperCase()}: ${body}\n\n`;
     }
     buildDistillationPrompt(description: string): string {
         return `` +
@@ -48,13 +48,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 `"Setting: Quirky, modern, fantasy\nThemes: magical, fantasy modern, non-violence, exaggerated, silly, funny\nArt: Studio Ghibli, bright, anime, vibrant, sparkly"\n` +
                 `"Setting: Hard sci-fi, isolated space station\nThemes: Slow burn, danger, alien infestation, psychological horror\nArt: Creepy, greebling, gross, hyperrealism, H. R. Geiger"\n` +
                 `"Setting: Space opera, Mass Effect, The Citadel\nThemes: Friendship, trying times, relationships\nArt: Clean, 3D render, vibrant, pristine, lens flares"\n` +
-                `"Setting: Underground, 80s vampire bar\nThemes: vampires, lycans, underworld, domination, murder\nArt: Comic book, neon, exaggerated linework"\n`) +
+                `"Setting: Underground, 80s biker bar\nThemes: turf war, drug running, machismo, brutality\nArt: Comic book, neon, chrome, exaggerated linework"\n` +
+                `"Setting: 70s disco scene, Los Angeles\nThemes: Free love, vampires, lycanthropes, disco, underworld, clubs\nArt: Psychedelic, high-contrast, hyperrealism, exaggerated character proportions"\n`) +
             this.buildSection('Priority Instruction', 
                 `###PRIORITY INSTRUCTION: The FLAVOR TEXT is merely inspirational material that you will use to establish a Setting, Themes, and Art style for upcoming narration and illustration. ` +
                 `This initial response should include three fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
                 `"Setting" should briefly summarize the overarching location, vibe, time period, or source material derived from the FLAVOR TEXT.\n` +
                 `"Themes" should list some of the prevaling themes or concepts from the FLAVOR TEXT.\n` +
-                `"Art" should describe a target art style that suits the setting and themes of the FLAVOR TEXT.\n` +
+                `"Art" should describe a target artist, style, or genre that suits the setting and themes of the FLAVOR TEXT.\n` +
                 `Define these three fields and promptly end your response.\n`) +
             this.buildSection('Standard Instruction', '{{suffix}}');
     }
