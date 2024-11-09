@@ -519,7 +519,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 let textGen = await this.generator.textGen({
                     prompt: this.buildStoryPrompt(`${this.director.getPromptInstruction(this, newSlice)}\n${additionalContext}`),
                     max_tokens: 400,
-                    min_tokens: 50
+                    min_tokens: 50,
+                    include_history: true
                 });
                 if (textGen?.result?.length) {
                     newSlice.setScript(textGen.result);
