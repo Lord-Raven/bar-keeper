@@ -199,6 +199,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             identity
         } = userMessage;
 
+        console.log('beforePrompt');
+
         return {
             stageDirections: null,
             messageState: this.buildMessageState(),
@@ -215,6 +217,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             content,
             identity
         } = botMessage;
+
+        console.log('afterPrompt');
+
         this.currentMessageId = identity;
         return {
             stageDirections: null,
