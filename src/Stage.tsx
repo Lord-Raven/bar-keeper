@@ -43,28 +43,31 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return `` +
             this.buildSection('Flavor Text', description) +
             this.buildSection('Priority Instruction', 
-                `The FLAVOR TEXT is merely inspirational material that you will use to establish a SETTING, THEMES, and ART style for upcoming narration and illustration. ` +
-                `This initial response includes three specific and clearly defined fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
-                `"SETTING" should briefly summarize the overarching location, vibe, or time period derived from the FLAVOR TEXT; always include the source material for FLAVOR TEXT, if known.\n` +
+                `The FLAVOR TEXT is merely inspirational material that you will use to establish a SOURCE, SETTING, THEMES, and ART style for upcoming narration and illustration. ` +
+                `This initial response includes four specific and clearly defined fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
+                `"SOURCE" should name the source material of FLAVOR TEXT, if any; leave this blank or 'Original' if FLAVOR TEXT is not derived from a known work.\n` +
+                `"SETTING" should briefly summarize the overarching location, vibe, or time period derived from the FLAVOR TEXT, including any key ways in which the setting deviates from the expectations for that setting.\n` +
                 `"THEMES" should list all of the prominent themes or concepts from the FLAVOR TEXT.\n` +
                 `"ART" should identify a target artist name, art style, art genre, medium, palette, stroke, linework, or other style choices that suit or align with the setting and themes of the FLAVOR TEXT; this will be used to generate appropriate images later.\n` +
-                `Define these three fields and promptly end your response.\n`) +
+                `Define these four fields and promptly end your response.\n`) +
             this.buildSection('Example Responses', 
-                `"SETTING: Lovecraftian 1930s Innsmouth, Massachusetts\nTHEMES: Mind control, dementia, gore, mysticism, Old Ones\nART: noir, dark, gritty, hyperrealism, wet"\n` +
-                `"SETTING: Dark fantasy wasteland, Robert E. Howard\nTHEMES: barbarians, hedonism, violence, domination\nART: dark fantasy, oil painting, Frank Frazetta, hypersexualized"\n` +
-                `"SETTING: Quirky, fantastic modern Japanese countryside\nTHEMES: magical, fantasy modern, non-violence, exaggerated, silly, funny\nART: Studio Ghibli, bright, anime, vibrant, sparkly"\n` +
-                `"SETTING: Hard sci-fi, isolated space station\nTHEMES: Slow burn, danger, alien infestation, psychological horror\nART: Creepy, greebling, gross, hyperrealism, H. R. Geiger"\n` +
-                `"SETTING: Space opera, Mass Effect, The Citadel\nTHEMES: Friendship, trying times, relationships\nART: Clean, 3D render, vibrant, pristine, lens flares"\n` +
-                `"SETTING: Underground, 80s biker bar\nTHEMES: turf war, drug running, machismo, brutality\nART: Comic book, neon, chrome, heavy inks"\n` +
-                `"SETTING: 70s disco scene, Los Angeles\nTHEMES: Free love, vampires, lycanthropes, disco, underworld, clubs\nART: Psychedelic, high-contrast, hyperrealism, exaggerated character proportions"\n`) +
+                `"SOURCE: H.P. Lovecraft\nSETTING: A metaphysical 1930s Innsmouth, Massachusetts\nTHEMES: Mind control, dementia, gore, mysticism, Old Ones\nART: noir, dark, gritty, hyperrealism, wet"\n` +
+                `"SOURCE: Robert E. Howard\nSETTING: Cimeria, a dark fantasy wasteland\nTHEMES: barbarians, hedonism, violence, domination\nART: dark fantasy, oil painting, Frank Frazetta, hypersexualized"\n` +
+                `"SOURCE: Original\nSETTING: Quirky, fantastic modern Japanese countryside\nTHEMES: magical, fantasy modern, non-violence, exaggerated, silly, funny\nART: Studio Ghibli, bright, anime, vibrant, sparkly"\n` +
+                `"SOURCE: Alien\nSETTING: Hard sci-fi, isolated space station\nTHEMES: Slow burn, danger, alien infestation, psychological horror\nART: Creepy, greebling, gross, hyperrealism, H. R. Geiger"\n` +
+                `"SOURCE: Mass Effect\nSETTING: Far future, the Citadel\nTHEMES: Space opera, friendship, trying times, relationships\nART: Clean, 3D render, vibrant, pristine, lens flares"\n` +
+                `"SOURCE: Original\nSETTING: Underground, 80s biker bar\nTHEMES: turf war, drug running, machismo, brutality\nART: Comic book, neon, chrome, heavy inks"\n` +
+                `"SOURCE: Original\nSETTING: 70s disco scene, Los Angeles\nTHEMES: Free love, vampires, lycanthropes, disco, underworld, clubs\nART: Psychedelic, high-contrast, hyperrealism, exaggerated character proportions"\n`) +
             this.buildSection('Standard Instruction', '{{suffix}}');
     }
 
-    buildBarDescriptionPrompt(description: string): string {
+    buildBarDescriptionPrompt(sourceSummary: string, settingSummary: string, themeSummary: string): string {
         return `` +
-            this.buildSection('Themes', description) +
+            (sourceSummary != '' ? this.buildSection('Source Material', sourceSummary) : '') +
+            this.buildSection('Setting', settingSummary) +
+            this.buildSection('Themes', themeSummary) +
             this.buildSection('Priority Instruction', 
-                'You are doing prep work for a narrative. You will use this initial response to write a few sentences describing a fictional pub, bar, club, or tavern set in a universe that is inspired by the THEMES. ' +
+                'You are doing prep work for a roleplaying narrative. You will use this initial response to write a few sentences describing a fictional pub, bar, club, or tavern set in SETTING, drawing upon the THEMES. ' +
                 'This descriptive paragraph should focus on the ambience, setting, theming, fixtures, and general clientele of the establishment. ' +
                 'This informative and flavorful description will later be used in future, narrative responses.\n') +
             this.buildSection('Standard Instruction', '{{suffix}}');
@@ -74,8 +77,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return `` +
             this.buildSection('Location', this.barDescription ?? '') +
             this.buildSection('Priority Instruction', 
-                `You are doing prep work for a narrative. You will use this initial response to define several types of alcohol that this bar might serve, providing a brief description of ` +
-                `each's appearance, bottle, odor, and flavor. Output several lines; each line should start with the beverage's name, followed by its description, with each drink occupying a separate line in your response.\n`) +
+                `You are doing prep work for a roleplaying narrative. You will use this initial response to define several types of alcohol that the LOCATION might serve, providing a brief description of ` +
+                `each drink's appearance, bottle, odor, and flavor. Output several lines/alcohols; each line should start with the beverage's name, followed by a dash and then its description, with each drink occupying a separate line in your response.\n`) +
             this.buildSection('Example Responses', 
                 `"Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
                 `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
@@ -111,6 +114,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     // Chat State:
     barDescription: string|undefined;
+    sourceSummary: string|undefined;
     settingSummary: string|undefined;
     themeSummary: string|undefined;
     artSummary: string|undefined;
@@ -234,6 +238,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     buildChatState(): ChatStateType {
         return {
             barDescription: this.barDescription,
+            sourceSummary: this.sourceSummary,
             settingSummary: this.settingSummary,
             themeSummary: this.themeSummary,
             artSummary: this.artSummary,
@@ -250,6 +255,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     readChatState(chatState: ChatStateType) {
         if (chatState) {
             this.barDescription = chatState.barDescription;
+            this.sourceSummary = chatState.sourceSummary;
             this.settingSummary = chatState.settingSummary;
             this.themeSummary = chatState.themeSummary;
             this.artSummary = chatState.artSummary;
@@ -334,18 +340,22 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         
         if (textResponse && textResponse.result) {
 
+            const sourceMatch = textResponse.result.match(/Source:\s*(.*)/i);
             const settingMatch = textResponse.result.match(/Setting:\s*(.*)/i);
             const themeMatch = textResponse.result.match(/Themes:\s*(.*)/i);
             const artMatch = textResponse.result.match(/Art:\s*(.*)/i);
 
+            this.sourceSummary = sourceMatch ? sourceMatch[1].trim() : '';
             this.settingSummary = settingMatch ? settingMatch[1].trim() : '';
             this.themeSummary = themeMatch ? themeMatch[1].trim() : '';
             this.artSummary = artMatch ? artMatch[1].trim() : '';
 
-            console.log(`Setting: ${this.settingSummary}\nTheme: ${this.themeSummary}\nArt: ${this.artSummary}`);
+            if (this.sourceSummary.toLowerCase() == 'ORIGINAL') this.sourceSummary = '';
+
+            console.log(`Source: ${this.sourceSummary}\nSetting: ${this.settingSummary}\nTheme: ${this.themeSummary}\nArt: ${this.artSummary}`);
 
             textResponse = await this.generator.textGen({
-                prompt: this.buildBarDescriptionPrompt(this.settingSummary),
+                prompt: this.buildBarDescriptionPrompt(this.sourceSummary, this.settingSummary, this.themeSummary),
                 max_tokens: 200,
                 min_tokens: 50
             });
@@ -354,8 +364,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.barDescription = textResponse?.result ?? '';
 
             this.setLoadProgress(10, 'Generating bar image.');
+            const barPrompt = `masterpiece, high resolution, (art style notes: ${this.artSummary}), ` +
+                (this.sourceSummary != '' && this.sourceSummary.toLowerCase() != 'original' ? `(source material: ${this.sourceSummary}), ` : '') +
+                `(setting details: ${this.settingSummary}), (interior of a bar with this description: ${this.barDescription})`;
+
             this.barImageUrl = await this.makeImage({
-                prompt: `masterpiece, high resolution, (art style notes: ${this.artSummary}), (setting details: ${this.settingSummary}), (interior of a bar with this description: ${this.barDescription})`,
+                prompt: barPrompt,
                 negative_prompt: 'grainy, low resolution, low quality, exterior, person, people, crowd, outside, daytime, outdoors',
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             }, '');
