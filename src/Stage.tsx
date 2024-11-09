@@ -37,26 +37,26 @@ type ChatStateType = any;
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     buildSection(name: string, body: string) {
-        return `###${name.toUpperCase()}: ${body}\n\n`;
+        return `###${name.toUpperCase()}: ${body.trim()}\n\n`;
     }
     buildDistillationPrompt(description: string): string {
         return `` +
             this.buildSection('Flavor Text', description) +
             this.buildSection('Priority Instruction', 
-                `The FLAVOR TEXT is merely inspirational material that you will use to establish a Setting, Themes, and Art style for upcoming narration and illustration. ` +
-                `This initial response should include three fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
-                `"Setting" should briefly summarize the overarching location, vibe, or time period derived from the FLAVOR TEXT; clearly list any known source material for FLAVOR TEXT.\n` +
-                `"Themes" should list some of the prominent themes or concepts from the FLAVOR TEXT.\n` +
-                `"Art" should identify a target artist name, art style, art genre, medium, palette, stroke, linework, or other style choices that suit or align with the setting and themes of the FLAVOR TEXT; this will be used to generate appropriate images later.\n` +
+                `The FLAVOR TEXT is merely inspirational material that you will use to establish a SETTING, THEMES, and ART style for upcoming narration and illustration. ` +
+                `This initial response includes three specific and clearly defined fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
+                `"SETTING" should briefly summarize the overarching location, vibe, or time period derived from the FLAVOR TEXT; always include the source material for FLAVOR TEXT, if known.\n` +
+                `"THEMES" should list all of the prominent themes or concepts from the FLAVOR TEXT.\n` +
+                `"ART" should identify a target artist name, art style, art genre, medium, palette, stroke, linework, or other style choices that suit or align with the setting and themes of the FLAVOR TEXT; this will be used to generate appropriate images later.\n` +
                 `Define these three fields and promptly end your response.\n`) +
             this.buildSection('Example Responses', 
-                `"Setting: Lovecraftian 1930s Innsmouth, Massachusetts\nThemes: Mind control, dementia, gore, mysticism, Old Ones\nArt: noir, dark, gritty, hyperrealism, wet"\n` +
-                `"Setting: Dark fantasy wasteland, Robert E. Howard\nThemes: barbarians, hedonism, violence, domination\nArt: dark fantasy, oil painting, Frank Frazetta, hypersexualized"\n` +
-                `"Setting: Quirky, fantastic modern Japanese countryside\nThemes: magical, fantasy modern, non-violence, exaggerated, silly, funny\nArt: Studio Ghibli, bright, anime, vibrant, sparkly"\n` +
-                `"Setting: Hard sci-fi, isolated space station\nThemes: Slow burn, danger, alien infestation, psychological horror\nArt: Creepy, greebling, gross, hyperrealism, H. R. Geiger"\n` +
-                `"Setting: Space opera, Mass Effect, The Citadel\nThemes: Friendship, trying times, relationships\nArt: Clean, 3D render, vibrant, pristine, lens flares"\n` +
-                `"Setting: Underground, 80s biker bar\nThemes: turf war, drug running, machismo, brutality\nArt: Comic book, neon, chrome, heavy inks"\n` +
-                `"Setting: 70s disco scene, Los Angeles\nThemes: Free love, vampires, lycanthropes, disco, underworld, clubs\nArt: Psychedelic, high-contrast, hyperrealism, exaggerated character proportions"\n`) +
+                `"SETTING: Lovecraftian 1930s Innsmouth, Massachusetts\nTHEMES: Mind control, dementia, gore, mysticism, Old Ones\nART: noir, dark, gritty, hyperrealism, wet"\n` +
+                `"SETTING: Dark fantasy wasteland, Robert E. Howard\nTHEMES: barbarians, hedonism, violence, domination\nART: dark fantasy, oil painting, Frank Frazetta, hypersexualized"\n` +
+                `"SETTING: Quirky, fantastic modern Japanese countryside\nTHEMES: magical, fantasy modern, non-violence, exaggerated, silly, funny\nART: Studio Ghibli, bright, anime, vibrant, sparkly"\n` +
+                `"SETTING: Hard sci-fi, isolated space station\nTHEMES: Slow burn, danger, alien infestation, psychological horror\nART: Creepy, greebling, gross, hyperrealism, H. R. Geiger"\n` +
+                `"SETTING: Space opera, Mass Effect, The Citadel\nTHEMES: Friendship, trying times, relationships\nART: Clean, 3D render, vibrant, pristine, lens flares"\n` +
+                `"SETTING: Underground, 80s biker bar\nTHEMES: turf war, drug running, machismo, brutality\nART: Comic book, neon, chrome, heavy inks"\n` +
+                `"SETTING: 70s disco scene, Los Angeles\nTHEMES: Free love, vampires, lycanthropes, disco, underworld, clubs\nART: Psychedelic, high-contrast, hyperrealism, exaggerated character proportions"\n`) +
             this.buildSection('Standard Instruction', '{{suffix}}');
     }
 
