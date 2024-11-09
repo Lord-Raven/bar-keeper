@@ -42,6 +42,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     buildDistillationPrompt(description: string): string {
         return `` +
             this.buildSection('Flavor Text', description) +
+            this.buildSection('Priority Instruction', 
+                `The FLAVOR TEXT is merely inspirational material that you will use to establish a Setting, Themes, and Art style for upcoming narration and illustration. ` +
+                `This initial response should include three fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
+                `"Setting" should briefly summarize the overarching location, vibe, time period, or source material derived from the FLAVOR TEXT.\n` +
+                `"Themes" should list some of the prevaling themes or concepts from the FLAVOR TEXT.\n` +
+                `"Art" should describe a target artist, style, or genre that suits the setting and themes of the FLAVOR TEXT.\n` +
+                `Define these three fields and promptly end your response.\n`) +
             this.buildSection('Example Responses', 
                 `"Setting: Lovecraftian 1930s, gritty, noir, mystical\nThemes: Mind control, dementia, gore, mysticism, Old Ones\nArt: noir, dark, gritty, hyperrealism, moist"\n` +
                 `"Setting: Dark fantasy, gritty, wasteland, barren, wild, robert e. howard\nThemes: barbarians, hedonism, violence\nArt: dark fantasy, oil painting, Frank Frazetta, hypersexualized"\n` +
@@ -50,13 +57,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 `"Setting: Space opera, Mass Effect, The Citadel\nThemes: Friendship, trying times, relationships\nArt: Clean, 3D render, vibrant, pristine, lens flares"\n` +
                 `"Setting: Underground, 80s biker bar\nThemes: turf war, drug running, machismo, brutality\nArt: Comic book, neon, chrome, exaggerated linework"\n` +
                 `"Setting: 70s disco scene, Los Angeles\nThemes: Free love, vampires, lycanthropes, disco, underworld, clubs\nArt: Psychedelic, high-contrast, hyperrealism, exaggerated character proportions"\n`) +
-            this.buildSection('Priority Instruction', 
-                `###PRIORITY INSTRUCTION: The FLAVOR TEXT is merely inspirational material that you will use to establish a Setting, Themes, and Art style for upcoming narration and illustration. ` +
-                `This initial response should include three fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
-                `"Setting" should briefly summarize the overarching location, vibe, time period, or source material derived from the FLAVOR TEXT.\n` +
-                `"Themes" should list some of the prevaling themes or concepts from the FLAVOR TEXT.\n` +
-                `"Art" should describe a target artist, style, or genre that suits the setting and themes of the FLAVOR TEXT.\n` +
-                `Define these three fields and promptly end your response.\n`) +
             this.buildSection('Standard Instruction', '{{suffix}}');
     }
 
@@ -73,6 +73,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     buildAlcoholDescriptionsPrompt(): string {
         return `` +
             this.buildSection('Location', this.barDescription ?? '') +
+            this.buildSection('Priority Instruction', 
+                `This is a unique response; rather than continuing the narrative, you should instead utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
+                `each's appearance, bottle, odor, and flavor. Define a beverage's name followed by its description, with a separate and distinct beverage on each line of your response, then promptly end the response.\n`) +
             this.buildSection('Example Responses', 
                 `"Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
                 `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
@@ -80,9 +83,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 `"Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
                 `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
                 `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle."\n`) +
-            this.buildSection('Priority Instruction', 
-                `This is a unique response; rather than continuing the narrative, you should instead utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
-                `each's appearance, bottle, odor, and flavor. Define a beverage's name followed by its description, with a separate and distinct beverage on each line of your response, then promptly end the response.\n`) +
             this.buildSection('Standard Instruction', '{{suffix}}');
     };
 
