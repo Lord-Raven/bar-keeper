@@ -406,7 +406,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.messageSlices[impersonation.identity] = slice;
         this.currentMessageId = impersonation.identity;
         this.currentMessageIndex = 0;
-        this.messenger.up
         await this.messenger.updateChatState(this.buildChatState());
     }
 
@@ -449,7 +448,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let imageUrl = await this.makeImage({
             //image: bottleUrl,
             //strength: 0.1,
-            prompt: `${this.patronImagePrompt}, (character from this setting: ${this.settingSummary}), (art style notes: ${this.artSummary}), (${patron.description})`,
+            prompt: `${this.patronImagePrompt}, (art style notes: ${this.artSummary}), (${patron.description}), (this is a character from this setting ${this.settingSummary})`,
             negative_prompt: this.patronImageNegativePrompt,
             aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL, //.PHOTO_HORIZONTAL,
             remove_background: true
