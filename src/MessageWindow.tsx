@@ -144,7 +144,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                                 left: ((index % 2) == 0) ? `${index * 30}vw` : 'auto', 
                                 right: ((index % 2) == 1) ? `${(index - 1) * 30}vw` : 'auto',
                                 zIndex: (index < 2 ? 7 : 6),
-                                height: '67vh', width: 'auto'}}/>;
+                                height: '77vh', width: 'auto'}}/>;
                         } else {
                             return <img src={stage().patrons[patronId].imageUrl} style={{
                                 position: 'absolute', bottom: '-16vh', 
@@ -152,7 +152,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                                 right: ((index % 2) == 1) ? `${(index - 1) * 30 - 1}vw` : 'auto',
                                 zIndex: (index < 2 ? 5 : 4),
                                 filter: 'brightness(80%)',
-                                height: '65vh', width: 'auto'}}/>;
+                                height: '75vh', width: 'auto'}}/>;
                         }
                     } else {
                         return <div></div>;

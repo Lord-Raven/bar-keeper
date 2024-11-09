@@ -124,8 +124,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     currentMessageIndex: number = 0;
 
     // Not saved:
-    patronImagePrompt: string = 'Professional, visual novel, ((anime)), calm expression, neutral pose, flat shading, in-frame, flat contrasting background color, thigh-up portrait, head-to-hips';
-    patronImageNegativePrompt: string = 'realism, border, dynamic lighting, ((close-up)), background image, cut off, bad anatomy, amateur, low quality, action';
+    patronImagePrompt: string = 'Professional, visual novel, ((anime)), calm expression, neutral pose, flat shading, in-frame, flat contrasting background color, head-to-hips, hips-up portrait, waist-up portrait';
+    patronImageNegativePrompt: string = 'realism, border, dynamic lighting, ((close-up)), background image, bad anatomy, amateur, low quality, action';
     characterForGeneration: Character;
     player: User;
     requestedSlice: Promise<Slice|null>|null = null;
@@ -363,7 +363,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
             this.setLoadProgress(10, 'Generating bar image.');
             this.barImageUrl = await this.makeImage({
-                prompt: `masterpiece, high resolution, ${this.artSummary}, (${this.settingSummary}), (interior of a bar with this description: ${this.barDescription})`,
+                prompt: `masterpiece, high resolution, (art style notes: ${this.artSummary}), (setting details: ${this.settingSummary}), (interior of a bar with this description: ${this.barDescription})`,
                 negative_prompt: 'grainy, low resolution, low quality, exterior, person, people, crowd, outside, daytime, outdoors',
                 aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
             }, '');
@@ -467,7 +467,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             //strength: 0.1,
             prompt: `${this.patronImagePrompt}, (character from this setting: ${this.settingSummary}), ${this.artSummary}, (${patron.description})`,
             negative_prompt: this.patronImageNegativePrompt,
-            aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL, //.PHOTO_HORIZONTAL,
+            aspect_ratio: AspectRatio.PHOTO_VERTICAL, //.PHOTO_HORIZONTAL,
             remove_background: true
             //seed: null,
             //item_id: null,
