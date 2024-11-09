@@ -36,71 +36,69 @@ type ChatStateType = any;
 
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
+    buildSection(name: string, body: string) {
+        return `###${name.toUpperCase}: ${body}\n\n`;
+    }
     buildDistillationPrompt(description: string): string {
         return `` +
-            `###FLAVOR TEXT: ${description}\n\n` +
-            `###EXAMPLE RESPONSES:\n` +
-            `"Setting: Lovecraftian 1930s, gritty, noir, mystical\nThemes: Mind control, dementia, gore, mysticism, Old Ones\nArt: noir, dark, gritty, hyperrealism, moist"\n` +
-            `"Setting: Dark fantasy, gritty, wasteland, barren, wild, robert e. howard\nThemes: barbarians, hedonism, violence\nArt: dark fantasy, oil painting, Frank Frazetta, hypersexualized"\n` +
-            `"Setting: Quirky, modern, fantasy\nThemes: magical, fantasy modern, non-violence, exaggerated, silly, funny\nArt: Studio Ghibli, bright, anime, vibrant, sparkly"\n` +
-            `"Setting: Hard sci-fi, isolated space station\nThemes: Slow burn, danger, alien infestation, psychological horror\nArt: Creepy, greebling, gross, hyperrealism, H. R. Geiger"\n` +
-            `"Setting: Space opera, Mass Effect, The Citadel\nThemes: Friendship, trying times, relationships\nArt: Clean, 3D render, vibrant, pristine, lens flares"\n` +
-            `"Setting: Underground, 80s vampire bar\nThemes: vampires, lycans, underworld, domination, murder\nArt: Comic book, neon, exaggerated linework"\n` +
-            `\n` +
-            `###PRIORITY INSTRUCTION: The FLAVOR TEXT is merely inspirational material that you will use to establish a Setting, Themes, and Art style for upcoming narration and illustration. ` +
-            `This initial response should include three fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
-            `"Setting" should briefly summarize the overarching location, vibe, time period, or source material derived from the FLAVOR TEXT.\n` +
-            `"Themes" should list some of the prevaling themes or concepts from the FLAVOR TEXT.\n` +
-            `"Art" should describe a target art style that suits the setting and themes of the FLAVOR TEXT.\n` +
-            `Define these three fields and promptly end your response.\n` +
-            `\n` +
-            `###STANDARD INSTRUCTION: {{suffix}}`;
+            this.buildSection('Flavor Text', description) +
+            this.buildSection('Example Responses', 
+                `"Setting: Lovecraftian 1930s, gritty, noir, mystical\nThemes: Mind control, dementia, gore, mysticism, Old Ones\nArt: noir, dark, gritty, hyperrealism, moist"\n` +
+                `"Setting: Dark fantasy, gritty, wasteland, barren, wild, robert e. howard\nThemes: barbarians, hedonism, violence\nArt: dark fantasy, oil painting, Frank Frazetta, hypersexualized"\n` +
+                `"Setting: Quirky, modern, fantasy\nThemes: magical, fantasy modern, non-violence, exaggerated, silly, funny\nArt: Studio Ghibli, bright, anime, vibrant, sparkly"\n` +
+                `"Setting: Hard sci-fi, isolated space station\nThemes: Slow burn, danger, alien infestation, psychological horror\nArt: Creepy, greebling, gross, hyperrealism, H. R. Geiger"\n` +
+                `"Setting: Space opera, Mass Effect, The Citadel\nThemes: Friendship, trying times, relationships\nArt: Clean, 3D render, vibrant, pristine, lens flares"\n` +
+                `"Setting: Underground, 80s vampire bar\nThemes: vampires, lycans, underworld, domination, murder\nArt: Comic book, neon, exaggerated linework"\n`) +
+            this.buildSection('Priority Instruction', 
+                `###PRIORITY INSTRUCTION: The FLAVOR TEXT is merely inspirational material that you will use to establish a Setting, Themes, and Art style for upcoming narration and illustration. ` +
+                `This initial response should include three fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
+                `"Setting" should briefly summarize the overarching location, vibe, time period, or source material derived from the FLAVOR TEXT.\n` +
+                `"Themes" should list some of the prevaling themes or concepts from the FLAVOR TEXT.\n` +
+                `"Art" should describe a target art style that suits the setting and themes of the FLAVOR TEXT.\n` +
+                `Define these three fields and promptly end your response.\n`) +
+            this.buildSection('Standard Instruction', '{{suffix}}');
     }
 
     buildBarDescriptionPrompt(description: string): string {
         return `` +
-            `###THEMES: ${description}\n\n` +
-            `###PRIORITY INSTRUCTION: You will use this initial response to write a few sentences describing a fictional pub, bar, club, or tavern set in a universe that is inspired by the THEMES. This descriptive paragraph should focus on the ` +
-            `ambience, setting, theming, fixtures, and general clientele of the establishment. This informative and flavorful description will later be used in future, narrative responses.\n` +
-            `\n` +
-            `###STANDARD INSTRUCTION: {{suffix}}`;
+            this.buildSection('Themes', description) +
+            this.buildSection('Priority Instruction', 
+                'You will use this initial response to write a few sentences describing a fictional pub, bar, club, or tavern set in a universe that is inspired by the THEMES. ' +
+                'This descriptive paragraph should focus on the ambience, setting, theming, fixtures, and general clientele of the establishment. ' +
+                'This informative and flavorful description will later be used in future, narrative responses.\n') +
+            this.buildSection('Standard Instruction', '{{suffix}}');
     };
 
     buildAlcoholDescriptionsPrompt(): string {
-        return `{{prefix}}\n\n` +
-            `###LOCATION: ` +
-            `${this.barDescription}\n` +
-            `\n` +
-            `###EXAMPLE RESPONSES:\n` +
-            `"Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
-            `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
-            `Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo."\n` +
-            `"Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
-            `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
-            `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle."\n` +
-            `\n` +
-            `###PRIORITY INSTRUCTION: This is a unique response; rather than continuing the narrative, you should instead utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
-            `each's appearance, bottle, odor, and flavor. Define a beverage's name followed by its description, with a separate and distinct beverage on each line of your response, then promptly end the response.\n` +
-            `\n` +
-            `###STANDARD INSTRUCTION: {{suffix}}`;
+        return `` +
+            this.buildSection('Location', this.barDescription ?? '') +
+            this.buildSection('Example Responses', 
+                `"Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
+                `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
+                `Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo."\n` +
+                `"Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
+                `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
+                `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle."\n`) +
+            this.buildSection('Priority Instruction', 
+                `This is a unique response; rather than continuing the narrative, you should instead utilize this response to define several types of alcohol that this bar might serve, providing a brief description of ` +
+                `each's appearance, bottle, odor, and flavor. Define a beverage's name followed by its description, with a separate and distinct beverage on each line of your response, then promptly end the response.\n`) +
+            this.buildSection('Standard Instruction', '{{suffix}}');
     };
 
     buildPatronPrompt(): string {
-        return `{{prefix}}\n\n` +
-            `###LOCATION: ` +
-            `${this.barDescription}\n` +
-            `\n` +
-            `###PRIORITY INSTRUCTION: This is a unique response; rather than continuing the narrative, you should instead utilize this response to craft a new character who might patronize this establishment, ` +
-            `giving them a name, a physical description, and a paragraph about their personality, background, habits, and ticks. ` +
-            `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
-            (Object.values(this.patrons).length > 0 ?
-                (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
-                `connections between this new character and one or more existing patrons:\n` +
-                `${Object.values(this.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
-                '\n') +
-            `Output the details for a new character in the following format:\nName: Name\nDescription: Physical description covering gender, skin tone, hair color, hair style, eye color, clothing, accessories, and other obvious traits.\nPersonality: Personality and background details here.` +
-            `\n\n` +
-            `###STANDARD INSTRUCTION: {{suffix}}`;
+        return `` +
+            this.buildSection('Location', this.barDescription ?? '') +
+            this.buildSection('Priority Instruction', 
+                `This is a unique response; rather than continuing the narrative, you should instead utilize this response to craft a new character who might patronize this establishment, ` +
+                `giving them a name, a physical description, and a paragraph about their personality, background, habits, and ticks. ` +
+                `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
+                (Object.values(this.patrons).length > 0 ?
+                    (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
+                    `connections between this new character and one or more existing patrons:\n` +
+                    `${Object.values(this.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
+                    '\n') +
+                `Output the details for a new character in the following format:\nName: Name\nDescription: Physical description covering gender, skin tone, hair color, hair style, eye color, clothing, accessories, and other obvious traits.\nPersonality: Personality and background details here.`) +
+            this.buildSection('Standard Instruction', '{{suffix}}');
     };
 
     readonly disableContentGeneration: boolean = false;
