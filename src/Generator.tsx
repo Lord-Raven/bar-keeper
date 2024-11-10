@@ -51,18 +51,18 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
         buildSection('Priority Instruction', 
             `You are doing prep work for a roleplaying narrative. You are not ready to begin narrating yet; you must first use this planning response to create and describe several types of alcohol that the LOCATION might serve, ` +
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
-            `Output several varied and interesting beverages that suit the SETTING and LOCATION, each formatted into two lines with one property field on each line: first, a NAME field, followed by a DESCRIPTION on the following line. ` +
+            `Output several varied and interesting beverages that suit the SETTING and LOCATION, each formatted into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
             `Use the EXAMPLE RESPONSES for formatting reference, but be original with each of your entries. `) +
         buildSection('Example Responses', 
-            `"NAME: Cherry Rotgut\nDESCRIPTION: A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
-            `NAME: Tritium Delight\nDESCRIPTION: An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
-            `NAME: Rosewood Ale\nDESCRIPTION: This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n` +
-            `NAME: Toilet Wine\nDESCRIPTION: An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
-            `NAME: Love Potion #69\nDESCRIPTION: It's fuzzy, bubbly, and guaranteed to polish your drunk goggles."\n` +
-            `"NAME: Classic Grog\nDESCRIPTION: Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle."\n` +
-            `NAME: Synth Mead\nDESCRIPTION: Bees died out long ago, but hypervikings still live for the sweet taste of synthetic honey wine.\n` +
-            `NAME: Super Hazy Imperial Double IPA\nDESCRIPTION: More IBUs than anyone's ever cared for. The bottle's plastered with cute bullshit about the local microbrewery that produced it.\n` +
-            `NAME: USB Port\nDESCRIPTION: Alcohol for wannabe techbros. Not legally a 'port' because of international protections surrounding the term."\n`) +
+            `"NAME: Cherry Rotgut DESCRIPTION: A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
+            `NAME: Tritium Delight DESCRIPTION: An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
+            `NAME: Rosewood Ale DESCRIPTION: This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n` +
+            `NAME: Toilet Wine DESCRIPTION: An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
+            `NAME: Love Potion #69 DESCRIPTION: It's fuzzy, bubbly, and guaranteed to polish your drunk goggles."\n` +
+            `"NAME: Classic Grog DESCRIPTION: Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle."\n` +
+            `NAME: Synth Mead DESCRIPTION: Bees died out long ago, but hypervikings still live for the sweet taste of synthetic honey wine.\n` +
+            `NAME: Super Hazy Imperial Double IPA DESCRIPTION: More IBUs than anyone's ever cared for. The bottle's plastered with cute bullshit about the local microbrewery that produced it.\n` +
+            `NAME: USB Port DESCRIPTION: Alcohol for wannabe techbros. Not legally a 'port' because of international protections surrounding the term."\n`) +
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 
@@ -103,8 +103,9 @@ export async function generateBeverages(stage: Stage) {
     stage.beverages = (alcoholResponse?.result ?? '').split(new RegExp('NAME', 'i'))
         .filter(item => item.trim() != '')
         .map(item => {
-            const nameMatch = item.match(/Name:\s*(.*)/i);
+            const nameMatch = item.match(/Name:\s*(.*?)\s*Description:/i);
             const descriptionMatch = item.match(/Description:\s*(.*)/i);
+            console.log(`${nameMatch ? nameMatch[1].trim() : ''}, ${descriptionMatch ? descriptionMatch[1].trim() : ''}`);
             return new Beverage(nameMatch ? nameMatch[1].trim() : '', descriptionMatch ? descriptionMatch[1].trim() : '', '');
         }).filter(beverage => beverage.name != '' && beverage.description != '');
 
