@@ -248,7 +248,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.buildPatronDescriptions() +
             this.buildBeverageDescriptions() +
             buildSection('Sample Response', sampleScript) +
-            buildSection('Log', '{{messages}}') +
+            buildSection('Log', 'test') +
             buildSection('Instruction Override', `${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}`);
     }
 
