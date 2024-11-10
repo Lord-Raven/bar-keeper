@@ -103,7 +103,7 @@ export async function generateBeverages(stage: Stage) {
     stage.beverages = (alcoholResponse?.result ?? '').split(new RegExp('NAME', 'i'))
         .filter(item => item.trim() != '')
         .map(item => {
-            const nameMatch = item.match(/Name:\s*(.*?)\s*Description:/i);
+            const nameMatch = item.match(/\s*(.*?)\s*Description:/i);
             const descriptionMatch = item.match(/Description:\s*(.*)/i);
             console.log(`${nameMatch ? nameMatch[1].trim() : ''}, ${descriptionMatch ? descriptionMatch[1].trim() : ''}`);
             return new Beverage(nameMatch ? nameMatch[1].trim() : '', descriptionMatch ? descriptionMatch[1].trim() : '', '');
