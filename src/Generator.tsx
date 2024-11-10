@@ -38,7 +38,7 @@ export function buildBarDescriptionPrompt(stage: Stage): string {
         buildSection('Setting', stage.settingSummary ?? '') +
         buildSection('Themes', stage.themeSummary ?? '') +
         buildSection('Priority Instruction', 
-            'You are doing prep work for a roleplaying narrative. You will use this planning response to write a few sentences describing a fictional pub, bar, club, or tavern set in SETTING, drawing upon the THEMES. ' +
+            'You are doing prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to write a few sentences describing a fictional pub, bar, club, or tavern set in SETTING, drawing upon the THEMES. ' +
             'This descriptive paragraph should focus on the ambience, setting, theming, fixtures, and general clientele of the establishment. ' +
             'This informative and flavorful description will later be used in future, narrative responses.\n') +
         buildSection('Standard Instruction', '{{suffix}}')).trim();
@@ -49,7 +49,7 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
         buildSection('Setting', stage.settingSummary ?? '') +
         buildSection('Location', stage.barDescription ?? '') +
         buildSection('Priority Instruction', 
-            `You are doing prep work for a roleplaying narrative. You must use this preparatory response to list out several types of alcohol that the LOCATION might serve, ` +
+            `You are doing prep work for a roleplaying narrative. Instead of narrating, you must use this preparatory response to list out several types of alcohol that the LOCATION might serve, ` +
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
             `Output several varied and interesting beverages that suit the SETTING and LOCATION, each formatted into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
             `Use the EXAMPLE RESPONSES for formatting reference, but be original with each of your entries. `) +
@@ -92,22 +92,30 @@ export async function regenerateBeverages(stage: Stage) {
 
 export async function generateBeverages(stage: Stage) {
     stage.beverages = [];
-    let alcoholResponse = await stage.generator.textGen({
-        prompt: buildAlcoholDescriptionsPrompt(stage),
+    let tries = 3;
+    while (stage.beverages.length < 5) {
+        let alcoholResponse = await stage.generator.textGen({
+            prompt: buildAlcoholDescriptionsPrompt(stage),
+            max_tokens: 300,
+            min_tokens: 50
+        });
 
-        max_tokens: 300,
-        min_tokens: 50
-    });
+        console.log(alcoholResponse?.result);
+        stage.beverages.push(...(alcoholResponse?.result ?? '').split(new RegExp('NAME', 'i'))
+            .filter(item => item.trim() != '')
+            .map(item => {
+                const nameMatch = item.match(/\s*(.*?)\s*Description:/i);
+                const descriptionMatch = item.match(/Description:\s*(.*)/i);
+                console.log(`${nameMatch ? nameMatch[1].trim() : ''}, ${descriptionMatch ? descriptionMatch[1].trim() : ''}`);
+                return new Beverage(nameMatch ? nameMatch[1].trim() : '', descriptionMatch ? descriptionMatch[1].trim() : '', '');
+            }).filter(beverage => beverage.name != '' && beverage.description != ''));
+    }
 
-    console.log(alcoholResponse?.result);
-    stage.beverages = (alcoholResponse?.result ?? '').split(new RegExp('NAME', 'i'))
-        .filter(item => item.trim() != '')
-        .map(item => {
-            const nameMatch = item.match(/\s*(.*?)\s*Description:/i);
-            const descriptionMatch = item.match(/Description:\s*(.*)/i);
-            console.log(`${nameMatch ? nameMatch[1].trim() : ''}, ${descriptionMatch ? descriptionMatch[1].trim() : ''}`);
-            return new Beverage(nameMatch ? nameMatch[1].trim() : '', descriptionMatch ? descriptionMatch[1].trim() : '', '');
-        }).filter(beverage => beverage.name != '' && beverage.description != '');
+    if (stage.beverages.length < 5) {
+        throw Error('Failed to generate sufficient beverages.');
+    } else {
+        stage.beverages.slice(0, 5);
+    }
 
     stage.setLoadProgress(30, 'Generating beverage images.');
 
@@ -120,38 +128,61 @@ export async function generateBeverages(stage: Stage) {
             negative_prompt: `background, frame, realism, borders, perspective, effects`,
             remove_background: true,
         }, bottleUrl);
+        if (beverage.imageUrl == '') {
+            throw Error('Failed to generate a beverage image');
+        }
         stage.setLoadProgress((stage.loadingProgress ?? 0) + 5, 'Generating beverage images.');
     }
 }
 
+async function generateDistillation(stage: Stage) {
+    stage.sourceSummary = '';
+    stage.settingSummary = '';
+    stage.themeSummary = '';
+    stage.artSummary = '';
+
+    let tries = 3;
+    while ((stage.settingSummary == '' || stage.themeSummary == '' || stage.artSummary == '') && tries > 0) {
+        let textResponse = await stage.generator.textGen({
+            prompt: buildDistillationPrompt(stage.characterForGeneration.personality + ' ' + stage.characterForGeneration.description),
+            max_tokens: 120,
+            min_tokens: 50
+        });
+        console.log(`Distillation: ${textResponse?.result}`);
+        
+        if (textResponse && textResponse.result) {
+    
+            const sourceMatch = textResponse.result.match(/Source:\s*(.*)/i);
+            const settingMatch = textResponse.result.match(/Setting:\s*(.*)/i);
+            const themeMatch = textResponse.result.match(/Themes:\s*(.*)/i);
+            const artMatch = textResponse.result.match(/Art:\s*(.*)/i);
+    
+            stage.sourceSummary = sourceMatch ? sourceMatch[1].trim() : '';
+            stage.settingSummary = settingMatch ? settingMatch[1].trim() : '';
+            stage.themeSummary = themeMatch ? themeMatch[1].trim() : '';
+            stage.artSummary = artMatch ? artMatch[1].trim() : '';
+    
+            if (stage.sourceSummary.toLowerCase() == 'original') stage.sourceSummary = '';
+        }
+        
+        tries--;
+    }
+
+    if (stage.settingSummary == '' || stage.themeSummary == '' || stage.artSummary == '') {
+        throw Error('Failed to generate a distillation.');
+    }
+
+    console.log(`Source: ${stage.sourceSummary}\nSetting: ${stage.settingSummary}\nTheme: ${stage.themeSummary}\nArt: ${stage.artSummary}`);
+}
+
 export async function generate(stage: Stage) {
     if (stage.loadingProgress !== undefined) return;
-    stage.setLoadProgress(5, 'Generating bar description.');
 
-    let textResponse = await stage.generator.textGen({
-        prompt: buildDistillationPrompt(stage.characterForGeneration.personality + ' ' + stage.characterForGeneration.description),
-        max_tokens: 100,
-        min_tokens: 50
-    });
-    console.log(`Distillation: ${textResponse?.result}`);
-    
-    if (textResponse && textResponse.result) {
+    try {
+        await generateDistillation(stage);
 
-        const sourceMatch = textResponse.result.match(/Source:\s*(.*)/i);
-        const settingMatch = textResponse.result.match(/Setting:\s*(.*)/i);
-        const themeMatch = textResponse.result.match(/Themes:\s*(.*)/i);
-        const artMatch = textResponse.result.match(/Art:\s*(.*)/i);
-
-        stage.sourceSummary = sourceMatch ? sourceMatch[1].trim() : '';
-        stage.settingSummary = settingMatch ? settingMatch[1].trim() : '';
-        stage.themeSummary = themeMatch ? themeMatch[1].trim() : '';
-        stage.artSummary = artMatch ? artMatch[1].trim() : '';
-
-        if (stage.sourceSummary.toLowerCase() == 'original') stage.sourceSummary = '';
-
-        console.log(`Source: ${stage.sourceSummary}\nSetting: ${stage.settingSummary}\nTheme: ${stage.themeSummary}\nArt: ${stage.artSummary}`);
-
-        textResponse = await stage.generator.textGen({
+        stage.setLoadProgress(5, 'Generating bar description.');
+        let textResponse = await stage.generator.textGen({
             prompt: buildBarDescriptionPrompt(stage),
             max_tokens: 200,
             min_tokens: 50
@@ -162,7 +193,7 @@ export async function generate(stage: Stage) {
 
         stage.setLoadProgress(10, 'Generating bar image.');
         const barPrompt = `masterpiece, high resolution, (art style notes: ${stage.artSummary}), ` +
-            (stage.sourceSummary != '' && stage.sourceSummary.toLowerCase() != 'original' ? `(source material: ${stage.sourceSummary}), ` : '') +
+            (stage.sourceSummary && stage.sourceSummary != '' && stage.sourceSummary.toLowerCase() != 'original' ? `(source material: ${stage.sourceSummary}), ` : '') +
             `(setting details: ${stage.settingSummary}), ((interior of a bar with this description: ${stage.barDescription}))`;
 
         stage.barImageUrl = await stage.makeImage({
@@ -204,6 +235,8 @@ export async function generate(stage: Stage) {
         stage.setLoadProgress(95, 'Writing intro.');
         await stage.advanceMessage()
         stage.setLoadProgress(undefined, 'Complete');
+    } catch (e) {
+        console.log(e);
     }
 
     await stage.messenger.updateChatState(stage.buildChatState());
