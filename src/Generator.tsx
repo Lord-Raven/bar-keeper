@@ -49,7 +49,7 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
         buildSection('Setting', stage.settingSummary ?? '') +
         buildSection('Location', stage.barDescription ?? '') +
         buildSection('Priority Instruction', 
-            `You are doing prep work for a roleplaying narrative. You are not ready to begin narrating yet; you must first use this planning response to create and describe several types of alcohol that the LOCATION might serve, ` +
+            `You are doing prep work for a roleplaying narrative. You must use this preparatory response to list out several types of alcohol that the LOCATION might serve, ` +
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
             `Output several varied and interesting beverages that suit the SETTING and LOCATION, each formatted into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
             `Use the EXAMPLE RESPONSES for formatting reference, but be original with each of your entries. `) +
@@ -95,7 +95,7 @@ export async function generateBeverages(stage: Stage) {
     let alcoholResponse = await stage.generator.textGen({
         prompt: buildAlcoholDescriptionsPrompt(stage),
 
-        max_tokens: 500,
+        max_tokens: 300,
         min_tokens: 50
     });
 
@@ -163,11 +163,11 @@ export async function generate(stage: Stage) {
         stage.setLoadProgress(10, 'Generating bar image.');
         const barPrompt = `masterpiece, high resolution, (art style notes: ${stage.artSummary}), ` +
             (stage.sourceSummary != '' && stage.sourceSummary.toLowerCase() != 'original' ? `(source material: ${stage.sourceSummary}), ` : '') +
-            `(setting details: ${stage.settingSummary}), (interior of a bar with this description: ${stage.barDescription})`;
+            `(setting details: ${stage.settingSummary}), ((interior of a bar with this description: ${stage.barDescription}))`;
 
         stage.barImageUrl = await stage.makeImage({
             prompt: barPrompt,
-            negative_prompt: 'grainy, low resolution, low quality, exterior, person, people, crowd, outside, daytime, outdoors',
+            negative_prompt: 'grainy, low resolution, low quality, ((exterior)), person, people, crowd, (outside), daytime, outdoors',
             aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
         }, '');
 
