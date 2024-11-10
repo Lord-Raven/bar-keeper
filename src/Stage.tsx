@@ -40,7 +40,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return `###${name.toUpperCase()}: ${body.trim()}\n\n`;
     }
     buildDistillationPrompt(description: string): string {
-        return `` +
+        return (
             this.buildSection('Flavor Text', description) +
             this.buildSection('Priority Instruction', 
                 `The FLAVOR TEXT is merely inspirational material that you will use to establish a SOURCE, SETTING, THEMES, and ART style for upcoming narration and illustration. ` +
@@ -58,11 +58,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 `"SOURCE: Mass Effect\nSETTING: Far future, the Citadel\nTHEMES: Space opera, friendship, trying times, relationships\nART: Clean, 3D render, vibrant, pristine, lens flares"\n` +
                 `"SOURCE: Original\nSETTING: Underground, 80s biker bar\nTHEMES: turf war, drug running, machismo, brutality\nART: Comic book, neon, chrome, heavy inks"\n` +
                 `"SOURCE: Original\nSETTING: 70s disco scene, Los Angeles\nTHEMES: Free love, vampires, lycanthropes, disco, underworld, clubs\nART: Psychedelic, high-contrast, hyperrealism, exaggerated character proportions"\n`) +
-            this.buildSection('Standard Instruction', '{{suffix}}');
+            this.buildSection('Standard Instruction', '{{suffix}}')).trim();
     }
 
     buildBarDescriptionPrompt(sourceSummary: string, settingSummary: string, themeSummary: string): string {
-        return `` +
+        return (
             (sourceSummary != '' ? this.buildSection('Source Material', sourceSummary) : '') +
             this.buildSection('Setting', settingSummary) +
             this.buildSection('Themes', themeSummary) +
@@ -70,30 +70,31 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 'You are doing prep work for a roleplaying narrative. You will use this initial response to write a few sentences describing a fictional pub, bar, club, or tavern set in SETTING, drawing upon the THEMES. ' +
                 'This descriptive paragraph should focus on the ambience, setting, theming, fixtures, and general clientele of the establishment. ' +
                 'This informative and flavorful description will later be used in future, narrative responses.\n') +
-            this.buildSection('Standard Instruction', '{{suffix}}');
+            this.buildSection('Standard Instruction', '{{suffix}}')).trim();
     };
 
     buildAlcoholDescriptionsPrompt(): string {
-        return `` +
+        return (
+            this.buildSection('Setting', this.settingSummary ?? '') +
             this.buildSection('Location', this.barDescription ?? '') +
             this.buildSection('Priority Instruction', 
-                `You are doing prep work for a roleplaying narrative. You will use this initial response to define several types of alcohol that the LOCATION might serve, providing a brief description of ` +
-                `each drink's appearance, bottle, odor, and flavor. Output several lines/alcohols; each line should start with the beverage's name, followed by a dash and then its description, with each drink occupying a separate line in your response.\n`) +
+                `You are doing prep work for a roleplaying narrative. You will use this initial response to define several types of alcohol that the LOCATION might serve, providing a NAME and brief DESCRIPTION of ` +
+                `each drink's appearance, bottle, odor, and flavor. Output five to seven varied example beverages that suit the setting, each occupying two lines: a NAME field on the first line and a DESCRIPTION on the following line.\n`) +
             this.buildSection('Example Responses', 
-                `"Cherry Rotgut - A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
-                `Tritium Delight - An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
-                `Rosewood Ale - This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo."\n` +
-                `"Toilet Wine - An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
-                `Love Potion #69 - It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
-                `Classic Grog - Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle."\n` +
-                `"Synth Mead - Bees died out long ago, but hypervikings still live for the sweet taste of synthetic honey wine.\n` +
-                `Super Hazy Imperial Double IPA - More IBUs than anyone's ever cared about. This bottle's got a buttload of cute bullshit about the local microbrewery that produced it, too.\n` +
-                `USB Port - Alcohol for wannabe techbros. Not legally a 'port' because of legal protections surrounding the term."`) +
-            this.buildSection('Standard Instruction', '{{suffix}}');
+                `"NAME: Cherry Rotgut\nDESCRIPTION: A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
+                `NAME: Tritium Delight\nDESCRIPTION: An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
+                `NAME: Rosewood Ale\nDESCRIPTION: This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo."\n` +
+                `"NAME: Toilet Wine\nDESCRIPTION: An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
+                `NAME: Love Potion #69\nDESCRIPTION: It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
+                `NAME: Classic Grog\nDESCRIPTION: Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle."\n` +
+                `"NAME: Synth Mead\nDESCRIPTION: Bees died out long ago, but hypervikings still live for the sweet taste of synthetic honey wine.\n` +
+                `NAME: Super Hazy Imperial Double IPA\nDESCRIPTION: More IBUs than anyone's ever cared for. The bottle's plastered with cute bullshit about the local microbrewery that produced it.\n` +
+                `NAME: USB Port\nDESCRIPTION: Alcohol for wannabe techbros. Not legally a 'port' because of international protections surrounding the term."`) +
+            this.buildSection('Standard Instruction', '{{suffix}}')).trim();
     };
 
     buildPatronPrompt(): string {
-        return `` +
+        return (
             this.buildSection('Location', this.barDescription ?? '') +
             this.buildSection('Priority Instruction', 
                 `This is a unique response; rather than continuing the narrative, you should instead utilize this response to craft a new character who might patronize this establishment, ` +
@@ -105,7 +106,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     `${Object.values(this.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                     '\n') +
                 `Output the details for a new character in the following format:\nName: Name\nDescription: Physical description covering gender, skin tone, hair color, hair style, eye color, clothing, accessories, and other obvious traits.\nPersonality: Personality and background details here.`) +
-            this.buildSection('Standard Instruction', '{{suffix}}');
+            this.buildSection('Standard Instruction', '{{suffix}}')).trim();
     };
 
     readonly disableContentGeneration: boolean = false;
@@ -297,25 +298,18 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             min_tokens: 50
         });
 
-        const lines = alcoholResponse?.result ?? '';
-        const regex = /^[^\p{L}]*(\p{L}.+?)\s+-\s+(.+)$/gmu;
-        let match: RegExpExecArray|null;
-        let count = 0;
-        console.log(lines);
-        while ((match = regex.exec(lines)) !== null) {
-            if (this.beverages.some(beverage => beverage.name === (match ? match[1].trim() : ''))) {
-                continue;
-            }
-            this.beverages.push(new Beverage(match[1].trim(), match[2].trim(), ''));
-            if (++count >= 5) {
-                break;
-            }
-        }
+        this.beverages = (alcoholResponse?.result ?? '').split(new RegExp('NAME', 'i'))
+            .filter(item => item.trim() != '')
+            .map(item => {
+                const nameMatch = item.match(/Name:\s*(.*)/i);
+                const descriptionMatch = item.match(/Description:\s*(.*)/i);
+                return new Beverage(nameMatch ? nameMatch[1].trim() : '', descriptionMatch ? descriptionMatch[1].trim() : '', '');
+            }).filter(beverage => beverage.name != '' && beverage.description != '');
 
         this.setLoadProgress(30, 'Generating beverage images.');
 
         for (const beverage of this.beverages) {
-            console.log(`Generating image for ${beverage.name}`)
+            console.log(`Generating image for ${beverage.name}: ${beverage.description}`);
             beverage.imageUrl = await this.makeImage({
                 //image: new URL(bottleUrl, import.meta.url).href,
                 //strength: 0.75,
