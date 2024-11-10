@@ -51,8 +51,8 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
         buildSection('Priority Instruction', 
             `You are doing prep work for a roleplaying narrative. You are not ready to begin narrating yet; you must first use this planning response to create and describe several types of alcohol that the LOCATION might serve, ` +
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
-            `Output several varied and interesting beverages that suit the SETTING and LOCATION, each occupying two lines: first, a NAME field, followed by a DESCRIPTION on the following line. ` +
-            `Use the EXAMPLE RESPONSES for formatting reference, but be original with each of your entries.`) +
+            `Output several varied and interesting beverages that suit the SETTING and LOCATION, each formatted into two lines with one property field on each line: first, a NAME field, followed by a DESCRIPTION on the following line. ` +
+            `Use the EXAMPLE RESPONSES for formatting reference, but be original with each of your entries. `) +
         buildSection('Example Responses', 
             `"NAME: Cherry Rotgut\nDESCRIPTION: A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
             `NAME: Tritium Delight\nDESCRIPTION: An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
@@ -99,6 +99,7 @@ export async function generateBeverages(stage: Stage) {
         min_tokens: 50
     });
 
+    console.log(alcoholResponse?.result);
     stage.beverages = (alcoholResponse?.result ?? '').split(new RegExp('NAME', 'i'))
         .filter(item => item.trim() != '')
         .map(item => {
