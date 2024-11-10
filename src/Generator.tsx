@@ -48,6 +48,7 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
     return (
         buildSection('Setting', stage.settingSummary ?? '') +
         buildSection('Location', stage.barDescription ?? '') +
+        buildSection('Established Beverages', stage.buildBeverageDescriptions()) +
         buildSection('Priority Instruction', 
             `You are doing prep work for a roleplaying narrative. Instead of narrating, you must use this preparatory response to list out several types of alcohol that the LOCATION might serve, ` +
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
