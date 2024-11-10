@@ -116,6 +116,7 @@ export class Director {
 
     getPromptInstruction(stage: Stage, slice: Slice): string {
         console.log(stage.patrons);
+        console.log(`'${slice.selectedPatronId}'`);
         console.log(`playerName: ${stage.player.name}\npatronName: ${slice.selectedPatronId ? stage.patrons[slice.selectedPatronId] : 'no selectedPatronId'}`);
         return directionInstructions[slice.direction ?? Direction.IntroduceBar]({barDescription: stage.barDescription ?? '', playerName: stage.player.name ?? '', patronName: slice.selectedPatronId ? stage.patrons[slice.selectedPatronId].name : ''});
     }
