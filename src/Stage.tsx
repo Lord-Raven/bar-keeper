@@ -285,7 +285,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     prompt: this.buildStoryPrompt(`${this.director.getPromptInstruction(this, newSlice)}\n${additionalContext}`),
                     max_tokens: 400,
                     min_tokens: 50,
-                    include_history: true
+                    include_history: false
                 });
                 if (textGen?.result?.length) {
                     newSlice.setScript(textGen.result);
