@@ -67,7 +67,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.buildSection('Setting', settingSummary) +
             this.buildSection('Themes', themeSummary) +
             this.buildSection('Priority Instruction', 
-                'You are doing prep work for a roleplaying narrative. You will use this initial response to write a few sentences describing a fictional pub, bar, club, or tavern set in SETTING, drawing upon the THEMES. ' +
+                'You are doing prep work for a roleplaying narrative. You will use this planning response to write a few sentences describing a fictional pub, bar, club, or tavern set in SETTING, drawing upon the THEMES. ' +
                 'This descriptive paragraph should focus on the ambience, setting, theming, fixtures, and general clientele of the establishment. ' +
                 'This informative and flavorful description will later be used in future, narrative responses.\n') +
             this.buildSection('Standard Instruction', '{{suffix}}')).trim();
@@ -78,18 +78,18 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.buildSection('Setting', this.settingSummary ?? '') +
             this.buildSection('Location', this.barDescription ?? '') +
             this.buildSection('Priority Instruction', 
-                `You are doing prep work for a roleplaying narrative. You will use this initial response to define several types of alcohol that the LOCATION might serve, providing a NAME and brief DESCRIPTION of ` +
-                `each drink's appearance, bottle, odor, and flavor. Output five to seven varied example beverages that suit the setting, each occupying two lines: a NAME field on the first line and a DESCRIPTION on the following line.\n`) +
+                `You are doing prep work for a roleplaying narrative. You will use this planning response to create and describe several types of alcohol that the LOCATION might serve, providing a NAME and brief DESCRIPTION of ` +
+                `each drink's appearance, bottle, odor, and flavor. Output five to seven varied example beverages that suit the SETTING, each occupying two lines: a NAME field on the first line and a DESCRIPTION on the following line.`) +
             this.buildSection('Example Responses', 
                 `"NAME: Cherry Rotgut\nDESCRIPTION: A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
                 `NAME: Tritium Delight\nDESCRIPTION: An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
-                `NAME: Rosewood Ale\nDESCRIPTION: This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo."\n` +
-                `"NAME: Toilet Wine\nDESCRIPTION: An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
-                `NAME: Love Potion #69\nDESCRIPTION: It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
-                `NAME: Classic Grog\nDESCRIPTION: Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle."\n` +
-                `"NAME: Synth Mead\nDESCRIPTION: Bees died out long ago, but hypervikings still live for the sweet taste of synthetic honey wine.\n` +
+                `NAME: Rosewood Ale\nDESCRIPTION: This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n` +
+                `NAME: Toilet Wine\nDESCRIPTION: An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
+                `NAME: Love Potion #69\nDESCRIPTION: It's fuzzy, bubbly, and guaranteed to polish your drunk goggles."\n` +
+                `"NAME: Classic Grog\nDESCRIPTION: Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle."\n` +
+                `NAME: Synth Mead\nDESCRIPTION: Bees died out long ago, but hypervikings still live for the sweet taste of synthetic honey wine.\n` +
                 `NAME: Super Hazy Imperial Double IPA\nDESCRIPTION: More IBUs than anyone's ever cared for. The bottle's plastered with cute bullshit about the local microbrewery that produced it.\n` +
-                `NAME: USB Port\nDESCRIPTION: Alcohol for wannabe techbros. Not legally a 'port' because of international protections surrounding the term."`) +
+                `NAME: USB Port\nDESCRIPTION: Alcohol for wannabe techbros. Not legally a 'port' because of international protections surrounding the term."\n`) +
             this.buildSection('Standard Instruction', '{{suffix}}')).trim();
     };
 
