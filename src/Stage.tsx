@@ -248,8 +248,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.buildPatronDescriptions() +
             this.buildBeverageDescriptions() +
             buildSection('Sample Response', sampleScript) +
-            buildSection('Log', 'test') +
-            buildSection('Instruction Override', `${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}`);
+            buildSection('Log', '{{messages}}') +
+            buildSection('Instruction Override', `${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}`) +
+            buildSection('Standard Instruction', '{{suffix}}');
     }
 
     async advanceMessage() {
@@ -285,7 +286,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     prompt: this.buildStoryPrompt(`${this.director.getPromptInstruction(this, newSlice)}\n${additionalContext}`),
                     max_tokens: 400,
                     min_tokens: 50,
-                    include_history: false
+                    include_history: true
                 });
                 if (textGen?.result?.length) {
                     newSlice.setScript(textGen.result);
