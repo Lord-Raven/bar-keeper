@@ -5,7 +5,7 @@
 project_name: "Bar Keeper"
 
 # A short tagline to show in search.
-# tagline: "A base template for all stages."
+tagline: "A barkeeping sim based on any card."
 
 # 'PUBLIC', 'PRIVATE', or 'UNLISTED'.
 visibility: 'PRIVATE'
@@ -21,11 +21,10 @@ visibility: 'PRIVATE'
 position: 'FULLSCREEN'
 
 # Self-explanatory.
-# tags:
-#  - 'Stage'
-#  - 'Admin'
-#  - 'Template'
-#  - 'Base'
+tags:
+ - 'Stage'
+ - 'Add-On'
+ - 'Scenario'
 
 # The schema of any user-supplied config.
 # If your stage requires a configuration but has no
