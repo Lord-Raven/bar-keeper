@@ -46,7 +46,9 @@ export function buildBarDescriptionPrompt(stage: Stage): string {
 
 export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
     return (
+        (stage.sourceSummary != '' ? buildSection('Source Material', stage.sourceSummary ?? '') : '') +
         buildSection('Setting', stage.settingSummary ?? '') +
+        buildSection('Themes', stage.themeSummary ?? '') +
         buildSection('Location', stage.barDescription ?? '') +
         buildSection('Established Beverages', stage.buildBeverageDescriptions()) +
         buildSection('Priority Instruction', 
@@ -69,17 +71,20 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
 
 export function buildPatronPrompt(stage: Stage): string {
     return (
+        (stage.sourceSummary != '' ? buildSection('Source Material', stage.sourceSummary ?? '') : '') +
+        buildSection('Setting', stage.settingSummary ?? '') +
+        buildSection('Themes', stage.themeSummary ?? '') +
         buildSection('Location', stage.barDescription ?? '') +
         buildSection('Priority Instruction', 
             `This is a unique response; rather than continuing the narrative, you should instead utilize this response to craft a new character who might patronize this establishment, ` +
-            `giving them a name, a physical description, and a paragraph about their personality, background, habits, and ticks. ` +
+            `giving them a NAME, a physical DESCRIPTION, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
             `Detail their personality, tics, appearance, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(stage.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
                 `connections between this new character and one or more existing patrons:\n` +
                 `${Object.values(stage.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
-                '\n') +
-            `Output the details for a new character in the following format:\nName: Name\nDescription: Physical description covering gender, skin tone, hair color, hair style, eye color, clothing, accessories, and other obvious traits.\nPersonality: Personality and background details here.`) +
+                '\n')) +
+        buildSection('Example Responses', `NAME: Character Name\nDESCRIPTION: Exhaustive physical and visual details covering gender, skin tone, hair color/style, eye color, clothing, accessories, and other obvious traits.\nPERSONALITY: Personality and background details.`) +
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 
