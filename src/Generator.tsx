@@ -39,7 +39,7 @@ export function buildBarDescriptionPrompt(stage: Stage): string {
         buildSection('Themes', stage.themeSummary ?? '') +
         buildSection('Priority Instruction', 
             'You are doing prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to write a few sentences describing a fictional pub, bar, club, or tavern set in SETTING, drawing upon the THEMES. ' +
-            'This descriptive paragraph should focus on the ambience, setting, theming, fixtures, and general clientele of the establishment. ' +
+            'This descriptive paragraph should focus on the interior description, ambience, theming, fixtures, and general clientele of the establishment. ' +
             'This informative and flavorful description will later be used in future, narrative responses.\n') +
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
@@ -199,8 +199,8 @@ export async function generate(stage: Stage) {
 
         stage.setLoadProgress(10, 'Generating bar image.');
         const barPrompt = `masterpiece, high resolution, (art style notes: ${stage.artSummary}), ` +
-            (stage.sourceSummary && stage.sourceSummary != '' && stage.sourceSummary.toLowerCase() != 'original' ? `(source material: ${stage.sourceSummary}), ` : '') +
-            `(setting details: ${stage.settingSummary}), ((interior of a bar with this description: ${stage.barDescription}))`;
+            (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + 'evening' +
+            `(general setting: ${stage.settingSummary}), (inside a bar), ((interior of a bar with this description: ${stage.barDescription}))`;
 
         stage.barImageUrl = await stage.makeImage({
             prompt: barPrompt,
