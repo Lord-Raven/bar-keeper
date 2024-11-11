@@ -115,7 +115,7 @@ export async function generateBeverages(stage: Stage) {
     if (stage.beverages.length < 5) {
         throw Error('Failed to generate sufficient beverages.');
     } else {
-        stage.beverages = stage.beverages.slice(0, 4);
+        stage.beverages = stage.beverages.slice(0, 5);
     }
 
     stage.setLoadProgress(30, 'Generating beverage images.');
