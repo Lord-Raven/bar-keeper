@@ -149,7 +149,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             identity
         } = botMessage;
 
-        console.log('afterPrompt');
+        console.log('afterResponse');
 
         this.currentMessageId = identity;
         return {
@@ -211,7 +211,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async addNewSlice(slice: Slice) {
-        console.log('addNewSlice');
+        console.log(`addNewSlice`);
+        console.log(this.characterForGeneration);
         let impersonation = await this.messenger.impersonate({
             message: slice.script,
             parent_id: this.currentMessageId ?? '-2',
