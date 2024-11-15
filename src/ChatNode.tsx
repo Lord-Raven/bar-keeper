@@ -25,13 +25,12 @@ export function createNodes(script: string, parent: ChatNode | null, commonProps
         presentPatronIds: [],
         selectedPatronId: undefined
     };
-    let currentNode: ChatNode|null = parent;
+    let currentNode: ChatNode|null = null;
     let currentSpeaker = '';
     let currentDialogue = '';
     let nodes: ChatNode[] = [];
 
-    const lines = script.trim().split('\n');
-    lines.forEach(line => {
+    for (let line of script.trim().split('\n')) {
         //console.log('Line:' + line);
         const match = line.match(/^\**(.[^*]+)\**:\s*(.+)$/i);
         if (match) {
@@ -48,9 +47,9 @@ export function createNodes(script: string, parent: ChatNode | null, commonProps
 
             currentDialogue = line.trim();
         }
-    });
+    }
     if (currentSpeaker && currentDialogue.trim().length > 0) {
-        currentNode = addNode({...baseNode, id: generateUuid(), message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps}, currentNode, nodes);
+        currentNode = addNode({...baseNode, id: generateUuid(), message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: (currentNode ? currentNode.id : null), ...commonProps}, currentNode, nodes);
     }
     /*if (this.direction == Direction.Choice) {
         this.subSlices = this.subSlices.filter(subSlice => subSlice.speakerId == 'OPTION');
@@ -61,6 +60,8 @@ export function createNodes(script: string, parent: ChatNode | null, commonProps
 
 function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: ChatNode[]): ChatNode {
     if (parentNode != null) {
+        console.log(newNode);
+        console.log(`pushing a child ID to parent:${parentNode.id} -> ${newNode.id}`);
         parentNode.childIds.push(newNode.id);
     }
     nodes.push(newNode);
