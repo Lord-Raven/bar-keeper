@@ -190,6 +190,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             console.log('Kick off generation');
             this.requestedNodes = this.generateMessageContent('');
         }
+        console.log(this.currentNode);
         if (!this.currentNode || this.currentNode.childIds.length == 0) {
             console.log('No node or no children; processNextResponse()');
             await this.processNextResponse();
