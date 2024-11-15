@@ -35,8 +35,6 @@ type ChatStateType = any;
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     readonly disableContentGeneration: boolean = false;
-    // Message State:
-    // Eventually move things like currentMessageId: string|undefined;
 
     // Chat State:
     barDescription: string|undefined;
@@ -240,7 +238,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         
         if (result) {
             result.forEach(node => this.chatNodes[node.id] = node);
-            this.currentNode = result[0];
+            let selectedNode = result[0];
+            if (this.currentNode) {
+                this.currentNode.childIds.push(selectedNode.id);
+                this.currentNode.selectedChildId = selectedNode.id;
+            }
+            this.currentNode = selectedNode;
             await this.updateChatState();
         } else {
             console.error('Failed to generate new content; try again.');

@@ -2,8 +2,9 @@ import {Direction} from "./Director";
 
 export interface ChatNode {
     id: string;
-    parentId: string | null;
+    parentId: string|null;
     childIds: string[];
+    selectedChildId: string|null;
     speakerId: string|undefined;
     message: string;
     direction: Direction|undefined;
@@ -17,6 +18,7 @@ export function createNodes(script: string, parent: ChatNode | null, commonProps
         id: '',
         parentId: null,
         childIds: [],
+        selectedChildId: null,
         speakerId: undefined,
         message: '',
         direction: undefined,

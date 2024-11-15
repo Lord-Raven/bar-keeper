@@ -185,6 +185,8 @@ export async function generate(stage: Stage) {
     if (stage.loadingProgress !== undefined) return;
 
     try {
+        stage.currentNode = null;
+        stage.chatNodes = {};
         await generateDistillation(stage);
 
         stage.setLoadProgress(5, 'Generating bar description.');
