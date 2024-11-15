@@ -1,4 +1,5 @@
 import { Stage } from "./Stage";
+import {ChatNode} from "./ChatNode";
 
 export enum Direction {
     IntroduceBar = 'IntroduceBar',
@@ -48,82 +49,20 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
     Outcome: input => `Continue the scene by depicting the course of action ${input.playerName} has chosen, following up with the reactions, consequences, and other outcomes. ${generalInstruction}`
 }
 
-export class Slice {
-    direction: Direction|undefined;
-    subSlices: SubSlice[];
-    script: string;
-    presentPatronIds: string[];
-    selectedPatronId: string|undefined;
-
-    constructor(direction: Direction|undefined, presentPatronIds: string[], selectedPatronId: string|undefined, script?: string) {
-        this.direction = direction;
-        this.presentPatronIds = presentPatronIds;
-        this.selectedPatronId = selectedPatronId;
-        this.subSlices = [];
-        this.script = '';
-        
-        if (script) {
-            this.setScript(script);
-        }
-    }
-
-    setScript(script: string) {
-        this.script = script;
-        let currentSpeaker = '';
-        let currentDialogue = '';
-        this.subSlices = [];
-        const lines = script.trim().split('\n');
-        lines.forEach(line => {
-            //console.log('Line:' + line);
-            const match = line.match(/^\**(.[^*]+)\**:\s*(.+)$/i);
-            if (match) {
-                // If there's a current dialogue, push it to the parsedLines array
-                if (currentSpeaker && currentDialogue.trim().length > 0) {
-                    this.subSlices.push(new SubSlice(currentSpeaker, currentDialogue.trim()));
-                }
-                // Start a new dialogue
-                currentSpeaker = match[1];
-                currentDialogue = match[2];
-            } else if (currentSpeaker && currentDialogue.trim().length > 0) {
-                // Continue the current dialogue
-                this.subSlices.push(new SubSlice(currentSpeaker, currentDialogue.trim()));
-                currentDialogue = line.trim();
-            }
-        });
-        if (currentSpeaker && currentDialogue.trim().length > 0) {
-            this.subSlices.push(new SubSlice(currentSpeaker, currentDialogue.trim()));
-        }
-        if (this.direction == Direction.Choice) {
-            this.subSlices = this.subSlices.filter(subSlice => subSlice.speakerId == 'OPTION');
-        }
-    }
-}
-
-export class SubSlice {
-    body: string;
-    speakerId: string|undefined;
-
-    constructor(speakerId: string, body: string) {
-        this.body = body;
-        this.speakerId = speakerId;
-        console.log('Build a SubSlice: ' + speakerId + ':' + body);
-    }
-}
-
 export class Director {
 
     constructor() { }
 
-    getPromptInstruction(stage: Stage, slice: Slice): string {
+    getPromptInstruction(stage: Stage, node: Partial<ChatNode>): string {
         console.log(stage.patrons);
-        console.log(`'${slice.selectedPatronId}'`);
-        console.log(`playerName: ${stage.player.name}\npatronName: ${slice.selectedPatronId ? stage.patrons[slice.selectedPatronId] : 'no selectedPatronId'}`);
-        return directionInstructions[slice.direction ?? Direction.IntroduceBar]({barDescription: stage.barDescription ?? '', playerName: stage.player.name ?? '', patronName: slice.selectedPatronId ? stage.patrons[slice.selectedPatronId].name : ''});
+        console.log(`'${node.selectedPatronId}'`);
+        console.log(`playerName: ${stage.player.name}\npatronName: ${node.selectedPatronId ? stage.patrons[node.selectedPatronId] : 'no selectedPatronId'}`);
+        return directionInstructions[node.direction ?? Direction.IntroduceBar]({barDescription: stage.barDescription ?? '', playerName: stage.player.name ?? '', patronName: node.selectedPatronId ? stage.patrons[node.selectedPatronId].name : ''});
     }
 
-    generateSlice(stage: Stage, currentSlice: Slice): Slice {
+    determineNextNodeProps(stage: Stage, currentNode: ChatNode|null): Partial<ChatNode> {
         let newDirection: Direction;
-        switch (currentSlice.direction) {
+        switch (currentNode ? currentNode.direction : undefined) {
             case undefined:
                 newDirection = Direction.IntroduceBar;
                 break;
@@ -131,7 +70,8 @@ export class Director {
                 newDirection = Direction.IntroducePatron;
                 break;
             case Direction.Lull:
-                newDirection = currentSlice.presentPatronIds.length < 5 ? Direction.IntroducePatron : Direction.PatronBanter;
+                // @ts-ignore
+                newDirection = currentNode.presentPatronIds.length < 5 ? Direction.IntroducePatron : Direction.PatronBanter;
                 break;
             case Direction.IntroducePatron:
                 newDirection = Math.random() > 0.5 ? Direction.PatronBanter : Direction.PatronProblem;
@@ -157,7 +97,7 @@ export class Director {
                 newDirection = Direction.Lull;
         }
         let selectedPatronId = undefined;
-        let newPresentPatronIds = [...currentSlice.presentPatronIds];
+        let newPresentPatronIds = [...(currentNode ? currentNode.presentPatronIds : [])];
         switch (newDirection) {
             case Direction.IntroducePatron:
                 // Create a patron or pull an existing one
@@ -196,6 +136,10 @@ export class Director {
                 break;
         }
 
-        return new Slice(newDirection, newPresentPatronIds, selectedPatronId);
+        return {
+            direction: newDirection,
+            presentPatronIds: newPresentPatronIds,
+            selectedPatronId: selectedPatronId
+        };
     }
 }

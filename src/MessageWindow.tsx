@@ -1,9 +1,10 @@
-import {Pace, useWindupString, WindupChildren} from "windups";
+import {Pace, WindupChildren} from "windups";
 import {Box, Button, CircularProgress, IconButton, Typography} from "@mui/material";
 import {FC, useEffect, useState} from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
-import { Direction, Slice, SubSlice } from "./Director";
+import { Direction } from "./Director";
 import { Stage } from "./Stage";
+import {ChatNode} from "./ChatNode";
 
 interface MessageWindupProps {
     message: string;
@@ -50,12 +51,11 @@ function MessageWindup({message, options}: MessageWindupProps) {
 
 interface MessageWindowProps {
     advance:  () => void;
-    slice: () => Slice;
-    subSlice: () => SubSlice;
+    chatNode: () => ChatNode|null;
     stage: () => Stage;
 }
 
-export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice, stage }) => {
+export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, stage }) => {
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
     const proceed = () => {
@@ -67,16 +67,30 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
             setDoneWinding(true);
         }
     }
-    const proceedWith = (subSlice: SubSlice) => {
+    const proceedWith = (chatNode: ChatNode) => {
         setAdvancing(true);
         setDoneWinding(true);
-        stage().advanceMessageChoice(subSlice);
+        stage().advanceMessageChoice(chatNode);
     }
 
     useEffect(() => {
         setDoneWinding(false);
         setAdvancing(false);
-    }, [subSlice()]);
+    }, [chatNode()]);
+
+    /*
+                                    {chatNode()?.subSlices.map(subSlice => {
+                                    return (
+                                            <div style={{marginTop: '5px', marginBottom: '5px'}}>
+                                                <Button variant="outlined" disabled={advancing} onClick = {() => {proceedWith(subSlice)}}>
+                                                    <MessageWindup message={subSlice.body} options={{}} />
+                                                </Button>
+                                                <br/>
+                                            </div>
+                                        );
+                                })}
+                                <CircularProgress variant={advancing ? 'indeterminate' : 'determinate'} value={5} style={{float: 'right'}}/>
+     */
 
     return (
         <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center'}}>
@@ -96,29 +110,19 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                 '&:hover': {backgroundColor: '#000000BB'}
             }}>
                 <div style = {{width: '100%'}}>
-                    {slice()?.direction === Direction.Choice ? 
+                    {chatNode()?.direction === Direction.Choice ?
                         (
                             <div>
-                                {slice()?.subSlices.map(subSlice => {
-                                    return (
-                                            <div style={{marginTop: '5px', marginBottom: '5px'}}>
-                                                <Button variant="outlined" disabled={advancing} onClick = {() => {proceedWith(subSlice)}}>
-                                                    <MessageWindup message={subSlice.body} options={{}} />
-                                                </Button>
-                                                <br/>
-                                            </div>
-                                        );
-                                })}
-                                <CircularProgress variant={advancing ? 'indeterminate' : 'determinate'} value={5} style={{float: 'right'}}/>
+
                             </div>
                         ) :
                         (
                             <div>
                                 <div>
-                                    <Typography variant="h6" color="#AAAAAA">{subSlice()?.speakerId ?? ''}</Typography>
+                                    <Typography variant="h6" color="#AAAAAA">{chatNode()?.speakerId ?? ''}</Typography>
                                 </div>
                                 <div>
-                                    <MessageWindup message={subSlice()?.body ?? ''} options={{onFinished: () => {setDoneWinding(true);}, skipped: doneWinding}} />
+                                    <MessageWindup message={chatNode()?.message ?? ''} options={{onFinished: () => {setDoneWinding(true);}, skipped: doneWinding}} />
                                 </div>
                                 <div>
                                     {advancing ? (
@@ -136,9 +140,9 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, slice, subSlice
                     }
                 </div>
             </Box>
-            {slice()?.presentPatronIds.map((patronId, index) => {
+            {chatNode()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
-                        if (patronId.toLowerCase().includes(subSlice()?.speakerId?.toLowerCase() ?? 'nevereverever')) {
+                        if (patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever')) {
                             return <img src={stage().patrons[patronId].imageUrl} style={{
                                 position: 'absolute', bottom: '-16vh', 
                                 left: ((index % 2) == 0) ? `${index * 30}vw` : 'auto', 

@@ -25,6 +25,8 @@ tags:
  - 'Stage'
  - 'Add-On'
  - 'Scenario'
+ - 'Bartender'
+ - 'Game'
 
 # The schema of any user-supplied config.
 # If your stage requires a configuration but has no

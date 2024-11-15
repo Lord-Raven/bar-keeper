@@ -1,9 +1,7 @@
 import React, {ReactElement} from "react";
 import {useSound} from "use-sound";
 import {
-    AspectRatio,
     Character,
-    ImageToImageRequest,
     InitialData,
     Message,
     StageBase,
@@ -15,11 +13,12 @@ import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
 import {Box, createTheme, LinearProgress, ThemeProvider, Typography, IconButton} from "@mui/material";
 import ReplayIcon from "@mui/icons-material/Replay";
-import {Direction, Director, sampleScript, Slice, SubSlice} from "./Director";
+import {Director, sampleScript} from "./Director";
 import {MessageWindow} from "./MessageWindow"
 import { AccountCircle } from "@mui/icons-material";
 import { register } from "register-service-worker";
 import { buildSection, generate, generatePatronImage, regenerateBeverages } from "./Generator";
+import {ChatNode, createNodes} from "./ChatNode";
 
 type MessageStateType = any;
 
@@ -50,18 +49,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     beverages: Beverage[];
     loadingProgress: number|undefined;
     loadingDescription: string|undefined;
-    messageSlices: {[key: string]: Slice};
     patrons: {[key: string]: Patron};
-
-    currentMessageId: string|undefined;
-    currentMessageIndex: number = 0;
+    chatNodes: {[key: string]: ChatNode};
 
     // Not saved:
-    patronImagePrompt: string = 'Professional, visual novel, ((anime)), calm expression, neutral pose, flat shading, in-frame, flat contrasting background color, head-to-hips, hips-up portrait, waist-up portrait';
-    patronImageNegativePrompt: string = 'realism, border, dynamic lighting, ((close-up)), background image, bad anatomy, amateur, low quality, action';
+    currentNode: ChatNode|null;
+    patronImagePrompt: string = 'Professional, visual novel, calm expression, neutral pose, in-frame, flat contrasting background color, head-to-hips, hips-up portrait, waist-up portrait';
+    patronImageNegativePrompt: string = 'border, ((close-up)), background image, amateur, low quality, action';
     characterForGeneration: Character;
     player: User;
-    requestedSlice: Promise<Slice|null>|null = null;
+    requestedNodes: Promise<ChatNode[]|null>|null = null;
     isGenerating: boolean = false;
     director: Director;
 
@@ -83,7 +80,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             characters,
             users,
             config,
-            messageState,
             chatState
         } = data;
 
@@ -95,9 +91,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.player = users[Object.keys(users)[0]];
         this.beverages = [];
         this.patrons = {};
-        this.messageSlices = {};
+        this.chatNodes = {};
+        this.currentNode = null;
         this.readChatState(chatState);
-        this.readMessageState(messageState);
         this.director = new Director();
         this.loadingProgress = 50;
 
@@ -120,47 +116,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         };
     }
 
-    async setState(messageState: MessageStateType): Promise<void> {
-        this.readMessageState(messageState);
-    }
+    async setState(messageState: MessageStateType): Promise<void> { }
 
-    async beforePrompt(userMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
-        const {
-            content,
-            identity
-        } = userMessage;
+    async beforePrompt(userMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> { return {}; }
 
-        console.log('beforePrompt');
-
-        return {
-            stageDirections: null,
-            messageState: this.buildMessageState(),
-            modifiedMessage: null,
-            systemMessage: null,
-            error: null,
-            chatState: this.buildChatState(),
-        };
-    }
-
-    async afterResponse(botMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
-
-        const {
-            content,
-            identity
-        } = botMessage;
-
-        console.log('afterResponse');
-
-        this.currentMessageId = identity;
-        return {
-            stageDirections: null,
-            messageState: this.buildMessageState(),
-            modifiedMessage: null,
-            error: null,
-            systemMessage: null,
-            chatState: this.buildChatState()
-        };
-    }
+    async afterResponse(botMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> { return {}; }
 
     buildChatState(): ChatStateType {
         return {
@@ -172,9 +132,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             barImageUrl: this.barImageUrl,
             entranceSoundUrl: this.entranceSoundUrl,
             beverages: this.beverages,
-            messageSlices: this.messageSlices,
-            currentMessageId: this.currentMessageId,
-            currentMessageIndex: this.currentMessageIndex,
+            chatNodes: this.chatNodes,
+            currentMessageId: this.currentNode ? this.currentNode.id : null,
             patrons: this.patrons
         };
     }
@@ -189,19 +148,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.barImageUrl = chatState.barImageUrl;
             this.entranceSoundUrl = chatState.entranceSoundUrl;
             this.beverages = (chatState.beverages ?? []).map((beverage: { name: string, description: string, imageUrl: string }) => new Beverage(beverage.name, beverage.description, beverage.imageUrl));
-            this.messageSlices = chatState.messageSlices ?? {};
-            this.currentMessageId = chatState.currentMessageId ?? undefined;
-            this.currentMessageIndex = chatState.currentMessageIndex ?? 0;
+            this.chatNodes = chatState.chatNodes ?? {};
+            this.currentNode = chatState.currentMessageId && this.chatNodes[chatState.currentMessageId] ? this.chatNodes[chatState.currentMessageId] : null;
             this.patrons = chatState.patrons ?? {};
         }
-    }
-
-    buildMessageState(): MessageStateType {
-        return {};
-    }
-
-    readMessageState(messageState: MessageStateType) {
-        if (messageState) {};
     }
 
     setLoadProgress(loadingProgress: number|undefined, loadingDescription: string) {
@@ -210,27 +160,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.loadingDescription = loadingDescription;
     }
 
-    async addNewSlice(slice: Slice) {
-        console.log(`addNewSlice`);
-        console.log(this.characterForGeneration);
-        let impersonation = await this.messenger.impersonate({
-            message: slice.script,
-            parent_id: this.currentMessageId ?? '-2',
-            is_main: true,
-            speaker_id: this.characterForGeneration.anonymizedId
-        });
+    async updateChatState() {
 
-        console.log(`IDs: ${this.currentMessageId}:${impersonation.identity}`);
-        this.messageSlices[impersonation.identity] = slice;
-        this.currentMessageId = impersonation.identity;
-        this.currentMessageIndex = 0;
         await this.messenger.updateChatState(this.buildChatState());
-    }
-
-    chopMessage(message: string): string[] {
-        let subMessages: string[] = message ? message.split(/\r?\n|<br>/).filter(line => line.trim() !== "") : [];
-        if (subMessages.length == 0) subMessages.push('');
-        return subMessages;
     }
 
     buildBeverageDescriptions(): string {
@@ -238,7 +170,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildPatronDescriptions(): string {
-        const presentPatronIds = this.getMessageSlice(this.currentMessageId).presentPatronIds;
+        const presentPatronIds = this.currentNode?.presentPatronIds ?? [];
         return buildSection('Absent Patrons', `${Object.values(this.patrons).filter(patron => !presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}`) +
             buildSection('Present Patrons', `${Object.values(this.patrons).filter(patron => presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}`);
     }
@@ -256,42 +188,43 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async advanceMessage() {
         console.log('advanceMessage');
-        if (!this.requestedSlice) {
+        if (!this.requestedNodes) {
             console.log('Kick off generation');
-            this.requestedSlice = this.generateSlice('');
+            this.requestedNodes = this.generateMessageContent('');
         }
-        if (this.currentMessageIndex >= this.getMessageSubSlices(this.currentMessageId).length - 1) {
+        if (!this.currentNode || this.currentNode.childIds.length == 0) {
             await this.processNextResponse();
         } else {
-            this.currentMessageIndex++;
+            this.currentNode = this.chatNodes[this.currentNode.childIds[0]];
         }
     }
 
-    async advanceMessageChoice(subSlice: SubSlice) {
+    async advanceMessageChoice(chatNode: ChatNode) {
         console.log('advanceMessageChoice');
-        if (!this.requestedSlice) {
+        if (!this.requestedNodes) {
             console.log('Kick off generation');
-            this.requestedSlice = this.generateSlice(`${this.player.name} has selected the following action: ${subSlice.body}`);
+            this.requestedNodes = this.generateMessageContent(`${this.player.name} has selected the following action: ${chatNode.message}`);
         }
         await this.processNextResponse();
     }
 
-    async generateSlice(additionalContext: string): Promise<Slice|null> {
-        console.log('generateSlice');
-        let newSlice: Slice = this.director.generateSlice(this, this.getMessageSlice(this.currentMessageId));
+    async generateMessageContent(additionalContext: string): Promise<ChatNode[]|null> {
+        console.log('generateNodes');
+        let nodeProps: any = this.director.determineNextNodeProps(this, this.currentNode);
 
         let retries = 3;
         while (retries-- > 0) {
             try {
                 let textGen = await this.generator.textGen({
-                    prompt: this.buildStoryPrompt(`${this.director.getPromptInstruction(this, newSlice)}\n${additionalContext}`),
+                    prompt: this.buildStoryPrompt(`${this.director.getPromptInstruction(this, nodeProps)}\n${additionalContext}`),
                     max_tokens: 400,
                     min_tokens: 50,
-                    include_history: !!this.currentMessageId
+                    include_history: false
                 });
                 if (textGen?.result?.length) {
-                    newSlice.setScript(textGen.result);
-                    return Promise.resolve(newSlice);
+                    const newNodes = createNodes(textGen.result, this.currentNode, nodeProps);
+
+                    return Promise.resolve(newNodes);
                 }
             } catch(error) {
                 console.error("Failed to generate message: " + error);
@@ -303,37 +236,17 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async processNextResponse() {
         this.isGenerating = true;
-        let tries = 3;
-        let result = await this.requestedSlice;
+        let result = await this.requestedNodes;
         
         if (result) {
-            await this.addNewSlice(result);
-            await this.messenger.updateChatState(this.buildChatState());
+            result.forEach(node => this.chatNodes[node.id] = node);
+            this.currentNode = result[0];
+            await this.updateChatState();
         } else {
             console.error('Failed to generate new content; try again.');
         }
-        this.requestedSlice = null;
+        this.requestedNodes = null;
         this.isGenerating = false;
-    }
-
-    getMessageIndexBody(messageId: string|undefined, messageIndex: number): string {
-        return this.getMessageIndexSubSlice(messageId, messageIndex).body ?? '';
-    }
-
-    getMessageBody(messageId: string|undefined): string {
-        return this.getMessageSlice(messageId).script ?? '';
-    }
-
-    getMessageSlice(messageId: string|undefined): Slice {
-        return this.messageSlices[messageId ?? ''] ?? new Slice(undefined, [], undefined);
-    }
-
-    getMessageSubSlices(messageId: string|undefined): SubSlice[] {
-        return this.getMessageSlice(messageId).subSlices;
-    }
-
-    getMessageIndexSubSlice(messageId: string|undefined, messageIndex: number): SubSlice {
-        return this.getMessageSubSlices(messageId)[messageIndex];
     }
 
     async makeImage(imageRequest: Object, defaultUrl: string): Promise<string> {
@@ -374,8 +287,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             <ReplayIcon/>
                         </IconButton>
                         <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
-                                let presentPatronIds = this.getMessageSlice(this.currentMessageId).presentPatronIds;
-                                let patronId = this.getMessageSlice(this.currentMessageId).selectedPatronId ?? presentPatronIds[Math.floor(Math.random() * presentPatronIds.length)] ?? null;
+                                let presentPatronIds = this.currentNode?.presentPatronIds ?? [];
+                                let patronId = this.currentNode?.selectedPatronId ?? presentPatronIds[Math.floor(Math.random() * presentPatronIds.length)] ?? null;
                                 if (patronId) {
                                     generatePatronImage(this.patrons[patronId], this).then(imageUrl => this.patrons[patronId].imageUrl = imageUrl);
                                 }
@@ -397,8 +310,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 {!this.loadingProgress && (
                         <MessageWindow 
                             advance={() => {void this.advanceMessage()}}
-                            slice={() => {return this.getMessageSlice(this.currentMessageId)}}
-                            subSlice={() => {return this.getMessageIndexSubSlice(this.currentMessageId, this.currentMessageIndex)}}
+                            chatNode={() => {return this.currentNode}}
                             stage={() => {return this}}
                         />
                 )}

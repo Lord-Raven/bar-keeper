@@ -18,16 +18,17 @@ export function buildDistillationPrompt(description: string): string {
             `This initial response includes four specific and clearly defined fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
             `"SOURCE" should name the source material of FLAVOR TEXT, if any; leave this blank or 'Original' if FLAVOR TEXT is not derived from a known work.\n` +
             `"SETTING" should briefly summarize the overarching location, vibe, or time period derived from the FLAVOR TEXT, including any key ways in which the setting deviates from the expectations for that setting.\n` +
-            `"THEMES" should list all of the prominent themes or concepts from the FLAVOR TEXT.\n` +
+            `"THEMES" should list all of the prominent themes, concepts, or kinks from the FLAVOR TEXT.\n` +
             `"ART" should identify a target artist name, art style, art genre, medium, palette, stroke, linework, or other style choices that suit or align with the setting and themes of the FLAVOR TEXT; this will be used to generate appropriate images later.\n` +
             `Define these four fields and promptly end your response.\n`) +
         buildSection('Example Responses', 
             `"SOURCE: H.P. Lovecraft\nSETTING: A metaphysical 1930s Innsmouth, Massachusetts\nTHEMES: Mind control, dementia, gore, mysticism, Old Ones\nART: noir, dark, gritty, hyperrealism, wet"\n` +
             `"SOURCE: Robert E. Howard\nSETTING: Cimeria, a dark fantasy wasteland\nTHEMES: barbarians, hedonism, violence, domination\nART: dark fantasy, oil painting, Frank Frazetta, hypersexualized"\n` +
             `"SOURCE: Original\nSETTING: Quirky, fantastic modern Japanese countryside\nTHEMES: magical, fantasy modern, non-violence, exaggerated, silly, funny\nART: Studio Ghibli, bright, anime, vibrant, sparkly"\n` +
-            `"SOURCE: Alien\nSETTING: Hard sci-fi, isolated space station\nTHEMES: Slow burn, danger, alien infestation, psychological horror\nART: Creepy, greebling, gross, hyperrealism, H. R. Geiger"\n` +
-            `"SOURCE: Mass Effect\nSETTING: Far future, the Citadel\nTHEMES: Space opera, friendship, trying times, relationships\nART: Clean, 3D render, vibrant, pristine, lens flares"\n` +
-            `"SOURCE: Original\nSETTING: Underground, 80s biker bar\nTHEMES: turf war, drug running, machismo, brutality\nART: Comic book, neon, chrome, heavy inks"\n` +
+            `"SOURCE: Ridley Scott's Alien\nSETTING: Hard sci-fi, isolated space station\nTHEMES: Slow burn, danger, alien infestation, psychological horror\nART: Creepy, greebling, gross, organic, hyperrealism, H. R. Geiger"\n` +
+            `"SOURCE: Original\nSETTING: Mid-2000s college fall semester\nTHEMES: Friendships, lust, betrayal, homework, class rank\nART: watercolor, ink, soft tones, paper texture, pastels\n` +
+            `"SOURCE: Mass Effect\nSETTING: Far future, the Citadel\nTHEMES: Space opera, friendship, trying times, relationships, impending apocalypse, extinction-level event\nART: Clean, crisp, 3D render, CGI, vibrant, pristine, lens flares"\n` +
+            `"SOURCE: Original\nSETTING: Underground, 80s biker bar\nTHEMES: turf war, drug running, machismo, brutality\nART: Comic book, neon, chrome, bright colors, bulging muscles, heavy inks"\n` +
             `"SOURCE: Original\nSETTING: 70s disco scene, Los Angeles\nTHEMES: Free love, vampires, lycanthropes, disco, underworld, clubs\nART: Psychedelic, high-contrast, hyperrealism, exaggerated character proportions"\n`) +
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
@@ -108,7 +109,6 @@ export async function generateBeverages(stage: Stage) {
 
         console.log(alcoholResponse?.result);
         stage.beverages.push(...(alcoholResponse?.result ?? '').split(new RegExp('NAME:', 'i'))
-            .filter(item => item.trim() != '')
             .map(item => {
                 const nameMatch = item.match(/\s*(.*?)\s*Description:/i);
                 const descriptionMatch = item.match(/Description:\s*(.*)/i);
@@ -199,7 +199,7 @@ export async function generate(stage: Stage) {
 
         stage.setLoadProgress(10, 'Generating bar image.');
         const barPrompt = `masterpiece, high resolution, (art style notes: ${stage.artSummary}), ` +
-            (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + 'evening' +
+            (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + 'evening, counter, bottles, ' +
             `(general setting: ${stage.settingSummary}), (inside a bar), ((interior of a bar with this description: ${stage.barDescription}))`;
 
         stage.barImageUrl = await stage.makeImage({
@@ -236,8 +236,7 @@ export async function generate(stage: Stage) {
         }
 
         // Finally, display an intro
-        stage.currentMessageId = undefined;
-        stage.currentMessageIndex = 500;
+        stage.currentNode = null;
         stage.setLoadProgress(95, 'Writing intro.');
         await stage.advanceMessage()
         stage.setLoadProgress(undefined, 'Complete');
