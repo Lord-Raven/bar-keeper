@@ -191,8 +191,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.requestedNodes = this.generateMessageContent('');
         }
         if (!this.currentNode || this.currentNode.childIds.length == 0) {
+            console.log('No node or no children; processNextResponse()');
             await this.processNextResponse();
         } else {
+            console.log('Child already exists; go there.');
             this.currentNode = this.chatNodes[this.currentNode.childIds[0]];
         }
     }
@@ -221,7 +223,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 });
                 if (textGen?.result?.length) {
                     const newNodes = createNodes(textGen.result, this.currentNode, nodeProps);
-
+                    console.log('Generated nodes');
                     return Promise.resolve(newNodes);
                 }
             } catch(error) {
@@ -234,8 +236,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async processNextResponse() {
         this.isGenerating = true;
+        console.log('processNextResponse');
         let result = await this.requestedNodes;
-        
+        console.log(result);
         if (result) {
             result.forEach(node => this.chatNodes[node.id] = node);
             let selectedNode = result[0];
