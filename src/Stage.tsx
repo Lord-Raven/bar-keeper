@@ -263,7 +263,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.currentNode = selectedNode;
             await this.updateChatState();
         } else {
-            console.error('Failed to generate new content; try again.');
+            console.log('Failed to generate new content; try again.');
         }
         this.requestedNodes = null;
         this.isGenerating = false;

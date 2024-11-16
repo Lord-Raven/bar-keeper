@@ -287,13 +287,13 @@ export async function generatePatronImage(patron: Patron, stage: Stage): Promise
     let imageUrl = await stage.makeImage({
         //image: bottleUrl,
         //strength: 0.1,
-        prompt: `${stage.patronImagePrompt}, (art style notes: ${stage.artSummary}), (${patron.description}), (this is a character from this setting ${stage.settingSummary})`,
+        prompt: `${stage.patronImagePrompt}, (art style notes: ${stage.artSummary}), (${patron.description}), (this is a character from this setting: ${stage.settingSummary})`,
         negative_prompt: stage.patronImageNegativePrompt,
         aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL, //.PHOTO_HORIZONTAL,
         remove_background: true
         //seed: null,
         //item_id: null,
-    }, patronUrl);
+    }, '');
 
     return Promise.resolve(imageUrl);
 }

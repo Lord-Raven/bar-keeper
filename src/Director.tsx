@@ -19,7 +19,7 @@ interface InstructionInput {
     patronName: string
 }
 
-const generalInstruction = 'Responses follow a simple stageplay style format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Refer to ${input.playerName} in second-person.'
+const generalInstruction = 'Responses follow a simple stageplay style format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Refer to {{user}} in second-person.'
 export const sampleScript = `**NARRATOR**: General narration is provided here.\n\n**CHARACTER 1**: "Character dialog goes in quotations." Their actions don't.\n\n**NARRATOR**: Character 2 walks in.\n\n**CHARACTER 2**: "Hey, Character 1."\n\n**CHARACTER 1**: "Welcome back, Character 2!" They give a friendly wave.`
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
