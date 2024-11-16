@@ -174,7 +174,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildHistory(currentNode: ChatNode) {
-        let historyString = `**${currentNode.speakerId}**\n${currentNode.message}`;
+        let historyString = `**${currentNode.speakerId}**: ${currentNode.message}`;
         let depth = 0;
         while(currentNode.parentId && this.chatNodes[currentNode.parentId] && depth < 40) {
             currentNode = this.chatNodes[currentNode.parentId];
@@ -256,6 +256,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             result.forEach(node => this.chatNodes[node.id] = node);
             let selectedNode = result[0];
             if (this.currentNode) {
+                selectedNode.parentId = this.currentNode.id;
                 this.currentNode.childIds.push(selectedNode.id);
                 this.currentNode.selectedChildId = selectedNode.id;
             }
