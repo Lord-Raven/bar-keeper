@@ -173,13 +173,25 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             buildSection('Present Patrons', `${Object.values(this.patrons).filter(patron => presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}`);
     }
 
+    buildHistory(currentNode: ChatNode) {
+        let historyString = `**${currentNode.speakerId}**\n${currentNode.message}`;
+        let depth = 0;
+        while(currentNode.parentId && this.chatNodes[currentNode.parentId] && depth < 40) {
+            currentNode = this.chatNodes[currentNode.parentId];
+            historyString = `**${currentNode.speakerId}**: ${currentNode.message}\n\n${historyString}`;
+            depth++;
+        }
+
+        return historyString;
+    }
+
     buildStoryPrompt(currentInstruction: string): string {
         return buildSection('Setting', this.barDescription ?? '') +
             buildSection('User', `${this.player.name} is a bartender here. ${this.player.chatProfile}`) +
             this.buildPatronDescriptions() +
             this.buildBeverageDescriptions() +
             buildSection('Sample Response', sampleScript) +
-            buildSection('Log', '{{messages}}') +
+            (this.currentNode ? buildSection('Log', this.buildHistory(this.currentNode)) : '') +
             buildSection('Instruction Override', `${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}`) +
             buildSection('Standard Instruction', '{{suffix}}');
     }
