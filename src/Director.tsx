@@ -81,10 +81,10 @@ export class Director {
                 break;
             case Direction.Outcome:
             case Direction.PatronBanter:
-                newDirection = Math.random() > 0.3 ? Direction.PatronProblem : (Math.random() > 0.3 ? Direction.IntroducePatron : (Math.random() > 0.5 ? Direction.Choice : Direction.PatronDrinkRequest));
+                newDirection = Math.random() > 0.3 ? Direction.PatronProblem : (Math.random() > 0.3 ? Direction.IntroducePatron : (Math.random() > 1 ? Direction.Choice : Direction.PatronDrinkRequest));
                 break;
             case Direction.PatronProblem:
-                newDirection = Math.random() > 0.5 ? Direction.Choice : (Math.random() > 0.5 ? Direction.PatronBanter : Direction.PatronDrinkRequest);
+                newDirection = Math.random() > 1 ? Direction.Choice : (Math.random() > 0.5 ? Direction.PatronBanter : Direction.PatronDrinkRequest);
                 break;
             case Direction.PatronDrinkRequest:
                 newDirection = Math.random() > 0.33 ? Direction.PatronBanter : (Math.random() > 0.5 ? Direction.IntroducePatron : Direction.PatronLeaves);
