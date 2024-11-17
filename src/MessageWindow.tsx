@@ -52,7 +52,7 @@ function MessageWindup({message, options}: MessageWindupProps) {
 interface MessageWindowProps {
     advance:  () => void;
     chatNode: () => ChatNode|null;
-    resetLoad: () => boolean;
+    resetLoad: boolean;
     stage: () => Stage;
 }
 
@@ -72,7 +72,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, reset
     useEffect(() => {
         setDoneWinding(false);
         setAdvancing(false);
-    }, [resetLoad(), chatNode()]);
+    }, [resetLoad, chatNode()]);
 
     return (
         <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center'}}>
