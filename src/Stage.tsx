@@ -257,7 +257,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.isGenerating = true;
         console.log('processNextResponse');
         if (!this.requestedNodes) {
-            // Generally, this only happens during a drink selection choice, where generation can't fire earlier than the final message.
+            console.log('No current request in progress--try again');
             this.requestedNodes = this.generateMessageContent('');
         }
         let result = await this.requestedNodes;
