@@ -361,6 +361,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             advance={() => {void this.advanceMessage()}}
                             chatNode={() => {return this.currentNode}}
                             resetLoad={this.resetLoadIndicator}
+                            selectedBeverage={() => {return this.lastBeverageServed}}
                             stage={() => {return this}}
                         />
                 )}

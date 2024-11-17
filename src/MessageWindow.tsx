@@ -53,10 +53,11 @@ interface MessageWindowProps {
     advance:  () => void;
     chatNode: () => ChatNode|null;
     resetLoad: boolean;
+    selectedBeverage: () => string;
     stage: () => Stage;
 }
 
-export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, resetLoad, stage }) => {
+export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, resetLoad, selectedBeverage, stage }) => {
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
     const proceed = () => {
@@ -72,7 +73,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, reset
     useEffect(() => {
         setDoneWinding(false);
         setAdvancing(false);
-    }, [resetLoad, chatNode()]);
+    }, [resetLoad, selectedBeverage(), chatNode()]);
 
     return (
         <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center'}}>
@@ -102,7 +103,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, reset
                         {advancing ? (
                                 <CircularProgress style={{float: 'right'}}/>
                             ) : (stage().isBeverageDecision() ? (
-                                stage().lastBeverageServed.length == 0 ? (
+                                selectedBeverage().length == 0 ? (
                                         <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
                                             <Cancel/>
                                         </Icon>
@@ -128,15 +129,15 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, reset
                         if (patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever')) {
                             return <img src={stage().patrons[patronId].imageUrl} style={{
                                 position: 'absolute', bottom: '-16vh', 
-                                left: ((index % 2) == 0) ? `${index * 30}vw` : 'auto', 
-                                right: ((index % 2) == 1) ? `${(index - 1) * 30}vw` : 'auto',
+                                left: ((index % 2) == 0) ? `${40 - index * 30}vw` : 'auto',
+                                right: ((index % 2) == 1) ? `${40 - (index - 1) * 30}vw` : 'auto',
                                 zIndex: (index < 2 ? 7 : 6),
                                 height: '77vh', width: 'auto'}}/>;
                         } else {
                             return <img src={stage().patrons[patronId].imageUrl} style={{
                                 position: 'absolute', bottom: '-16vh', 
-                                left: ((index % 2) == 0) ? `${index * 30 + 1}vw` : 'auto', 
-                                right: ((index % 2) == 1) ? `${(index - 1) * 30 - 1}vw` : 'auto',
+                                left: ((index % 2) == 0) ? `${40 - index * 30 + 1}vw` : 'auto',
+                                right: ((index % 2) == 1) ? `${40 - (index - 1) * 30 - 1}vw` : 'auto',
                                 zIndex: (index < 2 ? 5 : 4),
                                 filter: 'brightness(80%)',
                                 height: '75vh', width: 'auto'}}/>;
