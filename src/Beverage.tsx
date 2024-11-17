@@ -19,10 +19,10 @@ export class Beverage {
         return this.imageUrl !== '' ? (
                 <Box component="section" sx={{
                         p: 1,
-                        border: selected() ? '2px solid yellow' : '',
+                        border: selected() ? '3px solid yellow' : '',
                         boxSizing: 'border-box',
-                        backgroundColor: '#00000088',
-                        '&:hover': {backgroundColor: '#000000BB'}
+                        backgroundColor: '#00000000',
+                        '&:hover': {backgroundColor: '#FFFFFF11'}
                 }} onClick={handleClick}>
                     <ImageWithPopup
                         src={this.imageUrl}

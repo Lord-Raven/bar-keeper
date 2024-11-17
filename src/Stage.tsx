@@ -278,9 +278,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
         this.requestedNodes = null;
         this.isGenerating = false;
-        let backupNode = this.currentNode;
-        this.currentNode = null;
-        this.currentNode = backupNode;
         console.log('Reset loading variables...');
     }
 
@@ -356,6 +353,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         <MessageWindow 
                             advance={() => {void this.advanceMessage()}}
                             chatNode={() => {return this.currentNode}}
+                            generating={() => {return this.isGenerating}}
                             stage={() => {return this}}
                         />
                 )}
