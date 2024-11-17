@@ -214,8 +214,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             await this.processNextResponse();
         } else {
             console.log('Child already exists; go there.');
-            this.currentNode = this.chatNodes[this.currentNode.childIds[0]];
+            this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]]);
         }
+    }
+
+    setCurrentNode(newNode: ChatNode) {
+        this.currentNode = newNode;
+        console.log(`New Node's direction: ${this.currentNode.direction}`);
     }
 
     async advanceMessageChoice(chatNode: ChatNode) {
@@ -271,7 +276,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 this.currentNode.selectedChildId = selectedNode.id;
             }
             this.lastBeverageServed = '';
-            this.currentNode = selectedNode;
+            this.setCurrentNode(selectedNode);
             await this.updateChatState();
         } else {
             console.log('Failed to generate new content; try again.');
@@ -303,6 +308,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     setLastBeverageServed(beverageName: string) {
         console.log('setLastBeverageServed:' + beverageName);
         this.lastBeverageServed = beverageName;
+        this.resetLoadIndicator = !this.resetLoadIndicator;
     }
 
     render(): ReactElement {

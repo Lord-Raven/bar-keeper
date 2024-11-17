@@ -57,8 +57,6 @@ export function createNodes(script: string, parent: ChatNode | null, commonProps
 
 function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: ChatNode[]): ChatNode {
     if (parentNode != null) {
-        console.log(newNode);
-        console.log(`pushing a child ID to parent:${parentNode.id} -> ${newNode.id}`);
         parentNode.childIds.push(newNode.id);
     }
     nodes.push(newNode);
