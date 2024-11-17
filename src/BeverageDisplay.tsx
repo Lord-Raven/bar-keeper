@@ -10,8 +10,10 @@ export const BeverageDisplay: React.FC<BeverageDisplayProps> = ({ stage }) => {
     const [selectedBeverage, setSelectedBeverage] = useState<string>(stage().lastBeverageServed);
 
     const handleBeverageClick = (name: string) => {
-        setSelectedBeverage(name);
-        stage().setLastBeverageServed(name);
+        if (stage().isBeverageDecision()) {
+            setSelectedBeverage(name);
+            stage().setLastBeverageServed(name);
+        }
     };
 
     return (
