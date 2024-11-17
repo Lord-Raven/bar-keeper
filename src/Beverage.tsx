@@ -13,13 +13,13 @@ export class Beverage {
         this.imageUrl = imageUrl;
     }
 
-    render(selected: boolean, onClick: (id: string) => void): ReactElement {
+    render(selected: () => boolean, onClick: (id: string) => void): ReactElement {
         const handleClick = () => {console.log('handleClick');onClick(this.name);};
 
         return this.imageUrl !== '' ? (
                 <Box component="section" sx={{
                         p: 1,
-                        border: selected ? '2px yellow' : '',
+                        border: selected() ? '2px solid yellow' : '',
                         boxSizing: 'border-box',
                         backgroundColor: '#00000088',
                         '&:hover': {backgroundColor: '#000000BB'}

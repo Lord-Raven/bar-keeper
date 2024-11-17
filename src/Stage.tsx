@@ -293,6 +293,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     setLastBeverageServed(beverageName: string) {
+        console.log('setLastBeverageServed:' + beverageName);
         this.lastBeverageServed = beverageName;
     }
 
@@ -366,7 +367,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         }}>
                             <div
                                 style={{height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
-                                {this.beverages.map(beverage => beverage.render(beverage.name == this.lastBeverageServed, (id) => {this.setLastBeverageServed(id)}))}
+                                {this.beverages.map(beverage => beverage.render(() => {return beverage.name == this.lastBeverageServed}, (id) => {this.setLastBeverageServed(id)}))}
                             </div>
                         </Box>
                     </div>
