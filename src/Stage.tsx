@@ -11,7 +11,7 @@ import {
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
-import {Box, createTheme, LinearProgress, ThemeProvider, Typography, IconButton} from "@mui/material";
+import {createTheme, LinearProgress, ThemeProvider, Typography, IconButton} from "@mui/material";
 import ReplayIcon from "@mui/icons-material/Replay";
 import {Direction, Director, sampleScript} from "./Director";
 import {MessageWindow} from "./MessageWindow"
@@ -228,15 +228,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
     }
 
-    async advanceMessageChoice(chatNode: ChatNode) {
-        console.log('advanceMessageChoice');
-        if (!this.requestedNodes) {
-            console.log('Kick off generation');
-            this.requestedNodes = this.generateMessageContent(`${this.player.name} has selected the following action: ${chatNode.message}`);
-        }
-        await this.processNextResponse();
-    }
-
     async generateMessageContent(additionalContext: string): Promise<ChatNode[]|null> {
         console.log('generateNodes');
         let nodeProps: any = this.director.determineNextNodeProps(this, this.currentNode);
@@ -244,12 +235,15 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let retries = 3;
         while (retries-- > 0) {
             try {
+                console.log('make a textGen request');
                 let textGen = await this.generator.textGen({
                     prompt: this.buildStoryPrompt(`${this.director.getPromptInstruction(this, nodeProps)}\n${additionalContext}`),
                     max_tokens: 400,
                     min_tokens: 50,
                     include_history: false
                 });
+                console.log('made a textGen request');
+                console.log(textGen);
                 if (textGen?.result?.length) {
                     const newNodes = createNodes(textGen.result, this.currentNode, nodeProps);
                     console.log('Generated nodes');
@@ -259,7 +253,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 console.error("Failed to generate message: " + error);
             }
         }
-        console.error('Failed to generate next slice.');
+        console.error('Failed to generate next node.');
         return Promise.resolve(null);
     }
 
