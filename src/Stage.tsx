@@ -203,7 +203,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async advanceMessage() {
         console.log('advanceMessage');
-        if (!this.requestedNodes) {
+        if (!this.requestedNodes && (!this.currentNode || this.currentNode.direction != Direction.PatronDrinkRequest)) {
             console.log('Kick off generation');
             this.requestedNodes = this.generateMessageContent('');
         }
@@ -255,6 +255,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     async processNextResponse() {
         this.isGenerating = true;
         console.log('processNextResponse');
+        if (!this.requestedNodes) {
+            // Generally, this only happens during a drink selection choice, where generation can't fire earlier than the final message.
+            this.requestedNodes = this.generateMessageContent('');
+        }
         let result = await this.requestedNodes;
         console.log(result);
         if (result) {
