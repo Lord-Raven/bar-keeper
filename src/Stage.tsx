@@ -220,7 +220,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     setCurrentNode(newNode: ChatNode) {
         this.currentNode = newNode;
-        console.log(`New Node's direction: ${this.currentNode.direction}`);
+        if (this.currentNode) {
+            console.log(`New Node's direction: ${this.currentNode?.direction}`);
+            console.log(this.currentNode);
+        } else {
+            console.log('No node set');
+        }
     }
 
     async advanceMessageChoice(chatNode: ChatNode) {
