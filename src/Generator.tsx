@@ -22,14 +22,14 @@ export function buildDistillationPrompt(description: string): string {
             `"ART" should identify a target artist name, art style, art genre, medium, palette, stroke, linework, or other style choices that suit or align with the setting and themes of the FLAVOR TEXT; this will be used to generate appropriate images later.\n` +
             `Define these four fields and promptly end your response.\n`) +
         buildSection('Example Responses', 
-            `"SOURCE: H.P. Lovecraft\nSETTING: A metaphysical 1930s Innsmouth, Massachusetts\nTHEMES: Mind control, dementia, gore, mysticism, Old Ones\nART: noir, dark, gritty, hyperrealism, wet"\n` +
-            `"SOURCE: Robert E. Howard\nSETTING: Cimeria, a dark fantasy wasteland\nTHEMES: barbarians, hedonism, violence, domination\nART: dark fantasy, oil painting, Frank Frazetta, hypersexualized"\n` +
-            `"SOURCE: Original\nSETTING: Quirky, fantastic modern Japanese countryside\nTHEMES: magical, fantasy modern, non-violence, exaggerated, silly, funny\nART: Studio Ghibli, bright, anime, vibrant, sparkly"\n` +
-            `"SOURCE: Ridley Scott's Alien\nSETTING: Hard sci-fi, isolated space station\nTHEMES: Slow burn, danger, alien infestation, psychological horror\nART: Creepy, greebling, gross, organic, hyperrealism, H. R. Geiger"\n` +
-            `"SOURCE: Original\nSETTING: Mid-2000s college fall semester\nTHEMES: Friendships, lust, betrayal, homework, class rank\nART: watercolor, ink, soft tones, paper texture, pastels\n` +
-            `"SOURCE: Mass Effect\nSETTING: Far future, the Citadel\nTHEMES: Space opera, friendship, trying times, relationships, impending apocalypse, extinction-level event\nART: Clean, crisp, 3D render, CGI, vibrant, pristine, lens flares"\n` +
-            `"SOURCE: Original\nSETTING: Underground, 80s biker bar\nTHEMES: turf war, drug running, machismo, brutality\nART: Comic book, neon, chrome, bright colors, bulging muscles, heavy inks"\n` +
-            `"SOURCE: Original\nSETTING: 70s disco scene, Los Angeles\nTHEMES: Free love, vampires, lycanthropes, disco, underworld, clubs\nART: Psychedelic, high-contrast, hyperrealism, exaggerated character proportions"\n`) +
+            `"SOURCE: H.P. Lovecraft\nSETTING: A mysterious and eldritch 1930s Innsmouth, Massachusetts\nTHEMES: Mind control, insanity, gore, mysticism, body horror, Old Ones\nART: noir, high contrast, overly dark, gritty, hyperrealism, heavy shadows, 1930s fashion, wet"\n` +
+            `"SOURCE: Robert E. Howard's Conan the Barbarian\nSETTING: Cimmeria, a dark fantasy, pre-Medieval wasteland rife with hardship, bloodlust, and sex\nTHEMES: barbarians, hedonism, violence, domination, rape, pillaging\nART: dark fantasy, oil painting, visible brush strokes, vibrant colors, stark contrast, in the style of Frank Frazetta, hypersexualized, muscular characters, busty women"\n` +
+            `"SOURCE: Original\nSETTING: Quirky, fantastic re-imagining of modern Japanese countryside\nTHEMES: magical, fantasy modern, non-violence, exaggerated, silly, funny, friendship with unlikely creatures\nART: Studio Ghibli, bright, cheerful, anime, vibrant, sparkly"\n` +
+            `"SOURCE: Ridley Scott's Alien\nSETTING: Hard sci-fi, isolated space station where danger lurks around every corner\nTHEMES: Slow burn, danger, alien infestation, psychological terror, body horror\nART: Creepy, greebling, gross, hard science, realistic, organic, hyperrealism, in the style of H. R. Geiger"\n` +
+            `"SOURCE: Original\nSETTING: Mid-2000s college fall semester, Pacific Northwestern campus\nTHEMES: Friendships, lust, betrayal, homework, cheating, class rank, campus clubs\nART: splotchy watercolor, inks, soft tones, paper texture, pastel colors, ultrafine linework\n` +
+            `"SOURCE: Mass Effect\nSETTING: Far future, the Citadel of the Mass Effect universe\nTHEMES: Space opera, friendship, trying times, relationships, impending apocalypse, Reaper invasion, extinction-level event\nART: Clean, crisp, 3D render, CGI, vibrant, pristine, cool tones, over-produced lens flares"\n` +
+            `"SOURCE: Original\nSETTING: Underground 80s Mid-West biker bar\nTHEMES: turf war, drug running, machismo, brutality, sex and drugs\nART: Comic book style illustrations, neon, chrome, bright colors, bulging muscles, heavy inks for contrast"\n` +
+            `"SOURCE: Original\nSETTING: 70s disco scene, Los Angeles\nTHEMES: Free love, vampires, lycanthropes, disco, secret fantasy underworld, clubs\nART: Psychedelic, lurid colors, hyperrealism, interesting and exaggerated character proportions"\n`) +
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 
@@ -51,13 +51,7 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
         buildSection('Setting', stage.settingSummary ?? '') +
         buildSection('Themes', stage.themeSummary ?? '') +
         buildSection('Location', stage.barDescription ?? '') +
-        buildSection('Established Beverages', stage.buildBeverageDescriptions()) +
-        buildSection('Priority Instruction', 
-            `You are doing prep work for a roleplaying narrative. Instead of narrating, this preparatory response needs to list out several types of alcohol that the LOCATION might serve, ` +
-            `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
-            `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, each formatted into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
-            `Use the EXAMPLE RESPONSES for formatting reference, but be original and creative with each of your entries while adhering strictly to the data format.`) +
-        buildSection('Example Responses', 
+        buildSection('Example Responses',
             `NAME: Cherry Rotgut DESCRIPTION: A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
             `NAME: Tritium Delight DESCRIPTION: An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
             `NAME: Rosewood Ale DESCRIPTION: This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n` +
@@ -66,7 +60,14 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `NAME: Classic Grog DESCRIPTION: Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n` +
             `NAME: Synth Mead DESCRIPTION: Bees died out long ago, but hypervikings still live for the sweet taste of synthetic honey wine.\n` +
             `NAME: Super Hazy Imperial Double IPA DESCRIPTION: More IBUs than anyone's ever cared for. The bottle's plastered with cute bullshit about the local microbrewery that produced it.\n` +
-            `NAME: USB Port DESCRIPTION: Alcohol for wannabe techbros. Not legally a 'port' because of international protections surrounding the term.\n`) +
+            `NAME: USB Port DESCRIPTION: Alcohol for wannabe techbros. Not legally a 'port' because of international protections surrounding the term.\n` +
+            `NAME: Swamp Brew DESCRIPTION: This greenish-brown ale is served in makeshift cups fashioned from skulls, with a frothy head that never settles and a flavor profile dominated by algae and muddy undertones.\n`) +
+        stage.buildBeverageDescriptions() +
+        buildSection('Priority Instruction', 
+            `You are doing prep work for a roleplaying narrative. Instead of narrating, this preparatory response needs to list out several types of alcohol that the LOCATION might serve, ` +
+            `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
+            `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, each formatted into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
+            `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your entries while eschewing narration`) +
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 
@@ -150,8 +151,8 @@ async function generateDistillation(stage: Stage) {
     while ((stage.settingSummary == '' || stage.themeSummary == '' || stage.artSummary == '') && tries > 0) {
         let textResponse = await stage.generator.textGen({
             prompt: buildDistillationPrompt(stage.characterForGeneration.personality + ' ' + stage.characterForGeneration.description),
-            max_tokens: 200,
-            min_tokens: 75
+            max_tokens: 150,
+            min_tokens: 50
         });
         console.log(`Distillation: ${textResponse?.result}`);
         
