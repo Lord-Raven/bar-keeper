@@ -14,7 +14,7 @@ export class Beverage {
     }
 
     render(selected: boolean, onClick: (id: string) => void): ReactElement {
-        const handleClick = () => {onClick(this.name);};
+        const handleClick = () => {console.log('handleClick');onClick(this.name);};
 
         return this.imageUrl !== '' ? (
                 <Box component="section" sx={{
