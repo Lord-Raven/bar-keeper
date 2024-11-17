@@ -19,13 +19,6 @@ export class Beverage {
         return this.imageUrl !== '' ? (
                 <Box component="section" sx={{
                         p: 1,
-                        position: 'absolute',
-                        height: '98%',
-                        width: '100%',
-                        left: '0%',
-                        bottom: '1%',
-                        verticalAlign: 'middle',
-                        alignContent: 'center',
                         border: selected ? '2px yellow' : '',
                         boxSizing: 'border-box',
                         backgroundColor: '#00000088',
