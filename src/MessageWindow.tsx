@@ -1,8 +1,7 @@
 import {Pace, WindupChildren} from "windups";
-import {Box, Button, CircularProgress, Icon, IconButton, Typography} from "@mui/material";
+import {Box, CircularProgress, Icon, IconButton, Typography} from "@mui/material";
 import {FC, useEffect, useState} from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
-import { Direction } from "./Director";
 import { Stage } from "./Stage";
 import {ChatNode} from "./ChatNode";
 import {Cancel, CheckCircle} from "@mui/icons-material";
@@ -71,11 +70,12 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, gener
     }
 
     useEffect(() => {
+        console.log('useEffect:' + generating());
         if (!generating()) {
             setDoneWinding(false);
             setAdvancing(false);
         }
-    }, [generating, chatNode()]);
+    }, [generating(), chatNode()]);
 
     return (
         <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center'}}>

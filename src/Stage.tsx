@@ -278,7 +278,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
         this.requestedNodes = null;
         this.isGenerating = false;
-        console.log('Reset loading variables...');
     }
 
     async makeImage(imageRequest: Object, defaultUrl: string): Promise<string> {
