@@ -53,10 +53,10 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
         buildSection('Location', stage.barDescription ?? '') +
         buildSection('Established Beverages', stage.buildBeverageDescriptions()) +
         buildSection('Priority Instruction', 
-            `You are doing prep work for a roleplaying narrative. Instead of narrating, you must use this preparatory response to list out several types of alcohol that the LOCATION might serve, ` +
+            `You are doing prep work for a roleplaying narrative. Instead of narrating, this preparatory response needs to list out several types of alcohol that the LOCATION might serve, ` +
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
-            `Output several varied and interesting beverages that suit the SETTING and LOCATION, each formatted into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
-            `Use the EXAMPLE RESPONSES for formatting reference, but be original with each of your entries. `) +
+            `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, each formatted into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
+            `Use the EXAMPLE RESPONSES for formatting reference, but be original and creative with each of your entries while adhering strictly to the data format.`) +
         buildSection('Example Responses', 
             `NAME: Cherry Rotgut DESCRIPTION: A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
             `NAME: Tritium Delight DESCRIPTION: An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
@@ -99,7 +99,6 @@ export async function regenerateBeverages(stage: Stage) {
 
 export async function generateBeverages(stage: Stage) {
     stage.beverages = [];
-    let tries = 3;
     while (stage.beverages.length < 5) {
         let alcoholResponse = await stage.generator.textGen({
             prompt: buildAlcoholDescriptionsPrompt(stage),
@@ -151,8 +150,8 @@ async function generateDistillation(stage: Stage) {
     while ((stage.settingSummary == '' || stage.themeSummary == '' || stage.artSummary == '') && tries > 0) {
         let textResponse = await stage.generator.textGen({
             prompt: buildDistillationPrompt(stage.characterForGeneration.personality + ' ' + stage.characterForGeneration.description),
-            max_tokens: 120,
-            min_tokens: 50
+            max_tokens: 200,
+            min_tokens: 100
         });
         console.log(`Distillation: ${textResponse?.result}`);
         

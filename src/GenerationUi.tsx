@@ -6,5 +6,9 @@ interface MessageWindowProps {
 }
 
 export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
+
+
+
+
     return <div></div>
 }

@@ -19,6 +19,7 @@ export class Beverage {
         return this.imageUrl !== '' ? (
                 <Box component="section" sx={{
                         p: 1,
+                        cornerRadius: '5',
                         border: selected() ? '3px solid yellow' : '',
                         boxSizing: 'border-box',
                         backgroundColor: '#00000000',
