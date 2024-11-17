@@ -278,6 +278,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
         this.requestedNodes = null;
         this.isGenerating = false;
+        // Swap this flag to prompt the message window to refresh.
+        this.resetLoadIndicator = !this.resetLoadIndicator;
     }
 
     async makeImage(imageRequest: Object, defaultUrl: string): Promise<string> {
@@ -352,7 +354,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         <MessageWindow 
                             advance={() => {void this.advanceMessage()}}
                             chatNode={() => {return this.currentNode}}
-                            generating={() => {return this.isGenerating}}
+                            resetLoad={() => {return this.resetLoadIndicator}}
                             stage={() => {return this}}
                         />
                 )}
