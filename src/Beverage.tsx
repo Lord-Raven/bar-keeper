@@ -1,5 +1,6 @@
 import {ReactElement} from "react";
 import ImageWithPopup from "./ImageWithPopup";
+import {Box} from "@mui/material";
 
 export class Beverage {
     name: string;
@@ -12,15 +13,32 @@ export class Beverage {
         this.imageUrl = imageUrl;
     }
 
-    render(): ReactElement {
+    render(selected: boolean, onClick: (id: string) => void): ReactElement {
+        const handleClick = () => {onClick(this.name);};
+
         return this.imageUrl !== '' ? (
-                <ImageWithPopup
-                    src={this.imageUrl}
-                    alt={`${this.name}`}
-                    popupHeader={this.name}
-                    popupBody={this.description}
-                    popupSrc={this.imageUrl}
-                />) :
+                <Box component="section" sx={{
+                        p: 1,
+                        position: 'absolute',
+                        height: '98%',
+                        width: '100%',
+                        left: '0%',
+                        bottom: '1%',
+                        verticalAlign: 'middle',
+                        alignContent: 'center',
+                        border: selected ? '2px yellow' : '',
+                        boxSizing: 'border-box',
+                        backgroundColor: '#00000088',
+                        '&:hover': {backgroundColor: '#000000BB'}
+                }} onClick={handleClick}>
+                    <ImageWithPopup
+                        src={this.imageUrl}
+                        alt={`${this.name}`}
+                        popupHeader={this.name}
+                        popupBody={this.description}
+                        popupSrc={this.imageUrl}
+                    />
+                </Box>) :
                 <></>;
     }
 }

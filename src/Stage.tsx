@@ -13,7 +13,7 @@ import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
 import {Box, createTheme, LinearProgress, ThemeProvider, Typography, IconButton} from "@mui/material";
 import ReplayIcon from "@mui/icons-material/Replay";
-import {Director, sampleScript} from "./Director";
+import {Direction, Director, sampleScript} from "./Director";
 import {MessageWindow} from "./MessageWindow"
 import { AccountCircle } from "@mui/icons-material";
 import { register } from "register-service-worker";
@@ -49,6 +49,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     loadingDescription: string|undefined;
     patrons: {[key: string]: Patron};
     chatNodes: {[key: string]: ChatNode};
+    lastBeverageServed: string;
 
     // Not saved:
     currentNode: ChatNode|null;
@@ -94,6 +95,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.readChatState(chatState);
         this.director = new Director();
         this.loadingProgress = 50;
+        this.lastBeverageServed = '';
 
         console.log('Config loaded:');
         console.log(config);
@@ -130,6 +132,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             barImageUrl: this.barImageUrl,
             entranceSoundUrl: this.entranceSoundUrl,
             beverages: this.beverages,
+            lastBeverageServed: this.lastBeverageServed,
             chatNodes: this.chatNodes,
             currentMessageId: this.currentNode ? this.currentNode.id : null,
             patrons: this.patrons
@@ -146,6 +149,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.barImageUrl = chatState.barImageUrl;
             this.entranceSoundUrl = chatState.entranceSoundUrl;
             this.beverages = (chatState.beverages ?? []).map((beverage: { name: string, description: string, imageUrl: string }) => new Beverage(beverage.name, beverage.description, beverage.imageUrl));
+            this.lastBeverageServed = chatState.lastBeverageServed ?? '';
             this.chatNodes = chatState.chatNodes ?? {};
             this.currentNode = chatState.currentMessageId && this.chatNodes[chatState.currentMessageId] ? this.chatNodes[chatState.currentMessageId] : null;
             this.patrons = chatState.patrons ?? {};
@@ -260,6 +264,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 this.currentNode.childIds.push(selectedNode.id);
                 this.currentNode.selectedChildId = selectedNode.id;
             }
+            this.lastBeverageServed = '';
             this.currentNode = selectedNode;
             await this.updateChatState();
         } else {
@@ -281,6 +286,15 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return !this.disableContentGeneration ? (await this.generator.makeSound(foleyRequest))?.url ?? defaultUrl : defaultUrl;
     }
 
+    isBeverageDecision() {
+        return this.currentNode &&
+            this.currentNode.direction == Direction.PatronDrinkRequest &&
+            this.currentNode.childIds.filter(id => this.chatNodes[id] && this.chatNodes[id].direction == Direction.PatronDrinkRequest).length == 0;
+    }
+
+    setLastBeverageServed(beverageName: string) {
+        this.lastBeverageServed = beverageName;
+    }
 
     render(): ReactElement {
         return <div style={{
@@ -352,7 +366,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         }}>
                             <div
                                 style={{height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
-                                {this.beverages.map(beverage => beverage.render())}
+                                {this.beverages.map(beverage => beverage.render(beverage.name == this.lastBeverageServed, (id) => {this.setLastBeverageServed(id)}))}
                             </div>
                         </Box>
                     </div>

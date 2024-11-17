@@ -8,15 +8,15 @@ export enum Direction {
     PatronBanter = 'PatronBanter',
     PatronProblem = 'PatronProblem',
     PatronDrinkRequest = 'PatronDrinkRequest',
+    PatronDrinkOutcome = 'PatronDrinkOutcome',
     PatronLeaves = 'PatronLeaves',
-    Choice = 'Choice',
-    Outcome = 'Outcome'
 }
 
 interface InstructionInput {
     barDescription: string;
     playerName: string;
-    patronName: string
+    patronName: string;
+    beverageName: string;
 }
 
 const generalInstruction = 'Responses follow a simple stageplay style format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Refer to {{user}} in second-person.'
@@ -38,15 +38,13 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
     PatronDrinkRequest: input => `Continue the scene with some visual novel style development as ${input.patronName} asks the bartender, ${input.playerName}, for a drink. ` +
         `${input.patronName} will simply describe the flavor or style of drink they are in the mood for, rather than specifying the actual beverage they want--but their description should align with one of the bar's specialty beverages. ` +
         `Keep ${input.playerName} passive; the drink will be served in a future response. ${generalInstruction}`,
-    
+
+    PatronDrinkOutcome: input => `Continue the scene with some visual novel style development as ${input.patronName} accepts the drink ${input.playerName} has chosen: ${input.beverageName}. ` +
+        `Steer the scene to move in a positive or negative direction based on ${input.patronName}'s reaction to this beverage and how well it suits their tastes or situation. ${generalInstruction}`,
+
     PatronLeaves: input => `Continue the scene with some visual novel style development as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar. ` +
         `Honor their personal style and connections to other patrons or ${input.playerName}. ${generalInstruction}`,
     
-    Choice: input => `Rather than continuing the narrative, start this response by generating two or three distinct options for actions or dialog that ${input.playerName} could choose to pursue at this juncture. ` +
-        `Each option is a single-sentence description of the action or dialog that ${input.playerName} may choose. ` +
-        `Always use this example format: **OPTION 1**: Agree with your friend.\n\n**OPTION 2**: Refuse to help.\n\n**OPTION 3**: Ask what's in it for you.`,
-    
-    Outcome: input => `Continue the scene by depicting the course of action ${input.playerName} has chosen, following up with the reactions, consequences, and other outcomes. ${generalInstruction}`
 }
 
 export class Director {
@@ -57,7 +55,11 @@ export class Director {
         console.log(stage.patrons);
         console.log(`'${node.selectedPatronId}'`);
         console.log(`playerName: ${stage.player.name}\npatronName: ${node.selectedPatronId ? stage.patrons[node.selectedPatronId] : 'no selectedPatronId'}`);
-        return directionInstructions[node.direction ?? Direction.IntroduceBar]({barDescription: stage.barDescription ?? '', playerName: stage.player.name ?? '', patronName: node.selectedPatronId ? stage.patrons[node.selectedPatronId].name : ''});
+        return directionInstructions[node.direction ?? Direction.IntroduceBar]({
+            barDescription: stage.barDescription ?? '',
+            playerName: stage.player.name ?? '',
+            patronName: node.selectedPatronId ? stage.patrons[node.selectedPatronId].name : '',
+            beverageName: stage.lastBeverageServed ?? ''});
     }
 
     determineNextNodeProps(stage: Stage, currentNode: ChatNode|null): Partial<ChatNode> {
@@ -76,18 +78,15 @@ export class Director {
             case Direction.IntroducePatron:
                 newDirection = Math.random() > 0.5 ? Direction.PatronBanter : Direction.PatronProblem;
                 break;
-            case Direction.Choice:
-                newDirection = Direction.Outcome;
-                break;
-            case Direction.Outcome:
+            case Direction.PatronDrinkOutcome:
             case Direction.PatronBanter:
-                newDirection = Math.random() > 0.3 ? Direction.PatronProblem : (Math.random() > 0.3 ? Direction.IntroducePatron : (Math.random() > 1 ? Direction.Choice : Direction.PatronDrinkRequest));
+                newDirection = Math.random() > 0.3 ? Direction.PatronProblem : (Math.random() > 0.3 ? Direction.IntroducePatron : Direction.PatronDrinkRequest);
                 break;
             case Direction.PatronProblem:
-                newDirection = Math.random() > 1 ? Direction.Choice : (Math.random() > 0.5 ? Direction.PatronBanter : Direction.PatronDrinkRequest);
+                newDirection = Math.random() > 0.7 ? Direction.PatronBanter : Direction.PatronDrinkRequest;
                 break;
             case Direction.PatronDrinkRequest:
-                newDirection = Math.random() > 0.33 ? Direction.PatronBanter : (Math.random() > 0.5 ? Direction.IntroducePatron : Direction.PatronLeaves);
+                newDirection = Direction.PatronDrinkOutcome;
                 break;
             case Direction.PatronLeaves:
                 newDirection = Math.random() > 0.5 ? Direction.Lull : Direction.IntroducePatron;
@@ -98,43 +97,49 @@ export class Director {
         }
         let selectedPatronId = undefined;
         let newPresentPatronIds = [...(currentNode ? currentNode.presentPatronIds : [])];
-        switch (newDirection) {
-            case Direction.IntroducePatron:
-                // Create a patron or pull an existing one
-                if (newPresentPatronIds.length < Object.keys(stage.patrons).length) {
-                    const keys = Object.keys(stage.patrons).filter(key => !newPresentPatronIds.includes(key));
-                    selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
-                    newPresentPatronIds.push(selectedPatronId);
-                    console.log('Introduce ' + selectedPatronId);
-                } else {
-                    console.log('Was IntroducePatron, but no one new to introduce, so patron banter');
-                    newDirection = Direction.PatronBanter;
-                }
-                break;
-            case Direction.PatronLeaves:
-                // Select a patron to leave
-                if (newPresentPatronIds.length > 0) {
-                    selectedPatronId = newPresentPatronIds[Math.floor(Math.random() * newPresentPatronIds.length)];
-                    newPresentPatronIds.splice(newPresentPatronIds.indexOf(selectedPatronId), 1);
-                    console.log('depart ' + selectedPatronId);
-                } else {
-                    console.log('Was PatronLeaves, but no one is here, so Lull');
-                    newDirection = Direction.Lull;
-                }
-                break;
-            case Direction.PatronBanter:
-            case Direction.PatronProblem:
-            case Direction.PatronDrinkRequest:
-                if (newPresentPatronIds.length > 0) {
-                    selectedPatronId = newPresentPatronIds[Math.floor(Math.random() * newPresentPatronIds.length)];
-                } else {
-                    console.log('Was ' + newDirection + ' but no present patrons, so Lull');
-                    newDirection = Direction.Lull;
-                }
-                break;
-            default:
-                break;
+
+        if (newDirection == Direction.PatronDrinkOutcome) {
+            selectedPatronId = currentNode?.selectedPatronId;
+            if (!selectedPatronId || selectedPatronId.length == 0) {
+                console.log('Was ' + newDirection + ' but no previous patron for drink request, so PatronBanter');
+                newDirection = Direction.PatronBanter;
+                selectedPatronId = undefined;
+            }
         }
+
+        if ([Direction.PatronBanter, Direction.PatronProblem, Direction.PatronDrinkRequest].includes(newDirection)) {
+                if (newPresentPatronIds.length > 0) {
+                    selectedPatronId = newPresentPatronIds[Math.floor(Math.random() * newPresentPatronIds.length)];
+                } else {
+                    console.log('Was ' + newDirection + ' but no present patrons, so IntroducePatron');
+                    newDirection = Direction.Lull;
+                }
+        }
+
+        if (newDirection == Direction.IntroducePatron) {
+            // Create a patron or pull an existing one
+            if (newPresentPatronIds.length < Object.keys(stage.patrons).length) {
+                const keys = Object.keys(stage.patrons).filter(key => !newPresentPatronIds.includes(key));
+                selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
+                newPresentPatronIds.push(selectedPatronId);
+                console.log('Introduce ' + selectedPatronId);
+            } else {
+                console.log('Was IntroducePatron, but no one new to introduce, so patron banter');
+                newDirection = Direction.PatronBanter;
+            }
+        }
+
+        /*if (newDirection == Direction.PatronLeaves) {
+            // Select a patron to leave
+            if (newPresentPatronIds.length > 0) {
+                selectedPatronId = newPresentPatronIds[Math.floor(Math.random() * newPresentPatronIds.length)];
+                newPresentPatronIds.splice(newPresentPatronIds.indexOf(selectedPatronId), 1);
+                console.log('depart ' + selectedPatronId);
+            } else {
+                console.log('Was PatronLeaves, but no one is here, so Lull');
+                newDirection = Direction.Lull;
+            }
+        }*/
 
         return {
             direction: newDirection,

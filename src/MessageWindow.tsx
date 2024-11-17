@@ -1,10 +1,11 @@
 import {Pace, WindupChildren} from "windups";
-import {Box, Button, CircularProgress, IconButton, Typography} from "@mui/material";
+import {Box, Button, CircularProgress, Icon, IconButton, Typography} from "@mui/material";
 import {FC, useEffect, useState} from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
 import { Direction } from "./Director";
 import { Stage } from "./Stage";
 import {ChatNode} from "./ChatNode";
+import {Cancel, CheckCircle} from "@mui/icons-material";
 
 interface MessageWindupProps {
     message: string;
@@ -78,20 +79,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, stage
         setAdvancing(false);
     }, [chatNode()]);
 
-    /*
-                                    {chatNode()?.subSlices.map(subSlice => {
-                                    return (
-                                            <div style={{marginTop: '5px', marginBottom: '5px'}}>
-                                                <Button variant="outlined" disabled={advancing} onClick = {() => {proceedWith(subSlice)}}>
-                                                    <MessageWindup message={subSlice.body} options={{}} />
-                                                </Button>
-                                                <br/>
-                                            </div>
-                                        );
-                                })}
-                                <CircularProgress variant={advancing ? 'indeterminate' : 'determinate'} value={5} style={{float: 'right'}}/>
-     */
-
     return (
         <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center'}}>
             <Box sx={{
@@ -110,34 +97,35 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, stage
                 '&:hover': {backgroundColor: '#000000BB'}
             }}>
                 <div style = {{width: '100%'}}>
-                    {chatNode()?.direction === Direction.Choice ?
-                        (
-                            <div>
-
-                            </div>
-                        ) :
-                        (
-                            <div>
-                                <div>
-                                    <Typography variant="h6" color="#AAAAAA">{chatNode()?.speakerId ?? ''}</Typography>
-                                </div>
-                                <div>
-                                    <MessageWindup message={chatNode()?.message ?? ''} options={{onFinished: () => {setDoneWinding(true);}, skipped: doneWinding}} />
-                                </div>
-                                <div>
-                                    {advancing ? (
-                                            <CircularProgress style={{float: 'right'}}/>
-                                        ) : (
-                                            <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
+                    <div>
+                        <Typography variant="h6" color="#AAAAAA">{chatNode()?.speakerId ?? ''}</Typography>
+                    </div>
+                    <div>
+                        <MessageWindup message={chatNode()?.message ?? ''} options={{onFinished: () => {setDoneWinding(true);}, skipped: doneWinding}} />
+                    </div>
+                    <div>
+                        {advancing ? (
+                                <CircularProgress style={{float: 'right'}}/>
+                            ) : (stage().isBeverageDecision() ? (
+                                stage().lastBeverageServed.length == 0 ? (
+                                        <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
+                                            <Cancel/>
+                                        </Icon>
+                                    ) : (
+                                        <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
                                                     onClick={proceed}>
-                                                <ForwardIcon/>
-                                            </IconButton>
-                                        )
-                                    }
-                                </div>
-                            </div>
-                        )
-                    }
+                                            <CheckCircle/>
+                                        </IconButton>
+                                    )
+                                ) : (
+                                    <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
+                                            onClick={proceed}>
+                                        <ForwardIcon/>
+                                    </IconButton>
+                                )
+                            )
+                        }
+                    </div>
                 </div>
             </Box>
             {chatNode()?.presentPatronIds.map((patronId, index) => {

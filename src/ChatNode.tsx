@@ -51,9 +51,6 @@ export function createNodes(script: string, parent: ChatNode | null, commonProps
     if (currentSpeaker && currentDialogue.trim().length > 0) {
         currentNode = addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: (currentNode ? currentNode.id : null), ...commonProps}, currentNode, nodes);
     }
-    /*if (this.direction == Direction.Choice) {
-        this.subSlices = this.subSlices.filter(subSlice => subSlice.speakerId == 'OPTION');
-    }*/
 
     return nodes;
 }
