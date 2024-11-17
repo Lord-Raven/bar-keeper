@@ -151,7 +151,7 @@ async function generateDistillation(stage: Stage) {
         let textResponse = await stage.generator.textGen({
             prompt: buildDistillationPrompt(stage.characterForGeneration.personality + ' ' + stage.characterForGeneration.description),
             max_tokens: 200,
-            min_tokens: 100
+            min_tokens: 75
         });
         console.log(`Distillation: ${textResponse?.result}`);
         
