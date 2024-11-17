@@ -150,8 +150,8 @@ async function generateDistillation(stage: Stage) {
     while ((stage.settingSummary == '' || stage.themeSummary == '' || stage.artSummary == '') && tries > 0) {
         let textResponse = await stage.generator.textGen({
             prompt: buildDistillationPrompt(stage.characterForGeneration.personality + ' ' + stage.characterForGeneration.description),
-            max_tokens: 200,
-            min_tokens: 75
+            max_tokens: 150,
+            min_tokens: 50
         });
         console.log(`Distillation: ${textResponse?.result}`);
         
