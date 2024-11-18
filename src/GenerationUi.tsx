@@ -55,26 +55,28 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                 }}>
                     <Grid container rowSpacing={1} columnSpacing={4}>
                         <Grid container spacing={6}>
-                            <Grid container spacing={12}>
+                            <Grid container key='beverage-header' spacing={12}>
                                 <Typography variant="h6">Beverages</Typography>
                             </Grid>
                             {stage().beverages.map((beverage) => (
                                 <Grid container key={beverage.name} spacing={12}>
-                                    <Grid spacing={2}>
-                                        <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: '5%', height: '5%'}} />
-                                    </Grid>
-                                    <Grid spacing={8}>
-                                        <Typography variant="body2">{beverage.name}</Typography>
-                                    </Grid>
-                                    <Grid spacing={2}>
-                                        <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
-                                            <ReplayIcon/>
-                                        </IconButton>
-                                    </Grid>
+                                    <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: 'auto', height: '100%'}} />
+                                    <Typography variant="body2">{beverage.name}</Typography>
+                                    <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
+                                        <ReplayIcon/>
+                                    </IconButton>
                                 </Grid>
                             ))}
                         </Grid>
 
+                    </Grid>
+                </Box>
+            </Popover>
+        )}
+    </div>
+}
+
+/*
                         <Grid container spacing={6}>
                             <Grid container spacing={12}>
                                 <Typography variant="h6">Patrons</Typography>
@@ -82,7 +84,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                             {Object.values(stage().patrons).map((patron) => (
                                 <Grid container key={patron.name} spacing={12}>
                                     <Grid spacing={2}>
-                                        <Avatar alt={patron.name} src={patron.imageUrl} sx={{width: '5%', height: '5%'}} />
+                                        <Avatar alt={patron.name} src={patron.imageUrl} sx={{width: 'auto', height: '100%'}} />
                                     </Grid>
                                     <Grid spacing={8}>
                                         <Typography variant="body2">{patron.name}</Typography>
@@ -95,9 +97,4 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                                 </Grid>
                             ))}
                         </Grid>
-                    </Grid>
-                </Box>
-            </Popover>
-        )}
-    </div>
-}
+                        */
