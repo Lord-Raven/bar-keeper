@@ -15,9 +15,8 @@ import {createTheme, LinearProgress, ThemeProvider, Typography, IconButton} from
 import ReplayIcon from "@mui/icons-material/Replay";
 import {Direction, Director, sampleScript} from "./Director";
 import {MessageWindow} from "./MessageWindow"
-import { AccountCircle } from "@mui/icons-material";
 import { register } from "register-service-worker";
-import { buildSection, generate, generatePatronImage, regenerateBeverages } from "./Generator";
+import { buildSection, generate } from "./Generator";
 import {ChatNode, createNodes} from "./ChatNode";
 import {BeverageDisplay} from "./BeverageDisplay";
 import {GenerationUi} from "./GenerationUi";
@@ -34,13 +33,9 @@ type ChatStateType = any;
 // yarn install (if dependencies changed)
 // yarn dev --host --mode staging
 
-//const [generationUiOpen, setGenerationUiOpen] = useState<boolean>(false);
-
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     readonly disableContentGeneration: boolean = false;
-
-    generationUiOpen: boolean = false;
 
     // Chat State:
     barDescription: string|undefined;
@@ -313,6 +308,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     render(): ReactElement {
+        const [generationUiOpen, setGenerationUiOpen] = useState<boolean>(false);
+
+
         return <div style={{
             backgroundImage: `url(${this.barImageUrl})`,
             backgroundPosition: 'center',
@@ -333,10 +331,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             <ReplayIcon/>
                         </IconButton>
                         <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'}
-                                    onClick={() => {this.generationUiOpen = !this.generationUiOpen}}>
+                                    onClick={() => {setGenerationUiOpen(!generationUiOpen)}}>
                             <ReplayIcon/>
                         </IconButton>
-                        {this.generationUiOpen && (
+                        {generationUiOpen && (
                             <div>
                                 <GenerationUi stage={() => {return this}}/>
                             </div>
