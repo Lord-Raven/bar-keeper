@@ -55,11 +55,11 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                 }}>
                     <Grid container rowSpacing={1} columnSpacing={4}>
                         <Grid container spacing={6}>
-                            <Grid container key='beverage-header' spacing={12}>
+                            <Grid key='beverage-header' spacing={12}>
                                 <Typography variant="h6">Beverages</Typography>
                             </Grid>
                             {stage().beverages.map((beverage) => (
-                                <Grid container key={beverage.name} spacing={12}>
+                                <Grid key={beverage.name} spacing={12} sx={{height: '3vh'}}>
                                     <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: 'auto', height: '100%'}} />
                                     <Typography variant="body2">{beverage.name}</Typography>
                                     <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
