@@ -11,13 +11,11 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
     const [generationUiOpen, setGenerationUiOpen] = useState<boolean>(false);
 
 
-    return <span>
-        {!generationUiOpen && (
-            <IconButton style={{outline: 1}} color={'primary'}
-                        onClick={() => {setGenerationUiOpen(!generationUiOpen)}}>
-                <ReplayIcon/>
-            </IconButton>
-        )}
+    return <div>
+        <IconButton style={{outline: 1}} color={'primary'}
+                    onClick={() => {setGenerationUiOpen(!generationUiOpen)}}>
+            <ReplayIcon/>
+        </IconButton>
         {generationUiOpen && (
             <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center'}}>
                 <IconButton style={{outline: 1}} color={'primary'}
@@ -82,5 +80,5 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
 
             </div>
         )}
-    </span>
+    </div>
 }
