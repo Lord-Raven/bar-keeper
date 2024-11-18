@@ -2,6 +2,7 @@ import React, {FC, useState} from "react";
 import {Stage} from "./Stage";
 import {Avatar, Box, Grid, IconButton, Typography} from "@mui/material";
 import ReplayIcon from "@mui/icons-material/Replay";
+import Popover from "@mui/material/Popover";
 
 interface MessageWindowProps {
     stage: () => Stage;
@@ -9,8 +10,10 @@ interface MessageWindowProps {
 
 export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
     const [generationUiOpen, setGenerationUiOpen] = useState<boolean>(false);
+    const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
-    const toggleOpen = () => {
+    const toggleOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
         setGenerationUiOpen(!generationUiOpen);
     };
 
@@ -20,7 +23,23 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
             <ReplayIcon/>
         </IconButton>
         {generationUiOpen && (
-            <div style={{left: '1%', width: '98%'}}>
+            <Popover
+                id={`mouse-over-popover-generation-ui`}
+                sx={{
+                    pointerEvents: 'none'
+                }}
+                open={generationUiOpen}
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                disableRestoreFocus
+            >
                 <Box sx={{
                     p: 1,
                     left: '0%',
@@ -75,7 +94,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                     </Grid>
                 </Box>
 
-            </div>
+            </Popover>
         )}
     </div>
 }
