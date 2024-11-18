@@ -41,31 +41,17 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                 }}
                 disableRestoreFocus
             >
-                <Box sx={{
-                    p: 1,
-                    left: '0%',
-                    width: '100%',
-                    height: '100%',
-                    border: '1px dashed grey',
-                    backgroundColor: '#00000088',
-                    overflow: 'visible',
-                    zIndex: 20,
-                    boxSizing: 'border-box',
-                    '&:hover': {backgroundColor: '#000000BB'}
-                }}>
                     <Grid container spacing={1}>
                         <Grid key='beverage-header' size={12}>
                             <Typography variant="h6">Beverages</Typography>
                         </Grid>
                         {stage().beverages.map((beverage) => (
-                            <Grid container key={beverage.name} size={12} sx={{height: '5vh'}}>
-                                <Grid size={2}>
+                            <Grid container key={beverage.name} size={12} sx={{height: '6vh'}}>
+                                <Grid size={4}>
                                     <Avatar alt={beverage.name} src={beverage.imageUrl}/>
                                 </Grid>
                                 <Grid size={8}>
                                     <Typography variant="h5">{beverage.name}</Typography>
-                                </Grid>
-                                <Grid size={2}>
                                     <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
                                         <ReplayIcon/>
                                     </IconButton>
@@ -74,7 +60,6 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                         ))}
 
                     </Grid>
-                </Box>
             </Popover>
         )}
     </div>
