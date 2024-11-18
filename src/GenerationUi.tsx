@@ -1,6 +1,7 @@
 import React, {FC, useState} from "react";
 import {Stage} from "./Stage";
-import {Avatar, Box, Grid, IconButton, Typography} from "@mui/material";
+import {Avatar, Box, IconButton, Typography} from "@mui/material";
+import Grid from '@mui/material/Unstable_Grid2';
 import ReplayIcon from "@mui/icons-material/Replay";
 import Popover from "@mui/material/Popover";
 
@@ -52,48 +53,50 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                     boxSizing: 'border-box',
                     '&:hover': {backgroundColor: '#000000BB'}
                 }}>
-                    <Grid container spacing={2} direction="column">
-                        <Grid item>
-                            <Typography variant="h6">Beverages</Typography>
-                        </Grid>
-                        {stage().beverages.map((beverage) => (
-                            <Grid item key={beverage.name} container alignItems="center" spacing={1}>
-                                <Grid item>
-                                    <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: '5%', height: '5%'}} />
-                                </Grid>
-                                <Grid item>
-                                    <Typography variant="body2">{beverage.name}</Typography>
-                                </Grid>
-                                <Grid item>
-                                    <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
-                                        <ReplayIcon/>
-                                    </IconButton>
-                                </Grid>
+                    <Grid container rowSpacing={1} columnSpacing={4}>
+                        <Grid container spacing={6}>
+                            <Grid container spacing={12}>
+                                <Typography variant="h6">Beverages</Typography>
                             </Grid>
-                        ))}
-                    </Grid>
-                    <Grid container spacing={2} direction="column">
-                        <Grid item>
-                            <Typography variant="h6">Patrons</Typography>
+                            {stage().beverages.map((beverage) => (
+                                <Grid container key={beverage.name} spacing={12}>
+                                    <Grid spacing={2}>
+                                        <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: '5%', height: '5%'}} />
+                                    </Grid>
+                                    <Grid spacing={8}>
+                                        <Typography variant="body2">{beverage.name}</Typography>
+                                    </Grid>
+                                    <Grid spacing={2}>
+                                        <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
+                                            <ReplayIcon/>
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
+                            ))}
                         </Grid>
-                        {stage().beverages.map((beverage) => (
-                            <Grid item key={beverage.name} container alignItems="center" spacing={1}>
-                                <Grid item>
-                                    <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: '5%', height: '5%'}} />
-                                </Grid>
-                                <Grid item>
-                                    <Typography variant="body2">{beverage.name}</Typography>
-                                </Grid>
-                                <Grid item>
-                                    <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
-                                        <ReplayIcon/>
-                                    </IconButton>
-                                </Grid>
+
+                        <Grid container spacing={6}>
+                            <Grid container spacing={12}>
+                                <Typography variant="h6">Patrons</Typography>
                             </Grid>
-                        ))}
+                            {Object.values(stage().patrons).map((patron) => (
+                                <Grid container key={patron.name} spacing={12}>
+                                    <Grid spacing={2}>
+                                        <Avatar alt={patron.name} src={patron.imageUrl} sx={{width: '5%', height: '5%'}} />
+                                    </Grid>
+                                    <Grid spacing={8}>
+                                        <Typography variant="body2">{patron.name}</Typography>
+                                    </Grid>
+                                    <Grid spacing={2}>
+                                        <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
+                                            <ReplayIcon/>
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
+                            ))}
+                        </Grid>
                     </Grid>
                 </Box>
-
             </Popover>
         )}
     </div>
