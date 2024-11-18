@@ -17,8 +17,8 @@ export function buildDistillationPrompt(description: string): string {
             `The FLAVOR TEXT is merely inspirational material that you will use to establish a SOURCE, SETTING, THEMES, and ART style for upcoming narration and illustration. ` +
             `This initial response includes four specific and clearly defined fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
             `"SOURCE" should name the source material of FLAVOR TEXT, if any; leave this blank or 'Original' if FLAVOR TEXT is not derived from a known work.\n` +
-            `"SETTING" should briefly summarize the overarching location, vibe, or time period derived from the FLAVOR TEXT, including any key ways in which the setting deviates from the expectations for that setting.\n` +
-            `"THEMES" should list all of the prominent themes, concepts, or kinks from the FLAVOR TEXT.\n` +
+            `"SETTING" should briefly summarize the overarching location, vibe, or time period derived from the FLAVOR TEXT, including any key deviations from setting expectations.\n` +
+            `"THEMES" should list all of the prominent themes, concepts, quirks, or kinks from the FLAVOR TEXT.\n` +
             `"ART" should identify a target artist name, art style, art genre, medium, palette, stroke, linework, or other style choices that suit or align with the setting and themes of the FLAVOR TEXT; this will be used to generate appropriate images later.\n` +
             `Define these four fields and promptly end your response.\n`) +
         buildSection('Example Responses', 
@@ -28,8 +28,8 @@ export function buildDistillationPrompt(description: string): string {
             `"SOURCE: Ridley Scott's Alien\nSETTING: Hard sci-fi, isolated space station where danger lurks around every corner\nTHEMES: Slow burn, danger, alien infestation, psychological terror, body horror\nART: Creepy, greebling, gross, hard science, realistic, organic, alien, hyperrealism, in the style of H. R. Geiger"\n` +
             `"SOURCE: Original\nSETTING: Mid-2000s college fall semester, Pacific Northwestern campus\nTHEMES: Friendships, lust, betrayal, homework, cheating, class rank, campus clubs\nART: splotchy watercolor, inks, soft tones, paper texture, pastel colors, ultrafine linework\n` +
             `"SOURCE: Mass Effect\nSETTING: Far future, the Citadel of the Mass Effect universe\nTHEMES: Space opera, friendship, trying times, relationships, impending apocalypse, Reaper invasion, extinction-level event\nART: Clean, crisp, 3D render, CGI, vibrant, pristine, cool tones, over-produced lens flares"\n` +
-            `"SOURCE: Original\nSETTING: Underground 80s Mid-West biker bar\nTHEMES: turf war, drug running, machismo, brutality, sex and drugs\nART: Comic book style illustrations, neon, chrome, bright colors, bulging muscles, heavy inks for contrast"\n` +
-            `"SOURCE: Original\nSETTING: 70s disco scene, Los Angeles\nTHEMES: Free love, vampires, lycanthropes, disco, secret fantasy underworld, clubs\nART: Psychedelic, lurid colors, hyperrealism, interesting and exaggerated character proportions"\n`) +
+            `"SOURCE: Original\nSETTING: Underground 80s Mid-West biker bar\nTHEMES: turf war, drug running, machismo, brutality, sex and drugs, furries, anthropomorphic characters\nART: Comic book style illustrations, neon, chrome, bright colors, bulging muscles, furries, heavy inks for contrast"\n` +
+            `"SOURCE: Original\nSETTING: 70s disco scene, Los Angeles\nTHEMES: Free love, vampires, lycanthropes, disco, secret fantasy underworld, clubs, maintaining secrecy\nART: Psychedelic, lurid colors, hyperrealism, interesting and exaggerated character proportions"\n`) +
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 
@@ -200,7 +200,7 @@ export async function generate(stage: Stage) {
         stage.barDescription = textResponse?.result ?? '';
 
         stage.setLoadProgress(10, 'Generating bar image.');
-        const barPrompt = `masterpiece, high resolution, (art style notes: ${stage.artSummary}), ` +
+        const barPrompt = `(art style: ${stage.artSummary}), ` +
             (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + 'evening, counter, bottles, ' +
             `(general setting: ${stage.settingSummary}), (inside a bar), ((interior of a bar with this description: ${stage.barDescription}))`;
 

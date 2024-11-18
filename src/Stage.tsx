@@ -1,4 +1,4 @@
-import React, {ReactElement} from "react";
+import React, {ReactElement, useState} from "react";
 import {useSound} from "use-sound";
 import {
     Character,
@@ -20,6 +20,7 @@ import { register } from "register-service-worker";
 import { buildSection, generate, generatePatronImage, regenerateBeverages } from "./Generator";
 import {ChatNode, createNodes} from "./ChatNode";
 import {BeverageDisplay} from "./BeverageDisplay";
+import {GenerationUi} from "./GenerationUi";
 
 type MessageStateType = any;
 
@@ -33,9 +34,12 @@ type ChatStateType = any;
 // yarn install (if dependencies changed)
 // yarn dev --host --mode staging
 
+const [generationUiOpen, setGenerationUiOpen] = useState<boolean>(false);
+
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     readonly disableContentGeneration: boolean = false;
+
 
     // Chat State:
     barDescription: string|undefined;
@@ -235,15 +239,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let retries = 3;
         while (retries-- > 0) {
             try {
-                console.log('make a textGen request');
                 let textGen = await this.generator.textGen({
                     prompt: this.buildStoryPrompt(`${this.director.getPromptInstruction(this, nodeProps)}\n${additionalContext}`),
                     max_tokens: 400,
                     min_tokens: 50,
                     include_history: false
                 });
-                console.log('made a textGen request');
-                console.log(textGen);
                 if (textGen?.result?.length) {
                     const newNodes = createNodes(textGen.result, this.currentNode, nodeProps);
                     console.log('Generated nodes');
@@ -331,19 +332,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             <ReplayIcon/>
                         </IconButton>
                         <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'}
-                                    onClick={() => regenerateBeverages(this)}>
+                                    onClick={() => {setGenerationUiOpen(!generationUiOpen)}}>
                             <ReplayIcon/>
                         </IconButton>
-                        <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
-                                let presentPatronIds = this.currentNode?.presentPatronIds ?? [];
-                                let patronId = this.currentNode?.selectedPatronId ?? presentPatronIds[Math.floor(Math.random() * presentPatronIds.length)] ?? null;
-                                if (patronId) {
-                                    generatePatronImage(this.patrons[patronId], this).then(imageUrl => this.patrons[patronId].imageUrl = imageUrl);
-                                }
-                            }
-                        }>
-                            <AccountCircle/>
-                        </IconButton>
+                        {generationUiOpen && (
+                            <div>
+                                <GenerationUi stage={() => {return this}}/>
+                            </div>
+                        )}
                         {this.loadingProgress && (
                             <div>
                                 <Typography>
