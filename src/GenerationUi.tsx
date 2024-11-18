@@ -1,7 +1,7 @@
 import React, {FC, useState} from "react";
 import {Stage} from "./Stage";
 import {Avatar, Box, IconButton, Typography} from "@mui/material";
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid from '@mui/material/Grid2';
 import ReplayIcon from "@mui/icons-material/Replay";
 import Popover from "@mui/material/Popover";
 
@@ -53,21 +53,19 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                     boxSizing: 'border-box',
                     '&:hover': {backgroundColor: '#000000BB'}
                 }}>
-                    <Grid container rowSpacing={1} columnSpacing={4}>
-                        <Grid container spacing={6}>
-                            <Grid key='beverage-header' spacing={12}>
-                                <Typography variant="h6">Beverages</Typography>
-                            </Grid>
-                            {stage().beverages.map((beverage) => (
-                                <Grid key={beverage.name} spacing={12} sx={{height: '3vh'}}>
-                                    <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: 'auto', height: '100%'}} />
-                                    <Typography variant="body2">{beverage.name}</Typography>
-                                    <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
-                                        <ReplayIcon/>
-                                    </IconButton>
-                                </Grid>
-                            ))}
+                    <Grid container spacing={1}>
+                        <Grid key='beverage-header' size={12}>
+                            <Typography variant="h6">Beverages</Typography>
                         </Grid>
+                        {stage().beverages.map((beverage) => (
+                            <Grid key={beverage.name} size={12} sx={{height: '3vh'}}>
+                                <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: 'auto', height: '100%'}} />
+                                <Typography variant="body2">{beverage.name}</Typography>
+                                <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
+                                    <ReplayIcon/>
+                                </IconButton>
+                            </Grid>
+                        ))}
 
                     </Grid>
                 </Box>
