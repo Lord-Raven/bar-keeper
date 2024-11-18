@@ -54,7 +54,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     // Not saved:
     currentNode: ChatNode|null;
-    patronImagePrompt: string = 'Professional, visual novel, calm expression, neutral pose, in-frame, flat contrasting background color, head-to-hips, hips-up portrait, waist-up portrait';
+    patronImagePrompt: string = 'calm expression, neutral pose, in-frame, flat contrasting background color, head-to-hips, hips-up portrait, waist-up portrait';
     patronImageNegativePrompt: string = 'border, ((close-up)), background image, amateur, low quality, action';
     characterForGeneration: Character;
     player: User;
@@ -308,7 +308,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     render(): ReactElement {
-        const [generationUiOpen, setGenerationUiOpen] = useState<boolean>(false);
 
 
         return <div style={{
@@ -330,15 +329,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                                     onClick={() => generate(this)}>
                             <ReplayIcon/>
                         </IconButton>
-                        <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'}
-                                    onClick={() => {setGenerationUiOpen(!generationUiOpen)}}>
-                            <ReplayIcon/>
-                        </IconButton>
-                        {generationUiOpen && (
-                            <div>
-                                <GenerationUi stage={() => {return this}}/>
-                            </div>
-                        )}
+                        <GenerationUi stage={() => {return this}}/>
                         {this.loadingProgress && (
                             <div>
                                 <Typography>

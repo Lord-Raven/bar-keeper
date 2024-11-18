@@ -259,7 +259,7 @@ export async function generatePatron(stage: Stage): Promise<Patron|undefined> {
     //  distinct from others while potentially having a connection to other established patrons.
     let patronResponse = await stage.generator.textGen({
         prompt: buildPatronPrompt(stage),
-        max_tokens: 500,
+        max_tokens: 300,
         min_tokens: 50
     });
     let result = patronResponse?.result ?? '';
@@ -287,7 +287,7 @@ export async function generatePatronImage(patron: Patron, stage: Stage): Promise
     let imageUrl = await stage.makeImage({
         //image: bottleUrl,
         //strength: 0.1,
-        prompt: `${stage.patronImagePrompt}, (art style notes: ${stage.artSummary}), (${patron.description}), (this is a character from this setting: ${stage.settingSummary})`,
+        prompt: `${stage.patronImagePrompt}, (stage.sourceSummary && stage.sourceSummary != '' ? \`(source material: ${stage.sourceSummary}), \` : ''), (art style notes: ${stage.artSummary}), (a character matching this description: ${patron.description})`,
         negative_prompt: stage.patronImageNegativePrompt,
         aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL, //.PHOTO_HORIZONTAL,
         remove_background: true
