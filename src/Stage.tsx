@@ -54,7 +54,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     // Not saved:
     currentNode: ChatNode|null;
-    patronImagePrompt: string = 'calm expression, neutral pose, in-frame, flat contrasting background color, head-to-hips, hips-up portrait, waist-up portrait';
+    patronImagePrompt: string = 'calm expression, neutral pose, flat contrasting background color, waist-up portrait';
     patronImageNegativePrompt: string = 'border, ((close-up)), background image, amateur, low quality, action';
     characterForGeneration: Character;
     player: User;
