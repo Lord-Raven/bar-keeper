@@ -58,12 +58,18 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                             <Typography variant="h6">Beverages</Typography>
                         </Grid>
                         {stage().beverages.map((beverage) => (
-                            <Grid key={beverage.name} size={12} sx={{height: '3vh'}}>
-                                <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: 'auto', height: '100%'}} />
-                                <Typography variant="body2">{beverage.name}</Typography>
-                                <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
-                                    <ReplayIcon/>
-                                </IconButton>
+                            <Grid container key={beverage.name} size={12} sx={{height: '3vh'}}>
+                                <Grid size={2}>
+                                    <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: 'auto', height: '100%'}} />
+                                </Grid>
+                                <Grid size={8}>
+                                    <Typography variant="body2">{beverage.name}</Typography>
+                                </Grid>
+                                <Grid size={2}>
+                                    <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
+                                        <ReplayIcon/>
+                                    </IconButton>
+                                </Grid>
                             </Grid>
                         ))}
 
