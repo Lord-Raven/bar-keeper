@@ -59,7 +59,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                         {stage().beverages.map((beverage) => (
                             <Grid item key={beverage.name} container alignItems="center" spacing={1}>
                                 <Grid item>
-                                    <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: 'auto', height: '100%'}} />
+                                    <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: '5%', height: '5%'}} />
                                 </Grid>
                                 <Grid item>
                                     <Typography variant="body2">{beverage.name}</Typography>
