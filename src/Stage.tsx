@@ -34,12 +34,13 @@ type ChatStateType = any;
 // yarn install (if dependencies changed)
 // yarn dev --host --mode staging
 
-const [generationUiOpen, setGenerationUiOpen] = useState<boolean>(false);
+//const [generationUiOpen, setGenerationUiOpen] = useState<boolean>(false);
 
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     readonly disableContentGeneration: boolean = false;
 
+    generationUiOpen: boolean = false;
 
     // Chat State:
     barDescription: string|undefined;
@@ -332,10 +333,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             <ReplayIcon/>
                         </IconButton>
                         <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'}
-                                    onClick={() => {setGenerationUiOpen(!generationUiOpen)}}>
+                                    onClick={() => {this.generationUiOpen = !this.generationUiOpen}}>
                             <ReplayIcon/>
                         </IconButton>
-                        {generationUiOpen && (
+                        {this.generationUiOpen && (
                             <div>
                                 <GenerationUi stage={() => {return this}}/>
                             </div>
