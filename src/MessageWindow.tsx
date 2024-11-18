@@ -71,6 +71,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, reset
     }
 
     useEffect(() => {
+        console.log('useEffect in MessageWindow');
         setDoneWinding(false);
         setAdvancing(false);
     }, [resetLoad, selectedBeverage(), chatNode()]);

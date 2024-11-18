@@ -114,7 +114,7 @@ export async function generateBeverages(stage: Stage) {
                 const descriptionMatch = item.match(/Description:\s*(.*)/i);
                 console.log(`${nameMatch ? nameMatch[1].trim() : ''}, ${descriptionMatch ? descriptionMatch[1].trim() : ''}`);
                 return new Beverage(nameMatch ? nameMatch[1].trim() : '', descriptionMatch ? descriptionMatch[1].trim() : '', '');
-            }).filter(beverage => beverage.name != '' && beverage.description != ''));
+            }).filter(beverage => beverage.name != '' && beverage.description != '' && stage.beverages.filter(existing => existing.name.toLowerCase() == beverage.name.toLowerCase()).length == 0));
     }
 
     if (stage.beverages.length < 5) {

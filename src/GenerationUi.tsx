@@ -10,6 +10,10 @@ interface MessageWindowProps {
 export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
     const [generationUiOpen, setGenerationUiOpen] = useState<boolean>(false);
 
+    const toggleOpen = () => {
+        console.log('Toggling generation UI');
+        setGenerationUiOpen(!generationUiOpen);
+    };
 
     return <div>
         <IconButton style={{outline: 1}} color={'primary'}
@@ -19,7 +23,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
         {generationUiOpen && (
             <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center'}}>
                 <IconButton style={{outline: 1}} color={'primary'}
-                            onClick={() => {setGenerationUiOpen(!generationUiOpen)}}>
+                            onClick={toggleOpen}>
                     <ReplayIcon/>
                 </IconButton>
                 <Box sx={{
