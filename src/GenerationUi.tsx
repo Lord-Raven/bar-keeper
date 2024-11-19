@@ -31,7 +31,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
             <ReplayIcon/>
         </IconButton>
         {generationUiOpen && (
-            <Popover
+            /*<Popover
                 id={`mouse-over-popover-generation-ui`}
                 sx={{
                     '& .MuiPopover-paper': {
@@ -53,7 +53,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                     vertical: 'top',
                     horizontal: 'left',
                 }}
-            >
+            >*/
 
 
                 <Grid container spacing={2} justifyContent="center">
@@ -75,7 +75,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                     ))}
                 </Grid>
 
-            </Popover>
+            /*</Popover>*/
         )}
     </div>
 }
