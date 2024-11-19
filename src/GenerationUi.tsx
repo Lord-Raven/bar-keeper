@@ -53,16 +53,14 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                             <Typography variant="h5">Beverages</Typography>
                         </Grid>
                         {stage().beverages.map((beverage) => (
-                            <Grid container key={beverage.name} size={12} sx={{height: '6vh'}}>
-                                <Grid size={4}>
-                                    <Avatar alt={beverage.name} src={beverage.imageUrl}/>
-                                </Grid>
-                                <Grid size={8}>
-                                    <Typography variant="h6">{beverage.name}</Typography>
+                            <Grid key={beverage.name} size={12} sx={{height: '8vh'}}>
+                                <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: '100%', height: 'auto'}}/>
+                                <div>
+                                    <Typography color={'primary'} variant="h6">{beverage.name}</Typography>
                                     <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
                                         <ReplayIcon/>
                                     </IconButton>
-                                </Grid>
+                                </div>
                             </Grid>
                         ))}
                     </Grid>
@@ -89,26 +87,3 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
         )}
     </div>
 }
-
-/*
-                        <Grid container spacing={6}>
-                            <Grid container spacing={12}>
-                                <Typography variant="h6">Patrons</Typography>
-                            </Grid>
-                            {Object.values(stage().patrons).map((patron) => (
-                                <Grid container key={patron.name} spacing={12}>
-                                    <Grid spacing={2}>
-                                        <Avatar alt={patron.name} src={patron.imageUrl} sx={{width: 'auto', height: '100%'}} />
-                                    </Grid>
-                                    <Grid spacing={8}>
-                                        <Typography variant="body2">{patron.name}</Typography>
-                                    </Grid>
-                                    <Grid spacing={2}>
-                                        <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
-                                            <ReplayIcon/>
-                                        </IconButton>
-                                    </Grid>
-                                </Grid>
-                            ))}
-                        </Grid>
-                        */
