@@ -2,6 +2,7 @@ import React, {FC, useState} from "react";
 import {Stage} from "./Stage";
 import {Avatar, Box, CircularProgress, IconButton, Typography} from "@mui/material";
 import Grid from '@mui/material/Grid2';
+import SettingsIcon from "@mui/icons-material/Settings"
 import ReplayIcon from "@mui/icons-material/Replay";
 import Popover from "@mui/material/Popover";
 import {generateBeverageImage} from "./Generator";
@@ -28,7 +29,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
     return <div>
         <IconButton style={{outline: 1}} color={'primary'}
                     onClick={toggleOpen}>
-            <ReplayIcon/>
+            <SettingsIcon/>
         </IconButton>
         {generationUiOpen && (
             <Popover
@@ -52,7 +53,6 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                     vertical: 'top',
                     horizontal: 'left',
                 }}
-                disableRestoreFocus
             >
 
 
