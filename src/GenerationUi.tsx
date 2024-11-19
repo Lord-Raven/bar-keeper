@@ -37,6 +37,8 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                     '& .MuiPopover-paper': {
                         border: '1px dashed grey',
                         backgroundColor: '#000000BB',
+                        zIndex: 20,
+                        width: '100vw',
                         boxSizing: 'border-box'
                     }
                 }}
@@ -50,6 +52,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                     vertical: 'top',
                     horizontal: 'left',
                 }}
+                disableRestoreFocus
             >
 
 
@@ -60,12 +63,16 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                                 <Avatar src={beverage.imageUrl} alt={beverage.name} sx={{ width: '10vh', height: '10vh', margin: '0 auto', }} />
                                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '1vh' }}>
                                     <Typography variant="body1" sx={{ marginRight: '1vh' }}>{beverage.name}</Typography>
-                                    <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
-                                        console.log('Click');
-                                        putInProgress(beverage.name, true);
-                                        generateBeverageImage(stage(), beverage).then(() => {putInProgress(beverage.name, false)});}}>
-                                        <ReplayIcon/>
-                                    </IconButton>
+                                    {!inProgress[beverage.name] ? (
+                                        <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
+                                            console.log('Click');
+                                            putInProgress(beverage.name, true);
+                                            generateBeverageImage(stage(), beverage).then(() => {putInProgress(beverage.name, false)});}}>
+                                            <ReplayIcon/>
+                                        </IconButton>
+                                    ) : (
+                                        <CircularProgress/>
+                                    )}
                                 </Box>
                             </Box>
                         </Grid>
