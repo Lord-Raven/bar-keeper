@@ -66,7 +66,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                             <Box sx={{ textAlign: 'center', height: '20vh' }}>
                                 <Avatar src={beverage.imageUrl} alt={beverage.name} sx={{ width: '10vh', height: '10vh', margin: '0 auto', }} />
                                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '1vh' }}>
-                                    <Typography variant="h3" color='primary' sx={{ marginRight: '1vh' }}>{beverage.name}</Typography>
+                                    <Typography variant="h6" color='primary' sx={{ marginRight: '1vh' }}>{beverage.name}</Typography>
                                     {!inProgress[beverage.name] ? (
                                         <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
                                             console.log('Click');
@@ -89,7 +89,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                             <Box sx={{ textAlign: 'center', height: '20vh' }}>
                                 <Avatar src={patron.imageUrl} alt={patron.name} sx={{ width: '10vh', height: '10vh', margin: '0 auto', }} />
                                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '1vh' }}>
-                                    <Typography variant="h3" color='primary' sx={{ marginRight: '1vh' }}>{patron.name}</Typography>
+                                    <Typography variant="h6" color='primary' sx={{ marginRight: '1vh' }}>{patron.name}</Typography>
                                     {!inProgress[patron.name] ? (
                                         <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
                                             console.log('Click');

@@ -2,7 +2,6 @@ import { AspectRatio } from "@chub-ai/stages-ts";
 import { Stage } from "./Stage";
 import { Patron } from "./Patron";
 import bottleUrl from './assets/bottle.png'
-import patronUrl from './assets/elf2.png'
 import { Beverage } from "./Beverage";
 
 
@@ -226,7 +225,7 @@ export async function generate(stage: Stage) {
                 console.log('Generated patron:');
                 console.log(patron);
                 stage.patrons[patron.name] = patron;
-                generatePatronImage(stage, patron).then(result => patron.imageUrl = result);
+                generatePatronImage(stage, patron);
             } else {
                 console.log('Failed a patron generation');
             }
@@ -278,8 +277,8 @@ export async function generatePatron(stage: Stage): Promise<Patron|undefined> {
     return newPatron;
 }
 
-export async function generatePatronImage(stage: Stage, patron: Patron): Promise<string> {
-    let imageUrl = await stage.makeImage({
+export async function generatePatronImage(stage: Stage, patron: Patron): Promise<void> {
+    patron.imageUrl = await stage.makeImage({
         //image: bottleUrl,
         //strength: 0.1,
         prompt: `${stage.patronImagePrompt},` + (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + ` (art style notes: ${stage.artSummary}), (a character matching this description: ${patron.description})`,
@@ -290,5 +289,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron): Promise
         //item_id: null,
     }, '');
 
-    return Promise.resolve(imageUrl);
+    if (patron.imageUrl == '') {
+        throw Error('Failed to generate a patron image');
+    }
 }
