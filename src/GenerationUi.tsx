@@ -63,7 +63,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                         {stage().beverages.map((beverage) => (
                             <Grid key={beverage.name} size={12} sx={{height: '10vh'}}>
                                 <Box sx={{ height: '10vh', maxHeight: '100%', overflow: 'hidden' }}>
-                                    <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: 'auto', height: '100%'}}/>
+                                    <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: 'auto', height: '10vh'}}/>
                                 </Box>
                                 <Box sx={{ height: '2vh',  overflow: 'hidden' }}>
                                     <Typography color='primary' variant="h6">{beverage.name}</Typography>
