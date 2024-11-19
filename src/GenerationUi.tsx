@@ -1,6 +1,6 @@
 import React, {FC, useState} from "react";
 import {Stage} from "./Stage";
-import {Avatar, IconButton, Typography} from "@mui/material";
+import {Avatar, Box, IconButton, Typography} from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import ReplayIcon from "@mui/icons-material/Replay";
 import Popover from "@mui/material/Popover";
@@ -54,13 +54,15 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                         </Grid>
                         {stage().beverages.map((beverage) => (
                             <Grid key={beverage.name} size={12} sx={{height: '8vh'}}>
-                                <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: '100%', height: 'auto'}}/>
-                                <div>
-                                    <Typography color={'primary'} variant="h6">{beverage.name}</Typography>
-                                    <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
-                                        <ReplayIcon/>
-                                    </IconButton>
-                                </div>
+                                <Box sx={{ width: '100px', maxWidth: '100%', overflow: 'hidden' }}>
+                                    <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: '100%', height: 'auto'}}/>
+                                    <div>
+                                        <Typography color={'primary'} variant="h6">{beverage.name}</Typography>
+                                        <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
+                                            <ReplayIcon/>
+                                        </IconButton>
+                                    </div>
+                                </Box>
                             </Grid>
                         ))}
                     </Grid>
