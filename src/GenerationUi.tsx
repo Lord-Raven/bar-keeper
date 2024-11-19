@@ -1,6 +1,6 @@
 import React, {FC, useState} from "react";
 import {Stage} from "./Stage";
-import {Avatar, Box, IconButton, Typography} from "@mui/material";
+import {Avatar, IconButton, Typography} from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import ReplayIcon from "@mui/icons-material/Replay";
 import Popover from "@mui/material/Popover";
@@ -27,12 +27,14 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
             <Popover
                 id={`mouse-over-popover-generation-ui`}
                 sx={{
-                    pointerEvents: 'none',
-                    border: '1px dashed grey',
-                    backgroundColor: '#00000088',
-                    zIndex: 20,
-                    boxSizing: 'border-box',
-                    '&:hover': {backgroundColor: '#000000BB'}
+                    '& .MuiPopover-paper': {
+                        pointerEvents: 'none',
+                        border: '1px dashed grey',
+                        backgroundColor: '#00000088',
+                        zIndex: 20,
+                        boxSizing: 'border-box',
+                        '&:hover': {backgroundColor: '#000000BB'}
+                    }
                 }}
                 open={generationUiOpen}
                 anchorEl={anchorEl}
