@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid2';
 import SettingsIcon from "@mui/icons-material/Settings"
 import ReplayIcon from "@mui/icons-material/Replay";
 import Popover from "@mui/material/Popover";
-import {generateBeverageImage} from "./Generator";
+import {generateBeverageImage, generatePatronImage} from "./Generator";
 
 interface MessageWindowProps {
     stage: () => Stage;
@@ -66,12 +66,35 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                             <Box sx={{ textAlign: 'center', height: '20vh' }}>
                                 <Avatar src={beverage.imageUrl} alt={beverage.name} sx={{ width: '10vh', height: '10vh', margin: '0 auto', }} />
                                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '1vh' }}>
-                                    <Typography variant="body1" color='primary' sx={{ marginRight: '1vh' }}>{beverage.name}</Typography>
+                                    <Typography variant="h3" color='primary' sx={{ marginRight: '1vh' }}>{beverage.name}</Typography>
                                     {!inProgress[beverage.name] ? (
                                         <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
                                             console.log('Click');
                                             putInProgress(beverage.name, true);
                                             generateBeverageImage(stage(), beverage).then(() => {putInProgress(beverage.name, false)});}}>
+                                            <ReplayIcon/>
+                                        </IconButton>
+                                    ) : (
+                                        <CircularProgress/>
+                                    )}
+                                </Box>
+                            </Box>
+                        </Grid>
+                    ))}
+                </Grid>
+
+                <Grid container spacing={2} justifyContent="center">
+                    {Object.values(stage().patrons).map((patron) => (
+                        <Grid key={patron.name}>
+                            <Box sx={{ textAlign: 'center', height: '20vh' }}>
+                                <Avatar src={patron.imageUrl} alt={patron.name} sx={{ width: '10vh', height: '10vh', margin: '0 auto', }} />
+                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '1vh' }}>
+                                    <Typography variant="h3" color='primary' sx={{ marginRight: '1vh' }}>{patron.name}</Typography>
+                                    {!inProgress[patron.name] ? (
+                                        <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
+                                            console.log('Click');
+                                            putInProgress(patron.name, true);
+                                            generatePatronImage(stage(), patron).then(() => {putInProgress(patron.name, false)});}}>
                                             <ReplayIcon/>
                                         </IconButton>
                                     ) : (

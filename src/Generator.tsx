@@ -89,20 +89,6 @@ export function buildPatronPrompt(stage: Stage): string {
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 
-export async function generateBeverageImage(stage: Stage, beverage: Beverage) {
-    console.log(`Generating image for ${beverage.name}: ${beverage.description}`);
-    beverage.imageUrl = await stage.makeImage({
-        //image: new URL(bottleUrl, import.meta.url).href,
-        //strength: 0.75,
-        prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty background, negative space, contrasting color-keyed background, (a standalone bottle of the alcohol in this description: ${beverage.description})`,
-        negative_prompt: `background, frame, realism, borders, perspective, effects`,
-        remove_background: true,
-    }, bottleUrl);
-    if (beverage.imageUrl == '') {
-        throw Error('Failed to generate a beverage image');
-    }
-}
-
 export async function generateBeverages(stage: Stage) {
     stage.beverages = [];
     while (stage.beverages.length < 5) {
@@ -133,6 +119,20 @@ export async function generateBeverages(stage: Stage) {
     for (const beverage of stage.beverages) {
         await generateBeverageImage(stage, beverage);
         stage.setLoadProgress((stage.loadingProgress ?? 0) + 5, 'Generating beverage images.');
+    }
+}
+
+export async function generateBeverageImage(stage: Stage, beverage: Beverage) {
+    console.log(`Generating image for ${beverage.name}: ${beverage.description}`);
+    beverage.imageUrl = await stage.makeImage({
+        //image: new URL(bottleUrl, import.meta.url).href,
+        //strength: 0.75,
+        prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty background, negative space, contrasting color-keyed background, (a standalone bottle of the alcohol in this description: ${beverage.description})`,
+        negative_prompt: `background, frame, realism, borders, perspective, effects`,
+        remove_background: true,
+    }, bottleUrl);
+    if (beverage.imageUrl == '') {
+        throw Error('Failed to generate a beverage image');
     }
 }
 
@@ -226,7 +226,7 @@ export async function generate(stage: Stage) {
                 console.log('Generated patron:');
                 console.log(patron);
                 stage.patrons[patron.name] = patron;
-                generatePatronImage(patron, stage).then(result => patron.imageUrl = result);
+                generatePatronImage(stage, patron).then(result => patron.imageUrl = result);
             } else {
                 console.log('Failed a patron generation');
             }
@@ -278,7 +278,7 @@ export async function generatePatron(stage: Stage): Promise<Patron|undefined> {
     return newPatron;
 }
 
-export async function generatePatronImage(patron: Patron, stage: Stage): Promise<string> {
+export async function generatePatronImage(stage: Stage, patron: Patron): Promise<string> {
     let imageUrl = await stage.makeImage({
         //image: bottleUrl,
         //strength: 0.1,
