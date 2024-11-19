@@ -65,10 +65,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '1vh' }}>
                                     <Typography variant="body1" sx={{ marginRight: '1vh' }}>{beverage.name}</Typography>
                                     {!inProgress[beverage.name] ? (
-                                        <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
-                                            console.log('Click');
-                                            putInProgress(beverage.name, true);
-                                            generateBeverageImage(stage(), beverage).then(() => {putInProgress(beverage.name, false)});}}>
+                                        <IconButton style={{outline: 1}} color={'primary'} onClick={toggleOpen}>
                                             <ReplayIcon/>
                                         </IconButton>
                                     ) : (
