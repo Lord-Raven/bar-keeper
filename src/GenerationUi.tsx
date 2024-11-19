@@ -64,13 +64,12 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                                 <Avatar src={beverage.imageUrl} alt={beverage.name} sx={{ width: '10vh', height: '10vh', margin: '0 auto', }} />
                                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '1vh' }}>
                                     <Typography variant="body1" sx={{ marginRight: '1vh' }}>{beverage.name}</Typography>
-                                    {!inProgress[beverage.name] ? (
-                                        <IconButton style={{outline: 1}} color={'primary'} onClick={toggleOpen}>
-                                            <ReplayIcon/>
-                                        </IconButton>
-                                    ) : (
-                                        <CircularProgress/>
-                                    )}
+                                    <IconButton style={{outline: 1}} color={'warning'} onClick={() => {
+                                        console.log('Click');
+                                        putInProgress(beverage.name, true);
+                                        generateBeverageImage(stage(), beverage).then(() => {putInProgress(beverage.name, false)});}}>
+                                        <ReplayIcon/>
+                                    </IconButton>
                                 </Box>
                             </Box>
                         </Grid>
