@@ -21,6 +21,11 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
         setInProgress({...inProgress, [key]: value});
     }
 
+    const handleClose = () => {
+        setAnchorEl(null);
+        setGenerationUiOpen(false);
+    };
+
     const toggleOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
         setGenerationUiOpen(!generationUiOpen);
@@ -44,6 +49,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                     }
                 }}
                 open={generationUiOpen}
+                onClose={handleClose}
                 anchorEl={anchorEl}
                 anchorOrigin={{
                     vertical: 'bottom',
@@ -54,15 +60,13 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                     horizontal: 'left',
                 }}
             >
-
-
                 <Grid container spacing={2} justifyContent="center">
                     {stage().beverages.map((beverage) => (
                         <Grid key={beverage.name}>
                             <Box sx={{ textAlign: 'center', height: '20vh' }}>
                                 <Avatar src={beverage.imageUrl} alt={beverage.name} sx={{ width: '10vh', height: '10vh', margin: '0 auto', }} />
                                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '1vh' }}>
-                                    <Typography variant="body1" sx={{ marginRight: '1vh' }}>{beverage.name}</Typography>
+                                    <Typography variant="body1" color='primary' sx={{ marginRight: '1vh' }}>{beverage.name}</Typography>
                                     {!inProgress[beverage.name] ? (
                                         <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
                                             console.log('Click');
