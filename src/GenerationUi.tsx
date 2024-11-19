@@ -62,12 +62,12 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                         </Grid>
                         {stage().beverages.map((beverage) => (
                             <Grid key={beverage.name} size={12} sx={{height: '10vh'}}>
-                                <Box sx={{ width: '100px', maxWidth: '100%', overflow: 'hidden' }}>
+                                <Box sx={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
                                     <div>
                                         <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: '100%', height: 'auto'}}/>
                                     </div>
                                     <div>
-                                        <Typography color='#FFFFFF' variant="h6">{beverage.name}</Typography>
+                                        <Typography color='primary' variant="h6">{beverage.name}</Typography>
                                         {!inProgress[beverage.name] ? (
                                             <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
                                                 putInProgress(beverage.name, true);
