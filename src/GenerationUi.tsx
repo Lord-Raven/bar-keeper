@@ -61,11 +61,11 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                             <Typography color='primary' variant="h5">Beverages</Typography>
                         </Grid>
                         {stage().beverages.map((beverage) => (
-                            <Grid key={beverage.name} size={12} sx={{height: '12vh'}}>
-                                <Box sx={{ height: '10vh', maxHeight: '10vh', overflow: 'hidden' }}>
-                                    <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: 'auto', height: '10vh'}}/>
+                            <Grid key={beverage.name} size={12} sx={{height: '350px'}}>
+                                <Box sx={{ height: '300px', maxHeight: '100%', overflow: 'hidden' }}>
+                                    <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: 'auto', height: '100%'}}/>
                                 </Box>
-                                <Box sx={{ height: '2vh',  overflow: 'hidden' }}>
+                                <Box sx={{ height: '50px',  overflow: 'hidden' }}>
                                     <Typography color='primary' variant="h6">{beverage.name}</Typography>
                                     {!inProgress[beverage.name] ? (
                                         <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
