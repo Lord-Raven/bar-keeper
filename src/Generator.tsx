@@ -89,12 +89,18 @@ export function buildPatronPrompt(stage: Stage): string {
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 
-
-
-export async function regenerateBeverages(stage: Stage) {
-    stage.setLoadProgress(0, 'Generating beverages.');
-    await generateBeverages(stage);
-    stage.setLoadProgress(undefined, '');
+export async function generateBeverageImage(stage: Stage, beverage: Beverage) {
+    console.log(`Generating image for ${beverage.name}: ${beverage.description}`);
+    beverage.imageUrl = await stage.makeImage({
+        //image: new URL(bottleUrl, import.meta.url).href,
+        //strength: 0.75,
+        prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty background, negative space, contrasting color-keyed background, (a standalone bottle of the alcohol in this description: ${beverage.description})`,
+        negative_prompt: `background, frame, realism, borders, perspective, effects`,
+        remove_background: true,
+    }, bottleUrl);
+    if (beverage.imageUrl == '') {
+        throw Error('Failed to generate a beverage image');
+    }
 }
 
 export async function generateBeverages(stage: Stage) {
@@ -125,17 +131,7 @@ export async function generateBeverages(stage: Stage) {
     stage.setLoadProgress(30, 'Generating beverage images.');
 
     for (const beverage of stage.beverages) {
-        console.log(`Generating image for ${beverage.name}: ${beverage.description}`);
-        beverage.imageUrl = await stage.makeImage({
-            //image: new URL(bottleUrl, import.meta.url).href,
-            //strength: 0.75,
-            prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty background, negative space, contrasting color-keyed background, (a standalone bottle of the alcohol in this description: ${beverage.description})`,
-            negative_prompt: `background, frame, realism, borders, perspective, effects`,
-            remove_background: true,
-        }, bottleUrl);
-        if (beverage.imageUrl == '') {
-            throw Error('Failed to generate a beverage image');
-        }
+        await generateBeverageImage(stage, beverage);
         stage.setLoadProgress((stage.loadingProgress ?? 0) + 5, 'Generating beverage images.');
     }
 }

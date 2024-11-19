@@ -1,4 +1,4 @@
-import React, {ReactElement, useState} from "react";
+import React, {ReactElement} from "react";
 import {useSound} from "use-sound";
 import {
     Character,
@@ -32,6 +32,7 @@ type ChatStateType = any;
 // nvm use 21.7.1
 // yarn install (if dependencies changed)
 // yarn dev --host --mode staging
+
 
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
