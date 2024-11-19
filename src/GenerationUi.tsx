@@ -62,23 +62,20 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                         </Grid>
                         {stage().beverages.map((beverage) => (
                             <Grid key={beverage.name} size={12} sx={{height: '10vh'}}>
-                                <Box sx={{ width: '50vw', maxWidth: '100%', overflow: 'hidden' }}>
-                                    <div>
-                                        <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: '100%', height: 'auto'}}/>
-                                    </div>
-                                    <div>
-                                        <Typography color='primary' variant="h6">{beverage.name}</Typography>
-                                        {!inProgress[beverage.name] ? (
-                                            <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
-                                                putInProgress(beverage.name, true);
-                                                generateBeverageImage(stage(), beverage).then(() => {putInProgress(beverage.name, false)});}}>
-                                                    <ReplayIcon/>
-                                            </IconButton>
-                                        ) : (
-                                            <CircularProgress/>
-                                        )}
-
-                                    </div>
+                                <Box sx={{ height: '10vh',  overflow: 'hidden' }}>
+                                    <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: 'auto', height: '100%'}}/>
+                                </Box>
+                                <Box sx={{ height: '2vh',  overflow: 'hidden' }}>
+                                    <Typography color='primary' variant="h6">{beverage.name}</Typography>
+                                    {!inProgress[beverage.name] ? (
+                                        <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
+                                            putInProgress(beverage.name, true);
+                                            generateBeverageImage(stage(), beverage).then(() => {putInProgress(beverage.name, false)});}}>
+                                                <ReplayIcon/>
+                                        </IconButton>
+                                    ) : (
+                                        <CircularProgress/>
+                                    )}
                                 </Box>
                             </Grid>
                         ))}
