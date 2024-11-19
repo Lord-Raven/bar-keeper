@@ -55,6 +55,36 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                 }}
                 disableRestoreFocus
             >
+
+
+                <Grid container spacing={2} justifyContent="center">
+                    {stage().beverages.map((beverage) => (
+                        <Grid key={beverage.name}>
+                            <Box sx={{ textAlign: 'center', height: '20vh' }}>
+                                <Avatar src={beverage.imageUrl} alt={beverage.name} sx={{ width: '10vh', height: '10vh', margin: '0 auto', }} />
+                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '1vh' }}>
+                                    <Typography variant="body1" sx={{ marginRight: '1vh' }}>{beverage.name}</Typography>
+                                    {!inProgress[beverage.name] ? (
+                                        <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
+                                            putInProgress(beverage.name, true);
+                                            generateBeverageImage(stage(), beverage).then(() => {putInProgress(beverage.name, false)});}}>
+                                            <ReplayIcon/>
+                                        </IconButton>
+                                    ) : (
+                                        <CircularProgress/>
+                                    )}
+                                </Box>
+                            </Box>
+                        </Grid>
+                    ))}
+                </Grid>
+
+            </Popover>
+        )}
+    </div>
+}
+
+/*
                 <Grid container spacing={1}>
                     <Grid container size={6}>
                         <Grid key='beverage-header' size={12}>
@@ -71,7 +101,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                                         <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
                                             putInProgress(beverage.name, true);
                                             generateBeverageImage(stage(), beverage).then(() => {putInProgress(beverage.name, false)});}}>
-                                                <ReplayIcon/>
+                                            <ReplayIcon/>
                                         </IconButton>
                                     ) : (
                                         <CircularProgress/>
@@ -99,7 +129,4 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                         ))}
                     </Grid>
                 </Grid>
-            </Popover>
-        )}
-    </div>
-}
+                    */
