@@ -31,14 +31,14 @@ const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text }) => {
     );
 };
 
-const CHARACTER_WIDTH: number = 18;
+const CHARACTER_WIDTH: number = 28;
 const getCharacterPosition = (index: number, amount: number) => {
 
     if (amount % 2 == 0 && index == 0) {
         // odd number and this is the middle one; put it in the middle
         return 50;
     } else {
-        return (0.5 - (index % 2)) * (100 / amount);
+        return 50 + (0.5 - (index % 2)) * (100 / amount);
     }
 }
 
