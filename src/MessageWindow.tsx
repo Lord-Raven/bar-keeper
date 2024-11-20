@@ -31,7 +31,7 @@ const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text }) => {
     );
 };
 
-const CHARACTER_WIDTH: number = 20;
+const CHARACTER_WIDTH: number = 10;
 const getCharacterPosition = (index: number, amount: number) => {
 
     if (amount % 2 == 0 && index == 0) {
