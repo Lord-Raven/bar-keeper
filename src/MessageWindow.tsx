@@ -67,6 +67,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, stage
         } else {
             setDoneWinding(true);
         }
+        console.log('done with proceed()');
     }
 
     useEffect(() => {
