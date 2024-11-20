@@ -34,9 +34,9 @@ type ChatStateType = any;
 // yarn dev --host --mode staging
 
 export class UiState {
-    timestamp: number;
+    timestamp: string|null;
 
-    constructor(timestamp: number) {
+    constructor(timestamp: string) {
         this.timestamp = timestamp;
     }
 }
@@ -69,7 +69,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     requestedNodes: Promise<ChatNode[]|null>|null = null;
     isGenerating: boolean = false;
     director: Director;
-    state: UiState = {timestamp: Date.now()};
+    state: UiState = {timestamp: generateUuid()};
 
     readonly theme = createTheme({
         palette: {
@@ -287,7 +287,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
         this.requestedNodes = null;
         this.isGenerating = false;
-        this.state = {timestamp: Date.now()};
+        this.state = {timestamp: generateUuid()};
     }
 
     async makeImage(imageRequest: Object, defaultUrl: string): Promise<string> {
@@ -311,7 +311,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     setLastBeverageServed(beverageName: string) {
         console.log('setLastBeverageServed:' + beverageName);
         this.lastBeverageServed = beverageName;
-        this.state = {timestamp: Date.now()};
+        this.state = {timestamp: generateUuid()};
     }
 
     render(): ReactElement {
@@ -365,4 +365,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         </div>;
     };
 
+}
+
+
+function generateUuid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0,
+            v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
 }
