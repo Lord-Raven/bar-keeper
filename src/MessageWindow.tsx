@@ -63,7 +63,7 @@ function MessageWindup({message, options}: MessageWindupProps) {
 interface MessageWindowProps {
     advance:  () => void;
     chatNode: () => ChatNode|null;
-    stageState: () => UiState;
+    stageState: () => ChatNode|null;
     stage: () => Stage;
 }
 

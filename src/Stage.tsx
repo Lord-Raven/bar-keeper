@@ -69,7 +69,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     requestedNodes: Promise<ChatNode[]|null>|null = null;
     isGenerating: boolean = false;
     director: Director;
-    state: UiState = {timestamp: generateUuid()};
+    state: ChatNode|null = null;
 
     readonly theme = createTheme({
         palette: {
@@ -281,13 +281,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             }
             this.lastBeverageServed = '';
             this.setCurrentNode(selectedNode);
+            this.state = this.currentNode;
             await this.updateChatState();
         } else {
             console.log('Failed to generate new content; try again.');
+            this.state = null;
         }
         this.requestedNodes = null;
         this.isGenerating = false;
-        this.state = {timestamp: generateUuid()};
     }
 
     async makeImage(imageRequest: Object, defaultUrl: string): Promise<string> {
@@ -311,7 +312,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     setLastBeverageServed(beverageName: string) {
         console.log('setLastBeverageServed:' + beverageName);
         this.lastBeverageServed = beverageName;
-        this.state = {timestamp: generateUuid()};
     }
 
     render(): ReactElement {
