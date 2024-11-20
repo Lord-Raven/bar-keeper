@@ -2,7 +2,7 @@ import {Pace, WindupChildren} from "windups";
 import {Box, CircularProgress, Icon, IconButton, Typography} from "@mui/material";
 import {FC, useEffect, useState} from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
-import { Stage } from "./Stage";
+import {Stage, UiState} from "./Stage";
 import {ChatNode} from "./ChatNode";
 import {Cancel, CheckCircle} from "@mui/icons-material";
 
@@ -63,7 +63,7 @@ function MessageWindup({message, options}: MessageWindupProps) {
 interface MessageWindowProps {
     advance:  () => void;
     chatNode: () => ChatNode|null;
-    stageState: () => any;
+    stageState: () => UiState;
     stage: () => Stage;
 }
 

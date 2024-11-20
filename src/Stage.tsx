@@ -33,6 +33,13 @@ type ChatStateType = any;
 // yarn install (if dependencies changed)
 // yarn dev --host --mode staging
 
+export class UiState {
+    timestamp: number;
+
+    constructor(timestamp: number) {
+        this.timestamp = timestamp;
+    }
+}
 
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
@@ -62,7 +69,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     requestedNodes: Promise<ChatNode[]|null>|null = null;
     isGenerating: boolean = false;
     director: Director;
-    state: any|null = {timestamp: Date.now()};
+    state: UiState = {timestamp: Date.now()};
 
     readonly theme = createTheme({
         palette: {
