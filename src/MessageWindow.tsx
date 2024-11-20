@@ -34,11 +34,11 @@ const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text }) => {
 const CHARACTER_WIDTH: number = 28;
 const getCharacterPosition = (index: number, amount: number) => {
 
-    if (amount % 2 == 0 && index == 0) {
+    if (amount % 2 == 1 && index == 0) {
         // odd number and this is the middle one; put it in the middle
         return 50;
     } else {
-        return 50 + (0.5 - (index % 2)) * (100 / amount);
+        return 50 + (0.5 - (index % 2)) * (100 / amount) * Math.ceil((index - (amount % 2) + 1) / 2);
     }
 }
 
@@ -82,10 +82,16 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, stage
     }
 
     useEffect(() => {
+        console.log('useEffect2 in MessageWindow');
+        setDoneWinding(false);
+        setAdvancing(false);
+    }, [stageState()]);
+
+    useEffect(() => {
         console.log('useEffect in MessageWindow');
         setDoneWinding(false);
         setAdvancing(false);
-    }, [stageState(), chatNode()]);
+    }, [chatNode()]);
 
     return (
         <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center'}}>

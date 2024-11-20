@@ -62,7 +62,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     requestedNodes: Promise<ChatNode[]|null>|null = null;
     isGenerating: boolean = false;
     director: Director;
-    state: any = {timestamp: Date.now()};
+    state: any|null = {timestamp: Date.now()};
 
     readonly theme = createTheme({
         palette: {
@@ -280,7 +280,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
         this.requestedNodes = null;
         this.isGenerating = false;
-        // Swap this flag to prompt the message window to refresh.
         this.state = {timestamp: Date.now()};
     }
 
