@@ -63,11 +63,11 @@ function MessageWindup({message, options}: MessageWindupProps) {
 interface MessageWindowProps {
     advance:  () => void;
     chatNode: () => ChatNode|null;
-    stageState: () => ChatNode|null;
+    updateTime: () => number;
     stage: () => Stage;
 }
 
-export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, stageState, stage }) => {
+export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updateTime, stage }) => {
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
     const proceed = () => {
@@ -85,7 +85,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, stage
         console.log('useEffect2 in MessageWindow');
         setDoneWinding(false);
         setAdvancing(false);
-    }, [stageState()]);
+    }, [updateTime()]);
 
     useEffect(() => {
         console.log('useEffect in MessageWindow');

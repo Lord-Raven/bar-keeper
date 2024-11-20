@@ -69,7 +69,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     requestedNodes: Promise<ChatNode[]|null>|null = null;
     isGenerating: boolean = false;
     director: Director;
-    state: ChatNode|null = null;
+    updateTime: number = Date.now();
 
     readonly theme = createTheme({
         palette: {
@@ -146,7 +146,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             chatNodes: this.chatNodes,
             currentMessageId: this.currentNode ? this.currentNode.id : null,
             patrons: this.patrons,
-            state: this.state
+            updateTime: this.updateTime
         };
     }
 
@@ -284,11 +284,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.setCurrentNode(selectedNode);
         } else {
             console.log('Failed to generate new content; try again.');
+            this.updateTime = Date.now();
         }
         this.requestedNodes = null;
         this.isGenerating = false;
-        this.state = createNodes(`**${generateUuid()}**: ${generateUuid()}`, this.currentNode, {})[0];
-        console.log(this.state);
+
         await this.updateChatState();
     }
 
@@ -353,7 +353,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         <MessageWindow 
                             advance={() => {void this.advanceMessage()}}
                             chatNode={() => {return this.currentNode}}
-                            stageState={() => {return this.state}}
+                            updateTime={() => {return this.updateTime}}
                             stage={() => {return this}}
                         />
                 )}
