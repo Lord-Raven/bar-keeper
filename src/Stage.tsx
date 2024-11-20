@@ -281,7 +281,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             }
             this.lastBeverageServed = '';
             this.setCurrentNode(selectedNode);
-            await this.updateChatState();
         } else {
             console.log('Failed to generate new content; try again.');
             this.state = null;
@@ -289,6 +288,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.requestedNodes = null;
         this.isGenerating = false;
         this.state = createNodes(generateUuid(), this.currentNode, {})[0];
+        await this.updateChatState();
     }
 
     async makeImage(imageRequest: Object, defaultUrl: string): Promise<string> {
