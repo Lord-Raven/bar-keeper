@@ -62,7 +62,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     requestedNodes: Promise<ChatNode[]|null>|null = null;
     isGenerating: boolean = false;
     director: Director;
-    resetLoadIndicator: number = Date.now();
+    state: any = {timestamp: Date.now()};
 
     readonly theme = createTheme({
         palette: {
@@ -281,7 +281,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.requestedNodes = null;
         this.isGenerating = false;
         // Swap this flag to prompt the message window to refresh.
-        this.resetLoadIndicator = Date.now();
+        this.state = {timestamp: Date.now()};
     }
 
     async makeImage(imageRequest: Object, defaultUrl: string): Promise<string> {
@@ -305,7 +305,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     setLastBeverageServed(beverageName: string) {
         console.log('setLastBeverageServed:' + beverageName);
         this.lastBeverageServed = beverageName;
-        this.resetLoadIndicator = Date.now();
+        this.state = {timestamp: Date.now()};
     }
 
     render(): ReactElement {
@@ -346,8 +346,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         <MessageWindow 
                             advance={() => {void this.advanceMessage()}}
                             chatNode={() => {return this.currentNode}}
-                            resetLoad={() => {return this.resetLoadIndicator}}
-                            selectedBeverage={() => {return this.lastBeverageServed}}
+                            stageState={() => {return this.state}}
                             stage={() => {return this}}
                         />
                 )}

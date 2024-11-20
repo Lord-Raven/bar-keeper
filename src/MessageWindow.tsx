@@ -52,12 +52,11 @@ function MessageWindup({message, options}: MessageWindupProps) {
 interface MessageWindowProps {
     advance:  () => void;
     chatNode: () => ChatNode|null;
-    resetLoad: () => number;
-    selectedBeverage: () => string;
+    stageState: () => any;
     stage: () => Stage;
 }
 
-export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, resetLoad, selectedBeverage, stage }) => {
+export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, stageState, stage }) => {
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
     const proceed = () => {
@@ -74,7 +73,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, reset
         console.log('useEffect in MessageWindow');
         setDoneWinding(false);
         setAdvancing(false);
-    }, [resetLoad(), selectedBeverage(), chatNode()]);
+    }, [stageState(), chatNode()]);
 
     return (
         <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center'}}>
@@ -104,7 +103,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, reset
                         {advancing ? (
                                 <CircularProgress style={{float: 'right'}}/>
                             ) : (stage().isBeverageDecision() ? (
-                                selectedBeverage().length == 0 ? (
+                                stage().lastBeverageServed.length == 0 ? (
                                         <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
                                             <Cancel/>
                                         </Icon>

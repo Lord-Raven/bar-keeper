@@ -24,6 +24,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
     const handleClose = () => {
         setAnchorEl(null);
         setGenerationUiOpen(false);
+        stage().updateChatState().then(() => {console.log('Updated chat state after closing generation UI.')});
     };
 
     const toggleOpen = (event: React.MouseEvent<HTMLElement>) => {
