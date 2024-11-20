@@ -283,11 +283,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.setCurrentNode(selectedNode);
         } else {
             console.log('Failed to generate new content; try again.');
-            this.state = null;
         }
         this.requestedNodes = null;
         this.isGenerating = false;
-        this.state = createNodes(generateUuid(), this.currentNode, {})[0];
+        this.state = createNodes(`**${generateUuid()}**: ${generateUuid()}`, this.currentNode, {})[0];
+        console.log(this.state);
         await this.updateChatState();
     }
 
