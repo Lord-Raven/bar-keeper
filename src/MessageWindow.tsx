@@ -31,7 +31,7 @@ const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text }) => {
     );
 };
 
-const CHARACTER_WIDTH: number = 10;
+const CHARACTER_WIDTH: number = 18;
 const getCharacterPosition = (index: number, amount: number) => {
 
     if (amount % 2 == 0 && index == 0) {
@@ -141,16 +141,16 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, stage
                         if (patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever')) {
                             return <img src={stage().patrons[patronId].imageUrl} style={{
                                 position: 'absolute', bottom: '-16vh',
-                                left: `${getCharacterPosition(index, chatNode()?.presentPatronIds.length ?? 1) - CHARACTER_WIDTH / 2 - 1}`,
+                                left: `${getCharacterPosition(index, chatNode()?.presentPatronIds.length ?? 1) - CHARACTER_WIDTH / 2 - 1}vw`,
                                 zIndex: (index < 2 ? 7 : 6),
-                                height: 'auto', width: `${CHARACTER_WIDTH + 2}`}}/>;
+                                height: 'auto', width: `${CHARACTER_WIDTH + 2}vw`}}/>;
                         } else {
                             return <img src={stage().patrons[patronId].imageUrl} style={{
                                 position: 'absolute', bottom: '-16vh', 
-                                left: `${getCharacterPosition(index, chatNode()?.presentPatronIds.length ?? 1) - CHARACTER_WIDTH / 2}`,
+                                left: `${getCharacterPosition(index, chatNode()?.presentPatronIds.length ?? 1) - CHARACTER_WIDTH / 2}vw`,
                                 zIndex: (index < 2 ? 5 : 4),
                                 filter: 'brightness(80%)',
-                                height: 'auto', width: `${CHARACTER_WIDTH}`}}/>;
+                                height: 'auto', width: `${CHARACTER_WIDTH}vw`}}/>;
                         }
                     } else {
                         return <div></div>;
