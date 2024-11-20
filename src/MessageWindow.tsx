@@ -29,7 +29,18 @@ const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text }) => {
             )} 
         </span>
     );
-}; 
+};
+
+const CHARACTER_WIDTH: number = 20;
+const getCharacterPosition = (index: number, amount: number) => {
+
+    if (amount % 2 == 0 && index == 0) {
+        // odd number and this is the middle one; put it in the middle
+        return 50;
+    } else {
+        return (0.5 - (index % 2)) * (100 / amount);
+    }
+}
 
 //const [text] = useWindupString(spannedMessage, options);
 
@@ -129,19 +140,17 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, stage
                     if (stage().patrons[patronId]) {
                         if (patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever')) {
                             return <img src={stage().patrons[patronId].imageUrl} style={{
-                                position: 'absolute', bottom: '-16vh', 
-                                left: ((index % 2) == 0) ? `${40 - index * 30}vw` : 'auto',
-                                right: ((index % 2) == 1) ? `${40 - (index - 1) * 30}vw` : 'auto',
+                                position: 'absolute', bottom: '-16vh',
+                                left: `${getCharacterPosition(index, chatNode()?.presentPatronIds.length ?? 1) - CHARACTER_WIDTH / 2 - 1}`,
                                 zIndex: (index < 2 ? 7 : 6),
-                                height: '77vh', width: 'auto'}}/>;
+                                height: 'auto', width: `${CHARACTER_WIDTH + 2}`}}/>;
                         } else {
                             return <img src={stage().patrons[patronId].imageUrl} style={{
                                 position: 'absolute', bottom: '-16vh', 
-                                left: ((index % 2) == 0) ? `${40 - index * 30 + 1}vw` : 'auto',
-                                right: ((index % 2) == 1) ? `${40 - (index - 1) * 30 - 1}vw` : 'auto',
+                                left: `${getCharacterPosition(index, chatNode()?.presentPatronIds.length ?? 1) - CHARACTER_WIDTH / 2}`,
                                 zIndex: (index < 2 ? 5 : 4),
                                 filter: 'brightness(80%)',
-                                height: '75vh', width: 'auto'}}/>;
+                                height: 'auto', width: `${CHARACTER_WIDTH}`}}/>;
                         }
                     } else {
                         return <div></div>;
