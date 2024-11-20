@@ -92,7 +92,6 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                                     <Typography variant="h6" color='primary' sx={{ marginRight: '1vh' }}>{patron.name}</Typography>
                                     {!inProgress[patron.name] ? (
                                         <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
-                                            console.log('Click');
                                             putInProgress(patron.name, true);
                                             generatePatronImage(stage(), patron).then(() => {putInProgress(patron.name, false)});}}>
                                             <ReplayIcon/>

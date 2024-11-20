@@ -52,7 +52,7 @@ function MessageWindup({message, options}: MessageWindupProps) {
 interface MessageWindowProps {
     advance:  () => void;
     chatNode: () => ChatNode|null;
-    resetLoad: boolean;
+    resetLoad: () => number;
     selectedBeverage: () => string;
     stage: () => Stage;
 }
@@ -74,7 +74,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, reset
         console.log('useEffect in MessageWindow');
         setDoneWinding(false);
         setAdvancing(false);
-    }, [resetLoad, selectedBeverage(), chatNode()]);
+    }, [resetLoad(), selectedBeverage(), chatNode()]);
 
     return (
         <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center'}}>
