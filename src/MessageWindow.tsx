@@ -2,9 +2,10 @@ import {Pace, WindupChildren} from "windups";
 import {Box, CircularProgress, Icon, IconButton, Typography} from "@mui/material";
 import {FC, useEffect, useState} from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
-import {Stage, UiState} from "./Stage";
+import {Stage} from "./Stage";
 import {ChatNode} from "./ChatNode";
 import {Cancel, CheckCircle} from "@mui/icons-material";
+import { motion, Variants } from "framer-motion";
 
 interface MessageWindupProps {
     message: string;
@@ -31,19 +32,6 @@ const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text }) => {
     );
 };
 
-const CHARACTER_WIDTH: number = 28;
-const getCharacterPosition = (index: number, amount: number) => {
-
-    if (amount % 2 == 1 && index == 0) {
-        // odd number and this is the middle one; put it in the middle
-        return 50;
-    } else {
-        return 50 + (0.5 - (index % 2)) * (100 / amount) * Math.ceil((index - (amount % 2) + 1) / 2);
-    }
-}
-
-//const [text] = useWindupString(spannedMessage, options);
-
 function MessageWindup({message, options}: MessageWindupProps) {
 
     return (
@@ -59,6 +47,38 @@ function MessageWindup({message, options}: MessageWindupProps) {
         </div>
     );
 }
+
+const CHARACTER_WIDTH: number = 28;
+const getCharacterPosition = (index: number, amount: number) => {
+
+    if (amount % 2 == 1 && index == 0) {
+        // odd number and this is the middle one; put it in the middle
+        return 50;
+    } else {
+        return 50 + (0.5 - (index % 2)) * (100 / amount) * Math.ceil((index - (amount % 2) + 1) / 2);
+    }
+}
+
+interface PatronImageProps {
+    imgUrl: string;
+    xPosition: number;
+    isTalking: boolean;
+}
+const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
+    const variants = {
+        talking: {color: '#FFFFFF', opacity: 1, x: xPosition},
+        idle: {color: '#BBBBBB', opacity: 1, x: xPosition}
+    };
+
+    return (
+        <motion.div
+            initial="idle"
+            animate={isTalking ? 'talking' : 'idle'}
+            style={{left: `${xPosition}vw`, bottom: '-16vh', width: `${isTalking ? CHARACTER_WIDTH + 2 : CHARACTER_WIDTH}`, height: 'auto', aspectRatio: '4 / 7' }}>
+            <img src={imgUrl} alt='Patron Image'/>
+        </motion.div>
+    );
+};
 
 interface MessageWindowProps {
     advance:  () => void;
@@ -144,7 +164,13 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
             </Box>
             {chatNode()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
-                        if (patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever')) {
+                        return <PatronImage imgUrl={stage().patrons[patronId].imageUrl}
+                                            xPosition={getCharacterPosition(index, chatNode()?.presentPatronIds.length ?? 1) - CHARACTER_WIDTH / 2}
+                                            isTalking={patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever')}/>;
+
+
+
+                        /*if (patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever')) {
                             return <img src={stage().patrons[patronId].imageUrl} style={{
                                 position: 'absolute', bottom: '-16vh',
                                 left: `${getCharacterPosition(index, chatNode()?.presentPatronIds.length ?? 1) - CHARACTER_WIDTH / 2 - 1}vw`,
@@ -157,7 +183,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                                 zIndex: (index < 2 ? 5 : 4),
                                 filter: 'brightness(80%)',
                                 height: 'auto', width: `${CHARACTER_WIDTH}vw`}}/>;
-                        }
+                        }*/
                     } else {
                         return <div></div>;
                     }
