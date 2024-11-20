@@ -145,7 +145,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             lastBeverageServed: this.lastBeverageServed,
             chatNodes: this.chatNodes,
             currentMessageId: this.currentNode ? this.currentNode.id : null,
-            patrons: this.patrons
+            patrons: this.patrons,
+            state: this.state
         };
     }
 
