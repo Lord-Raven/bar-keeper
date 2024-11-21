@@ -66,7 +66,7 @@ interface PatronImageProps {
 
 const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
     const variants: Variants = {
-        talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition - 1}vw`, width: `${CHARACTER_WIDTH + 2}vw`, filter: 'brightness(1)', zIndex: 12},
+        talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition}vw`, width: `${CHARACTER_WIDTH + 2}vw`, filter: 'brightness(1)', zIndex: 12},
         idle: {color: '#BBBBBB', opacity: 1, x: `${xPosition}vw`, width: `${CHARACTER_WIDTH}vw`, filter: 'brightness(0.8)', zIndex: 11}
     };
 
@@ -76,7 +76,7 @@ const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
             initial='idle'
             animate={isTalking ? 'talking' : 'idle'}
             className='important-overflow-visible'
-            style={{position: 'absolute', bottom: '-35vh', maxWidth: '100%', height: 'auto', aspectRatio: '5 / 12', zIndex: 10}}>
+            style={{position: 'absolute', bottom: '-40vh', maxWidth: '100%', height: 'auto', aspectRatio: '5 / 12', zIndex: 10}}>
             <img src={imgUrl} className='important-overflow-visible' style={{position: 'relative', width: '100%', height: '100%'}} alt='Patron Image'/>
         </motion.div>
     );

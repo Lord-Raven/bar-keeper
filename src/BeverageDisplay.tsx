@@ -1,6 +1,6 @@
 import {Stage} from "./Stage";
 import {Box} from "@mui/material";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 interface BeverageDisplayProps {
     stage: () => Stage;
@@ -15,6 +15,11 @@ export const BeverageDisplay: React.FC<BeverageDisplayProps> = ({ stage }) => {
             stage().setLastBeverageServed(name);
         }
     };
+
+    useEffect(() => {
+        setSelectedBeverage(stage().lastBeverageServed);
+    }, [stage()]);
+
 
     return (
         <Box component="section" sx={{
