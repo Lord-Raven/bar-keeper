@@ -116,7 +116,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
     }, [chatNode()]);
 
     return (
-        <div style={{position: 'relative', left: '1%', width: '98%', alignContent: 'center', zIndex: 30, overflow: 'visible'}}>
+        <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 30, overflow: 'visible'}}>
             <Box sx={{
                 pl: 1,
                 pr: 1,
