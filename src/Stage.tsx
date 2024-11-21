@@ -326,8 +326,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             height: '100vh',
             display: 'flex',
             flexDirection: 'column',
-            color: '#ffffff',
-            zIndex: 1
+            color: '#ffffff'
         }}>
             <style>
                 {`
@@ -337,7 +336,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 `}
             </style>
             <ThemeProvider theme={this.theme}>
-                <div style={{position: 'relative', height: '8%', zIndex: 1}}>
+                <div style={{position: 'relative', height: '8%'}}>
                     <div>
                         <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'}
                                     onClick={() => generate(this)}>
@@ -381,7 +380,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         width: '98%',
                         alignContent: 'center',
                         verticalAlign: 'middle',
-                        zIndex: 1
+                        zIndex: 20
                     }}>
                         <BeverageDisplay stage={() => {
                             return this
