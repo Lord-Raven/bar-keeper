@@ -198,13 +198,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return historyString;
     }
 
-    buildStoryPrompt(currentInstruction: string): string {
+    buildStoryPrompt(fromNode: ChatNode|null, currentInstruction: string): string {
         return buildSection('Setting', this.barDescription ?? '') +
             buildSection('User', `${this.player.name} is a bartender here. ${this.player.chatProfile}`) +
             this.buildPatronDescriptions() +
             this.buildBeverageDescriptions() +
             buildSection('Sample Response', sampleScript) +
-            (this.currentNode ? buildSection('Log', this.buildHistory(this.currentNode)) : '') +
+            (fromNode ? buildSection('Log', this.buildHistory(fromNode)) : '') +
             buildSection('Instruction Override', `${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}`) +
             buildSection('Standard Instruction', '{{suffix}}');
     }
@@ -213,7 +213,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log('advanceMessage');
         if (!this.requestedNodes && (!this.currentNode || this.currentNode.direction != Direction.PatronDrinkRequest)) {
             console.log('Kick off generation');
-            this.requestedNodes = this.generateMessageContent('');
+            this.requestedNodes = this.generateMessageContent(this.getTerminusOfNode(this.currentNode), '');
         }
         console.log(this.currentNode);
         if (!this.currentNode || this.currentNode.childIds.length == 0) {
@@ -236,7 +236,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
     }
 
-    async generateMessageContent(additionalContext: string): Promise<ChatNode[]|null> {
+    getTerminusOfNode(fromNode: ChatNode|null) {
+        while (fromNode && (fromNode.selectedChildId || fromNode.childIds.length > 0) && this.chatNodes[fromNode.selectedChildId ?? fromNode.childIds[0]].direction == fromNode.direction) {
+            fromNode = this.chatNodes[fromNode.selectedChildId ?? fromNode.childIds[0]];
+        }
+        return fromNode;
+    }
+
+    async generateMessageContent(fromNode: ChatNode|null, additionalContext: string): Promise<ChatNode[]|null> {
         console.log('generateNodes');
         let nodeProps: any = this.director.determineNextNodeProps(this, this.currentNode);
 
@@ -244,13 +251,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         while (retries-- > 0) {
             try {
                 let textGen = await this.generator.textGen({
-                    prompt: this.buildStoryPrompt(`${this.director.getPromptInstruction(this, nodeProps)}\n${additionalContext}`),
+                    prompt: this.buildStoryPrompt(this.getTerminusOfNode(this.currentNode), `${this.director.getPromptInstruction(this, nodeProps)}\n${additionalContext}`),
                     max_tokens: 400,
                     min_tokens: 50,
                     include_history: false
                 });
                 if (textGen?.result?.length) {
-                    const newNodes = createNodes(textGen.result, this.currentNode, nodeProps);
+                    const newNodes = createNodes(textGen.result, fromNode, nodeProps);
                     console.log('Generated nodes');
                     return Promise.resolve(newNodes);
                 }
@@ -267,7 +274,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log('processNextResponse');
         if (!this.requestedNodes) {
             console.log('No current request in progress--try again');
-            this.requestedNodes = this.generateMessageContent('');
+            this.requestedNodes = this.generateMessageContent(this.getTerminusOfNode(this.currentNode), '');
         }
         let result = await this.requestedNodes;
         console.log(result);
