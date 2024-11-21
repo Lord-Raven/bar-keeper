@@ -84,7 +84,7 @@ export function buildPatronPrompt(stage: Stage): string {
                 `connections between this new character and one or more existing patrons:\n` +
                 `${Object.values(stage.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n')) +
-        buildSection('Example Responses', `NAME: Character Name\nDESCRIPTION: A comma-delimitted list of exhaustive physical and visual qualities or booru tags, including gender, race, skin tone, hair color/style, eye color, clothing, accessories, racial features, height, build, and other obvious traits.\nPERSONALITY: Personality and background details.`) +
+        buildSection('Example Responses', `NAME: Character Name\nDESCRIPTION: A comma-delimitted list of exhaustive physical and visual qualities or booru tags, including gender, race, skin tone, hair color/style, eye color, height, build, clothing, accessories, and other obvious traits, making sure to call out visually important elements that are inherent to race or gender.\nPERSONALITY: Personality and background details.`) +
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 

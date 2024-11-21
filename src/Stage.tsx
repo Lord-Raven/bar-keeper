@@ -310,7 +310,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     setLastBeverageServed(beverageName: string) {
-        console.log('setLastBeverageServed:' + beverageName);
         this.lastBeverageServed = beverageName;
         this.updateChatState();
     }

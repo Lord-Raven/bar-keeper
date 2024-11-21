@@ -51,12 +51,11 @@ function MessageWindup({message, options}: MessageWindupProps) {
 const CHARACTER_WIDTH: number = 28;
 const getCharacterPosition = (index: number, amount: number) => {
 
-    if (amount % 2 == 1 && index == 0) {
-        // odd number and this is the middle one; put it in the middle
-        return 50;
-    } else {
-        return 50 + (0.5 - (index % 2)) * (100 / amount) * Math.ceil((index - (amount % 2) + 1) / 2);
-    }
+    const start = 10;
+    const end = 90;
+    const step = (end - start) / (amount + 1);
+
+    return start + (index + 1) * step;
 }
 
 interface PatronImageProps {
@@ -67,7 +66,7 @@ interface PatronImageProps {
 
 const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
     const variants: Variants = {
-        talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition}vw`, width: `${CHARACTER_WIDTH + 2}vw`, zIndex: 12},
+        talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition - 1}vw`, width: `${CHARACTER_WIDTH + 2}vw`, filter: 'brightness(1)', zIndex: 12},
         idle: {color: '#BBBBBB', opacity: 1, x: `${xPosition}vw`, width: `${CHARACTER_WIDTH}vw`, filter: 'brightness(0.8)', zIndex: 11}
     };
 
