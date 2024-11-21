@@ -76,7 +76,8 @@ const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
             variants={variants}
             initial='idle'
             animate={isTalking ? 'talking' : 'idle'}
-            style={{position: 'absolute', bottom: '-20vh', maxWidth: '100%', height: 'auto', aspectRatio: '5 / 12', zIndex: 35, overflow: 'visible'}}>
+            className='important-overflow-visible'
+            style={{position: 'absolute', bottom: '-20vh', maxWidth: '100%', height: 'auto', aspectRatio: '5 / 12', zIndex: 35}}>
             <img src={imgUrl} className='important-overflow-visible' style={{position: 'relative', width: '100%', height: '100%', zIndex: 36}} alt='Patron Image'/>
         </motion.div>
     );
@@ -116,7 +117,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
     }, [chatNode()]);
 
     return (
-        <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 30, overflow: 'visible'}}>
+        <div className='important-overflow-visible' style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 30}}>
             <Box sx={{
                 pl: 1,
                 pr: 1,
