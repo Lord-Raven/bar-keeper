@@ -317,7 +317,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     render(): ReactElement {
 
-
         return <div style={{
             backgroundImage: `url(${this.barImageUrl})`,
             backgroundPosition: 'center',
@@ -330,7 +329,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             color: '#ffffff'
         }}>
             <ThemeProvider theme={this.theme}>
-                <div style={{height: '8%'}}>
+                <div style={{height: '8%', zIndex: 1}}>
                     <div>
                         <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'}
                                     onClick={() => generate(this)}>
@@ -357,7 +356,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         />
                 )}
                 {!this.loadingProgress && (
-                    <div style={{position: 'relative', height: '16%', left: '1%', width: '98%', alignContent: 'center', verticalAlign: 'middle'}}>
+                    <div style={{position: 'relative', height: '16%', left: '1%', width: '98%', alignContent: 'center', verticalAlign: 'middle', zIndex: 1}}>
                         <BeverageDisplay stage={() => {return this}}/>
                     </div>
                 )}
