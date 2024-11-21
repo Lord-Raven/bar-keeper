@@ -327,16 +327,25 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             display: 'flex',
             flexDirection: 'column',
             color: '#ffffff',
-            overflow: 'visible',
             zIndex: 1
         }}>
+            <style>
+                {`
+                .important-overflow-visible {
+                  overflow: visible !important;
+                }
+                `}
+            </style>
+            <ThemeProvider theme={this.theme}>
                 <div style={{position: 'relative', height: '8%', zIndex: 1}}>
                     <div>
                         <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'}
                                     onClick={() => generate(this)}>
                             <ReplayIcon/>
                         </IconButton>
-                        <GenerationUi stage={() => {return this}}/>
+                        <GenerationUi stage={() => {
+                            return this
+                        }}/>
                         {this.loadingProgress && (
                             <div>
                                 <Typography>
@@ -349,18 +358,37 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </div>
                 </div>
                 {!this.loadingProgress && (
-                        <MessageWindow 
-                            advance={() => {void this.advanceMessage()}}
-                            chatNode={() => {return this.currentNode}}
-                            updateTime={() => {return this.updateTime}}
-                            stage={() => {return this}}
-                        />
+                    <MessageWindow
+                        advance={() => {
+                            void this.advanceMessage()
+                        }}
+                        chatNode={() => {
+                            return this.currentNode
+                        }}
+                        updateTime={() => {
+                            return this.updateTime
+                        }}
+                        stage={() => {
+                            return this
+                        }}
+                    />
                 )}
                 {!this.loadingProgress && (
-                    <div style={{position: 'relative', height: '16%', left: '1%', width: '98%', alignContent: 'center', verticalAlign: 'middle', zIndex: 1}}>
-                        <BeverageDisplay stage={() => {return this}}/>
+                    <div style={{
+                        position: 'relative',
+                        height: '16%',
+                        left: '1%',
+                        width: '98%',
+                        alignContent: 'center',
+                        verticalAlign: 'middle',
+                        zIndex: 1
+                    }}>
+                        <BeverageDisplay stage={() => {
+                            return this
+                        }}/>
                     </div>
                 )}
+            </ThemeProvider>
         </div>;
     };
 

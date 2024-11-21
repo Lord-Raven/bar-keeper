@@ -77,7 +77,7 @@ const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
             initial='idle'
             animate={isTalking ? 'talking' : 'idle'}
             style={{position: 'absolute', bottom: '-20vh', maxWidth: '100%', height: 'auto', aspectRatio: '5 / 12', zIndex: 35, overflow: 'visible'}}>
-            <img src={imgUrl} style={{position: 'relative', width: '100%', height: '100%', zIndex: 36}} alt='Patron Image'/>
+            <img src={imgUrl} className='important-overflow-visible' style={{position: 'relative', width: '100%', height: '100%', zIndex: 36}} alt='Patron Image'/>
         </motion.div>
     );
 };
@@ -127,7 +127,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                 width: '100%',
                 border: '1px dashed grey',
                 backgroundColor: '#00000088',
-                overflow: 'visible',
                 zIndex: 40,
                 boxSizing: 'border-box',
                 '&:hover': {backgroundColor: '#000000BB'}
