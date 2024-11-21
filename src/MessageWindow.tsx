@@ -76,7 +76,7 @@ const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
             variants={variants}
             initial='idle'
             animate={isTalking ? 'talking' : 'idle'}
-            style={{position: 'absolute', bottom: '-20vh', maxWidth: '100%', height: 'auto', aspectRatio: '5 / 12'}}>
+            style={{position: 'absolute', bottom: '-20vh', maxWidth: '100%', height: 'auto', aspectRatio: '5 / 12', overflow: 'visible'}}>
             <img src={imgUrl} style={{width: '100%', height: '100%'}} alt='Patron Image'/>
         </motion.div>
     );
@@ -116,7 +116,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
     }, [chatNode()]);
 
     return (
-        <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', overflow: 'visible'}}>
+        <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 3, overflow: 'visible'}}>
             <Box sx={{
                 pl: 1,
                 pr: 1,
@@ -169,23 +169,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                         return <PatronImage imgUrl={stage().patrons[patronId].imageUrl}
                                             xPosition={getCharacterPosition(index, chatNode()?.presentPatronIds.length ?? 1) - CHARACTER_WIDTH / 2}
                                             isTalking={patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever')}/>;
-
-
-
-                        /*if (patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever')) {
-                            return <img src={stage().patrons[patronId].imageUrl} style={{
-                                position: 'absolute', bottom: '-16vh',
-                                left: `${getCharacterPosition(index, chatNode()?.presentPatronIds.length ?? 1) - CHARACTER_WIDTH / 2 - 1}vw`,
-                                zIndex: (index < 2 ? 7 : 6),
-                                height: 'auto', width: `${CHARACTER_WIDTH + 2}vw`}}/>;
-                        } else {
-                            return <img src={stage().patrons[patronId].imageUrl} style={{
-                                position: 'absolute', bottom: '-16vh', 
-                                left: `${getCharacterPosition(index, chatNode()?.presentPatronIds.length ?? 1) - CHARACTER_WIDTH / 2}vw`,
-                                zIndex: (index < 2 ? 5 : 4),
-                                filter: 'brightness(80%)',
-                                height: 'auto', width: `${CHARACTER_WIDTH}vw`}}/>;
-                        }*/
                     } else {
                         return <div></div>;
                     }
