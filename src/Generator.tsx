@@ -283,7 +283,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron): Promise
         //strength: 0.1,
         prompt: `${stage.patronImagePrompt},` + (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + ` (art style notes: ${stage.artSummary}), (a character matching this description: ${patron.description})`,
         negative_prompt: stage.patronImageNegativePrompt,
-        aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL, //.PHOTO_HORIZONTAL,
+        aspect_ratio: AspectRatio.CINEMATIC_VERTICAL, //.WIDESCREEN_VERTICAL,
         remove_background: true
         //seed: null,
         //item_id: null,
