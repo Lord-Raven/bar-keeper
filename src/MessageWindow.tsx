@@ -76,7 +76,7 @@ const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
             variants={variants}
             initial='idle'
             animate={isTalking ? 'talking' : 'idle'}
-            style={{position: 'absolute', y: '0vh', maxWidth: '100%', height: 'auto', aspectRatio: '5 / 12'}}>
+            style={{position: 'absolute', bottom: '0', maxWidth: '100%', height: 'auto', aspectRatio: '5 / 12'}}>
             <img src={imgUrl} style={{width: '100%', height: '100%'}} alt='Patron Image'/>
         </motion.div>
     );
