@@ -14,8 +14,6 @@ export class Beverage {
     }
 
     render(selected: () => boolean, onClick: (id: string) => void): ReactElement {
-        const handleClick = () => {console.log('handleClick');onClick(this.name);};
-
         return this.imageUrl !== '' ? (
                 <Box component="section" sx={{
                         p: 1,
@@ -24,7 +22,7 @@ export class Beverage {
                         boxSizing: 'border-box',
                         backgroundColor: '#00000000',
                         '&:hover': {backgroundColor: '#FFFFFF11'}
-                }} onClick={handleClick}>
+                }} onClick={() => {onClick(this.name);}}>
                     <ImageWithPopup
                         src={this.imageUrl}
                         alt={`${this.name}`}

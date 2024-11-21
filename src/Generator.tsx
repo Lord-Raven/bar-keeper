@@ -78,13 +78,13 @@ export function buildPatronPrompt(stage: Stage): string {
         buildSection('Location', stage.barDescription ?? '') +
         buildSection('Priority Instruction', 
             `You are doing prep work for a roleplaying narrative. Instead of narrating, this preparatory response will craft a new character who might patronize the LOCATION, ` +
-            `giving them a NAME, a very detailed physical DESCRIPTION, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
+            `giving them a NAME, a DESCRIPTION list of discrete physical and visual traits or booru tags that could apply to this character, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(stage.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
                 `connections between this new character and one or more existing patrons:\n` +
                 `${Object.values(stage.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n')) +
-        buildSection('Example Responses', `NAME: Character Name\nDESCRIPTION: A list of exhaustive physical and visual details including gender, race, skin tone, hair color/style, eye color, clothing, accessories, racial features, height, build, and other obvious traits.\nPERSONALITY: Personality and background details.`) +
+        buildSection('Example Responses', `NAME: Character Name\nDESCRIPTION: A comma-delimitted list of exhaustive physical and visual qualities or booru tags, including gender, race, skin tone, hair color/style, eye color, clothing, accessories, racial features, height, build, and other obvious traits.\nPERSONALITY: Personality and background details.`) +
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 
@@ -284,7 +284,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron): Promise
     patron.imageUrl = await stage.makeImage({
         //image: bottleUrl,
         //strength: 0.1,
-        prompt: `${patronImagePrompt},` + (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + ` (art style notes: ${stage.artSummary}), (a character matching this description: ${patron.description})`,
+        prompt: `${patronImagePrompt},` + (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + ` (art style: ${stage.artSummary}), solo character, ${patron.description}`,
         negative_prompt: patronImageNegativePrompt,
         aspect_ratio: AspectRatio.CINEMATIC_VERTICAL, //.WIDESCREEN_VERTICAL,
         remove_background: true
