@@ -277,12 +277,15 @@ export async function generatePatron(stage: Stage): Promise<Patron|undefined> {
     return newPatron;
 }
 
+const patronImagePrompt: string = 'calm expression, neutral pose, empty background, bright chromakey background, standing, full body';
+const patronImageNegativePrompt: string = 'border, ((close-up)), background elements, background, amateur, low quality, action, cut-off';
+
 export async function generatePatronImage(stage: Stage, patron: Patron): Promise<void> {
     patron.imageUrl = await stage.makeImage({
         //image: bottleUrl,
         //strength: 0.1,
-        prompt: `${stage.patronImagePrompt},` + (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + ` (art style notes: ${stage.artSummary}), (a character matching this description: ${patron.description})`,
-        negative_prompt: stage.patronImageNegativePrompt,
+        prompt: `${patronImagePrompt},` + (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + ` (art style notes: ${stage.artSummary}), (a character matching this description: ${patron.description})`,
+        negative_prompt: patronImageNegativePrompt,
         aspect_ratio: AspectRatio.CINEMATIC_VERTICAL, //.WIDESCREEN_VERTICAL,
         remove_background: true
         //seed: null,

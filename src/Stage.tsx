@@ -62,8 +62,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     // Not saved:
     currentNode: ChatNode|null;
-    patronImagePrompt: string = 'calm expression, neutral pose, empty background, bright contrasting background color, standing, full body, head-to-toe';
-    patronImageNegativePrompt: string = 'border, ((close-up)), background image, backdrop, amateur, low quality, action, cut-off';
     characterForGeneration: Character;
     player: User;
     requestedNodes: Promise<ChatNode[]|null>|null = null;
@@ -313,6 +311,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     setLastBeverageServed(beverageName: string) {
         console.log('setLastBeverageServed:' + beverageName);
         this.lastBeverageServed = beverageName;
+        this.updateChatState();
     }
 
     render(): ReactElement {
