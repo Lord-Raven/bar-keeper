@@ -103,18 +103,10 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
         }
         console.log('done with proceed()');
     }
-
     useEffect(() => {
-        console.log('useEffect2 in MessageWindow');
         setDoneWinding(false);
         setAdvancing(false);
-    }, [updateTime()]);
-
-    useEffect(() => {
-        console.log('useEffect in MessageWindow');
-        setDoneWinding(false);
-        setAdvancing(false);
-    }, [chatNode()]);
+    }, [updateTime(), chatNode()]);
 
     return (
         <div className='important-overflow-visible' style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 2}}>
