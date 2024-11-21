@@ -329,7 +329,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             color: '#ffffff'
         }}>
             <ThemeProvider theme={this.theme}>
-                <div style={{height: '8%', zIndex: 1}}>
+                <div style={{position: 'relative', height: '8%', zIndex: 1}}>
                     <div>
                         <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'}
                                     onClick={() => generate(this)}>
