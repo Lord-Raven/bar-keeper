@@ -277,7 +277,7 @@ export async function generatePatron(stage: Stage): Promise<Patron|undefined> {
     return newPatron;
 }
 
-const patronImagePrompt: string = 'calm expression, neutral pose, empty background, (contrasting background color), standing, full body';
+const patronImagePrompt: string = 'calm expression, neutral pose, empty background, (contrasting background color), standing, full body, head-to-toe';
 const patronImageNegativePrompt: string = 'border, ((close-up)), background elements, special effects, matching background, amateur, low quality, action, cut-off';
 
 export async function generatePatronImage(stage: Stage, patron: Patron): Promise<void> {
