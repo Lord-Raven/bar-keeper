@@ -76,8 +76,8 @@ const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
             variants={variants}
             initial='idle'
             animate={isTalking ? 'talking' : 'idle'}
-            style={{position: 'absolute', bottom: '-20vh', maxWidth: '100%', height: 'auto', aspectRatio: '5 / 12', zIndex: 6, overflow: 'visible'}}>
-            <img src={imgUrl} style={{width: '100%', height: '100%', zIndex: 8}} alt='Patron Image'/>
+            style={{position: 'absolute', bottom: '-20vh', maxWidth: '100%', height: 'auto', aspectRatio: '5 / 12', zIndex: 35, overflow: 'visible'}}>
+            <img src={imgUrl} style={{width: '100%', height: '100%', zIndex: 36}} alt='Patron Image'/>
         </motion.div>
     );
 };
@@ -116,7 +116,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
     }, [chatNode()]);
 
     return (
-        <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 3, overflow: 'visible'}}>
+        <div style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 30, overflow: 'visible'}}>
             <Box sx={{
                 pl: 1,
                 pr: 1,
@@ -128,7 +128,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                 border: '1px dashed grey',
                 backgroundColor: '#00000088',
                 overflow: 'visible',
-                zIndex: 8,
+                zIndex: 40,
                 boxSizing: 'border-box',
                 '&:hover': {backgroundColor: '#000000BB'}
             }}>
