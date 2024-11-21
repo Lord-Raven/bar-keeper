@@ -64,6 +64,7 @@ interface PatronImageProps {
     xPosition: number;
     isTalking: boolean;
 }
+
 const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
     const variants: Variants = {
         talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition}vw`, width: `${CHARACTER_WIDTH + 2}vw`},
@@ -75,7 +76,7 @@ const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
             variants={variants}
             initial='idle'
             animate={isTalking ? 'talking' : 'idle'}
-            style={{position: 'absolute', y: '0vh', maxWidth: '100%', height: 'auto', aspectRatio: '4 / 7' }}>
+            style={{position: 'absolute', y: '16vh', maxWidth: '100%', height: 'auto', aspectRatio: '4 / 7' }}>
             <img src={imgUrl} style={{width: '100%', height: '100%'}} alt='Patron Image'/>
         </motion.div>
     );
