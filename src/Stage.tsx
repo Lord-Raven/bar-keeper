@@ -217,10 +217,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
         console.log(this.currentNode);
         if (!this.currentNode || this.currentNode.childIds.length == 0) {
-            console.log('No node or no children; processNextResponse()');
             await this.processNextResponse();
         } else {
-            console.log('Child already exists; go there.');
             this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]]);
         }
     }
@@ -244,7 +242,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async generateMessageContent(fromNode: ChatNode|null, additionalContext: string): Promise<ChatNode[]|null> {
-        console.log('generateNodes');
         let nodeProps: any = this.director.determineNextNodeProps(this, this.currentNode);
 
         let retries = 3;
@@ -258,20 +255,17 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 });
                 if (textGen?.result?.length) {
                     const newNodes = createNodes(textGen.result, fromNode, nodeProps);
-                    console.log('Generated nodes');
                     return Promise.resolve(newNodes);
                 }
             } catch(error) {
                 console.error("Failed to generate message: " + error);
             }
         }
-        console.error('Failed to generate next node.');
         return Promise.resolve(null);
     }
 
     async processNextResponse() {
         this.isGenerating = true;
-        console.log('processNextResponse');
         if (!this.requestedNodes) {
             console.log('No current request in progress--try again');
             this.requestedNodes = this.generateMessageContent(this.getTerminusOfNode(this.currentNode), '');

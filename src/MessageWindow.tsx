@@ -51,8 +51,8 @@ function MessageWindup({message, options}: MessageWindupProps) {
 const CHARACTER_WIDTH: number = 28;
 const getCharacterPosition = (index: number, amount: number) => {
 
-    const start = 10;
-    const end = 90;
+    const start = 5;
+    const end = 95;
     const step = (end - start) / (amount + 1);
 
     return start + (index + 1) * step;
@@ -100,7 +100,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
         } else {
             setDoneWinding(true);
         }
-        console.log('done with proceed()');
     }
     useEffect(() => {
         setDoneWinding(false);

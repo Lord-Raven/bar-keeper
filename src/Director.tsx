@@ -20,7 +20,7 @@ interface InstructionInput {
 }
 
 const generalInstruction = 'Responses follow a simple stageplay style format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Refer to {{user}} in second-person.'
-export const sampleScript = `**NARRATOR**: General narration is provided here.\n\n**CHARACTER 1**: "Character dialog goes in quotations." Their actions don't.\n\n**NARRATOR**: Character 2 walks in.\n\n**CHARACTER 2**: "Hey, Character 1."\n\n**CHARACTER 1**: "Welcome back, Character 2!" They give a friendly wave.`
+export const sampleScript = `**NARRATOR**: General narration is provided by the NARRATOR.\n\n**CHARACTER 1**: "Character dialog goes in quotations." Their actions don't.\n\n**NARRATOR**: Character 2 walks in.\n\n**CHARACTER 2**: "Hey, Character 1."\n\n**CHARACTER 1**: "Welcome back, Character 2!" They give a friendly wave.`
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
     IntroduceBar: input => `Write a visual novel style introduction to the bar described here: ${input.barDescription}. ` +
@@ -35,12 +35,12 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
 
     PatronProblem: input => `Continue the scene with some visual novel style development as one of the PRESENT PATRONS describes a personal problem to another PRESENT PATRON or ${input.playerName}. No one wants to order a drink at this time. ${generalInstruction}`,
 
-    PatronDrinkRequest: input => `Continue the scene with some visual novel style development as ${input.patronName} asks the bartender, ${input.playerName}, for a drink. ` +
+    PatronDrinkRequest: input => `Continue the scene with some visual novel style development leading up to ${input.patronName} asking the bartender, ${input.playerName}, for a unspecified drink. ` +
         `${input.patronName} will simply describe the flavor or style of drink they are in the mood for, rather than specifying the particular beverage they want. ` +
-        `Keep ${input.playerName} passive; the drink will be served in a future response. ${generalInstruction}`,
+        `${input.playerName} remains passive; the drink will be served in a future response. ${generalInstruction}`,
 
     PatronDrinkOutcome: input => `Continue the scene with some visual novel style development as ${input.patronName} accepts the drink ${input.playerName} has chosen: ${input.beverageName}. ` +
-        `Steer the scene to move in a positive or negative direction based on ${input.patronName}'s reaction to this beverage and how well it suits their tastes or situation. ${generalInstruction}`,
+        `Strongly steer the scene to move in a positive or negative direction based on ${input.patronName}'s reaction to this beverage and how well it suits their current taste or mood. ${generalInstruction}`,
 
     PatronLeaves: input => `Continue the scene with some visual novel style development as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar. ` +
         `Honor their personal style and connections to other patrons or ${input.playerName}. ${generalInstruction}`,
@@ -80,7 +80,7 @@ export class Director {
                 break;
             case Direction.PatronDrinkOutcome:
             case Direction.PatronBanter:
-                newDirection = Math.random() > 0.3 ? Direction.PatronProblem : (Math.random() > 0.3 ? Direction.IntroducePatron : Direction.PatronDrinkRequest);
+                newDirection = Math.random() > 0.3 ? Direction.PatronProblem : (Math.random() > 0.5 ? Direction.IntroducePatron : (Math.random() > 0.5 ? Direction.PatronDrinkRequest : Direction.PatronLeaves));
                 break;
             case Direction.PatronProblem:
                 newDirection = Math.random() > 0.7 ? Direction.PatronBanter : Direction.PatronDrinkRequest;
@@ -89,7 +89,7 @@ export class Director {
                 newDirection = Direction.PatronDrinkOutcome;
                 break;
             case Direction.PatronLeaves:
-                newDirection = Math.random() > 0.5 ? Direction.Lull : Direction.IntroducePatron;
+                newDirection = Math.random() > 0.5 ? Direction.PatronBanter : Direction.IntroducePatron;
                 break;
             default:
                 console.log('Default to Lull');
@@ -129,7 +129,7 @@ export class Director {
             }
         }
 
-        /*if (newDirection == Direction.PatronLeaves) {
+        if (newDirection == Direction.PatronLeaves) {
             // Select a patron to leave
             if (newPresentPatronIds.length > 0) {
                 selectedPatronId = newPresentPatronIds[Math.floor(Math.random() * newPresentPatronIds.length)];
@@ -139,7 +139,7 @@ export class Director {
                 console.log('Was PatronLeaves, but no one is here, so Lull');
                 newDirection = Direction.Lull;
             }
-        }*/
+        }
 
         return {
             direction: newDirection,
