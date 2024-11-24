@@ -70,7 +70,6 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                                     <Typography variant="h6" color='primary' sx={{ marginRight: '1vh' }}>{beverage.name}</Typography>
                                     {!inProgress[beverage.name] ? (
                                         <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
-                                            console.log('Click');
                                             putInProgress(beverage.name, true);
                                             generateBeverageImage(stage(), beverage).then(() => {putInProgress(beverage.name, false)});}}>
                                             <ReplayIcon/>
