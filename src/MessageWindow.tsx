@@ -48,7 +48,8 @@ function MessageWindup({message, options}: MessageWindupProps) {
     );
 }
 
-const CHARACTER_WIDTH: number = 28;
+const CHARACTER_HEIGHT: number = 90;
+const SIZE_RATIO: number = 0.4166666667;
 const getCharacterPosition = (index: number, amount: number) => {
 
     const start = 5;
@@ -66,8 +67,8 @@ interface PatronImageProps {
 
 const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
     const variants: Variants = {
-        talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition - 1}vw`, width: `${CHARACTER_WIDTH + 2}vw`, filter: 'brightness(1)', zIndex: 12, transition: {x: {ease: "easeOut"}}},
-        idle: {color: '#BBBBBB', opacity: 1, x: `${xPosition}vw`, width: `${CHARACTER_WIDTH}vw`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}}},
+        talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition - 1}vw`, height: `${CHARACTER_HEIGHT + 2}vh`, filter: 'brightness(1)', zIndex: 12, transition: {x: {ease: "easeOut"}}},
+        idle: {color: '#BBBBBB', opacity: 1, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT}vh`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}}},
     };
 
     return (
@@ -76,7 +77,7 @@ const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
             initial='idle'
             animate={isTalking ? 'talking' : 'idle'}
             className='important-overflow-visible'
-            style={{position: 'absolute', bottom: '-40vh', maxWidth: '100%', height: 'auto', aspectRatio: '5 / 12', zIndex: 10}}>
+            style={{position: 'absolute', bottom: '-40vh', maxHeight: '100%', width: 'auto', aspectRatio: '5 / 12', zIndex: 10}}>
             <img src={imgUrl} className='important-overflow-visible' style={{position: 'relative', width: '100%', height: '100%'}} alt='Patron Image'/>
         </motion.div>
     );
@@ -157,7 +158,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
             {chatNode()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
                         return <PatronImage imgUrl={stage().patrons[patronId].imageUrl}
-                                            xPosition={getCharacterPosition(index, chatNode()?.presentPatronIds.length ?? 1) - CHARACTER_WIDTH / 2}
+                                            xPosition={getCharacterPosition(index, chatNode()?.presentPatronIds.length ?? 1) - (CHARACTER_HEIGHT * SIZE_RATIO) / 2}
                                             isTalking={patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever')}/>;
                     } else {
                         return <div></div>;
