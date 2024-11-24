@@ -48,7 +48,7 @@ function MessageWindup({message, options}: MessageWindupProps) {
     );
 }
 
-const CHARACTER_HEIGHT: number = 120;
+const CHARACTER_HEIGHT: number = 98;
 const SIZE_RATIO: number = 0.4166666667;
 const getCharacterPosition = (index: number, amount: number) => {
 
@@ -77,7 +77,7 @@ const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
             initial='idle'
             animate={isTalking ? 'talking' : 'idle'}
             className='important-overflow-visible'
-            style={{position: 'absolute', bottom: '-40vh', maxHeight: '100%', width: 'auto', aspectRatio: '5 / 12', zIndex: 10}}>
+            style={{position: 'absolute', bottom: '-35vh', maxHeight: '100%', width: 'auto', aspectRatio: '5 / 12', zIndex: 10}}>
             <img src={imgUrl} className='important-overflow-visible' style={{position: 'relative', width: '100%', height: '100%'}} alt='Patron Image'/>
         </motion.div>
     );
