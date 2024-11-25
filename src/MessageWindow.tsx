@@ -48,7 +48,7 @@ function MessageWindup({message, options}: MessageWindupProps) {
     );
 }
 
-const CHARACTER_HEIGHT: number = 120;
+const CHARACTER_HEIGHT: number = 100;
 const SIZE_RATIO: number = 0.4166666667;
 const getCharacterPosition = (index: number, amount: number) => {
 
