@@ -175,26 +175,6 @@ async function generateDistillation(stage: Stage) {
     console.log(`Source: ${stage.sourceSummary}\nSetting: ${stage.settingSummary}\nTheme: ${stage.themeSummary}\nArt: ${stage.artSummary}`);
 }
 
-export async function generatePatrons(stage: Stage) {
-    for (let character of Object.values(stage.characters)) {
-        if (!stage.patrons[character.name]) {
-            console.log(`Generating a patron for ${character.name}.`);
-            let tries = 3;
-            while (Object.keys(stage.patrons).length < 3 && tries-- >= 0) {
-                let patron = await generatePatron(stage, character);
-                if (patron) {
-                    console.log('Generated patron:');
-                    console.log(patron);
-                    stage.patrons[character.anonymizedId] = patron;
-                    generatePatronImage(stage, patron);
-                } else {
-                    console.log('Failed a patron generation');
-                }
-            }
-        }
-    }
-}
-
 export async function generate(stage: Stage) {
     if (stage.loadingProgress !== undefined) return;
 
@@ -257,7 +237,25 @@ export async function generate(stage: Stage) {
     // TODO: If there was a failure, consider reloading from chatState rather than saving.
 }
 
-
+export async function generatePatrons(stage: Stage) {
+    for (let character of Object.values(stage.characters)) {
+        if (!Object.keys(stage.patrons).includes(character.name)) {
+            console.log(`Generating a patron for ${character.name}.`);
+            let tries = 3;
+            while (!Object.keys(stage.patrons).includes(character.name) && tries-- >= 0) {
+                let patron = await generatePatron(stage, character);
+                if (patron) {
+                    console.log('Generated patron:');
+                    console.log(patron);
+                    stage.patrons[character.anonymizedId] = patron;
+                    generatePatronImage(stage, patron);
+                } else {
+                    console.log('Failed a patron generation');
+                }
+            }
+        }
+    }
+}
 
 export async function generatePatron(stage: Stage, baseCharacter: Character): Promise<Patron|undefined> {
     let patronResponse = await stage.generator.textGen({
