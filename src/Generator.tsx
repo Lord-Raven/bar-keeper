@@ -177,8 +177,8 @@ async function generateDistillation(stage: Stage) {
 
 export async function generatePatrons(stage: Stage) {
     for (let character of Object.values(stage.characters)) {
-        if (!stage.patrons[character.anonymizedId]) {
-            console.log(`Generating a patron for ${character.anonymizedId}.`);
+        if (!stage.patrons[character.name]) {
+            console.log(`Generating a patron for ${character.name}.`);
             let tries = 3;
             while (Object.keys(stage.patrons).length < 3 && tries-- >= 0) {
                 let patron = await generatePatron(stage, character);
@@ -220,7 +220,7 @@ export async function generate(stage: Stage) {
 
         stage.barImageUrl = await stage.makeImage({
             prompt: barPrompt,
-            negative_prompt: 'grainy, low resolution, low quality, ((exterior)), person, people, crowd, (outside), daytime, outdoors',
+            negative_prompt: 'grainy, low resolution, low quality, ((exterior)), person, (people), crowd, (outside), daytime, outdoors',
             aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
         }, '');
 
@@ -250,6 +250,7 @@ export async function generate(stage: Stage) {
         console.log(e);
     }
 
+    console.log(`save background: ${stage.barImageUrl}`);
     await stage.messenger.updateChatState(stage.buildChatState());
     stage.setLoadProgress(undefined, '');
 
@@ -277,7 +278,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     const personalityMatches = result.match(personalityRegex);
     if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1 && /*attributesMatches && attributesMatches.length > 1 &&*/ personalityMatches && personalityMatches.length > 1) {
         console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
-        newPatron = new Patron(baseCharacter.anonymizedId, nameMatches[1].trim(), descriptionMatches[1].trim(), /*attributesMatches[1].trim(),*/ personalityMatches[1].trim(), '');
+        newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), /*attributesMatches[1].trim(),*/ personalityMatches[1].trim(), '');
         stage.patrons[newPatron.name] = newPatron;
     }
 
