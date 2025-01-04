@@ -29,10 +29,6 @@ type InitStateType = any;
 
 type ChatStateType = any;
 
-// nvm use 21.7.1
-// yarn install (if dependencies changed)
-// yarn dev --host --mode staging
-
 export class UiState {
     timestamp: string|null;
 
@@ -62,6 +58,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     // Not saved:
     currentNode: ChatNode|null;
+    characters: {[key: string]: Character};
     characterForGeneration: Character;
     player: User;
     requestedNodes: Promise<ChatNode[]|null>|null = null;
@@ -92,6 +89,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         this.loadingProgress = 30;
         console.log('constructor');
+        this.characters = characters;
         this.characterForGeneration = characters[Object.keys(characters)[0]];
         console.log(this.characterForGeneration);
 
@@ -174,6 +172,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     async updateChatState() {
 
         await this.messenger.updateChatState(this.buildChatState());
+    }
+
+    replaceTags(source: string, replacements: any) {
+        return source.replace(/{{([A-z]*)}}/g, (match) => {
+            const tagName = match.substring(2, match.length - 2).toLowerCase()
+            return (tagName in replacements ? replacements[tagName] : match);
+        });
     }
 
     buildBeverageDescriptions(): string {

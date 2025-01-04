@@ -1,4 +1,4 @@
-import { AspectRatio } from "@chub-ai/stages-ts";
+import {AspectRatio, Character} from "@chub-ai/stages-ts";
 import { Stage } from "./Stage";
 import { Patron } from "./Patron";
 import bottleUrl from './assets/bottle.png'
@@ -71,15 +71,16 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 
-export function buildPatronPrompt(stage: Stage): string {
+export function buildPatronPrompt(stage: Stage, baseCharacter: Character): string {
     return (
         (stage.sourceSummary != '' ? buildSection('Source Material', stage.sourceSummary ?? '') : '') +
         buildSection('Setting', stage.settingSummary ?? '') +
         buildSection('Themes', stage.themeSummary ?? '') +
         buildSection('Location', stage.barDescription ?? '') +
-        buildSection('Priority Instruction', 
-            `You are doing prep work for a roleplaying narrative. Instead of narrating, this preparatory response will craft a new character who might patronize the LOCATION, ` +
-            `giving them a NAME, a DESCRIPTION list of discrete physical and visual traits or booru tags that could apply to this character, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
+        buildSection('Character', stage.replaceTags(`${baseCharacter.description}\n${baseCharacter.personality}`, {user: stage.player.name, char: baseCharacter.name})) +
+        buildSection('Priority Instruction',
+            `You are doing prep work for a roleplay. Instead of narrating, this preparatory response will look at the CHARACTER section and distill it into sections that describe a patron of the LOCATION, ` +
+            `defining a NAME, a DESCRIPTION list of discrete physical and visual traits or booru tags that could apply to this character, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(stage.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
                 `connections between this new character and one or more existing patrons:\n` +
@@ -174,6 +175,26 @@ async function generateDistillation(stage: Stage) {
     console.log(`Source: ${stage.sourceSummary}\nSetting: ${stage.settingSummary}\nTheme: ${stage.themeSummary}\nArt: ${stage.artSummary}`);
 }
 
+export async function generatePatrons(stage: Stage) {
+    for (let character of Object.values(stage.characters)) {
+        if (!stage.patrons[character.anonymizedId]) {
+            console.log(`Generating a patron for ${character.anonymizedId}.`);
+            let tries = 3;
+            while (Object.keys(stage.patrons).length < 3 && tries-- >= 0) {
+                let patron = await generatePatron(stage, character);
+                if (patron) {
+                    console.log('Generated patron:');
+                    console.log(patron);
+                    stage.patrons[character.anonymizedId] = patron;
+                    generatePatronImage(stage, patron);
+                } else {
+                    console.log('Failed a patron generation');
+                }
+            }
+        }
+    }
+}
+
 export async function generate(stage: Stage) {
     if (stage.loadingProgress !== undefined) return;
 
@@ -217,18 +238,8 @@ export async function generate(stage: Stage) {
 
         let tries = 2;
         stage.patrons = {};
-        while (Object.keys(stage.patrons).length < 3 && tries-- >= 0) {
-            stage.setLoadProgress((stage.loadingProgress ?? 0) + 5, 'Generating patrons.');
-            let patron = await generatePatron(stage);
-            if (patron) {
-                console.log('Generated patron:');
-                console.log(patron);
-                stage.patrons[patron.name] = patron;
-                generatePatronImage(stage, patron);
-            } else {
-                console.log('Failed a patron generation');
-            }
-        }
+        stage.setLoadProgress((stage.loadingProgress ?? 0) + 5, 'Generating patrons.');
+        await generatePatrons(stage);
 
         // Finally, display an intro
         stage.currentNode = null;
@@ -247,11 +258,9 @@ export async function generate(stage: Stage) {
 
 
 
-export async function generatePatron(stage: Stage): Promise<Patron|undefined> {
-    // TODO: Generate a name, brief description, and longer description, passing in existing patrons with instruction to make this patron
-    //  distinct from others while potentially having a connection to other established patrons.
+export async function generatePatron(stage: Stage, baseCharacter: Character): Promise<Patron|undefined> {
     let patronResponse = await stage.generator.textGen({
-        prompt: buildPatronPrompt(stage),
+        prompt: buildPatronPrompt(stage, baseCharacter),
         max_tokens: 300,
         min_tokens: 50
     });
@@ -268,8 +277,7 @@ export async function generatePatron(stage: Stage): Promise<Patron|undefined> {
     const personalityMatches = result.match(personalityRegex);
     if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1 && /*attributesMatches && attributesMatches.length > 1 &&*/ personalityMatches && personalityMatches.length > 1) {
         console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
-        newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), /*attributesMatches[1].trim(),*/ personalityMatches[1].trim(), '');
-        //  Generate a normal image, then image2image for happy and unhappy image.
+        newPatron = new Patron(baseCharacter.anonymizedId, nameMatches[1].trim(), descriptionMatches[1].trim(), /*attributesMatches[1].trim(),*/ personalityMatches[1].trim(), '');
         stage.patrons[newPatron.name] = newPatron;
     }
 
