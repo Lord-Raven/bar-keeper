@@ -248,7 +248,7 @@ export async function generatePatrons(stage: Stage) {
                 if (patron) {
                     console.log('Generated patron:');
                     console.log(patron);
-                    stage.patrons[character.anonymizedId] = patron;
+                    stage.patrons[character.name] = patron;
                     generatePatronImage(stage, patron);
                 } else {
                     console.log('Failed a patron generation');
