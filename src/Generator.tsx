@@ -14,7 +14,7 @@ export function buildDistillationPrompt(description: string): string {
         buildSection('Flavor Text', description) +
         buildSection('Priority Instruction', 
             `The FLAVOR TEXT is merely inspirational material that you will use to establish a SOURCE, SETTING, THEMES, and ART style for upcoming narration and illustration. ` +
-            `This initial response includes four specific and clearly defined fields, each containing a comma-delimitted list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
+            `This initial response includes four specific and clearly defined fields, each containing a comma-delimited list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
             `"SOURCE" should name the source material of FLAVOR TEXT, if any; leave this blank or 'Original' if FLAVOR TEXT is not derived from a known work.\n` +
             `"SETTING" should briefly summarize the overarching location, vibe, or time period derived from the FLAVOR TEXT, including any key deviations from setting expectations.\n` +
             `"THEMES" should list all of the prominent themes, concepts, quirks, or kinks from the FLAVOR TEXT.\n` +
@@ -64,10 +64,11 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `NAME: Swamp Brew DESCRIPTION: This greenish-brown ale is served in makeshift cups fashioned from skulls, with a frothy head that never settles and a flavor profile dominated by algae and muddy undertones.\n`) +
         stage.buildBeverageDescriptions() +
         buildSection('Priority Instruction', 
-            `You are doing prep work for a roleplaying narrative. Instead of narrating, this preparatory response needs to list out several types of alcohol that the LOCATION might serve, ` +
+            `You are doing prep work for a roleplaying narrative. Instead of narrating, this preparatory response firsts lists out several types of alcohol that the LOCATION might serve, ` +
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
-            `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, each formatted into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
-            `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your entries while eschewing narration`) +
+            `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, yet evoke different moods or sensations. ` +
+            `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
+            `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your entries`) +
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 
@@ -200,7 +201,7 @@ export async function generate(stage: Stage) {
 
         stage.barImageUrl = await stage.makeImage({
             prompt: barPrompt,
-            negative_prompt: 'grainy, low resolution, low quality, ((exterior)), person, (people), crowd, (outside), daytime, outdoors',
+            negative_prompt: '((exterior)), (people), (outside), daytime, outdoors',
             aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
         }, '');
 

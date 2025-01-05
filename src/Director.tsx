@@ -40,7 +40,7 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
         `${input.playerName} remains passive; the drink will be served in a future response. ${generalInstruction}`,
 
     PatronDrinkOutcome: input => `Continue the scene with some visual novel style development as ${input.patronName} accepts the drink ${input.playerName} has chosen: ${input.beverageName}. ` +
-        `Strongly steer the scene to move in a positive or negative direction based on ${input.patronName}'s reaction to this beverage and how well it suits their current taste or mood. ${generalInstruction}`,
+        `Strongly steer the scene in a new direction--positive or negative--based on the nature of this beverage, ${input.patronName}'s reaction to the beverage, and how well it suits their current taste or mood. ${generalInstruction}`,
 
     PatronLeaves: input => `Continue the scene with some visual novel style development as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar. ` +
         `Honor their personal style and connections to other patrons or ${input.playerName}. ${generalInstruction}`,
