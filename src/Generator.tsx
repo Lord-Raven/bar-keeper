@@ -81,13 +81,13 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
         buildSection('Character', stage.replaceTags(`${baseCharacter.description}\n${baseCharacter.personality}`, {user: stage.player.name, char: baseCharacter.name})) +
         buildSection('Priority Instruction',
             `You are doing prep work for a roleplay. Instead of narrating, this preparatory response will look at the CHARACTER section and distill it into sections that describe a patron of the LOCATION, ` +
-            `defining a NAME, a DESCRIPTION list of discrete physical and visual traits or booru tags that could apply to this character, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
+            `defining a NAME, a DESCRIPTION list of discrete physical and visual traits, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(stage.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
                 `connections between this new character and one or more existing patrons:\n` +
                 `${Object.values(stage.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n')) +
-        buildSection('Example Responses', `NAME: Character Name\nDESCRIPTION: A comma-delimitted list of exhaustive physical and visual qualities or booru tags, including gender, race, skin tone, hair color/style, eye color, height, build, clothing, accessories, and other obvious traits, making sure to call out visually important elements that are inherent to race or gender.\nPERSONALITY: Personality and background details.`) +
+        buildSection('Example Responses', `NAME: Character Name\nDESCRIPTION: A comma-delimited list of exhaustive physical and visual qualities or booru tags, including gender, race, skin tone, hair color/style, eye color, build, clothing, accessories, and other visually defining traits.\nPERSONALITY: In depth personality and background details.`) +
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 
@@ -148,7 +148,7 @@ async function generateDistillation(stage: Stage) {
     while ((stage.settingSummary == '' || stage.themeSummary == '' || stage.artSummary == '') && tries > 0) {
         let textResponse = await stage.generator.textGen({
             prompt: buildDistillationPrompt(stage.characterForGeneration.personality + ' ' + stage.characterForGeneration.description),
-            max_tokens: 150,
+            max_tokens: 100,
             min_tokens: 50
         });
         if (textResponse && textResponse.result) {
@@ -269,7 +269,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     console.log(patronResponse);
     const nameRegex = /Name\s*[:\-]?\s*(.*)/i;
     const descriptionRegex = /Description\s*[:\-]?\s*(.*)/i;
-    //const attributesRegex = /Attributes\s*[:\-]?\s*(.*)/i;
+    const attributesRegex = /Attributes\s*[:\-]?\s*(.*)/i;
     const personalityRegex = /Personality\s*[:\-]?\s*(.*)/i;
     const nameMatches = result.match(nameRegex);
     const descriptionMatches = result.match(descriptionRegex);
@@ -284,14 +284,14 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     return newPatron;
 }
 
-const patronImagePrompt: string = 'calm expression, neutral pose, empty background, (contrasting background color), standing, full body, head-to-toe';
+const patronImagePrompt: string = 'calm expression, (contrasting empty background color), standing';
 const patronImageNegativePrompt: string = 'border, ((close-up)), background elements, special effects, matching background, amateur, low quality, action, cut-off';
 
 export async function generatePatronImage(stage: Stage, patron: Patron): Promise<void> {
     patron.imageUrl = await stage.makeImage({
         //image: bottleUrl,
         //strength: 0.1,
-        prompt: `${patronImagePrompt},` + (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + ` (art style: ${stage.artSummary}), solo character, ${patron.description}`,
+        prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, (${patron.description})`,
         negative_prompt: patronImageNegativePrompt,
         aspect_ratio: AspectRatio.CINEMATIC_VERTICAL, //.WIDESCREEN_VERTICAL,
         remove_background: true
