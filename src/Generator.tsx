@@ -51,12 +51,6 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
         buildSection('Setting', stage.settingSummary ?? '') +
         buildSection('Themes', stage.themeSummary ?? '') +
         buildSection('Location', stage.barDescription ?? '') +
-        buildSection('Priority Instruction',
-            `You are doing prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to first list out several types of alcohol that the LOCATION might serve, ` +
-            `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
-            `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, yet evoke different moods or sensations. ` +
-            `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
-            `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your entries`) +
         buildSection('Example Responses',
             `NAME: Cherry Rotgut DESCRIPTION: A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
             `NAME: Tritium Delight DESCRIPTION: An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
@@ -69,7 +63,13 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `NAME: USB Port DESCRIPTION: Alcohol for wannabe techbros. Not legally a 'port' because of international protections surrounding the term.\n` +
             `NAME: Swamp Brew DESCRIPTION: This greenish-brown ale is served in makeshift cups fashioned from skulls, with a frothy head that never settles and a flavor profile dominated by algae and muddy undertones.\n`) +
         stage.buildBeverageDescriptions() +
-        buildSection('Standard Instruction', '{{suffix}}')).trim();
+        buildSection('Standard Instruction', '{{suffix}}')).trim() +
+        buildSection('Priority Instruction',
+            `You are doing prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to first list out several types of alcohol that the LOCATION might serve, ` +
+            `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
+            `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, yet evoke different moods or sensations. ` +
+            `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
+            `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your entries`);
 }
 
 export function buildPatronPrompt(stage: Stage, baseCharacter: Character): string {
