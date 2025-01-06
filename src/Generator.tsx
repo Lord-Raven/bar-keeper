@@ -9,9 +9,9 @@ export function buildSection(name: string, body: string) {
     return `###${name.toUpperCase()}: ${body.trim()}\n\n`;
 }
 
-export function buildDistillationPrompt(description: string): string {
+export function buildDistillationPrompt(stage: Stage, baseCharacter: Character): string {
     return (
-        buildSection('Flavor Text', description) +
+        buildSection('Flavor Text', stage.replaceTags((baseCharacter.personality + ' ' + baseCharacter.description), {user: stage.player.name, char: baseCharacter.name})) +
         buildSection('Priority Instruction', 
             `The FLAVOR TEXT is merely inspirational material that you will use to establish a SOURCE, SETTING, THEMES, and ART style for upcoming narration and illustration. ` +
             `This initial response includes four specific and clearly defined fields, each containing a comma-delimited list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
@@ -51,6 +51,12 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
         buildSection('Setting', stage.settingSummary ?? '') +
         buildSection('Themes', stage.themeSummary ?? '') +
         buildSection('Location', stage.barDescription ?? '') +
+        buildSection('Priority Instruction',
+            `You are doing prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to first list out several types of alcohol that the LOCATION might serve, ` +
+            `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
+            `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, yet evoke different moods or sensations. ` +
+            `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
+            `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your entries`) +
         buildSection('Example Responses',
             `NAME: Cherry Rotgut DESCRIPTION: A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
             `NAME: Tritium Delight DESCRIPTION: An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
@@ -63,12 +69,6 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `NAME: USB Port DESCRIPTION: Alcohol for wannabe techbros. Not legally a 'port' because of international protections surrounding the term.\n` +
             `NAME: Swamp Brew DESCRIPTION: This greenish-brown ale is served in makeshift cups fashioned from skulls, with a frothy head that never settles and a flavor profile dominated by algae and muddy undertones.\n`) +
         stage.buildBeverageDescriptions() +
-        buildSection('Priority Instruction', 
-            `You are doing prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to first list out several types of alcohol that the LOCATION might serve, ` +
-            `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
-            `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, yet evoke different moods or sensations. ` +
-            `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
-            `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your entries`) +
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 
@@ -81,13 +81,15 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
         buildSection('Character', stage.replaceTags(`${baseCharacter.description}\n${baseCharacter.personality}`, {user: stage.player.name, char: baseCharacter.name})) +
         buildSection('Priority Instruction',
             `You are doing prep work for a roleplay. Instead of narrating, this preparatory response will look at the CHARACTER section and distill it into sections that describe a patron of the LOCATION, ` +
-            `defining a NAME, a DESCRIPTION list of discrete physical and visual traits, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
+            `defining a NAME, a DESCRIPTION list of comma-delimited physical and visual traits or booru tags, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(stage.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
                 `connections between this new character and one or more existing patrons:\n` +
                 `${Object.values(stage.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n')) +
-        buildSection('Example Responses', `NAME: Character Name\nDESCRIPTION: A comma-delimited list of exhaustive physical and visual qualities or booru tags, including gender, race, skin tone, hair color/style, eye color, build, clothing, accessories, and other visually defining traits.\nPERSONALITY: In depth personality and background details.`) +
+        buildSection('Example Responses',
+            `NAME: Carolina Reaper\nDESCRIPTION: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy as fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
+            `NAME: Pwince Gwegowy\nDESCRIPTION: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.`) +
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 
@@ -147,7 +149,7 @@ async function generateDistillation(stage: Stage) {
     let tries = 3;
     while ((stage.settingSummary == '' || stage.themeSummary == '' || stage.artSummary == '') && tries > 0) {
         let textResponse = await stage.generator.textGen({
-            prompt: buildDistillationPrompt(stage.characterForGeneration.personality + ' ' + stage.characterForGeneration.description),
+            prompt: buildDistillationPrompt(stage, stage.characterForGeneration),
             max_tokens: 100,
             min_tokens: 50
         });
