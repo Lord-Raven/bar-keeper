@@ -16,7 +16,7 @@ import ReplayIcon from "@mui/icons-material/Replay";
 import {Direction, Director, sampleScript} from "./Director";
 import {MessageWindow} from "./MessageWindow"
 import { register } from "register-service-worker";
-import { buildSection, generate } from "./Generator";
+import {buildSection, generate, generatePatrons} from "./Generator";
 import {ChatNode, createNodes} from "./ChatNode";
 import {BeverageDisplay} from "./BeverageDisplay";
 import {GenerationUi} from "./GenerationUi";
@@ -101,12 +101,19 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         //this.patronImagePrompt = config.character_prompt ?? this.patronImagePrompt;
         //this.patronImageNegativePrompt = config.character_negative_prompt ?? this.patronImageNegativePrompt;
 
+
         register('/service-worker.js');
     }
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
 
         this.loadingProgress = undefined;
+
+        if (this.currentNode != null) {
+            // Game's in progress--go ahead and check if any bots aren't represented in patrons:
+            await generatePatrons(this);
+        }
+
         return {
             success: true,
             error: null,

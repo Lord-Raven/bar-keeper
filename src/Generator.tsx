@@ -64,7 +64,7 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `NAME: Swamp Brew DESCRIPTION: This greenish-brown ale is served in makeshift cups fashioned from skulls, with a frothy head that never settles and a flavor profile dominated by algae and muddy undertones.\n`) +
         stage.buildBeverageDescriptions() +
         buildSection('Priority Instruction', 
-            `You are doing prep work for a roleplaying narrative. Instead of narrating, this preparatory response firsts lists out several types of alcohol that the LOCATION might serve, ` +
+            `You are doing prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to first list out several types of alcohol that the LOCATION might serve, ` +
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
             `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, yet evoke different moods or sensations. ` +
             `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
