@@ -109,11 +109,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         this.loadingProgress = undefined;
 
-        if (this.currentNode != null) {
-            // Game's in progress--go ahead and check if any bots aren't represented in patrons:
-            await generatePatrons(this);
-        }
-
         return {
             success: true,
             error: null,
