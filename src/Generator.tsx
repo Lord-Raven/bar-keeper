@@ -79,19 +79,19 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
         buildSection('Themes', stage.themeSummary ?? '') +
         buildSection('Location', `A description of the specific location of this setting: ${stage.barDescription}` ?? '') +
         buildSection('Character', stage.replaceTags(`${baseCharacter.description}\n${baseCharacter.personality}`, {user: stage.player.name, char: baseCharacter.name})) +
-        buildSection('Priority Instruction',
-            `This is prep work for a roleplaying game. Instead of narrating, this preparatory response will look at the CHARACTER section and distill it into sections that describe a patron of the LOCATION. ` +
-            `Define the character's NAME, a TRAITS list of comma-delimited physical and visual traits or booru tags, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
+        buildSection('Example Responses',
+            `NAME: Carolina Reaper\nTRAITS: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy-as-fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
+            `NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
+            `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.`) +
+        buildSection('Overriding Priority',
+            `You will be narrating a roleplay, but first, you must perform some prep work. Instead of narrating, this preparatory response will look at the CHARACTER description above and condense it into formatted output that describes a patron of the LOCATION. ` +
+            `You must define the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(stage.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
                 `connections between this new character and one or more existing patrons:\n` +
                 `${Object.values(stage.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n')) +
-        buildSection('Example Responses',
-            `NAME: Carolina Reaper\nTRAITS: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy as fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
-            `NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
-            `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.`) +
-        buildSection('Standard Instruction', '{{post_history}}')).trim();
+        buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 
 export async function generateBeverages(stage: Stage) {
