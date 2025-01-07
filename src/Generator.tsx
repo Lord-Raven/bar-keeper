@@ -309,7 +309,8 @@ export async function generatePatronImage(stage: Stage, patron: Patron): Promise
             image: patron.imageNeutral,
             prompt: 'Happy, smiling',
             search_prompt: 'face',
-            // transfer_type: 'face',
+            mask_image: '',
+            transfer_type: 'face',
             strength: 0.8
         }, patron.imageNeutral);
     }
