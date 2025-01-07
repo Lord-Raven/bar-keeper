@@ -42,7 +42,7 @@ export function buildBarDescriptionPrompt(stage: Stage): string {
             'You are doing prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to write a few sentences describing a fictional pub, bar, club, or tavern set in SETTING, drawing upon the THEMES. ' +
             'This descriptive paragraph should focus on the interior description, ambience, theming, fixtures, and general clientele of the establishment. ' +
             'This informative and flavorful description will later be used in future, narrative responses.\n') +
-        buildSection('Former Instruction', '{{suffix}}')).trim();
+        buildSection('Default Instruction', '{{suffix}}')).trim();
 }
 
 export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
@@ -63,13 +63,13 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `NAME: USB Port DESCRIPTION: Alcohol for wannabe techbros. Not legally a 'port' because of international protections surrounding the term.\n` +
             `NAME: Swamp Brew DESCRIPTION: This greenish-brown ale is served in makeshift cups fashioned from skulls, with a frothy head that never settles and a flavor profile dominated by algae and muddy undertones.\n`) +
         stage.buildBeverageDescriptions() +
-        buildSection('Priority Instruction',
+        buildSection('Overriding Instruction',
             `You are doing prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to define a formatted list of beverages that the LOCATION might serve, ` +
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
             `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, yet evoke different moods or sensations. ` +
             `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
             `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your entries`) +
-        buildSection('Former Instruction', '{{suffix}}')).trim();
+        buildSection('Default Instruction', '{{suffix}}')).trim();
 }
 
 export function buildPatronPrompt(stage: Stage, baseCharacter: Character): string {
@@ -83,7 +83,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
             `NAME: Carolina Reaper\nTRAITS: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy-as-fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
             `NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
             `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.`) +
-        buildSection('Overriding Priority',
+        buildSection('Overriding Instruction',
             `You will be narrating a roleplay, but first, you must perform some prep work. Instead of narrating, this preparatory response will look at the CHARACTER description above and condense it into formatted output that describes a patron of the LOCATION. ` +
             `You must define the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(stage.patrons).length > 0 ?
@@ -91,7 +91,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
                 `connections between this new character and one or more existing patrons:\n` +
                 `${Object.values(stage.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n')) +
-        buildSection('Standard Instruction', '{{suffix}}')).trim();
+        buildSection('Default Instruction', '{{suffix}}')).trim();
 }
 
 export async function generateBeverages(stage: Stage) {
@@ -106,8 +106,8 @@ export async function generateBeverages(stage: Stage) {
         console.log(alcoholResponse?.result);
         stage.beverages.push(...(alcoholResponse?.result ?? '').split(new RegExp('NAME:', 'i'))
             .map(item => {
-                const nameMatch = item.match(/\s*(.*?)\s*Traits:/i);
-                const descriptionMatch = item.match(/Traits:\s*(.*)/i);
+                const nameMatch = item.match(/\s*(.*?)\s*Description:/i);
+                const descriptionMatch = item.match(/Description:\s*(.*)/i);
                 console.log(`${nameMatch ? nameMatch[1].trim() : ''}, ${descriptionMatch ? descriptionMatch[1].trim() : ''}`);
                 return new Beverage(nameMatch ? nameMatch[1].trim() : '', descriptionMatch ? descriptionMatch[1].trim() : '', '');
             }).filter(beverage => beverage.name != '' && beverage.description != '' && stage.beverages.filter(existing => existing.name.toLowerCase() == beverage.name.toLowerCase()).length == 0));
@@ -271,7 +271,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     let newPatron: Patron|undefined = undefined;
     console.log(patronResponse);
     const nameRegex = /Name\s*[:\-]?\s*(.*)/i;
-    const descriptionRegex = /Description\s*[:\-]?\s*(.*)/i;
+    const descriptionRegex = /Traits\s*[:\-]?\s*(.*)/i;
     const attributesRegex = /Attributes\s*[:\-]?\s*(.*)/i;
     const personalityRegex = /Personality\s*[:\-]?\s*(.*)/i;
     const nameMatches = result.match(nameRegex);
