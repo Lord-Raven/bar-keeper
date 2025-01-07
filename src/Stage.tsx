@@ -210,6 +210,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async advanceMessage() {
+
+        // Go ahead and do a patron check--don't wait up.
+        generatePatrons(this);
+
         console.log('advanceMessage');
         if (!this.requestedNodes && (!this.currentNode || this.currentNode.direction != Direction.PatronDrinkRequest)) {
             console.log('Kick off generation');
