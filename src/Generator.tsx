@@ -280,7 +280,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     const personalityMatches = result.match(personalityRegex);
     if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1 && /*attributesMatches && attributesMatches.length > 1 &&*/ personalityMatches && personalityMatches.length > 1) {
         console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
-        newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), /*attributesMatches[1].trim(),*/ personalityMatches[1].trim(), '');
+        newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), /*attributesMatches[1].trim(),*/ personalityMatches[1].trim());
         stage.patrons[baseCharacter.name] = newPatron;
     }
 
@@ -291,7 +291,7 @@ const patronImagePrompt: string = 'calm expression, (contrasting empty backgroun
 const patronImageNegativePrompt: string = 'border, ((close-up)), background elements, special effects, matching background, amateur, low quality, action, cut-off';
 
 export async function generatePatronImage(stage: Stage, patron: Patron): Promise<void> {
-    patron.imageUrl = await stage.makeImage({
+    patron.imageNeutral = await stage.makeImage({
         //image: bottleUrl,
         //strength: 0.1,
         prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, (${patron.description})`,
@@ -302,7 +302,15 @@ export async function generatePatronImage(stage: Stage, patron: Patron): Promise
         //item_id: null,
     }, '');
 
-    if (patron.imageUrl == '') {
+    if (patron.imageNeutral == '') {
         throw Error('Failed to generate a patron image');
+    } else {
+        patron.imageHappy = await stage.inpaintImage({
+            image: patron.imageNeutral,
+            prompt: 'Happy, smiling',
+            mask: 'face',
+            transferType: 'face',
+            strength: 0.8
+        }, patron.imageNeutral);
     }
 }

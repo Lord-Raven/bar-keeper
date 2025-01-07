@@ -157,7 +157,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
             </Box>
             {chatNode()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
-                        return <PatronImage imgUrl={stage().patrons[patronId].imageUrl}
+                        return <PatronImage imgUrl={Math.random() > 0.5 ? stage().patrons[patronId].imageNeutral : stage().patrons[patronId].imageHappy}
                                             xPosition={getCharacterPosition(index, chatNode()?.presentPatronIds.length ?? 1) - (CHARACTER_HEIGHT * SIZE_RATIO) / 2}
                                             isTalking={patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever')}/>;
                     } else {

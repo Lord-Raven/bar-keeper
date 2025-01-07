@@ -300,6 +300,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return !this.disableContentGeneration ? (await this.generator.makeImage(imageRequest))?.url ?? defaultUrl : defaultUrl;
     }
 
+    async inpaintImage(inpaintRequest: Object, defaultUrl: string): Promise<string> {
+        return !this.disableContentGeneration ? (await this.generator.inpaintImage(inpaintRequest))?.url ?? defaultUrl : defaultUrl;
+    }
+
     async makeImageFromImage(imageToImageRequest: Object, defaultUrl: string): Promise<string> {
         return !this.disableContentGeneration ? (await this.generator.imageToImage(imageToImageRequest))?.url ?? defaultUrl : defaultUrl;
     }
