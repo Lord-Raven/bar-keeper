@@ -300,7 +300,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async inpaintImage(inpaintRequest: Object, defaultUrl: string): Promise<string> {
-        return !this.disableContentGeneration ? (await this.generator.inpaintImage(inpaintRequest))?.url ?? defaultUrl : defaultUrl;
+        if (this.disableContentGeneration) {
+            return defaultUrl;
+        }
+        const response = await this.generator.inpaintImage(inpaintRequest);
+        console.log('Inpaint response:');
+        console.log(response);
+        return response?.url ?? defaultUrl;
     }
 
     async makeImageFromImage(imageToImageRequest: Object, defaultUrl: string): Promise<string> {
