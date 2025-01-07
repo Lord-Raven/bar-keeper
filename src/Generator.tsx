@@ -81,15 +81,16 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
         buildSection('Character', stage.replaceTags(`${baseCharacter.description}\n${baseCharacter.personality}`, {user: stage.player.name, char: baseCharacter.name})) +
         buildSection('Priority Instruction',
             `You are doing prep work for a roleplay. Instead of narrating, this preparatory response will look at the CHARACTER section and distill it into sections that describe a patron of the LOCATION, ` +
-            `defining a NAME, a DESCRIPTION list of comma-delimited physical and visual traits or booru tags, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
+            `defining a NAME, a TRAITS list of comma-delimited physical and visual traits or booru tags, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(stage.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
                 `connections between this new character and one or more existing patrons:\n` +
                 `${Object.values(stage.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n')) +
         buildSection('Example Responses',
-            `NAME: Carolina Reaper\nDESCRIPTION: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy as fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
-            `NAME: Pwince Gwegowy\nDESCRIPTION: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.`) +
+            `NAME: Carolina Reaper\nTRAITS: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy as fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
+            `NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
+            `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, blue skin, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.`) +
         buildSection('Standard Instruction', '{{suffix}}')).trim();
 }
 
@@ -280,7 +281,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1 && /*attributesMatches && attributesMatches.length > 1 &&*/ personalityMatches && personalityMatches.length > 1) {
         console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
         newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), /*attributesMatches[1].trim(),*/ personalityMatches[1].trim(), '');
-        stage.patrons[newPatron.name] = newPatron;
+        stage.patrons[baseCharacter.name] = newPatron;
     }
 
     return newPatron;
@@ -293,7 +294,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron): Promise
     patron.imageUrl = await stage.makeImage({
         //image: bottleUrl,
         //strength: 0.1,
-        prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, (${patron.description})`,
+        prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, (${patron.description})`,
         negative_prompt: patronImageNegativePrompt,
         aspect_ratio: AspectRatio.CINEMATIC_VERTICAL, //.WIDESCREEN_VERTICAL,
         remove_background: true
