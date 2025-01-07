@@ -30,7 +30,7 @@ export function buildDistillationPrompt(stage: Stage, baseCharacter: Character):
             `"SOURCE: Original\nSETTING: Underground 80s Mid-West biker bar\nTHEMES: turf war, drug running, machismo, brutality, sex and drugs, furries, anthropomorphic characters\nART: Comic book style illustrations, neon, chrome, bright colors, bulging muscles, furries, heavy inks for contrast, crosshatching"\n` +
             `"SOURCE: Original\nSETTING: 70s disco scene, Los Angeles\nTHEMES: Free love, vampires, lycanthropes, disco, secret fantasy underworld, clubs, maintaining secrecy\nART: Psychedelic, lurid colors, stylish, 70s clothing, interesting and exaggerated character proportions"\n` +
             `"SOURCE: Warhammer 40k\nSETTING: Massive Cathedral starship from the Warhammer 40k universe\nTHEMES: brutality, faith, devotion, heresy, power armor\nART: grimdark, high contrast, saturated yet gritty colors, heavy inks and shadows, strong characters, extreme technologies, power armor"\n`) +
-        buildSection('Standard Instruction', '{{suffix}}')).trim();
+        buildSection('Former Instruction', '{{suffix}}')).trim();
 }
 
 export function buildBarDescriptionPrompt(stage: Stage): string {
@@ -42,7 +42,7 @@ export function buildBarDescriptionPrompt(stage: Stage): string {
             'You are doing prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to write a few sentences describing a fictional pub, bar, club, or tavern set in SETTING, drawing upon the THEMES. ' +
             'This descriptive paragraph should focus on the interior description, ambience, theming, fixtures, and general clientele of the establishment. ' +
             'This informative and flavorful description will later be used in future, narrative responses.\n') +
-        buildSection('Standard Instruction', '{{suffix}}')).trim();
+        buildSection('Former Instruction', '{{suffix}}')).trim();
 }
 
 export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
@@ -69,7 +69,7 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, yet evoke different moods or sensations. ` +
             `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
             `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your entries`) +
-        buildSection('Standard Instruction', '{{suffix}}')).trim();
+        buildSection('Former Instruction', '{{suffix}}')).trim();
 }
 
 export function buildPatronPrompt(stage: Stage, baseCharacter: Character): string {
@@ -77,8 +77,12 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
         (stage.sourceSummary != '' ? buildSection('Source Material', stage.sourceSummary ?? '') : '') +
         buildSection('Setting', stage.settingSummary ?? '') +
         buildSection('Themes', stage.themeSummary ?? '') +
-        buildSection('Location', stage.barDescription ?? '') +
+        buildSection('Location', `A description of the specific location of this setting: ${stage.barDescription}` ?? '') +
         buildSection('Character', stage.replaceTags(`${baseCharacter.description}\n${baseCharacter.personality}`, {user: stage.player.name, char: baseCharacter.name})) +
+        buildSection('Example Responses',
+            `NAME: Carolina Reaper\nTRAITS: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy as fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
+            `NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
+            `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.`) +
         buildSection('Priority Instruction',
             `You are doing prep work for a roleplay. Instead of narrating, this preparatory response will look at the CHARACTER section and distill it into sections that describe a patron of the LOCATION, ` +
             `defining a NAME, a TRAITS list of comma-delimited physical and visual traits or booru tags, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
@@ -87,11 +91,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
                 `connections between this new character and one or more existing patrons:\n` +
                 `${Object.values(stage.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n')) +
-        buildSection('Example Responses',
-            `NAME: Carolina Reaper\nTRAITS: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy as fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
-            `NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
-            `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, blue skin, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.`) +
-        buildSection('Standard Instruction', '{{suffix}}')).trim();
+        buildSection('Former Instruction', '{{suffix}}')).trim();
 }
 
 export async function generateBeverages(stage: Stage) {
