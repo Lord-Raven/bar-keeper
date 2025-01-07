@@ -97,7 +97,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         console.log('Config loaded:');
         console.log(config);
-        console.log(`Background loaded: ${this.barImageUrl}`);
         //this.patronImagePrompt = config.character_prompt ?? this.patronImagePrompt;
         //this.patronImageNegativePrompt = config.character_negative_prompt ?? this.patronImageNegativePrompt;
 

@@ -87,7 +87,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                     {Object.values(stage().patrons).map((patron) => (
                         <Grid key={patron.name}>
                             <Box sx={{ textAlign: 'center', height: '20vh' }}>
-                                <img src={patron.imageUrl} alt={patron.name} style={{ width: 'auto', height: '15vh', margin: '0 auto'}} />
+                                <img src={patron.imageNeutral} alt={patron.name} style={{ width: 'auto', height: '15vh', margin: '0 auto'}} />
                                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '1vh' }}>
                                     <Typography variant="h6" color='primary' sx={{ marginRight: '1vh' }}>{patron.name}</Typography>
                                     {!inProgress[patron.name] ? (
@@ -109,50 +109,3 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
         )}
     </div>
 }
-
-/*
-                <Grid container spacing={1}>
-                    <Grid container size={6}>
-                        <Grid key='beverage-header' size={12}>
-                            <Typography color='primary' variant="h5">Beverages</Typography>
-                        </Grid>
-                        {stage().beverages.map((beverage) => (
-                            <Grid key={beverage.name} size={12} sx={{height: '350px'}}>
-                                <Box sx={{ height: '300px', maxHeight: '100%', overflow: 'hidden' }}>
-                                    <Avatar alt={beverage.name} src={beverage.imageUrl} sx={{width: 'auto', height: '100%'}}/>
-                                </Box>
-                                <Box sx={{ height: '50px',  overflow: 'hidden' }}>
-                                    <Typography color='primary' variant="h6">{beverage.name}</Typography>
-                                    {!inProgress[beverage.name] ? (
-                                        <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
-                                            putInProgress(beverage.name, true);
-                                            generateBeverageImage(stage(), beverage).then(() => {putInProgress(beverage.name, false)});}}>
-                                            <ReplayIcon/>
-                                        </IconButton>
-                                    ) : (
-                                        <CircularProgress/>
-                                    )}
-                                </Box>
-                            </Grid>
-                        ))}
-                    </Grid>
-                    <Grid container size={6}>
-                        <Grid key='patron-header' size={12}>
-                            <Typography variant="h5">Patrons</Typography>
-                        </Grid>
-                        {Object.values(stage().patrons).map((patron) => (
-                            <Grid container key={patron.name} size={12} sx={{height: '6vh'}}>
-                                <Grid size={4}>
-                                    <Avatar alt={patron.name} src={patron.imageUrl}/>
-                                </Grid>
-                                <Grid size={8}>
-                                    <Typography variant="h6">{patron.name}</Typography>
-                                    <IconButton style={{outline: 1}} color={'primary'} onClick={() => {}}>
-                                        <ReplayIcon/>
-                                    </IconButton>
-                                </Grid>
-                            </Grid>
-                        ))}
-                    </Grid>
-                </Grid>
-                    */
