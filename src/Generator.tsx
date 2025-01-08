@@ -308,9 +308,8 @@ export async function generatePatronImage(stage: Stage, patron: Patron): Promise
         patron.imageHappy = await stage.inpaintImage({
             image: patron.imageNeutral,
             prompt: 'Happy, smiling',
-            negative_prompt: patronImageNegativePrompt,
-            search_prompt: 'face',
-            mask_image: 'something',
+            mask: 'face',
+            transferType: 'face',
             strength: 0.8
         }, patron.imageNeutral);
     }
