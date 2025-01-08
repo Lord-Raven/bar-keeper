@@ -287,14 +287,14 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     return newPatron;
 }
 
-const patronImagePrompt: string = 'calm expression, (contrasting empty background color), standing';
+const patronImagePrompt: string = '(contrasting empty background color), standing';
 const patronImageNegativePrompt: string = 'border, ((close-up)), background elements, special effects, matching background, amateur, low quality, action, cut-off';
 
 export async function generatePatronImage(stage: Stage, patron: Patron): Promise<void> {
     patron.imageNeutral = await stage.makeImage({
         //image: bottleUrl,
         //strength: 0.1,
-        prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, (${patron.description})`,
+        prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, calm expression, (${patron.description})`,
         negative_prompt: patronImageNegativePrompt,
         aspect_ratio: AspectRatio.CINEMATIC_VERTICAL, //.WIDESCREEN_VERTICAL,
         remove_background: true
@@ -305,12 +305,21 @@ export async function generatePatronImage(stage: Stage, patron: Patron): Promise
     if (patron.imageNeutral == '') {
         throw Error('Failed to generate a patron image');
     } else {
-        patron.imageHappy = await stage.inpaintImage({
+        patron.imageHappy = await stage.makeImageFromImage({
+            image: patron.imageNeutral,
+            prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, happy expression, (${patron.description})`,
+            negative_prompt: patronImageNegativePrompt,
+            aspect_ratio: AspectRatio.CINEMATIC_VERTICAL,
+            remove_background: true,
+            strength: 0.5
+        }, '');
+
+        /*await stage.inpaintImage({
             image: patron.imageNeutral,
             prompt: 'Happy, smiling',
             mask: 'face',
             transferType: 'face',
             strength: 0.8
-        }, patron.imageNeutral);
+        }, patron.imageNeutral);*/
     }
 }
