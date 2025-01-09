@@ -1,4 +1,5 @@
 import {Direction} from "./Director";
+import {Stage} from "./index";
 
 export interface ChatNode {
     id: string;
@@ -6,13 +7,14 @@ export interface ChatNode {
     childIds: string[];
     selectedChildId: string|null;
     speakerId: string|undefined;
+    emotion: Emotion;
     message: string;
     direction: Direction|undefined;
     presentPatronIds: string[];
     selectedPatronId?: string|undefined;
 }
 
-export function createNodes(script: string, parent: ChatNode | null, commonProps: Partial<ChatNode> = {}): ChatNode[] {
+export async function createNodes(script: string, commonProps: Partial<ChatNode> = {}, stage: Stage): Promise<ChatNode[]> {
 
     const baseNode: ChatNode = {
         id: '',
@@ -20,6 +22,7 @@ export function createNodes(script: string, parent: ChatNode | null, commonProps
         childIds: [],
         selectedChildId: null,
         speakerId: undefined,
+        emotion: Emotion.neutral,
         message: '',
         direction: undefined,
         presentPatronIds: [],
@@ -36,28 +39,40 @@ export function createNodes(script: string, parent: ChatNode | null, commonProps
         if (match) {
             // If there's a current dialogue, push it to the parsedLines array
             if (currentSpeaker && currentDialogue.trim().length > 0) {
-                currentNode = addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps}, currentNode, nodes);
+                currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps}, currentNode, nodes, stage);
             }
             // Start a new dialogue
             currentSpeaker = match[1];
             currentDialogue = match[2];
         } else if (currentSpeaker && currentDialogue.trim().length > 0) {
             // Continue the current dialogue
-            currentNode = addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps}, currentNode, nodes);
+            currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps}, currentNode, nodes, stage);
 
             currentDialogue = line.trim();
         }
     }
     if (currentSpeaker && currentDialogue.trim().length > 0) {
-        currentNode = addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: (currentNode ? currentNode.id : null), ...commonProps}, currentNode, nodes);
+        currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: (currentNode ? currentNode.id : null), ...commonProps}, currentNode, nodes, stage);
     }
 
     return nodes;
 }
 
-function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: ChatNode[]): ChatNode {
+async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: ChatNode[], stage: Stage): Promise<ChatNode> {
     if (parentNode != null) {
         parentNode.childIds.push(newNode.id);
+    }
+    if (newNode.speakerId && !['narrator', stage.player.name.toLowerCase()].includes('narrator')) {
+        const emotionData = (await stage.pipeline.predict("/predict", {
+            param_0: newNode.message,
+        }));
+        console.log(emotionData);
+        /*newNode.emotion = (await stage.pipeline.predict("/predict", {
+            param_0: newNode.message,
+        })).data.filter([0].label;
+            newEmotion = (await this.pipeline.predict("/predict", {
+            param_0: botMessage.content,
+        })).data[0].label;*/
     }
     nodes.push(newNode);
     return newNode;

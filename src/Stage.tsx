@@ -20,6 +20,7 @@ import {buildSection, generate, generatePatrons} from "./Generator";
 import {ChatNode, createNodes} from "./ChatNode";
 import {BeverageDisplay} from "./BeverageDisplay";
 import {GenerationUi} from "./GenerationUi";
+import {Client} from "@gradio/client";
 
 type MessageStateType = any;
 
@@ -57,6 +58,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     isGenerating: boolean = false;
     director: Director;
     updateTime: number = Date.now();
+    pipeline: any
 
     readonly theme = createTheme({
         palette: {
@@ -94,6 +96,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.director = new Director();
         this.loadingProgress = 50;
         this.lastBeverageServed = '';
+        this.pipeline = null;
 
         console.log('Config loaded:');
         console.log(config);
@@ -107,6 +110,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
 
         this.loadingProgress = undefined;
+
+        try {
+            this.pipeline = await Client.connect("lloorree/SamLowe-roberta-base-go_emotions");
+        } catch (exception: any) {
+            console.error(`Error loading expressions pipeline, error: ${exception}`);
+        }
 
         return {
             success: true,
@@ -257,7 +266,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     include_history: false
                 });
                 if (textGen?.result?.length) {
-                    const newNodes = createNodes(textGen.result, fromNode, nodeProps);
+                    const newNodes = createNodes(textGen.result, nodeProps, this);
                     return Promise.resolve(newNodes);
                 }
             } catch(error) {
