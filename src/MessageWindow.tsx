@@ -56,7 +56,7 @@ const getCharacterPosition = (index: number, amount: number) => {
     const start = 5;
     const end = 95;
     const step = (end - start) / (amount + 1);
-
+    console.log(start + (index + 1) * step);
     return start + (index + 1) * step;
 }
 
@@ -68,8 +68,8 @@ interface PatronImageProps {
 
 const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
     const variants: Variants = {
-        talking: {color: '#FFFFFF', opacity: 1, x: `${50 - SIZE_RATIO}vw`, height: `${CHARACTER_HEIGHT + 2}vh`, filter: 'brightness(1)', zIndex: 12, transition: {x: {ease: "easeOut"}}},
-        idle: {color: '#BBBBBB', opacity: 1, x: `${50}vw`, height: `${CHARACTER_HEIGHT}vh`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}}},
+        talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition - SIZE_RATIO}vw`, height: `${CHARACTER_HEIGHT + 2}vh`, filter: 'brightness(1)', zIndex: 12, transition: {x: {ease: "easeOut"}}},
+        idle: {color: '#BBBBBB', opacity: 1, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT}vh`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}}},
     };
 
     return (
