@@ -87,7 +87,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                     {Object.values(stage().patrons).map((patron) => (
                         <Grid key={patron.name}>
                             <Box sx={{ textAlign: 'center', height: '20vh' }}>
-                                <img src={patron.imageNeutral} alt={patron.name} style={{ width: 'auto', height: '15vh', margin: '0 auto'}} />
+                                <img src={patron.imageUrls[Emotion.neutral]} alt={patron.name} style={{ width: 'auto', height: '15vh', margin: '0 auto'}} />
                                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '1vh' }}>
                                     <Typography variant="h6" color='primary' sx={{ marginRight: '1vh' }}>{patron.name}</Typography>
                                     {!inProgress[patron.name] ? (
