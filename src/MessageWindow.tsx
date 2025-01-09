@@ -56,7 +56,6 @@ const getCharacterPosition = (index: number, amount: number) => {
     const start = 5;
     const end = 95;
     const step = (end - start) / (amount + 1);
-    console.log(`${start} + (${index} + 1) * ${step}`);
     return start + (index + 1) * step;
 }
 
@@ -161,9 +160,8 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                         const emotions = Object.values(Emotion);
                         const emotionIndex = Math.floor(Math.random() * emotions.length);
                         const numberOfPatrons = Math.max(1, chatNode()?.presentPatronIds.length ?? 1);
-                        //  - (CHARACTER_HEIGHT * SIZE_RATIO) / 2
                         return <PatronImage imgUrl={stage().patrons[patronId].imageUrls[emotions[emotionIndex]]}
-                                            xPosition={getCharacterPosition(index, numberOfPatrons)}
+                                            xPosition={getCharacterPosition(index, numberOfPatrons) - (CHARACTER_HEIGHT * SIZE_RATIO) / 2}
                                             isTalking={patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever')}/>;
                     } else {
                         return <div></div>;
