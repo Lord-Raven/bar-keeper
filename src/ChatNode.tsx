@@ -7,7 +7,7 @@ export interface ChatNode {
     childIds: string[];
     selectedChildId: string|null;
     speakerId: string|undefined;
-    emotion: Emotion;
+    emotion: Emotion|undefined;
     message: string;
     direction: Direction|undefined;
     presentPatronIds: string[];
