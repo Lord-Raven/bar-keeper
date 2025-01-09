@@ -1,6 +1,6 @@
 import {AspectRatio, Character} from "@chub-ai/stages-ts";
 import { Stage } from "./Stage";
-import { Patron } from "./Patron";
+import {Emotion, emotionPrompts, Patron} from "./Patron";
 import bottleUrl from './assets/bottle.png'
 import { Beverage } from "./Beverage";
 

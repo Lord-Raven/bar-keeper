@@ -6,6 +6,7 @@ import {Stage} from "./Stage";
 import {ChatNode} from "./ChatNode";
 import {Cancel, CheckCircle} from "@mui/icons-material";
 import { motion, Variants } from "framer-motion";
+import {Emotion} from "./Patron";
 
 interface MessageWindupProps {
     message: string;

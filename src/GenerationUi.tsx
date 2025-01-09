@@ -6,6 +6,7 @@ import SettingsIcon from "@mui/icons-material/Settings"
 import ReplayIcon from "@mui/icons-material/Replay";
 import Popover from "@mui/material/Popover";
 import {generateBeverageImage, generatePatronImage} from "./Generator";
+import {Emotion} from "./Patron";
 
 interface MessageWindowProps {
     stage: () => Stage;

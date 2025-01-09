@@ -1,5 +1,6 @@
 import {Direction} from "./Director";
 import {Stage} from "./index";
+import {Emotion} from "./Patron";
 
 export interface ChatNode {
     id: string;
