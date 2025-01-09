@@ -63,7 +63,8 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
     if (parentNode != null) {
         parentNode.childIds.push(newNode.id);
     }
-    if (newNode.speakerId && !['narrator', stage.player.name.toLowerCase()].includes('narrator')) {
+    if (newNode.speakerId && !['narrator', stage.player.name.toLowerCase()].includes(newNode.speakerId.toLowerCase())) {
+
         const emotionData = (await stage.pipeline.predict("/predict", {
             param_0: newNode.message,
         }));

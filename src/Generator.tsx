@@ -234,7 +234,6 @@ export async function generate(stage: Stage) {
         console.log(e);
     }
 
-    console.log(`save background: ${stage.barImageUrl}`);
     await stage.messenger.updateChatState(stage.buildChatState());
     stage.setLoadProgress(undefined, '');
 
@@ -316,7 +315,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron): Promise
                         negative_prompt: patronImageNegativePrompt,
                         aspect_ratio: AspectRatio.CINEMATIC_VERTICAL,
                         remove_background: true,
-                        strength: 0.3
+                        strength: 0.5
                     }, patron.imageUrls[Emotion.neutral]);
                 } catch(exception) {
 
