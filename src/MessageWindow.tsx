@@ -162,7 +162,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                         const emotionIndex = Math.floor(Math.random() * emotions.length);
                         const numberOfPatrons = Math.max(1, chatNode()?.presentPatronIds.length ?? 1);
                         //  - (CHARACTER_HEIGHT * SIZE_RATIO) / 2
-                        return <PatronImage imgUrl={stage().patrons[patronId].imageUrls[emotionIndex]}
+                        return <PatronImage imgUrl={stage().patrons[patronId].imageUrls[emotions[emotionIndex]]}
                                             xPosition={getCharacterPosition(index, numberOfPatrons)}
                                             isTalking={patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever')}/>;
                     } else {
