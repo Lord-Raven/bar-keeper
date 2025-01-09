@@ -67,14 +67,11 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
 
         const emotionData = (await stage.pipeline.predict("/predict", {
             param_0: newNode.message,
-        }));
+        })).filter((candidate: { label: Emotion; }) => Object.values(Emotion).includes(candidate.label));
         console.log(emotionData);
-        /*newNode.emotion = (await stage.pipeline.predict("/predict", {
-            param_0: newNode.message,
-        })).data.filter([0].label;
-            newEmotion = (await this.pipeline.predict("/predict", {
-            param_0: botMessage.content,
-        })).data[0].label;*/
+        if (emotionData.length > 0 && emotionData[0].confidence > 0.5) {
+            newNode.emotion = emotionData[0];
+        }
     }
     nodes.push(newNode);
     return newNode;

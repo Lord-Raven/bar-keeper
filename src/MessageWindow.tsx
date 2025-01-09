@@ -157,12 +157,16 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
             </Box>
             {chatNode()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
-                        const emotions = Object.values(Emotion);
-                        const emotionIndex = Math.floor(Math.random() * emotions.length);
+                        const patron = stage().patrons[patronId];
+                        const isTalking = patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever');
+                        let emotion: Emotion = patron.emotion as Emotion ?? Emotion.neutral;
+                        if (isTalking && chatNode()?.emotion) {
+                            emotion = chatNode()?.emotion as Emotion ?? emotion;
+                        }
                         const numberOfPatrons = Math.max(1, chatNode()?.presentPatronIds.length ?? 1);
-                        return <PatronImage imgUrl={stage().patrons[patronId].imageUrls[emotions[emotionIndex]]}
+                        return <PatronImage imgUrl={patron.imageUrls[emotion]}
                                             xPosition={getCharacterPosition(index, numberOfPatrons) - (CHARACTER_HEIGHT * SIZE_RATIO) / 2}
-                                            isTalking={patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever')}/>;
+                                            isTalking={isTalking}/>;
                     } else {
                         return <div></div>;
                     }

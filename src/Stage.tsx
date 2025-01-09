@@ -360,7 +360,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             <ThemeProvider theme={this.theme}>
                 <div style={{position: 'relative', height: '8%'}}>
                     <div>
-                        <IconButton style={{outline: 1}} disabled={this.loadingProgress !== undefined} color={'primary'}
+                        <IconButton style={{outline: 1, backgroundColor: '#000000BB'}} disabled={this.loadingProgress !== undefined} color={'primary'}
                                     onClick={() => generate(this)}>
                             <ReplayIcon/>
                         </IconButton>
