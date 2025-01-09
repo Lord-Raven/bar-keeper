@@ -68,8 +68,8 @@ interface PatronImageProps {
 
 const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
     const variants: Variants = {
-        talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition - SIZE_RATIO}vw`, height: `${CHARACTER_HEIGHT + 2}vh`, filter: 'brightness(1)', zIndex: 12, transition: {x: {ease: "easeOut"}}},
-        idle: {color: '#BBBBBB', opacity: 1, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT}vh`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}}},
+        talking: {color: '#FFFFFF', opacity: 1, x: `${50 - 1}vw`, height: `${CHARACTER_HEIGHT + 2}vh`, filter: 'brightness(1)', zIndex: 12, transition: {x: {ease: "easeOut"}}},
+        idle: {color: '#BBBBBB', opacity: 1, x: `${50}vw`, height: `${CHARACTER_HEIGHT}vh`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}}},
     };
 
     return (
@@ -160,7 +160,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                     if (stage().patrons[patronId]) {
                         const emotions = Object.values(Emotion);
                         const index = Math.floor(Math.random() * emotions.length);
-                        console.log(stage().patrons[patronId].imageUrls[emotions[index]]);
                         const numberOfPatrons = Math.max(1, chatNode()?.presentPatronIds.length ?? 1);
                         //  - (CHARACTER_HEIGHT * SIZE_RATIO) / 2
                         return <PatronImage imgUrl={stage().patrons[patronId].imageUrls[Emotion.neutral]}
