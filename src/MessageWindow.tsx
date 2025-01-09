@@ -56,7 +56,7 @@ const getCharacterPosition = (index: number, amount: number) => {
     const start = 5;
     const end = 95;
     const step = (end - start) / (amount + 1);
-    console.log(start + (index + 1) * step);
+    console.log(`${start} + (${index} + 1) * ${step}`);
     return start + (index + 1) * step;
 }
 
