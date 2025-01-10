@@ -284,7 +284,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
         let result = await this.requestedNodes;
         console.log(result);
-        if (result) {
+        if (result && result.length > 0) {
             result.forEach(node => this.chatNodes[node.id] = node);
             let selectedNode = result[0];
             if (this.currentNode) {

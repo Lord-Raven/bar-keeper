@@ -19,14 +19,23 @@ interface InstructionInput {
     beverageName: string;
 }
 
-const generalInstruction = 'Responses follow a simple stageplay style format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Refer to {{user}} in second-person.'
-export const sampleScript = `**NARRATOR**: General narration is provided by the NARRATOR.\n\n**CHARACTER 1**: "Character dialog goes in quotations." Their actions don't.\n\n**NARRATOR**: Character 2 walks in.\n\n**CHARACTER 2**: "Hey, Character 1."\n\n**CHARACTER 1**: "Welcome back, Character 2!" They give a friendly wave.`
+const generalInstruction = 'Your response will follow a simple stageplay format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Focus events on {{user}} and PRESENT PATRONS; other character roles should be fleeting. Refer to {{user}} in second-person.'
+export const sampleScript = '' +
+        `**NARRATOR**: General narration is provided by the NARRATOR.\n\n` +
+        `**CHARACTER 1**: "Character dialog goes in quotations." Their actions don't.\n\n` +
+        `**NARRATOR**: Character 2 walks in.\n\n` +
+        `**CHARACTER 2**: "Hey, Character 1."\n\n` +
+        `**CHARACTER 1**: "Welcome back, Character 2!" They give a friendly wave.\n\n` +
+        `**CHARACTER 1**: They think to themself, "You look different, Character 2."\n\n` +
+        `**CHARACTER 2**: Smiles broadly, "I'm trying a new hairstyle. Thanks for noticing!"\n\n` +
+        `**NARRATOR**: Character 2 takes a seat down the bar from Character 1 and looks for you.\n\n` +
+        `**{{user}}**: You approach Character 2, "What'll it be, Character 2?`;
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
     IntroduceBar: input => `Write a visual novel style introduction to the bar described here: ${input.barDescription}. ` +
         `Depict a second-person scene where ${input.playerName} is setting up for the beginning of their shift one evening; do not introduce established patrons to the scene yet. ${generalInstruction}`,
     
-    Lull: input => `Continue the scene some visual novel style flavor as the evening slightly progresses; ${input.playerName} observes the environment or ancillary patrons with only trivial events or conversations--established patrons remain absent or passive.  ${generalInstruction}`,
+    Lull: input => `Continue the scene with some visual novel style flavor as the evening slightly progresses; ${input.playerName} observes the environment or ancillary patrons with only trivial events or conversations--established patrons remain absent or passive.  ${generalInstruction}`,
 
     IntroducePatron: input => `Continue the scene with visual novel style development as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
         `If they are a regular, focus on their interactions with ${input.playerName} or other patrons. They aren't ready to order a drink yet and will focus on something else. ${generalInstruction}`,
