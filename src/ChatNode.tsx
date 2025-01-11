@@ -70,7 +70,7 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
         }));
         const emotionData = result.data[0].confidences.filter((candidate: { label: Emotion; }) => Object.values(Emotion).includes(candidate.label));
         console.log('emotion stuff:');
-        console.log(result);
+        console.log(newNode.message);
         console.log(emotionData);
         if (emotionData.length > 0 && emotionData[0].confidence > 0.5) {
             newNode.emotion = emotionData[0];
