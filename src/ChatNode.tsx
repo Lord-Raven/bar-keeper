@@ -65,9 +65,12 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
     }
     if (newNode.speakerId && !['narrator', stage.player.name.toLowerCase()].includes(newNode.speakerId.toLowerCase())) {
 
-        const emotionData = (await stage.pipeline.predict("/predict", {
+        const result = (await stage.pipeline.predict("/predict", {
             param_0: newNode.message,
-        })).data[0].confidences.filter((candidate: { label: Emotion; }) => Object.values(Emotion).includes(candidate.label));
+        }));
+        const emotionData = result.data[0].confidences.filter((candidate: { label: Emotion; }) => Object.values(Emotion).includes(candidate.label));
+        console.log('emotion stuff:');
+        console.log(result);
         console.log(emotionData);
         if (emotionData.length > 0 && emotionData[0].confidence > 0.5) {
             newNode.emotion = emotionData[0];
