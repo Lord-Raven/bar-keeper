@@ -195,7 +195,7 @@ export async function generate(stage: Stage) {
         stage.setLoadProgress(5, 'Generating bar description.');
         let textResponse = await stage.generator.textGen({
             prompt: buildBarDescriptionPrompt(stage),
-            max_tokens: 200,
+            max_tokens: 150,
             min_tokens: 50
         });
         console.log(`Bar description: ${textResponse?.result}`);
@@ -262,7 +262,7 @@ const basicCharacter: Character = {
 }
 
 export async function generatePatrons(stage: Stage) {
-    const characters: Character[] = [...Object.values(stage.characters), {...basicCharacter, name: 'spare'}, {...basicCharacter, name: 'another'}];
+    const characters: Character[] = [...Object.values(stage.characters), {...basicCharacter, name: 'spare'}, {...basicCharacter, name: 'another'}, {...basicCharacter, name: 'more'}];
     for (let character of characters) {
         if (!Object.keys(stage.patrons).includes(character.name)) {
             console.log(`Generating a patron for ${character.name}.`);

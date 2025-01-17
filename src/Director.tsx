@@ -19,7 +19,7 @@ interface InstructionInput {
     beverageName: string;
 }
 
-const generalInstruction = 'Your response will follow a simple stageplay format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Focus events on {{user}} and PRESENT PATRONS; other character roles should be fleeting. Refer to {{user}} in second-person.'
+const generalInstruction = 'Your response will follow a simple stageplay format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Focus events on {{user}} and characters found in PRESENT PATRONS; other character roles should be fleeting. Refer to {{user}} in second-person.'
 export const sampleScript = '' +
         `**NARRATOR**: General narration is provided by the NARRATOR.\n\n` +
         `**CHARACTER 1**: "Character dialog goes in quotations." Their actions don't.\n\n` +
@@ -106,6 +106,11 @@ export class Director {
         }
         let selectedPatronId = undefined;
         let newPresentPatronIds = [...(currentNode ? currentNode.presentPatronIds : [])];
+
+        // Try to keep at least a couple characters into the scene.
+        if (newPresentPatronIds.length < 2) {
+            newDirection = Direction.IntroducePatron;
+        }
 
         if (newDirection == Direction.PatronDrinkOutcome) {
             selectedPatronId = currentNode?.selectedPatronId;
