@@ -68,26 +68,31 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
             `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, yet evoke different moods or sensations. ` +
             `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
-            `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your entries`) +
+            `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your entries, ` +
+            `avoiding drinks which are too similar to previously generated content.`) +
         buildSection('Default Instruction', '{{suffix}}')).trim();
 }
 
 export function buildPatronPrompt(stage: Stage, baseCharacter: Character): string {
+    const unique = baseCharacter.description != '' || baseCharacter.personality != '';
     return (
         (stage.sourceSummary != '' ? buildSection('Source Material', stage.sourceSummary ?? '') : '') +
         buildSection('Setting', stage.settingSummary ?? '') +
         buildSection('Themes', stage.themeSummary ?? '') +
         buildSection('Location', `A description of the specific location of this setting: ${stage.barDescription}` ?? '') +
-        buildSection('Character', stage.replaceTags(`${baseCharacter.description}\n${baseCharacter.personality}`, {user: stage.player.name, char: baseCharacter.name})) +
+        (unique ?
+            buildSection('Input', stage.replaceTags(`${baseCharacter.description}\n${baseCharacter.personality}`, {user: stage.player.name, char: baseCharacter.name})) : '') +
         buildSection('Example Responses',
             `NAME: Carolina Reaper\nTRAITS: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy-as-fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
             `NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
             `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.`) +
         buildSection('Overriding Instruction',
-            `You will be narrating a roleplay, but first, you must perform some prep work. Instead of narrating, this preparatory response will look at the CHARACTER description above and condense it into formatted output that describes a patron of the LOCATION. ` +
-            `You must define the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, and ticks, style, and motivation (if any) for visiting the bar. ` +
+            `Before the roleplay can begin, this preparatory response will look at the ` + (unique ?
+                `INPUT description above and condense it into formatted output that describes a patron of the LOCATION. ` :
+                `SETTING description and generate a unique and interesting character that would patronize the LOCATION. `) +
+            `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(stage.patrons).length > 0 ?
-                (`Consider the following existing patrons and ensure that the new character in your response is distinct from the existing ones below. Also consider ` +
+                (`Consider the following existing patrons and ensure that the new character in your response is distinct from these. Also consider ` +
                 `connections between this new character and one or more existing patrons:\n` +
                 `${Object.values(stage.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n')) +
@@ -240,8 +245,25 @@ export async function generate(stage: Stage) {
     // TODO: If there was a failure, consider reloading from chatState rather than saving.
 }
 
+const basicCharacter: Character = {
+    name: 'spare',
+    description: '',
+    first_message: '',
+    example_dialogs: '',
+    personality: "",
+    scenario: "",
+    tavern_personality: "",
+    system_prompt: null,
+    post_history_instructions: null,
+    alternate_greetings: [],
+    partial_extensions: {},
+    anonymizedId: "",
+    isRemoved: false
+}
+
 export async function generatePatrons(stage: Stage) {
-    for (let character of Object.values(stage.characters)) {
+    const characters: Character[] = [...Object.values(stage.characters), {...basicCharacter, name: 'spare'}, {...basicCharacter, name: 'another'}];
+    for (let character of characters) {
         if (!Object.keys(stage.patrons).includes(character.name)) {
             console.log(`Generating a patron for ${character.name}.`);
             let tries = 3;
@@ -257,6 +279,9 @@ export async function generatePatrons(stage: Stage) {
                 }
             }
         }
+    }
+    if (!Object.keys(stage.patrons).includes('spare1')) {
+
     }
 }
 
@@ -305,9 +330,9 @@ export async function generatePatronImage(stage: Stage, patron: Patron): Promise
         throw Error(`Failed to generate a patron image for ${patron.name}.`);
     } else {
         for (let emotion of Object.values(Emotion)) {
-            if (emotion == Emotion.neutral) {
+            //if (emotion == Emotion.neutral) {
                 patron.imageUrls[emotion] = baseImageUrl
-            } else {
+            /*} else {
                 try {
                     patron.imageUrls[emotion] = await stage.makeImageFromImage({
                         image: patron.imageUrls[Emotion.neutral],
@@ -320,7 +345,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron): Promise
                 } catch(exception) {
 
                 }
-            }
+            }*/
         }
 
         /*await stage.inpaintImage({
