@@ -108,7 +108,7 @@ export class Director {
         let newPresentPatronIds = [...(currentNode ? currentNode.presentPatronIds : [])];
 
         // Try to keep at least a couple characters into the scene.
-        if (newPresentPatronIds.length < 2) {
+        if (newDirection != Direction.IntroduceBar && newPresentPatronIds.length < 2) {
             newDirection = Direction.IntroducePatron;
         }
 

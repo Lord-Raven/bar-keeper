@@ -287,7 +287,7 @@ function trimSymbols(str: string, symbol: string): string { const regex = new Re
 export async function generatePatron(stage: Stage, baseCharacter: Character): Promise<Patron|undefined> {
     let patronResponse = await stage.generator.textGen({
         prompt: buildPatronPrompt(stage, baseCharacter),
-        max_tokens: 300,
+        max_tokens: 200,
         min_tokens: 50
     });
     let result = patronResponse?.result ?? '';
@@ -295,15 +295,13 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     console.log(patronResponse);
     const nameRegex = /Name\s*[:\-]?\s*(.*)/i;
     const descriptionRegex = /Traits\s*[:\-]?\s*(.*)/i;
-    const attributesRegex = /Attributes\s*[:\-]?\s*(.*)/i;
     const personalityRegex = /Personality\s*[:\-]?\s*(.*)/i;
     const nameMatches = result.match(nameRegex);
     const descriptionMatches = result.match(descriptionRegex);
-    //const attributesMatches = result.match(attributesRegex);
     const personalityMatches = result.match(personalityRegex);
-    if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1 && /*attributesMatches && attributesMatches.length > 1 &&*/ personalityMatches && personalityMatches.length > 1) {
+    if (nameMatches && nameMatches.length > 1 && nameMatches[1].length < 100 && descriptionMatches && descriptionMatches.length > 1 && personalityMatches && personalityMatches.length > 1) {
         console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
-        newPatron = new Patron(trimSymbols(nameMatches[1], '*').trim(), trimSymbols(descriptionMatches[1], '*').trim(), /*attributesMatches[1].trim(),*/ trimSymbols(personalityMatches[1], '*').trim());
+        newPatron = new Patron(trimSymbols(nameMatches[1], '*').trim(), trimSymbols(descriptionMatches[1], '*').trim(), trimSymbols(personalityMatches[1], '*').trim());
         stage.patrons[baseCharacter.name] = newPatron;
     }
 
