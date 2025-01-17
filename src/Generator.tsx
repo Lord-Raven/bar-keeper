@@ -113,8 +113,8 @@ export async function generateBeverages(stage: Stage) {
             .map(item => {
                 const nameMatch = item.match(/\s*(.*?)\s*Description:/i);
                 const descriptionMatch = item.match(/Description:\s*(.*)/i);
-                console.log(`${nameMatch ? nameMatch[1].trim() : ''}, ${descriptionMatch ? descriptionMatch[1].trim() : ''}`);
-                return new Beverage(nameMatch ? nameMatch[1].trim() : '', descriptionMatch ? descriptionMatch[1].trim() : '', '');
+                console.log(`${nameMatch ? trimSymbols(nameMatch[1], '*').trim() : ''}, ${descriptionMatch ? trimSymbols(descriptionMatch[1], '*').trim() : ''}`);
+                return new Beverage(nameMatch ? trimSymbols(nameMatch[1], '*').trim() : '', descriptionMatch ? trimSymbols(descriptionMatch[1], '*').trim() : '', '');
             }).filter(beverage => beverage.name != '' && beverage.description != '' && stage.beverages.filter(existing => existing.name.toLowerCase() == beverage.name.toLowerCase()).length == 0));
     }
 
@@ -156,7 +156,7 @@ async function generateDistillation(stage: Stage) {
     while ((stage.settingSummary == '' || stage.themeSummary == '' || stage.artSummary == '') && tries > 0) {
         let textResponse = await stage.generator.textGen({
             prompt: buildDistillationPrompt(stage, stage.characterForGeneration),
-            max_tokens: 100,
+            max_tokens: 80,
             min_tokens: 50
         });
         if (textResponse && textResponse.result) {
@@ -205,7 +205,7 @@ export async function generate(stage: Stage) {
         stage.setLoadProgress(10, 'Generating bar image.');
         const barPrompt = `(art style: ${stage.artSummary}), ` +
             (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + 'evening, counter, bottles, ' +
-            `(general setting: ${stage.settingSummary}), (inside a bar), ((interior of a bar with this description: ${stage.barDescription}))`;
+            `(general setting: ${stage.settingSummary}), (inside an empty bar), ((${stage.barDescription}))`;
 
         stage.barImageUrl = await stage.makeImage({
             prompt: barPrompt,
@@ -280,10 +280,9 @@ export async function generatePatrons(stage: Stage) {
             }
         }
     }
-    if (!Object.keys(stage.patrons).includes('spare1')) {
-
-    }
 }
+
+function trimSymbols(str: string, symbol: string): string { const regex = new RegExp(`^[${symbol}]+|[${symbol}]+$`, 'g'); return str.replace(regex, ''); }
 
 export async function generatePatron(stage: Stage, baseCharacter: Character): Promise<Patron|undefined> {
     let patronResponse = await stage.generator.textGen({
@@ -304,7 +303,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     const personalityMatches = result.match(personalityRegex);
     if (nameMatches && nameMatches.length > 1 && descriptionMatches && descriptionMatches.length > 1 && /*attributesMatches && attributesMatches.length > 1 &&*/ personalityMatches && personalityMatches.length > 1) {
         console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
-        newPatron = new Patron(nameMatches[1].trim(), descriptionMatches[1].trim(), /*attributesMatches[1].trim(),*/ personalityMatches[1].trim());
+        newPatron = new Patron(trimSymbols(nameMatches[1], '*').trim(), trimSymbols(descriptionMatches[1], '*').trim(), /*attributesMatches[1].trim(),*/ trimSymbols(personalityMatches[1], '*').trim());
         stage.patrons[baseCharacter.name] = newPatron;
     }
 
