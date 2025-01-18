@@ -158,12 +158,12 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
             {chatNode()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
                         const patron = stage().patrons[patronId];
-                        const isTalking = patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever');
-                        console.log(`'${patronId.toLowerCase()}'='${chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever'}'=${isTalking}`);
+                        const isTalking = patron.name.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever');
                         let emotion: Emotion = patron.emotion as Emotion ?? Emotion.neutral;
                         if (isTalking && chatNode()?.emotion) {
-                            console.log(`${emotion}: ${chatNode()?.emotion as Emotion}`);
-                            emotion = chatNode()?.emotion as Emotion ?? emotion;
+                            console.log(`${emotion}`);
+                            console.log(chatNode()?.emotion);
+                            emotion = chatNode()?.emotion ? chatNode()?.emotion as Emotion : emotion;
                         }
                         const numberOfPatrons = Math.max(1, chatNode()?.presentPatronIds.length ?? 1);
                         return <PatronImage imgUrl={patron.imageUrls[emotion]}
