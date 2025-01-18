@@ -72,7 +72,7 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
         console.log(`Emotion determination for: ${newNode.message}`);
         console.log(emotionData);
         if (emotionData.length > 0 && emotionData[0].confidence > 0.3) {
-            newNode.emotion = emotionData[0];
+            newNode.emotion = emotionData[0].label;
         }
     }
     nodes.push(newNode);

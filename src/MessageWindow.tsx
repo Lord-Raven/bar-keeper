@@ -163,7 +163,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                         if (isTalking && chatNode()?.emotion) {
                             console.log(`${emotion}`);
                             console.log(chatNode()?.emotion);
-                            emotion = chatNode()?.emotion ? chatNode()?.emotion as Emotion : emotion;
+                            emotion = chatNode()?.emotion as Emotion ?? emotion;
                         }
                         const numberOfPatrons = Math.max(1, chatNode()?.presentPatronIds.length ?? 1);
                         return <PatronImage imgUrl={patron.imageUrls[emotion]}
