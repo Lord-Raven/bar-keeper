@@ -159,8 +159,10 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                     if (stage().patrons[patronId]) {
                         const patron = stage().patrons[patronId];
                         const isTalking = patronId.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever');
+                        console.log(`'${patronId.toLowerCase()}'='${chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever'}'=${isTalking}`);
                         let emotion: Emotion = patron.emotion as Emotion ?? Emotion.neutral;
                         if (isTalking && chatNode()?.emotion) {
+                            console.log(`${emotion}: ${chatNode()?.emotion as Emotion}`);
                             emotion = chatNode()?.emotion as Emotion ?? emotion;
                         }
                         const numberOfPatrons = Math.max(1, chatNode()?.presentPatronIds.length ?? 1);
