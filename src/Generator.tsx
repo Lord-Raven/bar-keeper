@@ -327,9 +327,9 @@ export async function generatePatronImage(stage: Stage, patron: Patron): Promise
         throw Error(`Failed to generate a patron image for ${patron.name}.`);
     } else {
         for (let emotion of Object.values(Emotion)) {
-            //if (emotion == Emotion.neutral) {
+            if (emotion == Emotion.neutral) {
                 patron.imageUrls[emotion] = baseImageUrl
-            /*} else {
+            } else {
                 try {
                     patron.imageUrls[emotion] = await stage.makeImageFromImage({
                         image: patron.imageUrls[Emotion.neutral],
@@ -342,7 +342,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron): Promise
                 } catch(exception) {
 
                 }
-            }*/
+            }
         }
 
         /*await stage.inpaintImage({

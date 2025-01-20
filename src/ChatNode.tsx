@@ -63,16 +63,21 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
     if (parentNode != null) {
         parentNode.childIds.push(newNode.id);
     }
-    if (newNode.speakerId && Object.values(stage.patrons).find(patron => patron.name.toLowerCase().includes(newNode.speakerId?.toLowerCase() ?? 'neverever'))) {
-
-        const result = (await stage.pipeline.predict("/predict", {
-            param_0: newNode.message,
-        }));
-        const emotionData = result.data[0].confidences.filter((candidate: { label: Emotion; }) => Object.values(Emotion).includes(candidate.label));
-        console.log(`Emotion determination for: ${newNode.message}`);
-        console.log(emotionData);
-        if (emotionData.length > 0 && emotionData[0].confidence > 0.3) {
-            newNode.emotion = emotionData[0].label;
+    if (newNode.speakerId) {
+        const targetPatron = Object.values(stage.patrons).find(patron => patron.name.toLowerCase().includes(newNode.speakerId?.toLowerCase() ?? 'nevereverever'));
+        if (targetPatron) {
+            const result = (await stage.pipeline.predict("/predict", {
+                param_0: newNode.message,
+                param_1: 'testing'
+            }));
+            const emotionData = result.data[0].confidences.filter((candidate: {
+                label: Emotion;
+            }) => Object.values(Emotion).includes(candidate.label));
+            console.log(`Emotion determination for: ${newNode.message}`);
+            console.log(emotionData);
+            if (emotionData.length > 0 && emotionData[0].confidence > 0.3) {
+                newNode.emotion = emotionData[0].label;
+            }
         }
     }
     nodes.push(newNode);
