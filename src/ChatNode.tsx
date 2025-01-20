@@ -67,8 +67,7 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
         const targetPatron = Object.values(stage.patrons).find(patron => patron.name.toLowerCase().includes(newNode.speakerId?.toLowerCase() ?? 'nevereverever'));
         if (targetPatron) {
             const result = (await stage.pipeline.predict("/predict", {
-                param_0: newNode.message,
-                param_1: 'testing'
+                param_0: newNode.message
             }));
             const emotionData = result.data[0].confidences.filter((candidate: {
                 label: Emotion;
