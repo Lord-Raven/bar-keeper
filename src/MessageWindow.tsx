@@ -108,7 +108,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
     }, [updateTime(), chatNode()]);
 
     return (
-        <div className='important-overflow-visible' style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 2}}>
+        <motion.div initial={{height: 0}} animate={{height: 'auto'}} className='important-overflow-visible' style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 2}}>
             <Box sx={{
                 pl: 1,
                 pr: 1,
@@ -125,7 +125,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
             }}>
                 <div style = {{width: '100%'}}>
                     <div>
-                        <Typography variant="h6" color="#AAAAAA">{chatNode()?.speakerId ?? ''}</Typography>
+                        <Typography variant="h5" color="#AAAAAA">{chatNode()?.speakerId ?? ''}</Typography>
                     </div>
                     <div>
                         <MessageWindup message={chatNode()?.message ?? ''} options={{onFinished: () => {setDoneWinding(true);}, skipped: doneWinding}} />
@@ -173,6 +173,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                         return <div></div>;
                     }
             })}
-        </div>
+        </motion.div>
     );
 }
