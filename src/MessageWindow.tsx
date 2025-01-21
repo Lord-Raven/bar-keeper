@@ -51,7 +51,6 @@ function MessageWindup({message, options}: MessageWindupProps) {
 }
 
 const CHARACTER_HEIGHT: number = 100;
-const SIZE_RATIO: number = 0.42857142857;
 const getCharacterPosition = (index: number, amount: number) => {
 
     const start = 5;
@@ -166,10 +165,10 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                         let emotion: Emotion = patron.emotion as Emotion ?? Emotion.neutral;
                         if (isTalking && chatNode()?.emotion) {
                             emotion = chatNode()?.emotion as Emotion ?? emotion;
+                            patron.emotion = emotion;
                         }
                         const numberOfPatrons = Math.max(1, chatNode()?.presentPatronIds.length ?? 1);
                         const position = getCharacterPosition(index, numberOfPatrons);
-                        console.log(`getCharacterPosition(${index}, ${numberOfPatrons}) = ${position}`);
                         return <PatronImage patron={patron}
                                             emotion = {emotion}
                                             xPosition={position}
