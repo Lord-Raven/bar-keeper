@@ -87,15 +87,16 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
             `NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
             `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.`) +
         buildSection('Overriding Instruction',
-            `Before the roleplay can begin, this preparatory response will look at the ` + (unique ?
+            `You are doing prep work for a roleplaying narrative. Instead of narrating, use this planning response to look at the ` + (unique ?
                 `INPUT description above and condense it into formatted output that describes a patron of the LOCATION. ` :
-                `SETTING description and generate a unique and interesting character that would patronize the LOCATION. `) +
+                `SETTING description and generate a distinct, creative, and interesting character that might patronize the LOCATION. `) +
             `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(stage.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that the new character in your response is distinct from these. Also consider ` +
                 `connections between this new character and one or more existing patrons:\n` +
                 `${Object.values(stage.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
-                '\n')) +
+                '\n') +
+            `See the EXAMPLE RESPONSES for strict formatting reference` + (unique ? `, but craft something new and unexpected with your creation.` : '.')) +
         buildSection('Default Instruction', '{{suffix}}')).trim();
 }
 

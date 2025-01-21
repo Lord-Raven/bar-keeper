@@ -19,7 +19,7 @@ interface InstructionInput {
     beverageName: string;
 }
 
-const generalInstruction = 'Your response will follow a simple stageplay format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Focus events on {{user}} and characters found in PRESENT PATRONS; other character roles should be fleeting. Refer to {{user}} in second-person.'
+const generalInstruction = 'Your response will follow a simple stageplay format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Focus events on {{user}} and the characters found in PRESENT PATRONS; other character roles should be fleeting. Refer to {{user}} in second-person.'
 export const sampleScript = '"' +
         `**NARRATOR**: General narration is provided by the NARRATOR.\n\n` +
         `**CHARACTER 1**: "Character dialog goes in quotations." Their actions don't.\n\n` +
@@ -32,7 +32,7 @@ export const sampleScript = '"' +
         `**{{user}}**: You approach Character 2, "What'll it be, Character 2?`;
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
-    IntroduceBar: input => `Write a visual novel style introduction to the bar described here: ${input.barDescription}. ` +
+    IntroduceBar: input => `Introduce the bar described here: ${input.barDescription}. ` +
         `Depict a second-person scene where ${input.playerName} is setting up for the beginning of their shift one evening; do not introduce established patrons to the scene yet. ${generalInstruction}`,
     
     Lull: input => `Continue the scene with some visual novel style flavor as the evening slightly progresses; ${input.playerName} observes the environment or ancillary patrons with only trivial events or conversations--established patrons remain absent or passive.  ${generalInstruction}`,
@@ -49,7 +49,7 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
         `${input.playerName} remains passive; the drink will be served in a future response. ${generalInstruction}`,
 
     PatronDrinkOutcome: input => `Continue the scene with some visual novel style development as ${input.patronName} accepts the drink ${input.playerName} has chosen: ${input.beverageName}. ` +
-        `Strongly steer the scene in a new direction--positive or negative--based on the nature of this beverage, ${input.patronName}'s reaction to the beverage, and how well it suits their current taste or mood. ${generalInstruction}`,
+        `Strongly steer the scene in a new direction--positive or negative--based on the nature of this beverage, ${input.patronName}'s reaction to the beverage, and how well it suits their current taste or mood. ${input.patronName} could be delighted, surprised, disappointed, disgusted, inspired, or even outraged. ${generalInstruction}`,
 
     PatronLeaves: input => `Continue the scene with some visual novel style development as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar. ` +
         `Honor their personal style and connections to other patrons or ${input.playerName}. ${generalInstruction}`,
