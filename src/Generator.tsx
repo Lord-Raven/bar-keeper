@@ -137,7 +137,7 @@ export async function generateBeverageImage(stage: Stage, beverage: Beverage) {
     beverage.imageUrl = await stage.makeImage({
         //image: new URL(bottleUrl, import.meta.url).href,
         //strength: 0.75,
-        prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty background, negative space, contrasting color-keyed background, (a standalone bottle of the alcohol in this description: ${beverage.description})`,
+        prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty background, negative space, garish color-keyed background, (a standalone bottle of the alcohol in this description: ${beverage.description})`,
         negative_prompt: `background, frame, realism, borders, perspective, effects`,
         remove_background: true,
     }, bottleUrl);
@@ -308,7 +308,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     return newPatron;
 }
 
-const patronImagePrompt: string = '(contrasting empty background color), standing';
+const patronImagePrompt: string = '(garish empty background color), standing, full body';
 const patronImageNegativePrompt: string = 'border, ((close-up)), background elements, special effects, matching background, amateur, low quality, action, cut-off';
 
 export async function generatePatronImage(stage: Stage, patron: Patron, emotion: Emotion): Promise<void> {
