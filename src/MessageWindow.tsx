@@ -68,7 +68,7 @@ interface PatronImageProps {
 
 const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalking}) => {
     const variants: Variants = {
-        talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition - SIZE_RATIO}vw`, height: `${CHARACTER_HEIGHT + 2}vh`, filter: 'brightness(1)', zIndex: 12, transition: {x: {ease: "easeOut"}}},
+        talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT + 2}vh`, filter: 'brightness(1)', zIndex: 12, transition: {x: {ease: "easeOut"}}},
         idle: {color: '#BBBBBB', opacity: 1, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT}vh`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}}},
     };
 
@@ -81,7 +81,7 @@ const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalkin
             animate={isTalking ? 'talking' : 'idle'}
             className='important-overflow-visible'
             style={{position: 'absolute', bottom: '-35vh', width: 'auto', aspectRatio: '5 / 12', zIndex: 10}}>
-            <img src={patron.imageUrls[emotion]} className='important-overflow-visible' style={{position: 'relative', width: '100%', height: '100%'}} alt={altText}/>
+            <img src={patron.imageUrls[emotion]} className='important-overflow-visible' style={{position: 'relative', width: '100%', height: '100%', transform: 'translate(-50%, 0)'}} alt={altText}/>
         </motion.div>
     );
 };
@@ -169,8 +169,8 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                             emotion = chatNode()?.emotion as Emotion ?? emotion;
                         }
                         const numberOfPatrons = Math.max(1, chatNode()?.presentPatronIds.length ?? 1);
-                        const position = getCharacterPosition(index, numberOfPatrons) - (CHARACTER_HEIGHT * SIZE_RATIO) / 2
-                        console.log(`getCharacterPosition(${index}, ${numberOfPatrons}) - (${CHARACTER_HEIGHT} * ${SIZE_RATIO}) / 2 = ${position}`);
+                        const position = getCharacterPosition(index, numberOfPatrons);
+                        console.log(`getCharacterPosition(${index}, ${numberOfPatrons}) = ${position}`);
                         return <PatronImage patron={patron}
                                             emotion = {emotion}
                                             xPosition={position}
