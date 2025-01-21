@@ -313,16 +313,22 @@ const patronImageNegativePrompt: string = 'border, ((close-up)), background elem
 
 export async function generatePatronImage(stage: Stage, patron: Patron, emotion: Emotion): Promise<void> {
 
-    let imageUrl: string;
     if (emotion == Emotion.neutral) {
-        imageUrl = await stage.makeImage({
+        const imageUrl = await stage.makeImage({
             prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, ${emotionPrompts[emotion]}, (${patron.description})`,
             negative_prompt: patronImageNegativePrompt,
             aspect_ratio: AspectRatio.CINEMATIC_VERTICAL,
             remove_background: true
         }, '');
+        if (imageUrl == '') {
+            throw Error(`Failed to generate a ${emotion} patron image for ${patron.name}.`);
+        } else {
+            for (let otherEmotion of Object.values(Emotion)) {
+                patron.imageUrls[otherEmotion] = imageUrl;
+            }
+        }
     } else {
-        imageUrl = await stage.makeImageFromImage({
+        const imageUrl = await stage.makeImageFromImage({
             image: patron.imageUrls[Emotion.neutral],
             prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, ${emotionPrompts[emotion]}, (${patron.description})`,
             negative_prompt: patronImageNegativePrompt,
@@ -330,24 +336,18 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
             remove_background: true,
             strength: 0.5
         }, patron.imageUrls[Emotion.neutral]);
-    }
-
-    if (imageUrl == '') {
-        throw Error(`Failed to generate a ${emotion} patron image for ${patron.name}.`);
-    } else {
-        patron.imageUrls[emotion] = imageUrl;
-        for (let otherEmotion of Object.values(Emotion)) {
-            if (!patron.imageUrls[otherEmotion]) {
-                patron.imageUrls[otherEmotion] = patron.imageUrls[Emotion.neutral];
-            }
+        if (imageUrl == '') {
+            throw Error(`Failed to generate a ${emotion} patron image for ${patron.name}.`);
+        } else {
+            patron.imageUrls[emotion] = imageUrl;
         }
-
-        /*await stage.inpaintImage({
-            image: patron.imageNeutral,
-            prompt: 'Happy, smiling',
-            mask: 'face',
-            transferType: 'face',
-            strength: 0.8
-        }, patron.imageNeutral);*/
     }
+
+    /*await stage.inpaintImage({
+        image: patron.imageNeutral,
+        prompt: 'Happy, smiling',
+        mask: 'face',
+        transferType: 'face',
+        strength: 0.8
+    }, patron.imageNeutral);*/
 }
