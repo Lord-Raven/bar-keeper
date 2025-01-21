@@ -52,12 +52,12 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
         buildSection('Themes', stage.themeSummary ?? '') +
         buildSection('Location', `A description of the specific location of this setting: ${stage.barDescription}` ?? '') +
         buildSection('Example Responses', '\n' +
-            `### Response: NAME: Cherry Rotgut DESCRIPTION: A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
+            `NAME: Cherry Rotgut DESCRIPTION: A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n` +
             `NAME: Tritium Delight DESCRIPTION: An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n` +
             `NAME: Rosewood Ale DESCRIPTION: This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n` +
             `NAME: Toilet Wine DESCRIPTION: An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n` +
             `NAME: Love Potion #69 DESCRIPTION: It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n` +
-            `### Response: NAME: Classic Grog DESCRIPTION: Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n` +
+            `NAME: Classic Grog DESCRIPTION: Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n` +
             `NAME: Synth Mead DESCRIPTION: Bees died out long ago, but hypervikings still live for the sweet taste of synthetic honey wine.\n` +
             `NAME: Super Hazy Imperial Double IPA DESCRIPTION: More IBUs than anyone's ever cared for. The bottle's plastered with cute bullshit about the local microbrewery that produced it.\n` +
             `NAME: USB Port DESCRIPTION: Alcohol for wannabe techbros. Not legally a 'port' because of international protections surrounding the term.\n` +
@@ -83,9 +83,9 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
         (unique ?
             buildSection('Input', stage.replaceTags(`${baseCharacter.description}\n${baseCharacter.personality}`, {user: stage.player.name, char: baseCharacter.name})) : '') +
         buildSection('Example Responses', '\n' +
-            `### Response: NAME: Carolina Reaper\nTRAITS: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy-as-fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
-            `### Response: NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
-            `### Response: NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.`) +
+            `NAME: Carolina Reaper\nTRAITS: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy-as-fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
+            `NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
+            `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.`) +
         buildSection('Overriding Instruction',
             `Before the roleplay can begin, this preparatory response will look at the ` + (unique ?
                 `INPUT description above and condense it into formatted output that describes a patron of the LOCATION. ` :
@@ -113,8 +113,8 @@ export async function generateBeverages(stage: Stage) {
             .map(item => {
                 const nameMatch = item.match(/\s*(.*?)\s*Description:/i);
                 const descriptionMatch = item.match(/Description:\s*(.*)/i);
-                console.log(`${nameMatch ? trimSymbols(nameMatch[1], '*').trim() : ''}, ${descriptionMatch ? trimSymbols(descriptionMatch[1], '*').trim() : ''}`);
-                return new Beverage(nameMatch ? trimSymbols(nameMatch[1], '*').trim() : '', descriptionMatch ? trimSymbols(descriptionMatch[1], '*').trim() : '', '');
+                console.log(`${nameMatch ? trimSymbols(nameMatch[1], '\-*').trim() : ''}, ${descriptionMatch ? trimSymbols(descriptionMatch[1], '\-*').trim() : ''}`);
+                return new Beverage(nameMatch ? trimSymbols(nameMatch[1], '\-*').trim() : '', descriptionMatch ? trimSymbols(descriptionMatch[1], '\-*').trim() : '', '');
             }).filter(beverage => beverage.name != '' && beverage.description != '' && stage.beverages.filter(existing => existing.name.toLowerCase() == beverage.name.toLowerCase()).length == 0));
     }
 
@@ -301,7 +301,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     const personalityMatches = result.match(personalityRegex);
     if (nameMatches && nameMatches.length > 1 && nameMatches[1].length < 100 && descriptionMatches && descriptionMatches.length > 1 && personalityMatches && personalityMatches.length > 1) {
         console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
-        newPatron = new Patron(trimSymbols(nameMatches[1], '*').trim(), trimSymbols(descriptionMatches[1], '*').trim(), trimSymbols(personalityMatches[1], '*').trim());
+        newPatron = new Patron(trimSymbols(nameMatches[1], '\-*').trim(), trimSymbols(descriptionMatches[1], '\-*').trim(), trimSymbols(personalityMatches[1], '\-*').trim());
         stage.patrons[baseCharacter.name] = newPatron;
     }
 

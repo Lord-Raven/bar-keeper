@@ -161,8 +161,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                         const isTalking = patron.name.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever');
                         let emotion: Emotion = patron.emotion as Emotion ?? Emotion.neutral;
                         if (isTalking && chatNode()?.emotion) {
-                            console.log(`${emotion}`);
-                            console.log(chatNode()?.emotion);
                             emotion = chatNode()?.emotion as Emotion ?? emotion;
                         }
                         const numberOfPatrons = Math.max(1, chatNode()?.presentPatronIds.length ?? 1);
