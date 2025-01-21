@@ -50,13 +50,13 @@ function MessageWindup({message, options}: MessageWindupProps) {
 }
 
 const CHARACTER_HEIGHT: number = 100;
-const SIZE_RATIO: number = 0.4166666667;
+const SIZE_RATIO: number = 0.42857142857;
 const getCharacterPosition = (index: number, amount: number) => {
 
     const start = 5;
     const end = 95;
-    const step = (end - start) / (amount + 1);
-    return start + (index + 1) * step;
+    const period = (end - start) / amount;
+    return start + period * index + (period / 2);
 }
 
 interface PatronImageProps {
