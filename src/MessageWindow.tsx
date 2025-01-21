@@ -1,5 +1,5 @@
 import {Pace, WindupChildren} from "windups";
-import {Box, CircularProgress, Icon, IconButton, Typography} from "@mui/material";
+import {CircularProgress, Icon, IconButton, Typography} from "@mui/material";
 import {FC, useEffect, useState} from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
 import {Stage} from "./Stage";
@@ -7,6 +7,7 @@ import {ChatNode} from "./ChatNode";
 import {Cancel, CheckCircle} from "@mui/icons-material";
 import { motion, Variants } from "framer-motion";
 import {Emotion, Patron} from "./Patron";
+import Box from "./Box";
 
 interface MessageWindupProps {
     message: string;
@@ -112,54 +113,52 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
 
     return (
         <div className='important-overflow-visible' style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 2}}>
-            <motion.div layout>
-                <Box sx={{
-                    pl: 1,
-                    pr: 1,
-                    pb: 1,
-                    position: 'absolute',
-                    bottom: '1vh',
-                    left: '0%',
-                    width: '100%',
-                    border: '1px dashed grey',
-                    backgroundColor: '#00000088',
-                    zIndex: 50,
-                    boxSizing: 'border-box',
-                    '&:hover': {backgroundColor: '#000000BB'}
-                }}>
-                    <div style = {{width: '100%'}}>
-                        <div>
-                            <Typography variant="h5" color="#AAAAAA">{chatNode()?.speakerId ?? ''}</Typography>
-                        </div>
-                        <div>
-                            <MessageWindup message={chatNode()?.message ?? ''} options={{onFinished: () => {setDoneWinding(true);}, skipped: doneWinding}} />
-                        </div>
-                        <div>
-                            {advancing ? (
-                                    <CircularProgress style={{float: 'right'}}/>
-                                ) : (stage().isBeverageDecision() ? (
-                                    stage().lastBeverageServed.length == 0 ? (
-                                            <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
-                                                <Cancel/>
-                                            </Icon>
-                                        ) : (
-                                            <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
-                                                        onClick={proceed}>
-                                                <CheckCircle/>
-                                            </IconButton>
-                                        )
+            <Box layout sx={{
+                pl: 1,
+                pr: 1,
+                pb: 1,
+                position: 'absolute',
+                bottom: '1vh',
+                left: '0%',
+                width: '100%',
+                border: '1px dashed grey',
+                backgroundColor: '#00000088',
+                zIndex: 50,
+                boxSizing: 'border-box',
+                '&:hover': {backgroundColor: '#000000BB'}
+            }}>
+                <div style = {{width: '100%'}}>
+                    <div>
+                        <Typography variant="h5" color="#AAAAAA">{chatNode()?.speakerId ?? ''}</Typography>
+                    </div>
+                    <div>
+                        <MessageWindup message={chatNode()?.message ?? ''} options={{onFinished: () => {setDoneWinding(true);}, skipped: doneWinding}} />
+                    </div>
+                    <div>
+                        {advancing ? (
+                                <CircularProgress style={{float: 'right'}}/>
+                            ) : (stage().isBeverageDecision() ? (
+                                stage().lastBeverageServed.length == 0 ? (
+                                        <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
+                                            <Cancel/>
+                                        </Icon>
                                     ) : (
                                         <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
-                                                onClick={proceed}>
-                                            <ForwardIcon/>
+                                                    onClick={proceed}>
+                                            <CheckCircle/>
                                         </IconButton>
                                     )
+                                ) : (
+                                    <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
+                                            onClick={proceed}>
+                                        <ForwardIcon/>
+                                    </IconButton>
                                 )
-                            }
-                        </div>
+                            )
+                        }
                     </div>
-                </Box>
-            </motion.div>
+                </div>
+            </Box>
             {chatNode()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
                         const patron = stage().patrons[patronId];
