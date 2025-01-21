@@ -6,7 +6,7 @@ import {Stage} from "./Stage";
 import {ChatNode} from "./ChatNode";
 import {Cancel, CheckCircle} from "@mui/icons-material";
 import { motion, Variants } from "framer-motion";
-import {Emotion} from "./Patron";
+import {Emotion, Patron} from "./Patron";
 
 interface MessageWindupProps {
     message: string;
@@ -60,16 +60,19 @@ const getCharacterPosition = (index: number, amount: number) => {
 }
 
 interface PatronImageProps {
-    imgUrl: string;
+    patron: Patron;
+    emotion: Emotion;
     xPosition: number;
     isTalking: boolean;
 }
 
-const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
+const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalking}) => {
     const variants: Variants = {
         talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition - SIZE_RATIO}vw`, height: `${CHARACTER_HEIGHT + 2}vh`, filter: 'brightness(1)', zIndex: 12, transition: {x: {ease: "easeOut"}}},
         idle: {color: '#BBBBBB', opacity: 1, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT}vh`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}}},
     };
+
+    const altText = `${patron.name} (${emotion})`
 
     return (
         <motion.div
@@ -78,7 +81,7 @@ const PatronImage: FC<PatronImageProps> = ({imgUrl, xPosition, isTalking}) => {
             animate={isTalking ? 'talking' : 'idle'}
             className='important-overflow-visible'
             style={{position: 'absolute', bottom: '-35vh', width: 'auto', aspectRatio: '5 / 12', zIndex: 10}}>
-            <img src={imgUrl} className='important-overflow-visible' style={{position: 'relative', width: '100%', height: '100%'}} alt='Patron Image'/>
+            <img src={patron.imageUrls[emotion]} className='important-overflow-visible' style={{position: 'relative', width: '100%', height: '100%'}} alt={altText}/>
         </motion.div>
     );
 };
@@ -108,53 +111,55 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
     }, [updateTime(), chatNode()]);
 
     return (
-        <motion.div initial={{height: 0}} animate={{height: 'auto'}} className='important-overflow-visible' style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 2}}>
-            <Box sx={{
-                pl: 1,
-                pr: 1,
-                pb: 1,
-                position: 'absolute',
-                bottom: '1vh',
-                left: '0%',
-                width: '100%',
-                border: '1px dashed grey',
-                backgroundColor: '#00000088',
-                zIndex: 50,
-                boxSizing: 'border-box',
-                '&:hover': {backgroundColor: '#000000BB'}
-            }}>
-                <div style = {{width: '100%'}}>
-                    <div>
-                        <Typography variant="h5" color="#AAAAAA">{chatNode()?.speakerId ?? ''}</Typography>
-                    </div>
-                    <div>
-                        <MessageWindup message={chatNode()?.message ?? ''} options={{onFinished: () => {setDoneWinding(true);}, skipped: doneWinding}} />
-                    </div>
-                    <div>
-                        {advancing ? (
-                                <CircularProgress style={{float: 'right'}}/>
-                            ) : (stage().isBeverageDecision() ? (
-                                stage().lastBeverageServed.length == 0 ? (
-                                        <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
-                                            <Cancel/>
-                                        </Icon>
+        <div className='important-overflow-visible' style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 2}}>
+            <motion.div layout>
+                <Box sx={{
+                    pl: 1,
+                    pr: 1,
+                    pb: 1,
+                    position: 'absolute',
+                    bottom: '1vh',
+                    left: '0%',
+                    width: '100%',
+                    border: '1px dashed grey',
+                    backgroundColor: '#00000088',
+                    zIndex: 50,
+                    boxSizing: 'border-box',
+                    '&:hover': {backgroundColor: '#000000BB'}
+                }}>
+                    <div style = {{width: '100%'}}>
+                        <div>
+                            <Typography variant="h5" color="#AAAAAA">{chatNode()?.speakerId ?? ''}</Typography>
+                        </div>
+                        <div>
+                            <MessageWindup message={chatNode()?.message ?? ''} options={{onFinished: () => {setDoneWinding(true);}, skipped: doneWinding}} />
+                        </div>
+                        <div>
+                            {advancing ? (
+                                    <CircularProgress style={{float: 'right'}}/>
+                                ) : (stage().isBeverageDecision() ? (
+                                    stage().lastBeverageServed.length == 0 ? (
+                                            <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
+                                                <Cancel/>
+                                            </Icon>
+                                        ) : (
+                                            <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
+                                                        onClick={proceed}>
+                                                <CheckCircle/>
+                                            </IconButton>
+                                        )
                                     ) : (
                                         <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
-                                                    onClick={proceed}>
-                                            <CheckCircle/>
+                                                onClick={proceed}>
+                                            <ForwardIcon/>
                                         </IconButton>
                                     )
-                                ) : (
-                                    <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
-                                            onClick={proceed}>
-                                        <ForwardIcon/>
-                                    </IconButton>
                                 )
-                            )
-                        }
+                            }
+                        </div>
                     </div>
-                </div>
-            </Box>
+                </Box>
+            </motion.div>
             {chatNode()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
                         const patron = stage().patrons[patronId];
@@ -164,13 +169,16 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                             emotion = chatNode()?.emotion as Emotion ?? emotion;
                         }
                         const numberOfPatrons = Math.max(1, chatNode()?.presentPatronIds.length ?? 1);
-                        return <PatronImage imgUrl={patron.imageUrls[emotion]}
-                                            xPosition={getCharacterPosition(index, numberOfPatrons) - (CHARACTER_HEIGHT * SIZE_RATIO) / 2}
+                        const position = getCharacterPosition(index, numberOfPatrons) - (CHARACTER_HEIGHT * SIZE_RATIO) / 2
+                        console.log(`getCharacterPosition(${index}, ${numberOfPatrons}) - (${CHARACTER_HEIGHT} * ${SIZE_RATIO}) / 2 = ${position}`);
+                        return <PatronImage patron={patron}
+                                            emotion = {emotion}
+                                            xPosition={position}
                                             isTalking={isTalking}/>;
                     } else {
                         return <div></div>;
                     }
             })}
-        </motion.div>
+        </div>
     );
 }
