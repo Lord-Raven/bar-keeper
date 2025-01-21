@@ -273,7 +273,7 @@ export async function generatePatrons(stage: Stage) {
                     console.log('Generated patron:');
                     console.log(patron);
                     stage.patrons[character.name] = patron;
-                    generatePatronImage(stage, patron);
+                    generatePatronImage(stage, patron, Emotion.neutral);
                 } else {
                     console.log('Failed a patron generation');
                 }
@@ -311,37 +311,34 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
 const patronImagePrompt: string = '(contrasting empty background color), standing';
 const patronImageNegativePrompt: string = 'border, ((close-up)), background elements, special effects, matching background, amateur, low quality, action, cut-off';
 
-export async function generatePatronImage(stage: Stage, patron: Patron): Promise<void> {
-    const baseImageUrl = await stage.makeImage({
-        //image: bottleUrl,
-        //strength: 0.1,
-        prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, ${emotionPrompts[Emotion.neutral]}, (${patron.description})`,
-        negative_prompt: patronImageNegativePrompt,
-        aspect_ratio: AspectRatio.CINEMATIC_VERTICAL,
-        remove_background: true
-        //seed: null,
-        //item_id: null,
-    }, '');
+export async function generatePatronImage(stage: Stage, patron: Patron, emotion: Emotion): Promise<void> {
 
-    if (baseImageUrl == '') {
-        throw Error(`Failed to generate a patron image for ${patron.name}.`);
+    let imageUrl: string;
+    if (emotion == Emotion.neutral) {
+        imageUrl = await stage.makeImage({
+            prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, ${emotionPrompts[emotion]}, (${patron.description})`,
+            negative_prompt: patronImageNegativePrompt,
+            aspect_ratio: AspectRatio.CINEMATIC_VERTICAL,
+            remove_background: true
+        }, '');
     } else {
-        for (let emotion of Object.values(Emotion)) {
-            if (emotion == Emotion.neutral) {
-                patron.imageUrls[emotion] = baseImageUrl
-            } else {
-                try {
-                    patron.imageUrls[emotion] = await stage.makeImageFromImage({
-                        image: patron.imageUrls[Emotion.neutral],
-                        prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, ${emotionPrompts[emotion]}, (${patron.description})`,
-                        negative_prompt: patronImageNegativePrompt,
-                        aspect_ratio: AspectRatio.CINEMATIC_VERTICAL,
-                        remove_background: true,
-                        strength: 0.5
-                    }, patron.imageUrls[Emotion.neutral]);
-                } catch(exception) {
+        imageUrl = await stage.makeImageFromImage({
+            image: patron.imageUrls[Emotion.neutral],
+            prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, ${emotionPrompts[emotion]}, (${patron.description})`,
+            negative_prompt: patronImageNegativePrompt,
+            aspect_ratio: AspectRatio.CINEMATIC_VERTICAL,
+            remove_background: true,
+            strength: 0.5
+        }, patron.imageUrls[Emotion.neutral]);
+    }
 
-                }
+    if (imageUrl == '') {
+        throw Error(`Failed to generate a ${emotion} patron image for ${patron.name}.`);
+    } else {
+        patron.imageUrls[emotion] = imageUrl;
+        for (let otherEmotion of Object.values(Emotion)) {
+            if (!patron.imageUrls[otherEmotion]) {
+                patron.imageUrls[otherEmotion] = patron.imageUrls[Emotion.neutral];
             }
         }
 

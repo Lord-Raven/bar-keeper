@@ -32,7 +32,7 @@ export const emotionPrompts: {[emotion in Emotion]: string} = {
     joy: 'happy, smiling',
     desire: 'seductive expression',
     anger: 'angry expression',
-    surprise: 'surprised expression',
+    surprise: 'surprised or shocked expression',
     embarrassment: 'embarrassed, blushing',
     sadness: 'sad, upset expression, teary'
 }

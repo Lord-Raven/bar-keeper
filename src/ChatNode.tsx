@@ -1,6 +1,7 @@
 import {Direction} from "./Director";
 import {Stage} from "./index";
 import {Emotion} from "./Patron";
+import {generatePatronImage} from "./Generator";
 
 export interface ChatNode {
     id: string;
@@ -76,6 +77,8 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
             console.log(emotionData);
             if (emotionData.length > 0 && emotionData[0].confidence > 0.3) {
                 newNode.emotion = emotionData[0].label;
+                // Await new image? Maybe just let it run in the background?
+                await generatePatronImage(stage, targetPatron, newNode.emotion as Emotion);
             }
         }
     }
