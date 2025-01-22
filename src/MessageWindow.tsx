@@ -107,7 +107,8 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
         }
     }
     const recede = () => {
-
+        reverse();
+        setDoneWinding(true);
     }
     useEffect(() => {
         setDoneWinding(false);
