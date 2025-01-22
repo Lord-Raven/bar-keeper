@@ -1,16 +1,16 @@
 import {Pace, WindupChildren} from "windups";
 import {CircularProgress, Icon, IconButton, Typography} from "@mui/material";
 import {FC, useEffect, useState} from "react";
-import ForwardIcon from "@mui/icons-material/Forward";
 import {Stage} from "./Stage";
 import {ChatNode} from "./ChatNode";
-import {Cancel, CheckCircle} from "@mui/icons-material";
+import {Cancel, CheckCircle, ArrowForward, ArrowBack} from "@mui/icons-material";
 import { motion, Variants } from "framer-motion";
 import {Emotion, Patron} from "./Patron";
 import Box from "./Box";
 
 interface MessageWindupProps {
     message: string;
+    read: boolean;
     options: {};
 }
 
@@ -34,7 +34,7 @@ const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text }) => {
     );
 };
 
-function MessageWindup({message, options}: MessageWindupProps) {
+function MessageWindup({message, read, options}: MessageWindupProps) {
 
     return (
         <div style={{height: '100%', position: 'relative'}}>
@@ -42,7 +42,7 @@ function MessageWindup({message, options}: MessageWindupProps) {
             <div style={{position: 'absolute', top: '0px', left: '0px', zIndex: 10}}>
                 <WindupChildren {...options}>
                     <Pace ms={3}>
-                        <Typography color='primary'>{TextWithQuotes({text: message})}</Typography>
+                        <Typography color={read ? '#AAAAAA' : 'primary'}>{TextWithQuotes({text: message})}</Typography>
                     </Pace>
                 </WindupChildren>
             </div>
@@ -88,12 +88,13 @@ const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalkin
 
 interface MessageWindowProps {
     advance:  () => void;
+    reverse: () => void;
     chatNode: () => ChatNode|null;
     updateTime: () => number;
     stage: () => Stage;
 }
 
-export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updateTime, stage }) => {
+export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNode, updateTime, stage }) => {
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
     const proceed = () => {
@@ -104,6 +105,9 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
         } else {
             setDoneWinding(true);
         }
+    }
+    const recede = () => {
+
     }
     useEffect(() => {
         setDoneWinding(false);
@@ -131,9 +135,13 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                         <Typography variant="h5" color="#AAAAAA">{chatNode()?.speakerId ?? ''}</Typography>
                     </div>
                     <div>
-                        <MessageWindup message={chatNode()?.message ?? ''} options={{onFinished: () => {setDoneWinding(true);}, skipped: doneWinding}} />
+                        <MessageWindup message={chatNode()?.message ?? ''} read={chatNode()?.read ?? false} options={{onFinished: () => {setDoneWinding(true);}, skipped: doneWinding}} />
                     </div>
                     <div>
+                        <IconButton style={{outline: 1, float: 'left'}} disabled={advancing || !chatNode() || !chatNode()?.parentId} color={'primary'}
+                                        onClick={recede}>
+                            <ArrowBack/>
+                        </IconButton>
                         {advancing ? (
                                 <CircularProgress style={{float: 'right'}}/>
                             ) : (stage().isBeverageDecision() ? (
@@ -150,7 +158,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, chatNode, updat
                                 ) : (
                                     <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
                                             onClick={proceed}>
-                                        <ForwardIcon/>
+                                        <ArrowForward/>
                                     </IconButton>
                                 )
                             )

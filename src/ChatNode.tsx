@@ -14,6 +14,7 @@ export interface ChatNode {
     direction: Direction|undefined;
     presentPatronIds: string[];
     selectedPatronId?: string|undefined;
+    read: boolean;
 }
 
 export async function createNodes(script: string, commonProps: Partial<ChatNode> = {}, stage: Stage): Promise<ChatNode[]> {
@@ -28,7 +29,8 @@ export async function createNodes(script: string, commonProps: Partial<ChatNode>
         message: '',
         direction: undefined,
         presentPatronIds: [],
-        selectedPatronId: undefined
+        selectedPatronId: undefined,
+        read: false
     };
     let currentNode: ChatNode|null = null;
     let currentSpeaker = '';

@@ -217,6 +217,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             buildSection('Standard Instruction', '{{suffix}}');
     }
 
+    async reverseMessage() {
+        console.log('reverseMessage');
+        if (this.currentNode && this.currentNode.parentId) {
+            this.setCurrentNode(this.chatNodes[this.currentNode.parentId]);
+        }
+    }
+
     async advanceMessage() {
 
         // Go ahead and do a patron check--don't wait up.
@@ -231,6 +238,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         if (!this.currentNode || this.currentNode.childIds.length == 0) {
             await this.processNextResponse();
         } else {
+            this.currentNode.read = true;
             this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]]);
         }
     }
@@ -382,6 +390,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     <MessageWindow
                         advance={() => {
                             void this.advanceMessage()
+                        }}
+                        reverse={() => {
+                            void this.reverseMessage()
                         }}
                         chatNode={() => {
                             return this.currentNode
