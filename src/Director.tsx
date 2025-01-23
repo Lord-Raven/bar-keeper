@@ -68,7 +68,7 @@ export class Director {
             barDescription: stage.barDescription ?? '',
             playerName: stage.player.name ?? '',
             patronName: node.selectedPatronId ? stage.patrons[node.selectedPatronId].name : '',
-            beverageName: stage.lastBeverageServed ?? ''});
+            beverageName: node.selectedBeverage ?? ''});
     }
 
     determineNextNodeProps(stage: Stage, currentNode: ChatNode|null): Partial<ChatNode> {

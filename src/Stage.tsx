@@ -47,7 +47,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     loadingDescription: string|undefined;
     patrons: {[key: string]: Patron};
     chatNodes: {[key: string]: ChatNode};
-    lastBeverageServed: string;
+    night: number;
 
     // Not saved:
     currentNode: ChatNode|null;
@@ -95,8 +95,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.readChatState(chatState);
         this.director = new Director();
         this.loadingProgress = 50;
-        this.lastBeverageServed = '';
         this.pipeline = null;
+        this.night = 1;
 
         console.log('Config loaded:');
         console.log(config);
@@ -141,7 +141,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             barImageUrl: this.barImageUrl,
             entranceSoundUrl: this.entranceSoundUrl,
             beverages: this.beverages,
-            lastBeverageServed: this.lastBeverageServed,
             chatNodes: this.chatNodes,
             currentMessageId: this.currentNode ? this.currentNode.id : null,
             patrons: this.patrons,
@@ -159,7 +158,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.barImageUrl = chatState.barImageUrl;
             this.entranceSoundUrl = chatState.entranceSoundUrl;
             this.beverages = (chatState.beverages ?? []).map((beverage: { name: string, description: string, imageUrl: string }) => new Beverage(beverage.name, beverage.description, beverage.imageUrl));
-            this.lastBeverageServed = chatState.lastBeverageServed ?? '';
             this.chatNodes = chatState.chatNodes ?? {};
             this.currentNode = chatState.currentMessageId && this.chatNodes[chatState.currentMessageId] ? this.chatNodes[chatState.currentMessageId] : null;
             this.patrons = chatState.patrons ?? {};
@@ -300,7 +298,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 this.currentNode.childIds.push(selectedNode.id);
                 this.currentNode.selectedChildId = selectedNode.id;
             }
-            this.lastBeverageServed = '';
             this.setCurrentNode(selectedNode);
         } else {
             console.log('Failed to generate new content; try again.');
@@ -341,8 +338,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     setLastBeverageServed(beverageName: string) {
-        this.lastBeverageServed = beverageName;
-        this.updateChatState();
+        if (this.currentNode) {
+            this.currentNode.selectedBeverage = beverageName;
+        }
     }
 
     render(): ReactElement {

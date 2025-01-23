@@ -146,7 +146,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
                         {advancing ? (
                                 <CircularProgress style={{float: 'right'}}/>
                             ) : (stage().isBeverageDecision() ? (
-                                stage().lastBeverageServed.length == 0 ? (
+                                !chatNode()?.selectedBeverage ? (
                                         <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
                                             <Cancel/>
                                         </Icon>

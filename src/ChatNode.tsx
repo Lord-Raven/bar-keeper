@@ -14,6 +14,8 @@ export interface ChatNode {
     direction: Direction|undefined;
     presentPatronIds: string[];
     selectedPatronId?: string|undefined;
+    selectedBeverage: string|null,
+    beverageCounts: {[key: string]: number};
     read: boolean;
 }
 
@@ -30,33 +32,38 @@ export async function createNodes(script: string, commonProps: Partial<ChatNode>
         direction: undefined,
         presentPatronIds: [],
         selectedPatronId: undefined,
+        selectedBeverage: null,
+        beverageCounts: {},
         read: false
     };
+    let currentBeverageCounts: {[key: string]: number} = stage.beverages.reduce((acc, beverage) => {
+            acc[beverage.name] = (commonProps && commonProps.beverageCounts && Object.keys(commonProps.beverageCounts).includes(beverage.name)) ? (commonProps.beverageCounts[beverage.name] - (commonProps.selectedBeverage == beverage.name ? 1 : 0)) : 1;
+            return acc;
+        }, {} as { [key: string]: number});
     let currentNode: ChatNode|null = null;
     let currentSpeaker = '';
     let currentDialogue = '';
     let nodes: ChatNode[] = [];
 
     for (let line of script.trim().split('\n')) {
-        //console.log('Line:' + line);
         const match = line.match(/^\**(.[^*]+)\**:\s*(.+)$/i);
         if (match) {
             // If there's a current dialogue, push it to the parsedLines array
             if (currentSpeaker && currentDialogue.trim().length > 0) {
-                currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps}, currentNode, nodes, stage);
+                currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
             }
             // Start a new dialogue
             currentSpeaker = match[1];
             currentDialogue = match[2];
         } else if (currentSpeaker && currentDialogue.trim().length > 0) {
             // Continue the current dialogue
-            currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps}, currentNode, nodes, stage);
+            currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
 
             currentDialogue = line.trim();
         }
     }
     if (currentSpeaker && currentDialogue.trim().length > 0) {
-        currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: (currentNode ? currentNode.id : null), ...commonProps}, currentNode, nodes, stage);
+        currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: (currentNode ? currentNode.id : null), ...commonProps, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
     }
 
     return nodes;

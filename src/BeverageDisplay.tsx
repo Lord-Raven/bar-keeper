@@ -7,17 +7,17 @@ interface BeverageDisplayProps {
 }
 
 export const BeverageDisplay: React.FC<BeverageDisplayProps> = ({ stage }) => {
-    const [selectedBeverage, setSelectedBeverage] = useState<string>(stage().lastBeverageServed);
+    const [selectedBeverage, setSelectedBeverage] = useState<string|null>(stage().currentNode?.selectedBeverage ?? null);
 
     const handleBeverageClick = (name: string) => {
-        if (stage().isBeverageDecision()) {
+        if (stage().isBeverageDecision() && (stage().currentNode?.beverageCounts[name] ?? 1 > 0)) {
             setSelectedBeverage(name);
             stage().setLastBeverageServed(name);
         }
     };
 
     useEffect(() => {
-        setSelectedBeverage(stage().lastBeverageServed);
+        setSelectedBeverage(stage().currentNode?.selectedBeverage ?? null);
     }, [stage()]);
 
 
@@ -38,7 +38,7 @@ export const BeverageDisplay: React.FC<BeverageDisplayProps> = ({ stage }) => {
         }}>
             <div
                 style={{height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
-                {stage().beverages.map(beverage => beverage.render(() => {return beverage.name == selectedBeverage}, handleBeverageClick))}
+                {stage().beverages.map(beverage => beverage.render(() => {return beverage.name == selectedBeverage}, () => {return stage().currentNode?.beverageCounts[beverage.name] ?? 1},  handleBeverageClick))}
             </div>
         </Box>
     );
