@@ -16,7 +16,7 @@ export class Beverage {
     render(selected: () => boolean, count: () => number, onClick: (id: string) => void): ReactElement {
         return this.imageUrl !== '' ? (
                 <Badge
-                    badgeContent={`<h5>${count()}</h5>`}
+                    badgeContent={count()}
                     color="primary"
                     anchorOrigin={{
                         vertical: 'bottom',
@@ -28,6 +28,7 @@ export class Beverage {
                             backgroundColor: count() > 0 ? 'blue' : '#66666666',
                             color: 'white',
                             borderRadius: '50%',
+                            fontSize: 'large'
                         }
                     }}>
                     <Box component="section" sx={{

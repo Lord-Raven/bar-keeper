@@ -398,6 +398,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         chatNode={() => {
                             return this.currentNode
                         }}
+                        selectedBeverage={() => {
+                            return this.currentNode?.selectedBeverage ?? null
+                        }}
                         updateTime={() => {
                             return this.updateTime
                         }}

@@ -87,14 +87,15 @@ const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalkin
 };
 
 interface MessageWindowProps {
-    advance:  () => void;
+    advance: () => void;
     reverse: () => void;
     chatNode: () => ChatNode|null;
+    selectedBeverage: () => string|null;
     updateTime: () => number;
     stage: () => Stage;
 }
 
-export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNode, updateTime, stage }) => {
+export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNode, selectedBeverage, updateTime, stage }) => {
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
     const proceed = () => {
@@ -146,15 +147,15 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
                         {advancing ? (
                                 <CircularProgress style={{float: 'right'}}/>
                             ) : (stage().isBeverageDecision() ? (
-                                !chatNode()?.selectedBeverage ? (
-                                        <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
-                                            <Cancel/>
-                                        </Icon>
-                                    ) : (
+                                selectedBeverage() ? (
                                         <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
                                                     onClick={proceed}>
                                             <CheckCircle/>
                                         </IconButton>
+                                    ) : (
+                                        <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
+                                            <Cancel/>
+                                        </Icon>
                                     )
                                 ) : (
                                     <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
