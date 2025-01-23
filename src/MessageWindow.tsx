@@ -14,16 +14,16 @@ interface MessageWindupProps {
     options: {};
 }
 
-interface TextWithQuotesProps { text: string; }
+interface TextWithQuotesProps { text: string; read: boolean; }
 
-const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text }) => {
+const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text, read}) => {
     const regex = /"([^"]*)"/g;
     const parts = text.split(regex);
     return (
-        <span> 
+        <span className={read ? "prose-read" : "prose-unread"}>
             {parts.map((part, index) => 
                 index % 2 === 1 ? (
-                    <span className="quoted-text" key={index}>
+                    <span className={read ? "quote-read" : "quote-unread"} key={index}>
                         "{part}"
                     </span>
                 ) : (
@@ -42,7 +42,7 @@ function MessageWindup({message, read, options}: MessageWindupProps) {
             <div style={{position: 'absolute', top: '0px', left: '0px', zIndex: 10}}>
                 <WindupChildren {...options}>
                     <Pace ms={3}>
-                        <Typography color={read ? '#AAAAAA' : 'primary'}>{TextWithQuotes({text: message})}</Typography>
+                        <Typography>{TextWithQuotes({text: message, read})}</Typography>
                     </Pace>
                 </WindupChildren>
             </div>
