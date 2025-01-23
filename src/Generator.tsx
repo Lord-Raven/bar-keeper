@@ -12,14 +12,6 @@ export function buildSection(name: string, body: string) {
 export function buildDistillationPrompt(stage: Stage, baseCharacter: Character): string {
     return (
         buildSection('Flavor Text', stage.replaceTags((baseCharacter.personality + ' ' + baseCharacter.description), {user: stage.player.name, char: baseCharacter.name})) +
-        buildSection('Priority Instruction', 
-            `The FLAVOR TEXT is merely inspirational material that you will use to establish a SOURCE, SETTING, THEMES, and ART style for future narration and illustration. ` +
-            `This essential, preparatory response includes four specific and clearly defined fields, each containing a comma-delimited list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
-            `"SOURCE" should name the source material of FLAVOR TEXT, if any; leave this blank or 'Original' if FLAVOR TEXT is not derived from a known work.\n` +
-            `"SETTING" should briefly summarize the overarching location, vibe, or time period derived from the FLAVOR TEXT, including any key deviations from setting expectations.\n` +
-            `"THEMES" should list all of the prominent themes, concepts, quirks, or kinks from the FLAVOR TEXT.\n` +
-            `"ART" should identify a target artist name, art style, art genre, medium, palette, stroke, linework, or other style choices that suit or align with the setting and themes of the FLAVOR TEXT; this will be used to generate appropriate images later.\n` +
-            `Define these four fields and promptly end your response.\n`) +
         buildSection('Example Responses', '\n' +
             `SOURCE: H.P. Lovecraft\nSETTING: A mysterious and eldritch 1930s Innsmouth, Massachusetts\nTHEMES: Mind control, insanity, gore, mysticism, body horror, Old Ones\nART: noir, high contrast, overly dark, gritty, hyperrealism, heavy shadows, 1930s fashion, wet\n` +
             `SOURCE: Robert E. Howard's Conan the Barbarian\nSETTING: Cimmeria, a dark fantasy, pre-Medieval wasteland rife with hardship, bloodlust, and sex\nTHEMES: barbarians, hedonism, violence, domination, rape, pillaging\nART: barbaric, dark fantasy, oil painting, visible brush strokes, vibrant colors, stark contrast, in the style of Frank Frazetta, hypersexualized, unrealistically muscular characters, busty women, skimpy clothing\n` +
@@ -30,7 +22,16 @@ export function buildDistillationPrompt(stage: Stage, baseCharacter: Character):
             `SOURCE: Original\nSETTING: Underground 80s Mid-West biker bar\nTHEMES: turf war, drug running, machismo, brutality, sex and drugs, furries, anthropomorphic characters\nART: Comic book style illustrations, neon, chrome, bright colors, bulging muscles, furries, heavy inks for contrast, crosshatching\n` +
             `SOURCE: Original\nSETTING: 70s disco scene, Los Angeles\nTHEMES: Free love, vampires, lycanthropes, disco, secret fantasy underworld, clubs, maintaining secrecy\nART: Psychedelic, lurid colors, stylish, 70s clothing, interesting and exaggerated character proportions\n` +
             `SOURCE: Warhammer 40k\nSETTING: Massive Cathedral starship from the Warhammer 40k universe\nTHEMES: brutality, faith, devotion, heresy, power armor\nART: grimdark, high contrast, saturated yet gritty colors, heavy inks and shadows, strong characters, extreme technologies, power armor\n`) +
-        buildSection('Former Instruction', '{{suffix}}')).trim();
+        buildSection('Priority Instruction',
+            `You are doing prep work for a roleplaying narrative. Instead of narrating, you will first use this planning response to distill the setting and themes from the FLAVOR TEXT into a specific format. ` +
+            `Use the FLAVOR TEXT as inspirational material as you establish a SOURCE, SETTING, THEMES, and ART style for future narration and illustration. ` +
+            `This essential, preparatory response includes four specific and clearly defined fields, each containing a comma-delimited list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
+            `"SOURCE" should name the source material of FLAVOR TEXT, if any; leave this blank or 'Original' if FLAVOR TEXT is not derived from a known work.\n` +
+            `"SETTING" should briefly summarize the overarching location, vibe, or time period derived from the FLAVOR TEXT, including any key deviations from setting expectations.\n` +
+            `"THEMES" should list all of the prominent themes, concepts, quirks, or kinks from the FLAVOR TEXT.\n` +
+            `"ART" should identify a target artist name, art style, art genre, medium, palette, stroke, linework, or other style choices that suit or align with the setting and themes of the FLAVOR TEXT; this will be used to generate appropriate images later.\n` +
+            `Define these four fields and promptly end your response.\n`) +
+        buildSection('Default Instruction', '{{suffix}}')).trim();
 }
 
 export function buildBarDescriptionPrompt(stage: Stage): string {

@@ -144,6 +144,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
 
     return (
         <div className='important-overflow-visible' style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 2}}>
+            <div>
             <Box layout sx={boxStyle}>
                 <div style = {{width: '100%'}}>
                     <div>
@@ -181,12 +182,15 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
                     </div>
                 </div>
             </Box>
-            <Box layout sx={{...boxStyle, height: '10vh'}}>
+            </div>
+            <div>
+            <Box layout sx={{...boxStyle, height: '15vh'}}>
                 <div
                     style={{height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
                     {stage().beverages.map(beverage => beverage.render(() => {return beverage.name == selectedBeverage}, () => {return stage().currentNode?.beverageCounts[beverage.name] ?? 1},  handleBeverageClick))}
                 </div>
             </Box>
+            </div>
 
             {chatNode()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
