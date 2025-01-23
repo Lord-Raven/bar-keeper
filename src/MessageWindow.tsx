@@ -114,7 +114,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
     useEffect(() => {
         setDoneWinding(false);
         setAdvancing(false);
-    }, [updateTime(), chatNode()]);
+    }, [updateTime(), chatNode(), selectedBeverage()]);
 
     return (
         <div className='important-overflow-visible' style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 2}}>
