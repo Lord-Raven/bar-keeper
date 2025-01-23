@@ -59,6 +59,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     director: Director;
     updateTime: number = Date.now();
     pipeline: any
+    lastSelectedBeverage: string;
 
     readonly theme = createTheme({
         palette: {
@@ -97,6 +98,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.loadingProgress = 50;
         this.pipeline = null;
         this.night = 1;
+        this.lastSelectedBeverage = '';
 
         console.log('Config loaded:');
         console.log(config);
@@ -339,6 +341,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     setLastBeverageServed(beverageName: string) {
         if (this.currentNode) {
+            this.lastSelectedBeverage = beverageName;
             this.currentNode.selectedBeverage = beverageName;
         }
     }

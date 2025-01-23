@@ -16,7 +16,7 @@ export class Beverage {
     render(selected: () => boolean, count: () => number, onClick: (id: string) => void): ReactElement {
         return this.imageUrl !== '' ? (
                 <Badge
-                    badgeContent={count()}
+                    badgeContent={`<h5>${count()}</h5>`}
                     color="primary"
                     anchorOrigin={{
                         vertical: 'bottom',
