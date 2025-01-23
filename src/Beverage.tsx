@@ -24,18 +24,11 @@ export class Beverage {
                         '&:hover': {backgroundColor: count() > 0 ? '#FFFFFF11' : '#66666666'}
                 }} onClick={() => {onClick(this.name);}}>
                     <Badge
-                        badgeContent={count()}
+                        badgeContent={`${count()}`}
                         color="primary"
                         anchorOrigin={{
                             vertical: 'bottom',
                             horizontal: 'right',
-                        }}
-                        sx={{
-                            '& .MuiBadge-badge': {
-                                backgroundColor: count() > 0 ? 'blue' : '#66666666',
-                                color: 'white',
-                                borderRadius: '50%',
-                            }
                         }}>
                     </Badge>
                     <ImageWithPopup
