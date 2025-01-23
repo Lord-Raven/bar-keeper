@@ -2,13 +2,36 @@
 #   in which case these values can be managed in the UI.
 
 # The name of the stage.
-project_name: "Bar Keeper"
+project_name: "Barkeeper"
 
 # A short tagline to show in search.
 tagline: "A barkeeping sim based on any card."
 
 creator_notes: "
-
+This is little more than a proof of concept for the kind of experiences stages can produce. Adding this stage to a chat will essentially convert that session into a simple bartending sim, 
+where the user's persona meets and interacts with various characters, but the only choices the player makes is which drinks to serve when prompted. 
+<br>
+<br>
+The stage will distill the chat's primary character card into a set of themes and use that to generate a bar, five beverages, and four characters based on the chat's primary character card, 
+plus an additional character for each bot you add to the chat. Characters will come and go, with three-to-five drink prompts each night. 
+Storylines and relationships will likely emerge and resolve organically, influenced by the drinks you choose to give. 
+<br>
+<br>
+**Warning**
+_This stage makes text gen calls behind the scenes. It does include the user's pre and post history in these requests, but it also includes additional instructions that are themselves often the result of other text gen requests._
+<br>
+<br>
+I have tested this primarily with Mars Asha, where I have no concerns for usage limits or losing access.
+this stage makes a lot of text and image gen requests up front, and makes about one text gen request per few messages as you play
+<br>
+<br>
+**Shortcomings**
+I feel there are some other clear shortfalls in what this stage achieves. I think many of these items could be addressed with sufficient time or motivation, but I don't know that they will be:
+<li>
+* There is a stages bug that causes textgen requests to repeatedly fail sometimes. In my experience, refreshing a few times or clearing the cache can resolve this. If the stage stops loading new responses, this is what is going on.
+* A lot of the stage's behavior and performance is contingent upon your personal generation settings; your jailbreak in particular could cause trouble if it is overpowering the stage's instructions.
+* The stage does very little quality control, so you are at the mercy of the LLM to properly format responses and not go off the rails in fixating on minor characters or other activity that isn't internally represented by the stage.
+</li>
 "
 
 # 'PUBLIC', 'PRIVATE', or 'UNLISTED'.
@@ -27,6 +50,7 @@ position: 'FULLSCREEN'
 # Self-explanatory.
 tags:
  - 'Stage'
+ - 'NSFW'
  - 'Add-On'
  - 'Scenario'
  - 'Bartender'

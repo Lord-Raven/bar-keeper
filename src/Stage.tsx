@@ -398,9 +398,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         chatNode={() => {
                             return this.currentNode
                         }}
-                        selectedBeverage={() => {
-                            return this.currentNode?.selectedBeverage ?? null
-                        }}
                         updateTime={() => {
                             return this.updateTime
                         }}
@@ -408,21 +405,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             return this
                         }}
                     />
-                )}
-                {!this.loadingProgress && (
-                    <div style={{
-                        position: 'relative',
-                        height: '16%',
-                        left: '1%',
-                        width: '98%',
-                        alignContent: 'center',
-                        verticalAlign: 'middle',
-                        zIndex: 20
-                    }}>
-                        <BeverageDisplay stage={() => {
-                            return this
-                        }}/>
-                    </div>
                 )}
             </ThemeProvider>
         </div>;

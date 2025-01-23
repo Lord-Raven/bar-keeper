@@ -1,6 +1,6 @@
 import {Pace, WindupChildren} from "windups";
 import {CircularProgress, Icon, IconButton, Typography} from "@mui/material";
-import {FC, useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {Stage} from "./Stage";
 import {ChatNode} from "./ChatNode";
 import {Cancel, CheckCircle, ArrowForward, ArrowBack} from "@mui/icons-material";
@@ -52,11 +52,25 @@ function MessageWindup({message, read, options}: MessageWindupProps) {
 
 const CHARACTER_HEIGHT: number = 100;
 const getCharacterPosition = (index: number, amount: number) => {
-
     const start = 5;
     const end = 95;
     const period = (end - start) / amount;
     return start + period * index + (period / 2);
+}
+
+const boxStyle = {
+    pl: 1,
+    pr: 1,
+    pb: 1,
+    position: 'absolute',
+    bottom: '1vh',
+    left: '0%',
+    width: '100%',
+    border: '1px dashed grey',
+    backgroundColor: '#00000088',
+    zIndex: 50,
+    boxSizing: 'border-box',
+    '&:hover': {backgroundColor: '#000000BB'}
 }
 
 interface PatronImageProps {
@@ -90,14 +104,26 @@ interface MessageWindowProps {
     advance: () => void;
     reverse: () => void;
     chatNode: () => ChatNode|null;
-    selectedBeverage: () => string|null;
     updateTime: () => number;
     stage: () => Stage;
 }
 
-export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNode, selectedBeverage, updateTime, stage }) => {
+export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNode, updateTime, stage }) => {
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
+    const [selectedBeverage, setSelectedBeverage] = useState<string|null>(chatNode()?.selectedBeverage ?? null);
+
+    const handleBeverageClick = (name: string) => {
+        if (stage().isBeverageDecision() && (stage().currentNode?.beverageCounts[name] ?? 1 > 0)) {
+            setSelectedBeverage(name);
+            stage().setLastBeverageServed(name);
+        }
+    };
+
+    useEffect(() => {
+        setSelectedBeverage(stage().currentNode?.selectedBeverage ?? null);
+    }, [stage()]);
+
     const proceed = () => {
         if (doneWinding) {
             setAdvancing(true);
@@ -114,24 +140,11 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
     useEffect(() => {
         setDoneWinding(false);
         setAdvancing(false);
-    }, [updateTime(), chatNode(), selectedBeverage()]);
+    }, [updateTime(), chatNode()]);
 
     return (
         <div className='important-overflow-visible' style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 2}}>
-            <Box layout sx={{
-                pl: 1,
-                pr: 1,
-                pb: 1,
-                position: 'absolute',
-                bottom: '1vh',
-                left: '0%',
-                width: '100%',
-                border: '1px dashed grey',
-                backgroundColor: '#00000088',
-                zIndex: 50,
-                boxSizing: 'border-box',
-                '&:hover': {backgroundColor: '#000000BB'}
-            }}>
+            <Box layout sx={boxStyle}>
                 <div style = {{width: '100%'}}>
                     <div>
                         <Typography variant="h5" color="#AAAAAA">{chatNode()?.speakerId ?? ''}</Typography>
@@ -147,7 +160,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
                         {advancing ? (
                                 <CircularProgress style={{float: 'right'}}/>
                             ) : (stage().isBeverageDecision() ? (
-                                selectedBeverage() ? (
+                                selectedBeverage ? (
                                         <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
                                                     onClick={proceed}>
                                             <CheckCircle/>
@@ -168,6 +181,13 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
                     </div>
                 </div>
             </Box>
+            <Box layout sx={{...boxStyle, height: '10vh'}}>
+                <div
+                    style={{height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
+                    {stage().beverages.map(beverage => beverage.render(() => {return beverage.name == selectedBeverage}, () => {return stage().currentNode?.beverageCounts[beverage.name] ?? 1},  handleBeverageClick))}
+                </div>
+            </Box>
+
             {chatNode()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
                         const patron = stage().patrons[patronId];
