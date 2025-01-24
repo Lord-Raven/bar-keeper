@@ -18,7 +18,6 @@ import {MessageWindow} from "./MessageWindow"
 import { register } from "register-service-worker";
 import {buildSection, generate, generatePatrons} from "./Generator";
 import {ChatNode, createNodes} from "./ChatNode";
-import {BeverageDisplay} from "./BeverageDisplay";
 import {GenerationUi} from "./GenerationUi";
 import {Client} from "@gradio/client";
 

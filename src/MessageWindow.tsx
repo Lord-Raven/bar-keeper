@@ -145,7 +145,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
     return (
         <div className='important-overflow-visible' style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 2}}>
             <div>
-            <Box layout sx={boxStyle}>
+            <Box layout sx={{...boxStyle, bottom: '17vh'}}>
                 <div style = {{width: '100%'}}>
                     <div>
                         <Typography variant="h5" color="#AAAAAA">{chatNode()?.speakerId ?? ''}</Typography>
