@@ -158,7 +158,7 @@ async function generateDistillation(stage: Stage) {
     while ((stage.settingSummary == '' || stage.themeSummary == '' || stage.artSummary == '') && tries > 0) {
         let textResponse = await stage.generator.textGen({
             prompt: buildDistillationPrompt(stage, stage.characterForGeneration),
-            max_tokens: 80,
+            max_tokens: 100,
             min_tokens: 50
         });
         if (textResponse && textResponse.result) {
