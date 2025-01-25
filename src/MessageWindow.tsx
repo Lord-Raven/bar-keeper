@@ -94,7 +94,7 @@ const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalkin
             initial='idle'
             animate={isTalking ? 'talking' : 'idle'}
             className='important-overflow-visible'
-            style={{position: 'absolute', bottom: '-35vh', width: 'auto', aspectRatio: '5 / 12', zIndex: 10}}>
+            style={{position: 'absolute', bottom: '-30vh', width: 'auto', aspectRatio: '5 / 12', zIndex: 10}}>
             <img src={patron.imageUrls[emotion]} className='important-overflow-visible' style={{position: 'relative', width: '100%', height: '100%', transform: 'translate(-50%, 0)'}} alt={altText}/>
         </motion.div>
     );

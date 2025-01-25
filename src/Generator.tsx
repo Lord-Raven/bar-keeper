@@ -26,10 +26,10 @@ export function buildDistillationPrompt(stage: Stage, baseCharacter: Character):
             `You are doing prep work for a roleplaying narrative. Instead of narrating, you will first use this planning response to distill the setting and themes from the FLAVOR TEXT into a specific format. ` +
             `Use the FLAVOR TEXT as inspirational material as you establish a SOURCE, SETTING, THEMES, and ART style for future narration and illustration. ` +
             `This essential, preparatory response includes four specific and clearly defined fields, each containing a comma-delimited list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
-            `"SOURCE" should name the source material of FLAVOR TEXT, if any; leave this blank or 'Original' if FLAVOR TEXT is not derived from a known work.\n` +
+            `"SOURCE" should identify the source material of FLAVOR TEXT, if any; leave this blank or 'Original' if FLAVOR TEXT is not derived from a known work.\n` +
             `"SETTING" should briefly summarize the overarching location, vibe, or time period derived from the FLAVOR TEXT, including any key deviations from setting expectations.\n` +
             `"THEMES" should list all of the prominent themes, concepts, quirks, or kinks from the FLAVOR TEXT.\n` +
-            `"ART" should identify a target artist name, art style, art genre, medium, palette, stroke, linework, or other style choices that suit or align with the setting and themes of the FLAVOR TEXT; this will be used to generate appropriate images later.\n` +
+            `"ART" should identify a target artist name, art style, genre, medium, palette, stroke, linework, or other style choices that are associated with SOURCE (if any) or which suit or align with the setting and themes of the FLAVOR TEXT; this will be used to generate appropriate images later.\n` +
             `Define these four fields and promptly end your response.\n`) +
         buildSection('Default Instruction', '{{suffix}}')).trim();
 }
@@ -75,21 +75,21 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
 }
 
 export function buildPatronPrompt(stage: Stage, baseCharacter: Character): string {
-    const unique = baseCharacter.description != '' || baseCharacter.personality != '';
+    const specific = baseCharacter.description != '' || baseCharacter.personality != '';
     return (
         (stage.sourceSummary != '' ? buildSection('Source Material', stage.sourceSummary ?? '') : '') +
         buildSection('Setting', stage.settingSummary ?? '') +
         buildSection('Themes', stage.themeSummary ?? '') +
         buildSection('Location', `A description of the specific location of this setting: ${stage.barDescription}` ?? '') +
-        (unique ?
+        (specific ?
             buildSection('Input', stage.replaceTags(`${baseCharacter.description}\n${baseCharacter.personality}`, {user: stage.player.name, char: baseCharacter.name})) : '') +
         buildSection('Example Responses', '\n' +
             `NAME: Carolina Reaper\nTRAITS: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy-as-fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
             `NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
             `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.`) +
         buildSection('Overriding Instruction',
-            `You are doing prep work for a roleplaying narrative. Instead of narrating, use this planning response to look at the ` + (unique ?
-                `INPUT description above and condense it into formatted output that describes a patron of the LOCATION. ` :
+            `You are doing prep work for a roleplaying narrative. Instead of narrating, use this planning response to look at the ` + (specific ?
+                `INPUT description above and condense it into formatted output that describes a character that will patronize the LOCATION. ` :
                 `SETTING description and generate a distinct, creative, and interesting character that might patronize the LOCATION. `) +
             `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(stage.patrons).length > 0 ?
@@ -97,7 +97,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
                 `connections between this new character and one or more existing patrons:\n` +
                 `${Object.values(stage.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
                 '\n') +
-            `See the EXAMPLE RESPONSES for strict formatting reference` + (unique ? `, but craft something new and unexpected with your creation.` : '.')) +
+            `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but craft something new and unexpected with your creation.`)) +
         buildSection('Default Instruction', '{{suffix}}')).trim();
 }
 
