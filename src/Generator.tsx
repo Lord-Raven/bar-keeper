@@ -88,9 +88,9 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
             `NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
             `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.`) +
         buildSection('Overriding Instruction',
-            `You are doing prep work for a roleplaying narrative. Instead of narrating, use this planning response to look at the ` + (specific ?
-                `INPUT description above and condense it into formatted output that describes a character that will patronize the LOCATION. ` :
-                `SETTING description and generate a distinct, creative, and interesting character that might patronize the LOCATION. `) +
+            `You are doing prep work for a roleplaying narrative. Instead of narrating, use this planning response to study the ` + (specific ?
+                `INPUT above and condense it into formatted output that describes a character that will patronize the LOCATION. ` :
+                `SETTING above and generate a distinct, creative, and interesting character that might patronize the LOCATION. `) +
             `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(stage.patrons).length > 0 ?
                 (`Consider the following existing patrons and ensure that the new character in your response is distinct from these. Also consider ` +
