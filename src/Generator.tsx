@@ -89,7 +89,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
             `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.`) +
         buildSection('Overriding Instruction',
             `You are doing prep work for a roleplaying narrative. Instead of narrating, use this planning response to study the ` + (specific ?
-                `INPUT above and condense it into formatted output that describes a character that will patronize the LOCATION. ` :
+                `INPUT above and condense it into formatted output that describes this character as they will patronize the LOCATION. ` :
                 `SETTING above and generate a distinct, creative, and interesting character that might patronize the LOCATION. `) +
             `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
             (Object.values(stage.patrons).length > 0 ?
@@ -139,7 +139,7 @@ export async function generateBeverageImage(stage: Stage, beverage: Beverage) {
     beverage.imageUrl = await stage.makeImage({
         //image: new URL(bottleUrl, import.meta.url).href,
         //strength: 0.75,
-        prompt: `Professional, illustration, vibrant colors, head-on, centered, upright, empty background, negative space, garish color-keyed background, (a standalone bottle of the alcohol in this description: ${beverage.description})`,
+        prompt: `(art style: ${stage.artSummary}), head-on, centered, empty background, negative space, garish color-keyed background, (a lone bottle of this beverage: ${beverage.description})`,
         negative_prompt: `background, frame, realism, borders, perspective, effects`,
         remove_background: true,
     }, bottleUrl);
