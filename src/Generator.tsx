@@ -82,7 +82,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
         buildSection('Themes', stage.themeSummary ?? '') +
         buildSection('Location', `A description of the specific location of this setting: ${stage.barDescription}` ?? '') +
         (specific ?
-            buildSection('Input', stage.replaceTags(`${baseCharacter.description}\n${baseCharacter.personality}`, {user: stage.player.name, char: baseCharacter.name})) : '') +
+            buildSection('Input', stage.replaceTags(`\n${baseCharacter.name}\n\n${baseCharacter.description}\n\n${baseCharacter.personality}`, {user: stage.player.name, char: baseCharacter.name})) : '') +
         buildSection('Example Responses', '\n' +
             `NAME: Carolina Reaper\nTRAITS: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy-as-fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
             `NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
