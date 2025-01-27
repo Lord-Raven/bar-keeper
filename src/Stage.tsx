@@ -189,8 +189,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildPatronDescriptions(): string {
         const presentPatronIds = this.currentNode?.presentPatronIds ?? [];
-        return buildSection('Absent Patrons', `${Object.values(this.patrons).filter(patron => !presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}`) +
-            buildSection('Present Patrons', `${Object.values(this.patrons).filter(patron => presentPatronIds.includes(patron.name)).map(patron => `${patron.name} - ${patron.description}`).join('\n')}`);
+        return buildSection('Absent Patrons', `${Object.keys(this.patrons).filter(patronId => !presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description}`).join('\n')}`) +
+            buildSection('Present Patrons', `${Object.keys(this.patrons).filter(patronId => presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description}`).join('\n')}`);
     }
 
     buildHistory(currentNode: ChatNode) {
