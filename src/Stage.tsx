@@ -358,13 +358,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             flexDirection: 'column',
             color: '#ffffff'
         }}>
-            <style>
-                {`
-                .important-overflow-visible {
-                  overflow: visible !important;
-                }
-                `}
-            </style>
             <ThemeProvider theme={this.theme}>
                 {!this.settingSummary ? (
                     <div>
@@ -381,25 +374,23 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         </div>
                     </div>
                 ) : (
-                    <div>
-                        <MessageWindow
-                            advance={() => {
-                                void this.advanceMessage()
-                            }}
-                            reverse={() => {
-                                void this.reverseMessage()
-                            }}
-                            chatNode={() => {
-                                return this.currentNode
-                            }}
-                            updateTime={() => {
-                                return this.updateTime
-                            }}
-                            stage={() => {
-                                return this
-                            }}
-                        />
-                    </div>
+                    <MessageWindow
+                        advance={() => {
+                            void this.advanceMessage()
+                        }}
+                        reverse={() => {
+                            void this.reverseMessage()
+                        }}
+                        chatNode={() => {
+                            return this.currentNode
+                        }}
+                        updateTime={() => {
+                            return this.updateTime
+                        }}
+                        stage={() => {
+                            return this
+                        }}
+                    />
                 )}
             </ThemeProvider>
         </div>;
