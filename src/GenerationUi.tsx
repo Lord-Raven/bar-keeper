@@ -1,11 +1,11 @@
 import React, {FC, useState} from "react";
 import {Stage} from "./Stage";
-import {Box, CircularProgress, IconButton, Typography} from "@mui/material";
+import {Box, Button, CircularProgress, IconButton, Typography} from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import SettingsIcon from "@mui/icons-material/Settings"
 import ReplayIcon from "@mui/icons-material/Replay";
 import Popover from "@mui/material/Popover";
-import {generateBeverageImage, generatePatronImage} from "./Generator";
+import {generate, generateBeverageImage, generatePatronImage} from "./Generator";
 import {Emotion} from "./Patron";
 
 interface MessageWindowProps {
@@ -105,6 +105,12 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                         </Grid>
                     ))}
                 </Grid>
+
+                <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
+                            startIcon={<ReplayIcon/>}
+                            onClick={() => generate(stage())}>
+                    Regenerate
+                </Button>
 
             </Popover>
         )}

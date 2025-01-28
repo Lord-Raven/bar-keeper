@@ -366,44 +366,47 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 `}
             </style>
             <ThemeProvider theme={this.theme}>
-                <div style={{position: 'relative', height: '8%'}}>
+                {!this.settingSummary ? (
                     <div>
                         <IconButton style={{outline: 1, backgroundColor: '#00000088'}} disabled={this.loadingProgress !== undefined} color={'primary'}
                                     onClick={() => generate(this)}>
                             <ReplayIcon/>
                         </IconButton>
-                        <GenerationUi stage={() => {
-                            return this
-                        }}/>
-                        {this.loadingProgress && (
-                            <div>
-                                <Typography>
-                                    {this.loadingProgress}% - {this.loadingDescription}
-                                </Typography>
-                                <LinearProgress sx={{outline: 'primary'}} variant="determinate" color="success"
-                                                value={this.loadingProgress}/>
-                            </div>
-                        )}
+                        <div>
+                            <Typography>
+                                {this.loadingProgress}% - {this.loadingDescription}
+                            </Typography>
+                            <LinearProgress sx={{outline: 'primary'}} variant="determinate" color="success"
+                                            value={this.loadingProgress}/>
+                        </div>
                     </div>
-                </div>
-                {!this.loadingProgress && (
-                    <MessageWindow
-                        advance={() => {
-                            void this.advanceMessage()
-                        }}
-                        reverse={() => {
-                            void this.reverseMessage()
-                        }}
-                        chatNode={() => {
-                            return this.currentNode
-                        }}
-                        updateTime={() => {
-                            return this.updateTime
-                        }}
-                        stage={() => {
-                            return this
-                        }}
-                    />
+                ) : (
+                    <div>
+                        <div style={{position: 'relative', height: '8%'}}>
+                            <div>
+                                <GenerationUi stage={() => {
+                                    return this
+                                }}/>
+                            </div>
+                        </div>
+                        <MessageWindow
+                            advance={() => {
+                                void this.advanceMessage()
+                            }}
+                            reverse={() => {
+                                void this.reverseMessage()
+                            }}
+                            chatNode={() => {
+                                return this.currentNode
+                            }}
+                            updateTime={() => {
+                                return this.updateTime
+                            }}
+                            stage={() => {
+                                return this
+                            }}
+                        />
+                    </div>
                 )}
             </ThemeProvider>
         </div>;
