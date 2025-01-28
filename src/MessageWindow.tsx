@@ -160,7 +160,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
                      alignContent: 'center',
                      zIndex: 2
                  }}>
-                <div>
                     <Box layout sx={{...boxStyle, bottom: '17vh'}}>
                         <div style={{width: '100%'}}>
                             <div>
@@ -207,8 +206,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
                             </div>
                         </div>
                     </Box>
-                </div>
-                <div>
                     <Box layout sx={{...boxStyle, height: '15vh'}}>
                         <div
                             style={{
@@ -224,7 +221,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
                             }, handleBeverageClick))}
                         </div>
                     </Box>
-                </div>
 
                 {chatNode()?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
