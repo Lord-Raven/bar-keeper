@@ -7,6 +7,7 @@ import {Cancel, CheckCircle, ArrowForward, ArrowBack} from "@mui/icons-material"
 import { motion, Variants } from "framer-motion";
 import {Emotion, Patron} from "./Patron";
 import Box from "./Box";
+import {GenerationUi} from "./GenerationUi";
 
 interface MessageWindupProps {
     message: string;
@@ -143,74 +144,83 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
     }, [updateTime(), chatNode()]);
 
     return (
-        <div className='important-overflow-visible' style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 2}}>
+        <div>
+        <div style={{position: 'relative', height: '8%'}}>
+                <GenerationUi stage={stage}/>
+                <Typography variant="h5" style={{float: 'right'}}>
+                    Night {stage().night}
+                </Typography>
+        </div>
+        <div className='important-overflow-visible'
+             style={{position: 'relative', flexGrow: '1', left: '1%', width: '98%', alignContent: 'center', zIndex: 2}}>
             <div>
-            <Box layout sx={{...boxStyle, bottom: '17vh'}}>
-                <div style = {{width: '100%'}}>
-                    <div>
+                <Box layout sx={{...boxStyle, bottom: '17vh'}}>
+                    <div style={{width: '100%'}}>
+                        <div>
                         <Typography variant="h5" color="#AAAAAA">{chatNode()?.speakerId ?? ''}</Typography>
-                    </div>
-                    <div>
-                        <MessageWindup message={chatNode()?.message ?? ''} read={chatNode()?.read ?? false} options={{onFinished: () => {setDoneWinding(true);}, skipped: doneWinding}} />
-                    </div>
-                    <div>
-                        <IconButton style={{outline: 1, float: 'left'}} disabled={advancing || !chatNode() || !chatNode()?.parentId} color={'primary'}
-                                        onClick={recede}>
-                            <ArrowBack/>
-                        </IconButton>
-                        {advancing ? (
-                                <CircularProgress style={{float: 'right'}}/>
-                            ) : (stage().isBeverageDecision() ? (
-                                selectedBeverage ? (
-                                        <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
-                                                    onClick={proceed}>
-                                            <CheckCircle/>
-                                        </IconButton>
+                        </div>
+                        <div>
+                            <MessageWindup message={chatNode()?.message ?? ''} read={chatNode()?.read ?? false} options={{onFinished: () => {setDoneWinding(true);}, skipped: doneWinding}} />
+                        </div>
+                        <div>
+                            <IconButton style={{outline: 1, float: 'left'}} disabled={advancing || !chatNode() || !chatNode()?.parentId} color={'primary'}
+                                            onClick={recede}>
+                                <ArrowBack/>
+                            </IconButton>
+                            {advancing ? (
+                                    <CircularProgress style={{float: 'right'}}/>
+                                ) : (stage().isBeverageDecision() ? (
+                                    selectedBeverage ? (
+                                            <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
+                                                        onClick={proceed}>
+                                                <CheckCircle/>
+                                            </IconButton>
+                                        ) : (
+                                            <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
+                                                <Cancel/>
+                                            </Icon>
+                                        )
                                     ) : (
-                                        <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
-                                            <Cancel/>
-                                        </Icon>
+                                        <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
+                                                onClick={proceed}>
+                                            <ArrowForward/>
+                                        </IconButton>
                                     )
-                                ) : (
-                                    <IconButton style={{outline: 1, float: 'right'}} disabled={advancing} color={'primary'}
-                                            onClick={proceed}>
-                                        <ArrowForward/>
-                                    </IconButton>
                                 )
-                            )
-                        }
+                            }
+                        </div>
                     </div>
+                </Box>
                 </div>
-            </Box>
-            </div>
-            <div>
-            <Box layout sx={{...boxStyle, height: '15vh'}}>
-                <div
-                    style={{height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
-                    {stage().beverages.map(beverage => beverage.render(() => {return beverage.name == selectedBeverage}, () => {return stage().currentNode?.beverageCounts[beverage.name] ?? 1},  handleBeverageClick))}
+                <div>
+                <Box layout sx={{...boxStyle, height: '15vh'}}>
+                    <div
+                        style={{height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
+                        {stage().beverages.map(beverage => beverage.render(() => {return beverage.name == selectedBeverage}, () => {return stage().currentNode?.beverageCounts[beverage.name] ?? 1},  handleBeverageClick))}
+                    </div>
+                </Box>
                 </div>
-            </Box>
-            </div>
 
-            {chatNode()?.presentPatronIds.map((patronId, index) => {
-                    if (stage().patrons[patronId]) {
-                        const patron = stage().patrons[patronId];
-                        const isTalking = patron.name.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever');
-                        let emotion: Emotion = patron.emotion as Emotion ?? Emotion.neutral;
-                        if (isTalking && chatNode()?.emotion) {
-                            emotion = chatNode()?.emotion as Emotion ?? emotion;
-                            patron.emotion = emotion;
+                {chatNode()?.presentPatronIds.map((patronId, index) => {
+                        if (stage().patrons[patronId]) {
+                            const patron = stage().patrons[patronId];
+                            const isTalking = patron.name.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever');
+                            let emotion: Emotion = patron.emotion as Emotion ?? Emotion.neutral;
+                            if (isTalking && chatNode()?.emotion) {
+                                emotion = chatNode()?.emotion as Emotion ?? emotion;
+                                patron.emotion = emotion;
+                            }
+                            const numberOfPatrons = Math.max(1, chatNode()?.presentPatronIds.length ?? 1);
+                            const position = getCharacterPosition(index, numberOfPatrons);
+                            return <PatronImage patron={patron}
+                                                emotion = {emotion}
+                                                xPosition={position}
+                                                isTalking={isTalking}/>;
+                        } else {
+                            return <div></div>;
                         }
-                        const numberOfPatrons = Math.max(1, chatNode()?.presentPatronIds.length ?? 1);
-                        const position = getCharacterPosition(index, numberOfPatrons);
-                        return <PatronImage patron={patron}
-                                            emotion = {emotion}
-                                            xPosition={position}
-                                            isTalking={isTalking}/>;
-                    } else {
-                        return <div></div>;
-                    }
-            })}
+                })}
+            </div>
         </div>
     );
 }

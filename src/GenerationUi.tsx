@@ -34,7 +34,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
     };
 
     return <div>
-        <IconButton style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
+        <IconButton style={{outline: 1, backgroundColor: '#00000088', float: 'left'}} color={'primary'}
                     onClick={toggleOpen}>
             <SettingsIcon/>
         </IconButton>

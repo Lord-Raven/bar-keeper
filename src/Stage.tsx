@@ -382,13 +382,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     </div>
                 ) : (
                     <div>
-                        <div style={{position: 'relative', height: '8%'}}>
-                            <div>
-                                <GenerationUi stage={() => {
-                                    return this
-                                }}/>
-                            </div>
-                        </div>
                         <MessageWindow
                             advance={() => {
                                 void this.advanceMessage()
