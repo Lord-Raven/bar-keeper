@@ -146,7 +146,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
     return (
         <div className='important-overflow-visible'>
             <div style={{position: 'relative', height: '8%'}}>
-                <GenerationUi stage={stage}/>
+
                 <Typography variant="h5" style={{float: 'right'}}>
                     Night {stage().night}
                 </Typography>
