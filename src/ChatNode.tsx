@@ -1,6 +1,6 @@
 import {Direction} from "./Director";
 import {Stage} from "./index";
-import {Emotion} from "./Patron";
+import {Emotion, emotionRouting} from "./Patron";
 import {generatePatronImage} from "./Generator";
 
 export interface ChatNode {
@@ -79,13 +79,11 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
             const result = (await stage.pipeline.predict("/predict", {
                 param_0: newNode.message
             }));
-            const emotionData = result.data[0].confidences.filter((candidate: {
-                label: Emotion;
-            }) => Object.values(Emotion).includes(candidate.label));
+            const emotionData = result.data[0].confidences;
             console.log(`Emotion determination for: ${newNode.message}`);
             console.log(emotionData);
             if (emotionData.length > 0 && emotionData[0].confidence > 0.3) {
-                newNode.emotion = emotionData[0].label;
+                newNode.emotion = emotionRouting[emotionData[0].label as Emotion];
                 // Await new image? Maybe just let it run in the background?
                 if (newNode.emotion != Emotion.neutral && targetPatron.imageUrls[newNode.emotion as Emotion] == targetPatron.imageUrls[Emotion.neutral]) {
                     await generatePatronImage(stage, targetPatron, newNode.emotion as Emotion);

@@ -330,6 +330,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
             }
         }
     } else {
+        console.log(`Generate ${emotion} image for ${patron.name}.`)
         const imageUrl = await stage.makeImageFromImage({
             image: patron.imageUrls[Emotion.neutral],
             prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, ${emotionPrompts[emotion]}, (${patron.description})`,
