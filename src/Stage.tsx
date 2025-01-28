@@ -359,7 +359,21 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             color: '#ffffff'
         }}>
             <ThemeProvider theme={this.theme}>
-
+                {!this.settingSummary ? (
+                    <div>
+                        <IconButton style={{outline: 1, backgroundColor: '#00000088'}} disabled={this.loadingProgress !== undefined} color={'primary'}
+                                    onClick={() => generate(this)}>
+                            <ReplayIcon/>
+                        </IconButton>
+                        <div>
+                            <Typography>
+                                {this.loadingProgress}% - {this.loadingDescription}
+                            </Typography>
+                            <LinearProgress sx={{outline: 'primary'}} variant="determinate" color="success"
+                                            value={this.loadingProgress}/>
+                        </div>
+                    </div>
+                ) : (
                     <MessageWindow
                         advance={() => {
                             void this.advanceMessage()
@@ -377,6 +391,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             return this
                         }}
                     />
+                )}
             </ThemeProvider>
         </div>;
     };

@@ -144,14 +144,14 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
     }, [updateTime(), chatNode()]);
 
     return (
-        <div>
+        <div className='important-overflow-visible'>
             <div style={{position: 'relative', height: '8%'}}>
                 <GenerationUi stage={stage}/>
                 <Typography variant="h5" style={{float: 'right'}}>
                     Night {stage().night}
                 </Typography>
             </div>
-            <div className='important-overflow-visible'
+            <div
                  style={{
                      position: 'relative',
                      flexGrow: '1',
