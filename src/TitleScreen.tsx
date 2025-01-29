@@ -39,7 +39,7 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage }) => {
                     {stage().settingSummary && (
                         <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
                                 startIcon={<ArrowForward/>}
-                                onClick={() => stage().onMenu = true}>
+                                onClick={() => stage().onMenu = false}>
                             <Typography variant="h6" color='primary'>Continue</Typography>
                         </Button>
                     )}
