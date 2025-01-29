@@ -22,6 +22,14 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage }) => {
         <div className='important-overflow-visible' style={{display: 'flex', flexDirection: 'column', height: '100vh', verticalAlign: 'middle'}}>
 
             {stage().isGenerating ? (
+                <div>
+                    <Typography>
+                        {stage().loadingProgress}% - {stage().loadingDescription}
+                    </Typography>
+                    <LinearProgress sx={{outline: 'primary'}} variant="determinate" color="success"
+                                    value={stage().loadingProgress}/>
+                </div>
+            ) : (
                 <Grid container spacing={2} justifyContent="center">
                     <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
                             startIcon={<Replay/>}
@@ -36,14 +44,6 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage }) => {
                         </Button>
                     )}
                 </Grid>
-            ) : (
-                <div>
-                    <Typography>
-                        {stage().loadingProgress}% - {stage().loadingDescription}
-                    </Typography>
-                    <LinearProgress sx={{outline: 'primary'}} variant="determinate" color="success"
-                                    value={stage().loadingProgress}/>
-                </div>
             )}
         </div>
     );
