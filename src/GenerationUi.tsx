@@ -7,6 +7,7 @@ import ReplayIcon from "@mui/icons-material/Replay";
 import Popover from "@mui/material/Popover";
 import {generate, generateBeverageImage, generatePatronImage} from "./Generator";
 import {Emotion} from "./Patron";
+import {ArrowBack} from "@mui/icons-material";
 
 interface MessageWindowProps {
     stage: () => Stage;
@@ -105,12 +106,13 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                         </Grid>
                     ))}
                 </Grid>
-
-                <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
-                            startIcon={<ReplayIcon/>}
-                            onClick={() => generate(stage())}>
-                    Regenerate
-                </Button>
+                <Grid container spacing={2} justifyContent="center">
+                    <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
+                                startIcon={<ArrowBack/>}
+                                onClick={() => stage().onMenu = true}>
+                        <Typography variant="h6" color='primary'>Return to Title</Typography>
+                    </Button>
+                </Grid>
 
             </Popover>
         )}

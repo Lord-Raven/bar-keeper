@@ -18,8 +18,8 @@ import {MessageWindow} from "./MessageWindow"
 import { register } from "register-service-worker";
 import {buildSection, generate, generatePatrons} from "./Generator";
 import {ChatNode, createNodes} from "./ChatNode";
-import {GenerationUi} from "./GenerationUi";
 import {Client} from "@gradio/client";
+import {TitleScreen} from "./TitleScreen";
 
 type MessageStateType = any;
 
@@ -49,6 +49,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     night: number;
 
     // Not saved:
+    onMenu: boolean;
     currentNode: ChatNode|null;
     characters: {[key: string]: Character};
     characterForGeneration: Character;
@@ -98,6 +99,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.pipeline = null;
         this.night = 1;
         this.lastSelectedBeverage = '';
+        this.onMenu = true;
 
         console.log('Config loaded:');
         console.log(config);
@@ -359,19 +361,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             color: '#ffffff'
         }}>
             <ThemeProvider theme={this.theme}>
-                {!this.settingSummary ? (
+                {!this.onMenu ? (
                     <div>
-                        <IconButton style={{outline: 1, backgroundColor: '#00000088'}} disabled={this.loadingProgress !== undefined} color={'primary'}
-                                    onClick={() => generate(this)}>
-                            <ReplayIcon/>
-                        </IconButton>
-                        <div>
-                            <Typography>
-                                {this.loadingProgress}% - {this.loadingDescription}
-                            </Typography>
-                            <LinearProgress sx={{outline: 'primary'}} variant="determinate" color="success"
-                                            value={this.loadingProgress}/>
-                        </div>
+                        <TitleScreen stage={() => {return this}}/>
                     </div>
                 ) : (
                     <MessageWindow
