@@ -361,7 +361,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             color: '#ffffff'
         }}>
             <ThemeProvider theme={this.theme}>
-                {!this.onMenu ? (
+                {this.onMenu ? (
                     <div>
                         <TitleScreen stage={() => {return this}}/>
                     </div>
