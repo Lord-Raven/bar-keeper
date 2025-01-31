@@ -9,7 +9,7 @@ interface PlayAreaProps {
 }
 
 export const PlayArea: FC<PlayAreaProps> = ({ stage }) => {
-    const [onMenu, setOnMenu] = useState<boolean>(false);
+    const [onMenu, setOnMenu] = useState<boolean>(true);
 
     const handleSetOnMenu = (onMenu: boolean) => {
         setOnMenu(onMenu);
