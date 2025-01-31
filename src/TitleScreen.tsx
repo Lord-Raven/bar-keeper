@@ -20,7 +20,7 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
 
 
     return (
-        <div className='important-overflow-visible' style={{display: 'flex', flexDirection: 'column', height: '100vh', verticalAlign: 'middle'}}>
+        <div style={{display: 'flex', flexDirection: 'column', height: '100vh', verticalAlign: 'middle'}}>
 
             {stage().isGenerating ? (
                 <div>
