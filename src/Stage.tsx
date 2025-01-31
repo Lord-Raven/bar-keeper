@@ -216,7 +216,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async reverseMessage() {
         console.log('reverseMessage');
-        if (this.currentNode && this.currentNode.parentId) {
+        if (this.currentNode && this.currentNode.parentId && this.chatNodes[this.currentNode.parentId]) {
             this.setCurrentNode(this.chatNodes[this.currentNode.parentId]);
         }
     }
@@ -242,7 +242,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     setCurrentNode(newNode: ChatNode) {
         this.currentNode = newNode;
-        this.setLastBeverageServed('');
+        this.setLastBeverageServed(this.currentNode.selectedBeverage ?? '');
         if (this.currentNode) {
             console.log(`New Node's direction: ${this.currentNode?.direction}`);
             console.log(this.currentNode);
