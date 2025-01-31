@@ -79,15 +79,17 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
             const result = (await stage.pipeline.predict("/predict", {
                 param_0: newNode.message
             }));
-            const emotionData = result.data[0].confidences;
+            const emotionData = result.data[0].confidences.filter((confidence: { label: string; }) => confidence.label != 'neutral');
             console.log(`Emotion determination for: ${newNode.message}`);
             console.log(emotionData);
-            if (emotionData.length > 0 && emotionData[0].confidence > 0.3) {
+            if (emotionData.length > 0 && emotionData[0].confidence > 0.1) {
                 newNode.emotion = emotionRouting[emotionData[0].label as Emotion];
                 // Await new image? Maybe just let it run in the background?
                 if (newNode.emotion != Emotion.neutral && targetPatron.imageUrls[newNode.emotion as Emotion] == targetPatron.imageUrls[Emotion.neutral]) {
                     await generatePatronImage(stage, targetPatron, newNode.emotion as Emotion);
                 }
+            } else {
+                newNode.emotion = Emotion.neutral;
             }
         }
     }
