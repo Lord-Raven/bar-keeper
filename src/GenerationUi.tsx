@@ -11,9 +11,10 @@ import {ArrowBack} from "@mui/icons-material";
 
 interface MessageWindowProps {
     stage: () => Stage;
+    setOnMenu: (onMenu: boolean) => void;
 }
 
-export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
+export const GenerationUi: FC<MessageWindowProps> = ({ stage, setOnMenu }) => {
     const [generationUiOpen, setGenerationUiOpen] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
     const [inProgress, setInProgress] = React.useState<{[key: string]: boolean}>({});
@@ -109,7 +110,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage }) => {
                 <Grid container spacing={2} justifyContent="center">
                     <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
                                 startIcon={<ArrowBack/>}
-                                onClick={() => stage().onMenu = true}>
+                                onClick={() => setOnMenu(true)}>
                         <Typography variant="h6" color='primary'>Return to Title</Typography>
                     </Button>
                 </Grid>

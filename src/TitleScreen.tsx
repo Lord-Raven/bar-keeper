@@ -7,14 +7,15 @@ import {ArrowForward, Replay} from "@mui/icons-material";
 
 interface TitleScreenProps {
     stage: () => Stage;
+    setOnMenu: (onMenu: boolean) => void;
 }
 
-export const TitleScreen: FC<TitleScreenProps> = ({ stage }) => {
+export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
     const [generating, setGenerating] = useState<boolean>(false);
 
     const handleGenerateClick = () => {
         stage().isGenerating = true;
-        generate(stage()).then(() => {stage().isGenerating = false;stage().onMenu = false})
+        generate(stage()).then(() => {stage().isGenerating = false;setOnMenu(false)})
     };
 
 
@@ -39,7 +40,7 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage }) => {
                     {stage().settingSummary && (
                         <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
                                 startIcon={<ArrowForward/>}
-                                onClick={() => stage().onMenu = false}>
+                                onClick={() => setOnMenu(false)}>
                             <Typography variant="h6" color='primary'>Continue</Typography>
                         </Button>
                     )}

@@ -1,4 +1,4 @@
-import React, {ReactElement} from "react";
+import React, {ReactElement, useState} from "react";
 import {useSound} from "use-sound";
 import {
     Character,
@@ -49,7 +49,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     night: number;
 
     // Not saved:
-    onMenu: boolean;
     currentNode: ChatNode|null;
     characters: {[key: string]: Character};
     characterForGeneration: Character;
@@ -99,7 +98,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.pipeline = null;
         this.night = 1;
         this.lastSelectedBeverage = '';
-        this.onMenu = true;
 
         console.log('Config loaded:');
         console.log(config);
@@ -348,6 +346,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     render(): ReactElement {
+        const [onMenu, setOnMenu] = useState<boolean>(false);
+
+        const handleSetOnMenu = (onMenu: boolean) => {setOnMenu(onMenu)};
 
         return <div style={{
             backgroundImage: this.barImageUrl ? `url(${this.barImageUrl})` : '',
@@ -361,9 +362,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             color: '#ffffff'
         }}>
             <ThemeProvider theme={this.theme}>
-                {this.onMenu ? (
+                {onMenu ? (
                     <div>
-                        <TitleScreen stage={() => {return this}}/>
+                        <TitleScreen stage={() => {return this}} setOnMenu={handleSetOnMenu}/>
                     </div>
                 ) : (
                     <MessageWindow
@@ -382,6 +383,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         stage={() => {
                             return this
                         }}
+                        setOnMenu={handleSetOnMenu}
                     />
                 )}
             </ThemeProvider>

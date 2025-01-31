@@ -107,9 +107,10 @@ interface MessageWindowProps {
     chatNode: () => ChatNode|null;
     updateTime: () => number;
     stage: () => Stage;
+    setOnMenu: (onMenu: boolean) => void;
 }
 
-export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNode, updateTime, stage }) => {
+export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNode, updateTime, stage, setOnMenu }) => {
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
     const [selectedBeverage, setSelectedBeverage] = useState<string|null>(chatNode()?.selectedBeverage ?? null);
@@ -146,7 +147,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
     return (
         <div className='important-overflow-visible' style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
             <div style={{position: 'relative', height: '8%'}}>
-                <GenerationUi stage={stage}/>
+                <GenerationUi stage={stage} setOnMenu={setOnMenu}/>
                 <Typography variant="h5" style={{float: 'right'}}>
                     Night {stage().night}
                 </Typography>
