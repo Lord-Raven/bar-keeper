@@ -144,7 +144,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
     }, [updateTime(), chatNode()]);
 
     return (
-        <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
+        <div style={{display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden'}}>
             <div style={{position: 'relative', height: '8%'}}>
                 <GenerationUi stage={stage} setOnMenu={setOnMenu}/>
                 <Typography variant="h5" style={{float: 'right'}}>
