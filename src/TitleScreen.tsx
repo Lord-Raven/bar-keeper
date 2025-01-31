@@ -1,6 +1,6 @@
 import {Stage} from "./Stage";
-import React, {FC, useEffect, useState} from "react";
-import {Button, IconButton, LinearProgress, Typography} from "@mui/material";
+import React, {FC, useState} from "react";
+import {Button, LinearProgress, Typography} from "@mui/material";
 import {generate} from "./Generator";
 import Grid from "@mui/material/Grid2";
 import {ArrowForward, Replay} from "@mui/icons-material";
@@ -15,7 +15,7 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
 
     const handleGenerateClick = () => {
         stage().isGenerating = true;
-        generate(stage()).then(() => {stage().isGenerating = false;setOnMenu(false)})
+        generate(stage()).then(() => {setOnMenu(!stage().themeSummary)})
     };
 
 

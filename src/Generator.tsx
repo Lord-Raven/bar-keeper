@@ -239,11 +239,12 @@ export async function generate(stage: Stage) {
         stage.setLoadProgress(undefined, 'Complete');
     } catch (e) {
         console.log(e);
+        stage.themeSummary = undefined;
     }
 
     await stage.messenger.updateChatState(stage.buildChatState());
     stage.setLoadProgress(undefined, '');
-
+    stage.isGenerating = false;
     // TODO: If there was a failure, consider reloading from chatState rather than saving.
 }
 

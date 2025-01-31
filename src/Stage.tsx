@@ -1,4 +1,4 @@
-import React, {ReactElement, useState} from "react";
+import React, {ReactElement} from "react";
 import {useSound} from "use-sound";
 import {
     Character,
@@ -11,15 +11,12 @@ import {
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
-import {createTheme, LinearProgress, ThemeProvider, Typography, IconButton} from "@mui/material";
-import ReplayIcon from "@mui/icons-material/Replay";
+import {createTheme} from "@mui/material";
 import {Direction, Director, sampleScript} from "./Director";
-import {MessageWindow} from "./MessageWindow"
 import { register } from "register-service-worker";
-import {buildSection, generate, generatePatrons} from "./Generator";
+import {buildSection, generatePatrons} from "./Generator";
 import {ChatNode, createNodes} from "./ChatNode";
 import {Client} from "@gradio/client";
-import {TitleScreen} from "./TitleScreen";
 import {PlayArea} from "./PlayArea";
 
 type MessageStateType = any;
