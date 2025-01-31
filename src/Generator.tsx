@@ -4,6 +4,7 @@ import {Emotion, emotionPrompts, Patron} from "./Patron";
 import bottleUrl from './assets/bottle.png'
 import { Beverage } from "./Beverage";
 
+const TRIM_SYMBOLS = '\\-*#';
 
 export function buildSection(name: string, body: string) {
     return `###${name.toUpperCase()}: ${body.trim()}\n\n`;
@@ -115,8 +116,8 @@ export async function generateBeverages(stage: Stage) {
             .map(item => {
                 const nameMatch = item.match(/\s*(.*?)\s*Description:/i);
                 const descriptionMatch = item.match(/Description:\s*(.*)/i);
-                console.log(`${nameMatch ? trimSymbols(nameMatch[1], '\-*').trim() : ''}, ${descriptionMatch ? trimSymbols(descriptionMatch[1], '\-*').trim() : ''}`);
-                return new Beverage(nameMatch ? trimSymbols(nameMatch[1], '\-*').trim() : '', descriptionMatch ? trimSymbols(descriptionMatch[1], '\-*').trim() : '', '');
+                console.log(`${nameMatch ? trimSymbols(nameMatch[1], TRIM_SYMBOLS).trim() : ''}, ${descriptionMatch ? trimSymbols(descriptionMatch[1], TRIM_SYMBOLS).trim() : ''}`);
+                return new Beverage(nameMatch ? trimSymbols(nameMatch[1], TRIM_SYMBOLS).trim() : '', descriptionMatch ? trimSymbols(descriptionMatch[1], TRIM_SYMBOLS).trim() : '', '');
             }).filter(beverage => beverage.name != '' && beverage.description != '' && stage.beverages.filter(existing => existing.name.toLowerCase() == beverage.name.toLowerCase()).length == 0));
     }
 
@@ -305,7 +306,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     const personalityMatches = result.match(personalityRegex);
     if (nameMatches && nameMatches.length > 1 && nameMatches[1].length < 100 && descriptionMatches && descriptionMatches.length > 1 && personalityMatches && personalityMatches.length > 1) {
         console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
-        newPatron = new Patron(trimSymbols(nameMatches[1], '\-*').trim(), trimSymbols(descriptionMatches[1], '\-*').trim(), trimSymbols(personalityMatches[1], '\-*').trim());
+        newPatron = new Patron(trimSymbols(nameMatches[1], TRIM_SYMBOLS).trim(), trimSymbols(descriptionMatches[1], TRIM_SYMBOLS).trim(), trimSymbols(personalityMatches[1], TRIM_SYMBOLS).trim());
         stage.patrons[baseCharacter.name] = newPatron;
     }
 
