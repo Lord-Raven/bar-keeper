@@ -20,6 +20,7 @@ import {buildSection, generate, generatePatrons} from "./Generator";
 import {ChatNode, createNodes} from "./ChatNode";
 import {Client} from "@gradio/client";
 import {TitleScreen} from "./TitleScreen";
+import {PlayArea} from "./PlayArea";
 
 type MessageStateType = any;
 
@@ -346,48 +347,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     render(): ReactElement {
-        const [onMenu, setOnMenu] = useState<boolean>(false);
 
-        const handleSetOnMenu = (onMenu: boolean) => {setOnMenu(onMenu)};
-
-        return <div style={{
-            backgroundImage: this.barImageUrl ? `url(${this.barImageUrl})` : '',
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            width: '100vw',
-            height: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
-            color: '#ffffff'
-        }}>
-            <ThemeProvider theme={this.theme}>
-                {onMenu ? (
-                    <div>
-                        <TitleScreen stage={() => {return this}} setOnMenu={handleSetOnMenu}/>
-                    </div>
-                ) : (
-                    <MessageWindow
-                        advance={() => {
-                            void this.advanceMessage()
-                        }}
-                        reverse={() => {
-                            void this.reverseMessage()
-                        }}
-                        chatNode={() => {
-                            return this.currentNode
-                        }}
-                        updateTime={() => {
-                            return this.updateTime
-                        }}
-                        stage={() => {
-                            return this
-                        }}
-                        setOnMenu={handleSetOnMenu}
-                    />
-                )}
-            </ThemeProvider>
-        </div>;
+        return <PlayArea stage={() => {return this}}/>;
     };
 
 }
