@@ -115,6 +115,9 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
     const [selectedBeverage, setSelectedBeverage] = useState<string|null>(chatNode()?.selectedBeverage ?? null);
 
     const handleBeverageClick = (name: string) => {
+        console.log('handleBeverageClick');
+        console.log(stage().currentNode?.beverageCounts);
+        console.log(name);
         if (stage().isBeverageDecision() && (stage().currentNode?.beverageCounts[name] ?? 1 > 0)) {
             setSelectedBeverage(name);
             stage().setLastBeverageServed(name);
