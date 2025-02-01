@@ -159,7 +159,8 @@ export class Director {
             direction: newDirection,
             presentPatronIds: newPresentPatronIds,
             selectedPatronId: selectedPatronId,
-            selectedBeverage: selectedBeverage
+            selectedBeverage: selectedBeverage,
+            beverageCounts: currentNode?.beverageCounts
         };
     }
 }
