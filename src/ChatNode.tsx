@@ -36,6 +36,8 @@ export async function createNodes(script: string, commonProps: Partial<ChatNode>
         beverageCounts: {},
         read: false
     };
+    console.log('createNodes');
+    console.log(commonProps);
     if (commonProps.selectedBeverage && commonProps.beverageCounts) {
         console.log(`SelectedBeverage: ${commonProps.selectedBeverage}`);
         for (let key of Object.keys(stage.beverages)) {
