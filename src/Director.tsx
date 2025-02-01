@@ -61,8 +61,6 @@ export class Director {
     constructor() { }
 
     getPromptInstruction(stage: Stage, node: Partial<ChatNode>): string {
-        console.log(stage.patrons);
-        console.log(`'${node.selectedPatronId}'`);
         console.log(`playerName: ${stage.player.name}\npatronName: ${node.selectedPatronId ? stage.patrons[node.selectedPatronId] : 'no selectedPatronId'}`);
         return directionInstructions[node.direction ?? Direction.IntroduceBar]({
             barDescription: stage.barDescription ?? '',
@@ -136,7 +134,7 @@ export class Director {
                 const keys = Object.keys(stage.patrons).filter(key => !newPresentPatronIds.includes(key));
                 selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
                 newPresentPatronIds.push(selectedPatronId);
-                console.log('Introduce ' + selectedPatronId);
+                console.log('Introduce ' + stage.patrons[selectedPatronId].name);
             } else {
                 console.log('Was IntroducePatron, but no one new to introduce, so patron banter');
                 newDirection = Direction.PatronBanter;
@@ -148,7 +146,7 @@ export class Director {
             if (newPresentPatronIds.length > 0) {
                 selectedPatronId = newPresentPatronIds[Math.floor(Math.random() * newPresentPatronIds.length)];
                 newPresentPatronIds.splice(newPresentPatronIds.indexOf(selectedPatronId), 1);
-                console.log('depart ' + selectedPatronId);
+                console.log('depart ' + stage.patrons[selectedPatronId].name);
             } else {
                 console.log('Was PatronLeaves, but no one is here, so Lull');
                 newDirection = Direction.Lull;

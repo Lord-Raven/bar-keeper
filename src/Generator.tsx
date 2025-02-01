@@ -68,7 +68,7 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
         buildSection('Overriding Instruction',
             `You are doing prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to define a formatted list of beverages that the LOCATION might serve, ` +
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
-            `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, yet evoke different moods or sensations. ` +
+            `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION and evoke diverse and emotions, moods, or sensations. ` +
             `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
             `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your entries, ` +
             `avoiding drinks which are too similar to previously generated content.`) +
