@@ -36,6 +36,12 @@ export async function createNodes(script: string, commonProps: Partial<ChatNode>
         beverageCounts: {},
         read: false
     };
+    if (commonProps.selectedBeverage && commonProps.beverageCounts) {
+        console.log(`SelectedBeverage: ${commonProps.selectedBeverage}`);
+        for (let key of Object.keys(stage.beverages)) {
+            console.log(`${key} - ${commonProps.beverageCounts[key]}`);
+        }
+    }
     let currentBeverageCounts: {[key: string]: number} = stage.beverages.reduce((acc, beverage) => {
             acc[beverage.name] = (commonProps && commonProps.beverageCounts && Object.keys(commonProps.beverageCounts).includes(beverage.name)) ? (commonProps.beverageCounts[beverage.name] - (commonProps.selectedBeverage == beverage.name ? 1 : 0)) : 1;
             return acc;
