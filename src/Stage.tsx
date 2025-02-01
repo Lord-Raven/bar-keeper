@@ -225,6 +225,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         generatePatrons(this);
 
         console.log('advanceMessage');
+        // If this is a drink request, we can't kick this off until the last interaction
         if (!this.requestedNodes && (!this.currentNode || this.currentNode.direction != Direction.PatronDrinkRequest)) {
             console.log('Kick off generation');
             this.requestedNodes = this.generateMessageContent(this.getTerminusOfNode(this.currentNode), '');

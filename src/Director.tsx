@@ -104,6 +104,7 @@ export class Director {
         }
         let selectedPatronId = undefined;
         let newPresentPatronIds = [...(currentNode ? currentNode.presentPatronIds : [])];
+        let selectedBeverage = undefined;
 
         // Try to keep at least a couple characters into the scene.
         if (newDirection != Direction.IntroduceBar && newPresentPatronIds.length < 2) {
@@ -112,6 +113,7 @@ export class Director {
 
         if (newDirection == Direction.PatronDrinkOutcome) {
             selectedPatronId = currentNode?.selectedPatronId;
+            selectedBeverage = currentNode?.selectedBeverage;
             if (!selectedPatronId || selectedPatronId.length == 0) {
                 console.log('Was ' + newDirection + ' but no previous patron for drink request, so PatronBanter');
                 newDirection = Direction.PatronBanter;
@@ -156,7 +158,8 @@ export class Director {
         return {
             direction: newDirection,
             presentPatronIds: newPresentPatronIds,
-            selectedPatronId: selectedPatronId
+            selectedPatronId: selectedPatronId,
+            selectedBeverage: selectedBeverage
         };
     }
 }
