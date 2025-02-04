@@ -327,6 +327,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
         if (imageUrl == '') {
             throw Error(`Failed to generate a ${emotion} patron image for ${patron.name}.`);
         } else {
+            // Replace all existing emotion images with this one
             for (let otherEmotion of Object.values(Emotion)) {
                 patron.imageUrls[otherEmotion] = imageUrl;
             }

@@ -103,16 +103,16 @@ const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalkin
 interface MessageWindowProps {
     advance: () => void;
     reverse: () => void;
-    chatNode: () => ChatNode|null;
     updateTime: () => number;
     stage: () => Stage;
     setOnMenu: (onMenu: boolean) => void;
 }
 
-export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNode, updateTime, stage, setOnMenu }) => {
+export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, updateTime, stage, setOnMenu }) => {
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
-    const [selectedBeverage, setSelectedBeverage] = useState<string|null>(chatNode()?.selectedBeverage ?? null);
+    const [selectedBeverage, setSelectedBeverage] = useState<string|null>(stage().currentNode?.selectedBeverage ?? null);
+    const [chatNode, setChatNode] = useState<ChatNode|null>(stage().currentNode ?? null);
 
     const handleBeverageClick = (name: string) => {
         console.log('handleBeverageClick');
@@ -124,35 +124,34 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
         }
     };
 
-    useEffect(() => {
-        setSelectedBeverage(stage().currentNode?.selectedBeverage ?? null);
-    }, [stage(), chatNode()]);
-
     const proceed = () => {
         if (doneWinding) {
             setAdvancing(true);
             setDoneWinding(true);
             advance();
-            setSelectedBeverage(null);
+            setChatNode(stage().currentNode);
+            setSelectedBeverage(chatNode?.selectedBeverage ?? null);
         } else {
             setDoneWinding(true);
         }
     }
     const recede = () => {
         reverse();
+        setChatNode(stage().currentNode);
+        setSelectedBeverage(chatNode?.selectedBeverage ?? null);
         setDoneWinding(true);
     }
     useEffect(() => {
         setDoneWinding(false);
         setAdvancing(false);
-    }, [updateTime(), chatNode()]);
+    }, [updateTime(), chatNode]);
 
     return (
         <div style={{display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden'}}>
             <div style={{position: 'relative', height: '8%'}}>
                 <GenerationUi stage={stage} setOnMenu={setOnMenu}/>
                 <Typography variant="h5" style={{float: 'right'}}>
-                    Night {chatNode()?.night ?? 1}
+                    Night {chatNode?.night ?? 1}
                 </Typography>
             </div>
             <div
@@ -167,10 +166,10 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
                     <Box layout sx={{...boxStyle, bottom: '17vh'}}>
                         <div style={{width: '100%'}}>
                             <div>
-                                <Typography variant="h5" color="#AAAAAA">{chatNode()?.speakerId ?? ''}</Typography>
+                                <Typography variant="h5" color="#AAAAAA">{chatNode?.speakerId ?? ''}</Typography>
                             </div>
                             <div>
-                                <MessageWindup message={chatNode()?.message ?? ''} read={chatNode()?.read ?? false}
+                                <MessageWindup message={chatNode?.message ?? ''} read={chatNode?.read ?? false}
                                                options={{
                                                    onFinished: () => {
                                                        setDoneWinding(true);
@@ -179,7 +178,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
                             </div>
                             <div>
                                 <IconButton style={{outline: 1, float: 'left'}}
-                                            disabled={advancing || !chatNode() || !chatNode()?.parentId}
+                                            disabled={advancing || !chatNode || !chatNode?.parentId}
                                             color={'primary'}
                                             onClick={recede}>
                                     <ArrowBack/>
@@ -226,16 +225,16 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
                         </div>
                     </Box>
 
-                {chatNode()?.presentPatronIds.map((patronId, index) => {
+                {chatNode?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
                         const patron = stage().patrons[patronId];
-                        const isTalking = patron.name.toLowerCase().includes(chatNode()?.speakerId?.toLowerCase() ?? 'nevereverever');
+                        const isTalking = patron.name.toLowerCase().includes(chatNode?.speakerId?.toLowerCase() ?? 'nevereverever');
                         let emotion: Emotion = patron.emotion as Emotion ?? Emotion.neutral;
-                        if (isTalking && chatNode()?.emotion) {
-                            emotion = chatNode()?.emotion as Emotion ?? emotion;
+                        if (isTalking && chatNode?.emotion) {
+                            emotion = chatNode.emotion as Emotion ?? emotion;
                             patron.emotion = emotion;
                         }
-                        const numberOfPatrons = Math.max(1, chatNode()?.presentPatronIds.length ?? 1);
+                        const numberOfPatrons = Math.max(1, chatNode?.presentPatronIds.length ?? 1);
                         const position = getCharacterPosition(index, numberOfPatrons);
                         return <PatronImage patron={patron}
                                             emotion={emotion}
