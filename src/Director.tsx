@@ -2,7 +2,7 @@ import { Stage } from "./Stage";
 import {ChatNode} from "./ChatNode";
 
 export enum Direction {
-    IntroduceBar = 'IntroduceBar',
+    NightStart = 'NightStart',
     Lull = 'Lull',
     IntroducePatron = 'IntroducePatron',
     PatronBanter = 'PatronBanter',
@@ -10,6 +10,7 @@ export enum Direction {
     PatronDrinkRequest = 'PatronDrinkRequest',
     PatronDrinkOutcome = 'PatronDrinkOutcome',
     PatronLeaves = 'PatronLeaves',
+    NightEnd = 'NightEnd'
 }
 
 interface InstructionInput {
@@ -32,7 +33,7 @@ export const sampleScript = '"' +
         `**{{user}}**: You approach Character 2, "What'll it be, Character 2?`;
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
-    IntroduceBar: input => `Introduce the bar described here: ${input.barDescription}. ` +
+    NightStart: input => `Introduce the bar described here: ${input.barDescription}. ` +
         `Depict a second-person scene where ${input.playerName} is setting up for the beginning of their shift one evening; do not introduce established patrons to the scene yet. ${generalInstruction}`,
     
     Lull: input => `Continue the scene with some visual novel style flavor as the evening slightly progresses; ${input.playerName} observes the environment or ancillary patrons with only trivial events or conversations--established patrons remain absent or passive.  ${generalInstruction}`,
@@ -53,7 +54,8 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
 
     PatronLeaves: input => `Continue the scene with some visual novel style development as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar. ` +
         `Honor their personal style and connections to other patrons or ${input.playerName}. ${generalInstruction}`,
-    
+
+    NightEnd: input => `Wrap up the scene as ${input.playerName} cleans up and closes the bar, reflecting on the night's events`
 }
 
 export class Director {
@@ -62,7 +64,7 @@ export class Director {
 
     getPromptInstruction(stage: Stage, node: Partial<ChatNode>): string {
         console.log(`playerName: ${stage.player.name}\npatronName: ${node.selectedPatronId ? stage.patrons[node.selectedPatronId] : 'no selectedPatronId'}`);
-        return directionInstructions[node.direction ?? Direction.IntroduceBar]({
+        return directionInstructions[node.direction ?? Direction.NightStart]({
             barDescription: stage.barDescription ?? '',
             playerName: stage.player.name ?? '',
             patronName: node.selectedPatronId ? stage.patrons[node.selectedPatronId].name : '',
@@ -70,45 +72,68 @@ export class Director {
     }
 
     determineNextNodeProps(stage: Stage, currentNode: ChatNode|null): Partial<ChatNode> {
-        let newDirection: Direction;
+        let directionOdds: {[direction in Direction]: number} = Object.values(Direction).reduce((acc, direction) => {
+            acc[direction as Direction] = 0;
+            return acc;
+        }, {} as {[direction in Direction]: number});
+
+        const history = currentNode ? stage.getNightlyNodes(currentNode) : [];
+        const drinksServed = history.filter(node => node.direction == Direction.PatronDrinkOutcome).length;
+        const visits = history.filter(node => node.direction == Direction.IntroducePatron).length;
+
+
         switch (currentNode ? currentNode.direction : undefined) {
             case undefined:
-                newDirection = Direction.IntroduceBar;
+                directionOdds[Direction.NightStart] = 1000;
                 break;
-            case Direction.IntroduceBar:
-                newDirection = Direction.IntroducePatron;
+            case Direction.NightStart:
+                directionOdds[Direction.IntroducePatron] = 1000;
+                break;
+            case Direction.NightEnd:
+                directionOdds[Direction.NightStart] = 1000;
                 break;
             case Direction.Lull:
-                // @ts-ignore
-                newDirection = currentNode.presentPatronIds.length < 5 ? Direction.IntroducePatron : Direction.PatronBanter;
-                break;
             case Direction.IntroducePatron:
-                newDirection = Math.random() > 0.5 ? Direction.PatronBanter : Direction.PatronProblem;
-                break;
             case Direction.PatronDrinkOutcome:
             case Direction.PatronBanter:
-                newDirection = Math.random() > 0.3 ? Direction.PatronProblem : (Math.random() > (0.2 * (currentNode?.presentPatronIds?.length ?? 0)) ? Direction.IntroducePatron : (Math.random() > 0.5 ? Direction.PatronDrinkRequest : Direction.PatronLeaves));
-                break;
             case Direction.PatronProblem:
-                newDirection = Math.random() > 0.7 ? Direction.PatronBanter : Direction.PatronDrinkRequest;
+            case Direction.PatronLeaves:
+                directionOdds[Direction.Lull] = currentNode?.presentPatronIds?.length ?? 0 >= 1 ? 0 : 5;
+                directionOdds[Direction.PatronBanter] = 10;
+                directionOdds[Direction.PatronProblem] = 5;
+                directionOdds[Direction.PatronDrinkRequest] = drinksServed < 5 ? 5 : 0;
+                directionOdds[Direction.PatronLeaves] = (drinksServed * 5) + (currentNode?.presentPatronIds?.length ?? 0) * 5;
+                // If max possible visits not hit, consider adding a patron (no more than five at a time)
+                if (visits < Object.keys(stage.patrons).length) {
+                    directionOdds[Direction.IntroducePatron] = 25 - (currentNode?.presentPatronIds?.length ?? 0) * 5;
+                }
+                // If we've had a couple visits and the bar is empty, start jacking up the night end odds.
+                if (visits >= 2 && (currentNode?.presentPatronIds?.length ?? 0) == 0) {
+                    directionOdds[Direction.NightEnd] = 10 + visits * 10;
+                }
+                directionOdds[currentNode?.direction ?? Direction.NightStart] = 0;
                 break;
             case Direction.PatronDrinkRequest:
-                newDirection = Direction.PatronDrinkOutcome;
-                break;
-            case Direction.PatronLeaves:
-                newDirection = Math.random() > 0.5 ? Direction.PatronBanter : Direction.IntroducePatron;
+                directionOdds[Direction.PatronDrinkOutcome] = 1000;
                 break;
             default:
                 console.log('Default to Lull');
-                newDirection = Direction.Lull;
+                directionOdds[Direction.Lull] = 1000;
         }
         let selectedPatronId = undefined;
         let newPresentPatronIds = [...(currentNode ? currentNode.presentPatronIds : [])];
         let selectedBeverage = undefined;
 
-        // Try to keep at least a couple characters into the scene.
-        if (newDirection != Direction.IntroduceBar && newPresentPatronIds.length < 2) {
-            newDirection = Direction.IntroducePatron;
+        const sumOfWeights = Object.values(directionOdds).reduce((sum, weight) => sum + weight, 0);
+        let randomNumber = Math.random() * sumOfWeights;
+        let newDirection: Direction = Direction.Lull;
+
+        for (let direction of Object.values(Direction)) {
+            if (randomNumber < directionOdds[direction]) {
+                newDirection = direction;
+                break;
+            }
+            randomNumber -= directionOdds[direction];
         }
 
         if (newDirection == Direction.PatronDrinkOutcome) {
@@ -133,7 +158,7 @@ export class Director {
         if (newDirection == Direction.IntroducePatron) {
             // Create a patron or pull an existing one
             if (newPresentPatronIds.length < Object.keys(stage.patrons).length) {
-                const keys = Object.keys(stage.patrons).filter(key => !newPresentPatronIds.includes(key));
+                const keys = Object.keys(stage.patrons).filter(key => !newPresentPatronIds.includes(key) && !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == key));
                 selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
                 newPresentPatronIds.push(selectedPatronId);
                 console.log('Introduce ' + stage.patrons[selectedPatronId].name);
@@ -160,7 +185,8 @@ export class Director {
             presentPatronIds: newPresentPatronIds,
             selectedPatronId: selectedPatronId,
             selectedBeverage: selectedBeverage,
-            beverageCounts: currentNode?.beverageCounts
+            beverageCounts: currentNode?.beverageCounts,
+            night: (currentNode?.night ?? 1) + (newDirection == Direction.NightStart ? 1 : 0)
         };
     }
 }

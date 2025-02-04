@@ -229,7 +229,6 @@ export async function generate(stage: Stage) {
             seconds: 5
         },'');*/
 
-        let tries = 2;
         stage.patrons = {};
         stage.setLoadProgress((stage.loadingProgress ?? 0) + 5, 'Generating patrons.');
         await generatePatrons(stage);
@@ -339,6 +338,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
             prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, ${emotionPrompts[emotion]}, (${patron.description})`,
             negative_prompt: patronImageNegativePrompt,
             aspect_ratio: AspectRatio.CINEMATIC_VERTICAL,
+
             remove_background: true,
             strength: 0.5
         }, patron.imageUrls[Emotion.neutral]);

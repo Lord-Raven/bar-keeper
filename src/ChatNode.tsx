@@ -17,6 +17,7 @@ export interface ChatNode {
     selectedBeverage: string|null,
     beverageCounts: {[key: string]: number};
     read: boolean;
+    night: number;
 }
 
 export async function createNodes(script: string, commonProps: Partial<ChatNode> = {}, stage: Stage): Promise<ChatNode[]> {
@@ -34,7 +35,8 @@ export async function createNodes(script: string, commonProps: Partial<ChatNode>
         selectedPatronId: undefined,
         selectedBeverage: null,
         beverageCounts: {},
-        read: false
+        read: false,
+        night: 0
     };
     console.log('createNodes');
     console.log(commonProps);
@@ -71,7 +73,7 @@ export async function createNodes(script: string, commonProps: Partial<ChatNode>
         }
     }
     if (currentSpeaker && currentDialogue.trim().length > 0) {
-        currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: (currentNode ? currentNode.id : null), ...commonProps, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
+        await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: (currentNode ? currentNode.id : null), ...commonProps, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
     }
 
     return nodes;

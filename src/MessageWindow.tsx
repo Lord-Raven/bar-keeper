@@ -126,13 +126,14 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
 
     useEffect(() => {
         setSelectedBeverage(stage().currentNode?.selectedBeverage ?? null);
-    }, [stage()]);
+    }, [stage(), chatNode()]);
 
     const proceed = () => {
         if (doneWinding) {
             setAdvancing(true);
             setDoneWinding(true);
             advance();
+            setSelectedBeverage(null);
         } else {
             setDoneWinding(true);
         }
@@ -151,7 +152,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, chatNo
             <div style={{position: 'relative', height: '8%'}}>
                 <GenerationUi stage={stage} setOnMenu={setOnMenu}/>
                 <Typography variant="h5" style={{float: 'right'}}>
-                    Night {stage().night}
+                    Night {chatNode()?.night ?? 1}
                 </Typography>
             </div>
             <div

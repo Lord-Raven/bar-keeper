@@ -44,7 +44,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     loadingDescription: string|undefined;
     patrons: {[key: string]: Patron};
     chatNodes: {[key: string]: ChatNode};
-    night: number;
+
 
     // Not saved:
     currentNode: ChatNode|null;
@@ -93,7 +93,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.director = new Director();
         this.loadingProgress = 50;
         this.pipeline = null;
-        this.night = 1;
 
         console.log('Config loaded:');
         console.log(config);
@@ -189,13 +188,24 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             buildSection('Present Patrons', `${Object.keys(this.patrons).filter(patronId => presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description}`).join('\n')}`);
     }
 
-    buildHistory(currentNode: ChatNode) {
-        let historyString = `**${currentNode.speakerId}**: ${currentNode.message}`;
+    getNightlyNodes(currentNode: ChatNode): ChatNode[] {
+        const DEPTH_CAP = 40;
         let depth = 0;
-        while(currentNode.parentId && this.chatNodes[currentNode.parentId] && depth < 40) {
+        let history: ChatNode[] = [currentNode];
+        while(currentNode.parentId && this.chatNodes[currentNode.parentId] && depth < DEPTH_CAP && currentNode.night == this.chatNodes[currentNode.parentId].night) {
             currentNode = this.chatNodes[currentNode.parentId];
-            historyString = `**${currentNode.speakerId}**: ${currentNode.message}\n\n${historyString}`;
+            history.push(currentNode);
             depth++;
+        }
+
+        return history;
+    }
+
+    buildHistory(currentNode: ChatNode) {
+        let historyString = '';
+        const history = this.getNightlyNodes(currentNode);
+        for(let node of history) {
+            historyString = `**${currentNode.speakerId}**: ${currentNode.message}\n\n${historyString}`;
         }
 
         return historyString;
@@ -346,13 +356,4 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return <PlayArea stage={() => {return this}}/>;
     };
 
-}
-
-
-function generateUuid() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        const r = Math.random() * 16 | 0,
-            v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
 }
