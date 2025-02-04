@@ -124,6 +124,11 @@ export class Director {
         let newPresentPatronIds = [...(currentNode ? currentNode.presentPatronIds : [])];
         let selectedBeverage = undefined;
 
+        // If coming from a departure, drop that character from the new present list.
+        if (currentNode && currentNode.direction == Direction.PatronLeaves && newPresentPatronIds.includes(currentNode.selectedPatronId ?? '')) {
+            newPresentPatronIds.splice(newPresentPatronIds.indexOf(currentNode.selectedPatronId ?? ''), 1);
+        }
+
         const sumOfWeights = Object.values(directionOdds).reduce((sum, weight) => sum + weight, 0);
         let randomNumber = Math.random() * sumOfWeights;
         let newDirection: Direction = Direction.Lull;
@@ -172,11 +177,19 @@ export class Director {
             // Select a patron to leave
             if (newPresentPatronIds.length > 0) {
                 selectedPatronId = newPresentPatronIds[Math.floor(Math.random() * newPresentPatronIds.length)];
-                newPresentPatronIds.splice(newPresentPatronIds.indexOf(selectedPatronId), 1);
                 console.log('depart ' + stage.patrons[selectedPatronId].name);
             } else {
                 console.log('Was PatronLeaves, but no one is here, so Lull');
                 newDirection = Direction.Lull;
+            }
+        }
+
+        let night = (currentNode?.night ?? 0);
+        let beverageCounts = currentNode?.beverageCounts;
+        if (newDirection == Direction.NightStart) {
+            night += 1;
+            for (let beverage in beverageCounts) {
+                beverageCounts[beverage] = Math.min(3, beverageCounts[beverage] + 1);
             }
         }
 
@@ -185,8 +198,8 @@ export class Director {
             presentPatronIds: newPresentPatronIds,
             selectedPatronId: selectedPatronId,
             selectedBeverage: selectedBeverage,
-            beverageCounts: currentNode?.beverageCounts,
-            night: (currentNode?.night ?? 0) + (newDirection == Direction.NightStart ? 1 : 0)
+            beverageCounts: beverageCounts,
+            night: night
         };
     }
 }
