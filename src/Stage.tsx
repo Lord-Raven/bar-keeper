@@ -44,6 +44,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     loadingDescription: string|undefined;
     patrons: {[key: string]: Patron};
     chatNodes: {[key: string]: ChatNode};
+    dummyPatrons: Patron[];
 
 
     // Not saved:
@@ -93,6 +94,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.director = new Director();
         this.loadingProgress = 50;
         this.pipeline = null;
+        this.dummyPatrons = [];
 
         console.log('Config loaded:');
         console.log(config);
@@ -140,6 +142,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             chatNodes: this.chatNodes,
             currentMessageId: this.currentNode ? this.currentNode.id : null,
             patrons: this.patrons,
+            dummyPatrons: this.dummyPatrons,
             updateTime: this.updateTime
         };
     }
@@ -157,6 +160,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.chatNodes = chatState.chatNodes ?? {};
             this.currentNode = chatState.currentMessageId && this.chatNodes[chatState.currentMessageId] ? this.chatNodes[chatState.currentMessageId] : null;
             this.patrons = chatState.patrons ?? {};
+            this.dummyPatrons = chatState.dummyPatrons ?? [];
         }
     }
 

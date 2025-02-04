@@ -87,17 +87,17 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
         buildSection('Example Responses', '\n' +
             `NAME: Carolina Reaper\nTRAITS: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy-as-fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
             `NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
-            `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.`) +
+            `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.` +
+            (specific ? '' : Object.values(stage.dummyPatrons).map(patron => `NAME: ${patron.name}\nTRAITS: ${patron.description}\nPERSONALITY: ${patron.personality}`).join('\n\n'))) +
+        (Object.values(stage.patrons).length > 0 ?
+            buildSection('Established Patrons', Object.values(stage.patrons).map(patron => `NAME: ${patron.name}\nTRAITS: ${patron.description}\nPERSONALITY: ${patron.personality}`).join('\n\n')) : '') +
         buildSection('Overriding Instruction',
             `You are doing prep work for a roleplaying narrative. Instead of narrating, use this planning response to study the ` + (specific ?
                 `INPUT above and condense it into formatted output that describes this character as they will patronize the LOCATION. ` :
                 `SETTING above and generate a distinct, creative, and interesting character that might patronize the LOCATION. `) +
             `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
-            (Object.values(stage.patrons).length > 0 ?
-                (`Consider the following existing patrons and ensure that the new character in your response is distinct from these. Also consider ` +
-                `connections between this new character and one or more existing patrons:\n` +
-                `${Object.values(stage.patrons).map(patron => `${patron.name} - ${patron.description}\n${patron.personality}`).join('\n\n')}\n`) :
-                '\n') +
+            `Consider other ESTABLISHED PATRONS (if any) and ensure that the new character in your response is distinct from these. Potentially define ` +
+            `connections between this new character and one or more ESTABLISHED PATRONS patrons. ` +
             `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but craft something new and unexpected with your creation.`)) +
         buildSection('Default Instruction', '{{suffix}}')).trim();
 }
@@ -199,7 +199,7 @@ export async function generate(stage: Stage) {
         stage.setLoadProgress(5, 'Generating bar description.');
         let textResponse = await stage.generator.textGen({
             prompt: buildBarDescriptionPrompt(stage),
-            max_tokens: 150,
+            max_tokens: 100,
             min_tokens: 50
         });
         console.log(`Bar description: ${textResponse?.result}`);
@@ -267,6 +267,26 @@ const basicCharacter: Character = {
 
 export async function generatePatrons(stage: Stage) {
     const characters: Character[] = [...Object.values(stage.characters), {...basicCharacter, name: 'spare'}, {...basicCharacter, name: 'another'}, {...basicCharacter, name: 'more'}];
+    if (stage.dummyPatrons.length == 0) {
+        // Build some dummy patrons to throw away the LLM's most generic ideas, and then use them as examples for better ideas.
+        for (let character of characters) {
+            if (!character.description && !character.personality) {
+                console.log(`Generating a dummy patron.`);
+                let tries = 3;
+                while (!Object.keys(stage.patrons).includes(character.name) && tries-- >= 0) {
+                    let patron = await generatePatron(stage, character);
+                    if (patron) {
+                        console.log('Generated dummy patron:');
+                        console.log(patron);
+                        stage.dummyPatrons.push(patron);
+                    } else {
+                        console.log('Failed a dummy patron generation');
+                    }
+                }
+            }
+        }
+    }
+
     for (let character of characters) {
         if (!Object.keys(stage.patrons).includes(character.name)) {
             console.log(`Generating a patron for ${character.name}.`);
@@ -288,6 +308,7 @@ export async function generatePatrons(stage: Stage) {
 
 function trimSymbols(str: string, symbol: string): string { const regex = new RegExp(`^[${symbol}]+|[${symbol}]+$`, 'g'); return str.replace(regex, ''); }
 
+
 export async function generatePatron(stage: Stage, baseCharacter: Character): Promise<Patron|undefined> {
     let patronResponse = await stage.generator.textGen({
         prompt: buildPatronPrompt(stage, baseCharacter),
@@ -306,7 +327,6 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     if (nameMatches && nameMatches.length > 1 && nameMatches[1].length < 100 && descriptionMatches && descriptionMatches.length > 1 && personalityMatches && personalityMatches.length > 1) {
         console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
         newPatron = new Patron(trimSymbols(nameMatches[1], TRIM_SYMBOLS).trim(), trimSymbols(descriptionMatches[1], TRIM_SYMBOLS).trim(), trimSymbols(personalityMatches[1], TRIM_SYMBOLS).trim());
-        stage.patrons[baseCharacter.name] = newPatron;
     }
 
     return newPatron;
