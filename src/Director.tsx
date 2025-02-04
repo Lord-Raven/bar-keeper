@@ -186,7 +186,7 @@ export class Director {
             selectedPatronId: selectedPatronId,
             selectedBeverage: selectedBeverage,
             beverageCounts: currentNode?.beverageCounts,
-            night: (currentNode?.night ?? 1) + (newDirection == Direction.NightStart ? 1 : 0)
+            night: (currentNode?.night ?? 0) + (newDirection == Direction.NightStart ? 1 : 0)
         };
     }
 }
