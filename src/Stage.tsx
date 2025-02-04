@@ -205,7 +205,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let historyString = '';
         const history = this.getNightlyNodes(currentNode);
         for(let node of history) {
-            historyString = `**${currentNode.speakerId}**: ${currentNode.message}\n\n${historyString}`;
+            historyString = `**${node.speakerId}**: ${node.message}\n\n${historyString}`;
         }
 
         return historyString;
