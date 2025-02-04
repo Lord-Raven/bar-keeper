@@ -269,20 +269,17 @@ export async function generatePatrons(stage: Stage) {
     const characters: Character[] = [...Object.values(stage.characters), {...basicCharacter, name: 'spare'}, {...basicCharacter, name: 'another'}, {...basicCharacter, name: 'more'}];
     if (stage.dummyPatrons.length == 0) {
         // Build some dummy patrons to throw away the LLM's most generic ideas, and then use them as examples for better ideas.
-        for (let character of characters) {
-            if (!character.description && !character.personality) {
-                console.log(`Generating a dummy patron.`);
-                let tries = 3;
-                while (!Object.keys(stage.patrons).includes(character.name) && tries-- >= 0) {
-                    let patron = await generatePatron(stage, character);
-                    if (patron) {
-                        console.log('Generated dummy patron:');
-                        console.log(patron);
-                        stage.dummyPatrons.push(patron);
-                    } else {
-                        console.log('Failed a dummy patron generation');
-                    }
-                }
+        console.log(`Generating a dummy patron.`);
+        let tries = 3;
+        while (stage.dummyPatrons.length < 3 && tries-- >= 0) {
+            let patron = await generatePatron(stage, {...basicCharacter, name: 'something'});
+            if (patron) {
+                console.log('Generated dummy patron:');
+                console.log(patron);
+                stage.dummyPatrons.push(patron);
+            } else {
+                console.log('Failed a dummy patron generation');
+                tries--;
             }
         }
     }
