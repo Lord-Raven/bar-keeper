@@ -9,7 +9,7 @@ import {
     User
 } from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
-import {Patron} from "./Patron";
+import {Emotion, Patron} from "./Patron";
 import {Beverage} from "./Beverage";
 import {createTheme} from "@mui/material";
 import {Direction, Director, sampleScript} from "./Director";
@@ -160,7 +160,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.currentNode = chatState.currentMessageId && this.chatNodes[chatState.currentMessageId] ? this.chatNodes[chatState.currentMessageId] : null;
             this.patrons = chatState.patrons ?? {};
             console.log(chatState.dummyPatrons);
-            this.dummyPatrons = (chatState.dummyPatrons ?? []).map((patron: { name: string, description: string, personality: string, imageUrl: string }) => new Patron(patron.name, patron.description, patron.personality));
+            this.dummyPatrons = (chatState.dummyPatrons ?? []).map((patron: any) => {
+                const {name, description, personality} = patron;
+                return new Patron(name, description, personality)
+            });
         }
     }
 
