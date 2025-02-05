@@ -162,8 +162,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             console.log(chatState.dummyPatrons);
             this.dummyPatrons = (chatState.dummyPatrons ?? []).map((patron: any) => {
                 const {name, description, personality} = patron;
+                console.log(patron);
                 return new Patron(name, description, personality)
             });
+            console.log(this.dummyPatrons);
         }
     }
 
