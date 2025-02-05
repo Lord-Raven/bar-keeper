@@ -87,7 +87,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
         buildSection('Example Responses', '\n' +
             `NAME: Carolina Reaper\nTRAITS: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy-as-fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
             `NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
-            `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.` +
+            `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.\n\n` +
             (specific ? '' : Object.values(stage.dummyPatrons).map(patron => `NAME: ${patron.name}\nTRAITS: ${patron.description}\nPERSONALITY: ${patron.personality}`).join('\n\n'))) +
         (Object.values(stage.patrons).length > 0 ?
             buildSection('Established Patrons', Object.values(stage.patrons).map(patron => `NAME: ${patron.name}\nTRAITS: ${patron.description}\nPERSONALITY: ${patron.personality}`).join('\n\n')) : '') +
@@ -98,7 +98,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
             `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
             `Consider other ESTABLISHED PATRONS (if any) and ensure that the new character in your response is distinct from these. Potentially define ` +
             `connections between this new character and one or more ESTABLISHED PATRONS patrons. ` +
-            `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but craft something new and unexpected with your creation.`)) +
+            `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but craft something new and unexpected for this creation.`)) +
         buildSection('Default Instruction', '{{suffix}}')).trim();
 }
 
@@ -270,7 +270,7 @@ export async function generatePatrons(stage: Stage) {
     if (stage.dummyPatrons.length == 0) {
         // Build some dummy patrons to throw away the LLM's most generic ideas, and then use them as examples for better ideas.
         console.log(`Generating a dummy patron.`);
-        let tries = 3;
+        let tries = 5;
         while (stage.dummyPatrons.length < 3 && tries-- >= 0) {
             let patron = await generatePatron(stage, {...basicCharacter, name: 'something'});
             if (patron) {
@@ -279,7 +279,6 @@ export async function generatePatrons(stage: Stage) {
                 stage.dummyPatrons.push(patron);
             } else {
                 console.log('Failed a dummy patron generation');
-                tries--;
             }
         }
     }
