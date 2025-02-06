@@ -40,8 +40,8 @@ export const PlayArea: FC<PlayAreaProps> = ({ stage }) => {
                         reverse={() => {
                             void stage().reverseMessage()
                         }}
-                        updateTime={() => {
-                            return stage().updateTime
+                        chatNode={() => {
+                            return stage().currentNode
                         }}
                         stage={stage}
                         setOnMenu={handleSetOnMenu}
