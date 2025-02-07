@@ -231,6 +231,7 @@ export async function generate(stage: Stage) {
 
         stage.patrons = {};
         stage.setLoadProgress((stage.loadingProgress ?? 0) + 5, 'Generating patrons.');
+        await generateDummyPatrons(stage);
         await generatePatrons(stage);
 
         // Finally, display an intro
@@ -265,8 +266,7 @@ const basicCharacter: Character = {
     isRemoved: false
 }
 
-export async function generatePatrons(stage: Stage) {
-    const characters: Character[] = [...Object.values(stage.characters), {...basicCharacter, name: 'spare'}, {...basicCharacter, name: 'another'}, {...basicCharacter, name: 'more'}];
+export async function generateDummyPatrons(stage: Stage) {
     if (stage.dummyPatrons.length == 0) {
         // Build some dummy patrons to throw away the LLM's most generic ideas, and then use them as examples for better ideas.
         console.log(`Generating a dummy patron.`);
@@ -282,6 +282,10 @@ export async function generatePatrons(stage: Stage) {
             }
         }
     }
+}
+
+export async function generatePatrons(stage: Stage) {
+    const characters: Character[] = [...Object.values(stage.characters), {...basicCharacter, name: 'spare'}, {...basicCharacter, name: 'another'}, {...basicCharacter, name: 'more'}];
 
     for (let character of characters) {
         if (!Object.keys(stage.patrons).includes(character.name)) {
