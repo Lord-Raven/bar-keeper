@@ -105,20 +105,20 @@ const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalkin
 
 interface MessagePopupProps {
     message: string;
+    post: boolean;
 }
 
-const MessagePopup: FC<MessagePopupProps> = ({message}) => {
+const MessagePopup: FC<MessagePopupProps> = ({message, post}) => {
     const variants: Variants = {
-        hidden: {x: '-100vw', opacity: 0},
+        start: {x: '-100vw', opacity: 0},
         visible: {x: 0, opacity: 1},
         exit: {x: '100vw', opacity: 0},
     };
 
     return (
         <motion.div
-            initial="hidden"
-            animate={message ? 'visible' : 'hidden'}
-            exit="exit"
+            initial="start"
+            animate={message ? 'start' : (post ? 'exit' :  'start')}
             variants={variants}
             transition={{type: 'spring', stiffness: 300, damping: 30}}
             style={{
@@ -133,12 +133,9 @@ const MessagePopup: FC<MessagePopupProps> = ({message}) => {
                 left: 0,
             }}
         >
-            <div
-                style={{color: 'white', padding: '2vh'}}
-            >
+            <Typography variant='h1' color='primary'>
                 {message}
-            </div>
-
+            </Typography>
         </motion.div>
     );
 };
@@ -270,7 +267,10 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                     </div>
                 </Box>
 
-                <MessagePopup message = {chatNode && (!chatNode.parentId || !stage().chatNodes[chatNode.parentId] || chatNode.night != stage().chatNodes[chatNode.parentId].night) ? `Night ${chatNode.night}` : ''} />
+                <MessagePopup
+                    message = {chatNode && (!chatNode.parentId || !stage().chatNodes[chatNode.parentId] || chatNode.night != stage().chatNodes[chatNode.parentId].night) ? `Night ${chatNode.night}` : ''}
+                    post = {(chatNode != null && ![Direction.NightEnd, Direction.NightStart].includes(chatNode.direction ?? Direction.NightStart))}
+                />
 
                 {Object.keys(stage().patrons).map(patronId => {
                     const patron = stage().patrons[patronId];
