@@ -85,9 +85,9 @@ interface PatronImageProps {
 
 const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalking, present}) => {
     const variants: Variants = {
-        talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT + 2}vh`, filter: 'brightness(1)', zIndex: 12, transition: {x: {ease: "easeOut"}}},
-        idle: {color: '#BBBBBB', opacity: 1, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT}vh`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}}},
-        absent: {color: '#BBBBBB', opacity: 0, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT}vh`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}}},
+        talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT + 2}vh`, filter: 'brightness(1)', zIndex: 12, transition: {x: {ease: "easeOut"}, opacity: {ease: "easeOut"}}},
+        idle: {color: '#BBBBBB', opacity: 1, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT}vh`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}, opacity: {ease: "easeOut"}}},
+        absent: {color: '#BBBBBB', opacity: 0, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT}vh`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}, opacity: {ease: "easeOut"}}},
     };
 
     const altText = `${patron.name} (${emotion})`
@@ -275,11 +275,11 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                 {Object.keys(stage().patrons).map(patronId => {
                     const patron = stage().patrons[patronId];
                     let present = false;
-                    let position = !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == patronId) ? -50 : 150;
+                    let position = !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == patronId) ? -40 : 140;
                     let emotion: Emotion = patron.emotion as Emotion ?? Emotion.neutral;
                     let isTalking = false;
                     if (chatNode && chatNode.presentPatronIds.includes(patronId)) {
-                        const index = chatNode.presentPatronIds.indexOf(patronId);
+                        const index = chatNode.presentPatronIds.length - chatNode.presentPatronIds.indexOf(patronId) - 1;
                         isTalking = patron.name.toLowerCase().includes(chatNode?.speakerId?.toLowerCase() ?? 'nevereverever');
                         if (isTalking && chatNode?.emotion) {
                             emotion = chatNode.emotion as Emotion ?? emotion;
