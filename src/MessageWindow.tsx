@@ -1,5 +1,5 @@
 import {Pace, WindupChildren} from "windups";
-import {CircularProgress, Icon, IconButton, Typography} from "@mui/material";
+import {CircularProgress, colors, Icon, IconButton, Typography} from "@mui/material";
 import React, {FC, useEffect, useState} from "react";
 import {Stage} from "./Stage";
 import {ChatNode} from "./ChatNode";
@@ -100,6 +100,46 @@ const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalkin
     );
 };
 
+interface MessagePopupProps {
+    message: string;
+}
+
+const MessagePopup: FC<MessagePopupProps> = ({message}) => {
+    const variants: Variants = {
+        hidden: {x: '-100vw', opacity: 0},
+        visible: {x: 0, opacity: 1},
+        exit: {x: '100vw', opacity: 0},
+    };
+
+    return (
+        <motion.div
+            initial="hidden"
+            animate={message ? 'visible' : 'hidden'}
+            exit="exit"
+            variants={variants}
+            transition={{type: 'spring', stiffness: 300, damping: 30}}
+            style={{
+                width: '100vw',
+                height: '20vh',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'fixed',
+                backgroundColor: '#000000BB',
+                bottom: '40vh',
+                left: 0,
+            }}
+        >
+            <div
+                style={{color: 'white', padding: '2vh'}}
+            >
+                {message}
+            </div>
+
+        </motion.div>
+    );
+};
+
 interface MessageWindowProps {
     advance: () => Promise<void>;
     reverse: () => Promise<void>;
@@ -160,68 +200,70 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                      width: '98%',
                      alignContent: 'center',
                      zIndex: 2
-                 }}>
-                    <Box layout sx={{...boxStyle, bottom: '17vh'}}>
-                        <div style={{width: '100%'}}>
-                            <div>
-                                <Typography variant="h5" color="#AAAAAA">{chatNode?.speakerId ?? ''}</Typography>
-                            </div>
-                            <div>
-                                <MessageWindup message={chatNode?.message ?? ''} read={chatNode?.read ?? false}
-                                               options={{
-                                                   onFinished: () => {
-                                                       setDoneWinding(true);
-                                                   }, skipped: doneWinding
-                                               }}/>
-                            </div>
-                            <div>
-                                <IconButton style={{outline: 1, float: 'left'}}
-                                            disabled={advancing || !chatNode || !chatNode?.parentId}
-                                            color={'primary'}
-                                            onClick={recede}>
-                                    <ArrowBack/>
-                                </IconButton>
-                                {advancing ? (
-                                    <CircularProgress style={{float: 'right'}}/>
-                                ) : (stage().isBeverageDecision() ? (
-                                        selectedBeverage ? (
-                                            <IconButton style={{outline: 1, float: 'right'}} disabled={advancing}
-                                                        color={'primary'}
-                                                        onClick={proceed}>
-                                                <CheckCircle/>
-                                            </IconButton>
-                                        ) : (
-                                            <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
-                                                <Cancel/>
-                                            </Icon>
-                                        )
-                                    ) : (
+            }}>
+                <Box layout sx={{...boxStyle, bottom: '17vh'}}>
+                    <div style={{width: '100%'}}>
+                        <div>
+                            <Typography variant="h5" color="#AAAAAA">{chatNode?.speakerId ?? ''}</Typography>
+                        </div>
+                        <div>
+                            <MessageWindup message={chatNode?.message ?? ''} read={chatNode?.read ?? false}
+                                           options={{
+                                               onFinished: () => {
+                                                   setDoneWinding(true);
+                                               }, skipped: doneWinding
+                                           }}/>
+                        </div>
+                        <div>
+                            <IconButton style={{outline: 1, float: 'left'}}
+                                        disabled={advancing || !chatNode || !chatNode?.parentId}
+                                        color={'primary'}
+                                        onClick={recede}>
+                                <ArrowBack/>
+                            </IconButton>
+                            {advancing ? (
+                                <CircularProgress style={{float: 'right'}}/>
+                            ) : (stage().isBeverageDecision() ? (
+                                    selectedBeverage ? (
                                         <IconButton style={{outline: 1, float: 'right'}} disabled={advancing}
                                                     color={'primary'}
                                                     onClick={proceed}>
-                                            <ArrowForward/>
+                                            <CheckCircle/>
                                         </IconButton>
+                                    ) : (
+                                        <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
+                                            <Cancel/>
+                                        </Icon>
                                     )
+                                ) : (
+                                    <IconButton style={{outline: 1, float: 'right'}} disabled={advancing}
+                                                color={'primary'}
+                                                onClick={proceed}>
+                                        <ArrowForward/>
+                                    </IconButton>
                                 )
-                                }
-                            </div>
+                            )
+                            }
                         </div>
-                    </Box>
-                    <Box layout sx={{...boxStyle, height: '15vh'}}>
-                        <div
-                            style={{
-                                height: '100%',
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'space-around'
-                            }}>
-                            {stage().beverages.map(beverage => beverage.render(() => {
-                                return beverage.name == selectedBeverage
-                            }, () => {
-                                return stage().currentNode?.beverageCounts[beverage.name] ?? 1
-                            }, handleBeverageClick))}
-                        </div>
-                    </Box>
+                    </div>
+                </Box>
+                <Box layout sx={{...boxStyle, height: '15vh'}}>
+                    <div
+                        style={{
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-around'
+                        }}>
+                        {stage().beverages.map(beverage => beverage.render(() => {
+                            return beverage.name == selectedBeverage
+                        }, () => {
+                            return stage().currentNode?.beverageCounts[beverage.name] ?? 1
+                        }, handleBeverageClick))}
+                    </div>
+                </Box>
+
+                <MessagePopup message = {chatNode && (!chatNode.parentId || !stage().chatNodes[chatNode.parentId] || chatNode.night != stage().chatNodes[chatNode.parentId].night) ? `Night ${chatNode.night}` : ''} />
 
                 {chatNode?.presentPatronIds.map((patronId, index) => {
                     if (stage().patrons[patronId]) {
