@@ -270,7 +270,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
 
                 <MessagePopup
                     message = {chatNode && (!chatNode.parentId || !stage().chatNodes[chatNode.parentId] || chatNode.night != stage().chatNodes[chatNode.parentId].night) ? `Night ${chatNode.night}` : ''}
-                    post = {(chatNode != null && ![Direction.NightEnd, Direction.NightStart].includes(chatNode.direction ?? Direction.NightStart))}
+                    post = {(chatNode != null && Direction.NightEnd != (chatNode.direction ?? Direction.NightStart))}
                 />
 
                 {Object.keys(stage().patrons).map(patronId => {

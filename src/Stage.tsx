@@ -258,8 +258,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     setCurrentNode(newNode: ChatNode) {
-        if (this.currentNode && this.currentNode != newNode && this.currentNode.selectedChildId) {
-            console.log('Marking node as read');
+        if (this.currentNode && this.currentNode != newNode && this.currentNode.childIds.length > 0) {
             this.currentNode.read = true;
         }
         this.currentNode = newNode;
