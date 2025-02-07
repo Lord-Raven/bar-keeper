@@ -1,5 +1,5 @@
 import {Pace, WindupChildren} from "windups";
-import {CircularProgress, colors, Icon, IconButton, Typography} from "@mui/material";
+import {CircularProgress, Icon, IconButton, Typography} from "@mui/material";
 import React, {FC, useEffect, useState} from "react";
 import {Stage} from "./Stage";
 import {ChatNode} from "./ChatNode";
@@ -8,6 +8,7 @@ import { motion, Variants } from "framer-motion";
 import {Emotion, Patron} from "./Patron";
 import Box from "./Box";
 import {GenerationUi} from "./GenerationUi";
+import {Direction} from "./Director";
 
 interface MessageWindupProps {
     message: string;
@@ -79,12 +80,14 @@ interface PatronImageProps {
     emotion: Emotion;
     xPosition: number;
     isTalking: boolean;
+    present: boolean;
 }
 
-const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalking}) => {
+const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalking, present}) => {
     const variants: Variants = {
         talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT + 2}vh`, filter: 'brightness(1)', zIndex: 12, transition: {x: {ease: "easeOut"}}},
         idle: {color: '#BBBBBB', opacity: 1, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT}vh`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}}},
+        absent: {color: '#BBBBBB', opacity: 0, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT}vh`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}}},
     };
 
     const altText = `${patron.name} (${emotion})`
@@ -93,7 +96,7 @@ const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalkin
         <motion.div
             variants={variants}
             initial='idle'
-            animate={isTalking ? 'talking' : 'idle'}
+            animate={present ? (isTalking ? 'talking' : 'idle') : 'absent'}
             style={{position: 'absolute', bottom: '-30vh', width: 'auto', aspectRatio: '5 / 12', zIndex: 10}}>
             <img src={patron.imageUrls[emotion]} style={{position: 'relative', width: '100%', height: '100%', transform: 'translate(-50%, 0)'}} alt={altText}/>
         </motion.div>
@@ -153,11 +156,15 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
     const [selectedBeverage, setSelectedBeverage] = useState<string|null>(stage().currentNode?.selectedBeverage ?? null);
     const [chatNode, setChatNode] = useState<ChatNode|null>(stage().currentNode ?? null);
 
+    const makingBeverageDecision = stage().isBeverageDecision() && !(chatNode?.read ?? false);
+    const numberOfPatrons = Math.max(1, chatNode?.presentPatronIds.length ?? 1);
+    const history = chatNode ? stage().getNightlyNodes(chatNode) : [];
+
     const handleBeverageClick = (name: string) => {
         console.log('handleBeverageClick');
         console.log(stage().currentNode?.beverageCounts);
         console.log(name);
-        if (stage().isBeverageDecision() && (stage().currentNode?.beverageCounts[name] ?? 1 > 0)) {
+        if (makingBeverageDecision && (stage().currentNode?.beverageCounts[name] ?? 1 > 0)) {
             setSelectedBeverage(name);
             stage().setLastBeverageServed(name);
         }
@@ -223,7 +230,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                             </IconButton>
                             {advancing ? (
                                 <CircularProgress style={{float: 'right'}}/>
-                            ) : (stage().isBeverageDecision() ? (
+                            ) : (makingBeverageDecision ? (
                                     selectedBeverage ? (
                                         <IconButton style={{outline: 1, float: 'right'}} disabled={advancing}
                                                     color={'primary'}
@@ -265,24 +272,27 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
 
                 <MessagePopup message = {chatNode && (!chatNode.parentId || !stage().chatNodes[chatNode.parentId] || chatNode.night != stage().chatNodes[chatNode.parentId].night) ? `Night ${chatNode.night}` : ''} />
 
-                {chatNode?.presentPatronIds.map((patronId, index) => {
-                    if (stage().patrons[patronId]) {
-                        const patron = stage().patrons[patronId];
-                        const isTalking = patron.name.toLowerCase().includes(chatNode?.speakerId?.toLowerCase() ?? 'nevereverever');
-                        let emotion: Emotion = patron.emotion as Emotion ?? Emotion.neutral;
+                {Object.keys(stage().patrons).map(patronId => {
+                    const patron = stage().patrons[patronId];
+                    let present = false;
+                    let position = !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == patronId) ? -50 : 150;
+                    let emotion: Emotion = patron.emotion as Emotion ?? Emotion.neutral;
+                    let isTalking = false;
+                    if (chatNode && chatNode.presentPatronIds.includes(patronId)) {
+                        const index = chatNode.presentPatronIds.indexOf(patronId);
+                        isTalking = patron.name.toLowerCase().includes(chatNode?.speakerId?.toLowerCase() ?? 'nevereverever');
                         if (isTalking && chatNode?.emotion) {
                             emotion = chatNode.emotion as Emotion ?? emotion;
                             patron.emotion = emotion;
                         }
-                        const numberOfPatrons = Math.max(1, chatNode?.presentPatronIds.length ?? 1);
-                        const position = getCharacterPosition(index, numberOfPatrons);
-                        return <PatronImage patron={patron}
-                                            emotion={emotion}
-                                            xPosition={position}
-                                            isTalking={isTalking}/>;
-                    } else {
-                        return <div></div>;
+                        position = getCharacterPosition(index, numberOfPatrons);
+                        present = true;
                     }
+                    return <PatronImage patron={patron}
+                                        emotion={emotion}
+                                        xPosition={position}
+                                        isTalking={isTalking}
+                                        present={present}/>;
                 })}
             </div>
         </div>

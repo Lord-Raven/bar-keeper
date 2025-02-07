@@ -39,13 +39,16 @@ If you are seeing lots of missing images, please consider playing this stage wit
 **Shortcomings**
 I feel there are some clear shortfalls in what this stage achieves and maybe some of these items could be addressed with sufficient time or motivation, but I don't know that they will be.
 <li>
-* There is a stages bug that causes textgen requests to repeatedly fail sometimes. In my experience, refreshing a few times or clearing the cache can resolve this. If the stage stops loading new responses, this is what is going on.
+* There is a stages bug that causes textgen requests to repeatedly fail sometimes. In my experience, refreshing a few times or clearing the cache can resolve this. If the stage stops loading new responses, this is likely the culprit.
 * A lot of the stage's behavior and performance is contingent upon your personal generation settings; your jailbreak in particular could cause trouble if it is overpowering the stage's instructions.
 * The stage does very little quality control, so you are at the mercy of the LLM to properly format responses and not go off the rails in fixating on minor characters or other activity that isn't internally represented by the stage.
 </li>
 <br>
 <br>
-For me, this was an exercise in a stage that exists outside of the traditional chat structure. Although it may feel like a chat, this stage doesn't leverage Chub's chat tree whatsoever (you can see this by the stagnant message counts while playing).
+**What's Next**
+For me, this was an exercise in a stage that exists outside of the traditional chat structure. 
+Although it may feel like a (linear) chat, this stage doesn't leverage Chub's chat tree whatsoever (you can see this by the stagnant message counts while playing). 
+I don't have a lot of outstanding plans for this stage, but I'm already applying a lot of what I've learned here toward some more elaborate projects, so maybe I'll have some cool stuff to share in the future =).
 "
 
 # 'PUBLIC', 'PRIVATE', or 'UNLISTED'.

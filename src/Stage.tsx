@@ -256,12 +256,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             await this.processNextResponse();
         } else {
             console.log('setting currentNode');
-            this.currentNode.read = true;
             this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]]);
         }
     }
 
     setCurrentNode(newNode: ChatNode) {
+        if (this.currentNode && this.currentNode != newNode && this.currentNode.selectedChildId) {
+            this.currentNode.read = true;
+        }
         this.currentNode = newNode;
         this.setLastBeverageServed(this.currentNode.selectedBeverage ?? '');
         if (this.currentNode) {
