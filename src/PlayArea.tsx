@@ -34,15 +34,8 @@ export const PlayArea: FC<PlayAreaProps> = ({ stage }) => {
                     </div>
                 ) : (
                     <MessageWindow
-                        advance={() => {
-                            void stage().advanceMessage()
-                        }}
-                        reverse={() => {
-                            void stage().reverseMessage()
-                        }}
-                        chatNode={() => {
-                            return stage().currentNode
-                        }}
+                        advance={() => stage().advanceMessage()}
+                        reverse={() => stage().reverseMessage()}
                         stage={stage}
                         setOnMenu={handleSetOnMenu}
                     />
