@@ -118,7 +118,7 @@ const MessagePopup: FC<MessagePopupProps> = ({message, post}) => {
     return (
         <motion.div
             initial="start"
-            animate={message ? 'start' : (post ? 'exit' :  'start')}
+            animate={message ? 'visible' : (post ? 'exit' :  'start')}
             variants={variants}
             transition={{type: 'spring', stiffness: 300, damping: 30}}
             style={{
@@ -188,6 +188,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
         setAdvancing(false);
     }, [chatNode]);
 
+    const message = (chatNode?.message ?? '').trim().replace(/^\s*\(.*?\)\s*/, '').trim()
     return (
         <div style={{display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden'}}>
             <div style={{position: 'relative', height: '8%'}}>
@@ -211,7 +212,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                             <Typography variant="h5" color="#AAAAAA">{chatNode?.speakerId ?? ''}</Typography>
                         </div>
                         <div>
-                            <MessageWindup message={chatNode?.message ?? ''} read={chatNode?.read ?? false}
+                            <MessageWindup message={message} read={chatNode?.read ?? false}
                                            options={{
                                                onFinished: () => {
                                                    setDoneWinding(true);

@@ -12,12 +12,9 @@ This is little more than a proof of concept for the kind of experiences stages c
 where the user's persona is a bartender who meets and interacts with various characters, but the only choices the player makes is what drinks to serve when prompted. 
 <br>
 <br>
-The stage will distill the chat's primary character card into a set of themes and use that to generate a bar, five beverages, and four characters based on the chat's primary character card, 
+The stage will distill the chat's primary character card into a set of themes and use that to generate a bar, five beverages, and four characters based on the chat's primary character card--
 plus an additional character for each bot you add to the chat. Characters will come and go, with three-to-five drink prompts each night. 
 Storylines and relationships may emerge and resolve organically, hopefully influenced by the drinks you choose to give. There's no end game, just a stream of nights and regulars.
-<br>
-<br>
-\"New Game\" will always blow away all of the stage's content for that chat, so unless you were unhappy with what was generated the first time around and what a completely fresh start, I would suggest starting an entirely new chat.
 <br>
 <br>
 **Warning**
@@ -36,9 +33,14 @@ Chub will block image generation of questionable content, which could be trigger
 If you are seeing lots of missing images, please consider playing this stage with a different card.
 <br>
 <br>
+\"New Game\" will always blow away all of the stage's content for that chat, so unless you were unhappy with what was generated the first time around and what a completely fresh start, I would suggest starting an entirely new chat. 
+If you dislike a particular piece of art that was generated, you can use the settings pane to regenerate specific drink and patron images.
+<br>
+<br>
 **Shortcomings**
 I feel there are some clear shortfalls in what this stage achieves and maybe some of these items could be addressed with sufficient time or motivation, but I don't know that they will be.
 <li>
+* It probably looks terrible in portrait layout.
 * There is a stages bug that causes textgen requests to repeatedly fail sometimes. In my experience, refreshing a few times or clearing the cache can resolve this. If the stage stops loading new responses, this is likely the culprit.
 * A lot of the stage's behavior and performance is contingent upon your personal generation settings; your jailbreak in particular could cause trouble if it is overpowering the stage's instructions.
 * The stage does very little quality control, so you are at the mercy of the LLM to properly format responses and not go off the rails in fixating on minor characters or other activity that isn't internally represented by the stage.
@@ -46,9 +48,9 @@ I feel there are some clear shortfalls in what this stage achieves and maybe som
 <br>
 <br>
 **What's Next**
-For me, this was an exercise in a stage that exists outside of the traditional chat structure. 
+For me, this was an exercise in producing a stage that exists outside of the traditional chat structure. 
 Although it may feel like a (linear) chat, this stage doesn't leverage Chub's chat tree whatsoever (you can see this by the stagnant message counts while playing). 
-I don't have a lot of outstanding plans for this stage, but I'm already applying a lot of what I've learned here toward some more elaborate projects, so maybe I'll have some cool stuff to share in the future =).
+I don't have further plans for this stage, but I'm already applying a lot of what I've learned here toward some more elaborate projects, so maybe I'll have some cool stuff to share in the future =).
 "
 
 # 'PUBLIC', 'PRIVATE', or 'UNLISTED'.

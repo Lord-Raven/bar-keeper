@@ -23,14 +23,15 @@ interface InstructionInput {
 const generalInstruction = 'Your response will follow a simple stageplay format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Focus events on {{user}} and the characters found in PRESENT PATRONS; other character roles should be fleeting. Refer to {{user}} in second-person.'
 export const sampleScript = '\n' +
         `**NARRATOR**: General narration is provided by the NARRATOR.\n\n` +
-        `**CHARACTER 1**: "Character dialog goes in quotations." Their actions don't.\n\n` +
+        `**CHARACTER 1**: (Character 1's mood) "Character1 is saying this, and dialog goes in quotations." Character 1's actions don't.\n\n` +
         `**NARRATOR**: Character 2 walks in.\n\n` +
-        `**CHARACTER 2**: "Hey, Character 1."\n\n` +
-        `**CHARACTER 1**: "Welcome back, Character 2!" They give a friendly wave."\n\n` +
-        `**CHARACTER 1**: They think to themself, "You look different, Character 2."\n\n` +
-        `**CHARACTER 2**: Smiles broadly, "I'm trying a new hairstyle. Thanks for noticing!"\n\n` +
+        `**CHARACTER 2**: (Blandly) "Hey, Character 1."\n\n` +
+        `**CHARACTER 1**: (Cheerful) "Welcome back, Character 2!" They give a friendly wave."\n\n` +
+        `**CHARACTER 1**: (Curious) They think to themself, "You look different, Character 2."\n\n` +
+        `**CHARACTER 2**: (Cheerful) Smiles broadly, "I'm trying a new hairstyle. Thanks for noticing!"\n\n` +
         `**NARRATOR**: Character 2 takes a seat down the bar from Character 1 and looks for you.\n\n` +
-        `**{{user}}**: You approach Character 2, "What'll it be, Character 2?"`;
+        `**{{user}}**: You approach Character 2, "What'll it be, Character 2?"\n\n` +
+        `**CHARACTER 2**: (Thoughtful) "I think I'd like something refreshing and bright tonight."`;
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
     NightStart: input => `Introduce the bar described here: ${input.barDescription}. ` +

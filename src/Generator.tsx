@@ -27,7 +27,7 @@ export function buildDistillationPrompt(stage: Stage, baseCharacter: Character):
             `You are doing prep work for a roleplaying narrative. Instead of narrating, you will first use this planning response to distill the setting and themes from the FLAVOR TEXT into a specific format. ` +
             `Use the FLAVOR TEXT as inspirational material as you establish a SOURCE, SETTING, THEMES, and ART style for future narration and illustration. ` +
             `This essential, preparatory response includes four specific and clearly defined fields, each containing a comma-delimited list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
-            `"SOURCE" should identify the source material of FLAVOR TEXT, if any; leave this blank or 'Original' if FLAVOR TEXT is not derived from a known work.\n` +
+            `"SOURCE" should identify the source material of FLAVOR TEXT, if possible; leave this blank or 'Original' if FLAVOR TEXT is not derived from a known work.\n` +
             `"SETTING" should briefly summarize the overarching location, vibe, or time period derived from the FLAVOR TEXT, including any key deviations from setting expectations.\n` +
             `"THEMES" should list all of the prominent themes, concepts, quirks, or kinks from the FLAVOR TEXT.\n` +
             `"ART" should identify a target artist name, art style, genre, medium, palette, stroke, linework, or other style choices that are associated with SOURCE (if any) or which suit or align with the setting and themes of the FLAVOR TEXT; this will be used to generate appropriate images later.\n` +
