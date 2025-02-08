@@ -20,7 +20,7 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
 
 
     return (
-        <div style={{display: 'flex', flexDirection: 'column', height: '100vh', verticalAlign: 'middle'}}>
+        <div style={{display: 'flex', flexDirection: 'column', height: '80vh', verticalAlign: 'middle'}}>
 
             {stage().isGenerating ? (
                 <div>
@@ -32,21 +32,17 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
                 </div>
             ) : (
                 <Grid container spacing={2} justifyContent="center">
-                    <div>
-                        <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
-                                startIcon={<Replay/>}
-                                onClick={handleGenerateClick}>
-                            <Typography variant="h6" color='primary'>Start New Game</Typography>
-                        </Button>
-                    </div>
+                    <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
+                            startIcon={<Replay/>}
+                            onClick={handleGenerateClick}>
+                        <Typography variant="h6" color='primary'>Start New Game</Typography>
+                    </Button>
                     {stage().settingSummary && (
-                        <div>
-                            <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
-                                    startIcon={<ArrowForward/>}
-                                    onClick={() => setOnMenu(false)}>
-                                <Typography variant="h6" color='primary'>Continue</Typography>
-                            </Button>
-                        </div>
+                        <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
+                                startIcon={<ArrowForward/>}
+                                onClick={() => setOnMenu(false)}>
+                            <Typography variant="h6" color='primary'>Continue</Typography>
+                        </Button>
                     )}
                 </Grid>
             )}
