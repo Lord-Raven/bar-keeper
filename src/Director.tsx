@@ -59,6 +59,17 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
     NightEnd: input => `Wrap up the scene as ${input.playerName} cleans up and closes the bar, reflecting on the night's events.`
 }
 
+class Possibility {
+    direction: Direction;
+    patronId: string;
+    odds: number;
+    constructor(direction: Direction, patronId: string, odds: number) {
+        this.direction = direction;
+        this.patronId = patronId;
+        this.odds = odds;
+    }
+}
+
 export class Director {
 
     constructor() { }
@@ -73,10 +84,7 @@ export class Director {
     }
 
     determineNextNodeProps(stage: Stage, currentNode: ChatNode|null): Partial<ChatNode> {
-        let directionOdds: {[direction in Direction]: number} = Object.values(Direction).reduce((acc, direction) => {
-            acc[direction as Direction] = 0;
-            return acc;
-        }, {} as {[direction in Direction]: number});
+        let directionOdds: Possibility[] = [];
 
         const history = currentNode ? stage.getNightlyNodes(currentNode) : [];
         const drinksServed = history.filter(node => node.direction == Direction.PatronDrinkOutcome).length;
@@ -85,13 +93,15 @@ export class Director {
 
         switch (currentNode ? currentNode.direction : undefined) {
             case undefined:
-                directionOdds[Direction.NightStart] = 1000;
+                directionOdds.push(new Possibility(Direction.NightStart, '', 1000));
                 break;
             case Direction.NightStart:
-                directionOdds[Direction.IntroducePatron] = 1000;
+                for (let patronId of Object.keys(stage.patrons)) {
+                    directionOdds.push(new Possibility(Direction.IntroducePatron, patronId, 10));
+                }
                 break;
             case Direction.NightEnd:
-                directionOdds[Direction.NightStart] = 1000;
+                directionOdds.push(new Possibility(Direction.NightStart, '', 1000));
                 break;
             case Direction.Lull:
             case Direction.IntroducePatron:
@@ -99,27 +109,35 @@ export class Director {
             case Direction.PatronBanter:
             case Direction.PatronProblem:
             case Direction.PatronLeaves:
-                directionOdds[Direction.Lull] = currentNode?.presentPatronIds?.length ?? 0 >= 1 ? 0 : 5;
-                directionOdds[Direction.PatronBanter] = 10;
-                directionOdds[Direction.PatronProblem] = 5;
-                directionOdds[Direction.PatronDrinkRequest] = drinksServed < 5 ? 5 : 0;
-                directionOdds[Direction.PatronLeaves] = (drinksServed * 5) + (currentNode?.presentPatronIds?.length ?? 0) * 5;
+                directionOdds.push(new Possibility(Direction.Lull, '', currentNode?.presentPatronIds?.length ?? 0 >= 1 ? 0 : 5));
+                directionOdds.push(new Possibility(Direction.PatronBanter, '', 10));
+                directionOdds.push(new Possibility(Direction.PatronProblem, '', 5));
+
+                for (let patronId of currentNode?.presentPatronIds ?? []) {
+                    directionOdds.push(new Possibility(Direction.PatronDrinkRequest, patronId, drinksServed < 5 ? 5 : 0));
+                    directionOdds.push(new Possibility(Direction.PatronLeaves, patronId,  (drinksServed * 5) + (currentNode?.presentPatronIds?.length ?? 0) * 5));
+                }
+
                 // If max possible visits not hit, consider adding a patron (no more than five at a time)
                 if (visits < Object.keys(stage.patrons).length) {
-                    directionOdds[Direction.IntroducePatron] = 25 - (currentNode?.presentPatronIds?.length ?? 0) * 5;
+                    const keys = Object.keys(stage.patrons).filter(key => !newPresentPatronIds.includes(key) && !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == key));
+                    let selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
+                    directionOdds.push(new Possibility(Direction.IntroducePatron, selectedPatronId, 25 - (currentNode?.presentPatronIds?.length ?? 0) * 5));
                 }
+
+                // Replicate all of this:
                 // If we've had a couple visits and the bar is empty, start jacking up the night end odds.
                 if (visits >= 2 && (currentNode?.presentPatronIds?.length ?? 0) == 0) {
-                    directionOdds[Direction.NightEnd] = 10 + visits * 10;
+                    directionOdds.push(new Possibility(Direction.NightEnd, '', 10 + visits * 10));
                 }
-                directionOdds[currentNode?.direction ?? Direction.NightStart] = 0;
+                directionOdds = directionOdds.filter(probability => probability.direction != currentNode?.direction ?? Direction.NightStart);
                 break;
             case Direction.PatronDrinkRequest:
-                directionOdds[Direction.PatronDrinkOutcome] = 1000;
+                directionOdds.push(new Possibility(Direction.PatronDrinkOutcome, '', 1000));
                 break;
             default:
                 console.log('Default to Lull');
-                directionOdds[Direction.Lull] = 1000;
+                directionOdds.push(new Possibility(Direction.Lull, '', 1000));
         }
         let selectedPatronId = undefined;
         let newPresentPatronIds = [...(currentNode ? currentNode.presentPatronIds : [])];
@@ -130,58 +148,30 @@ export class Director {
             newPresentPatronIds.splice(newPresentPatronIds.indexOf(currentNode.selectedPatronId ?? ''), 1);
         }
 
-        const sumOfWeights = Object.values(directionOdds).reduce((sum, weight) => sum + weight, 0);
+        const sumOfWeights = Object.values(directionOdds).reduce((sum, possibility) => sum + possibility.odds, 0);
         let randomNumber = Math.random() * sumOfWeights;
         let newDirection: Direction = Direction.Lull;
 
-        for (let direction of Object.values(Direction)) {
-            if (randomNumber < directionOdds[direction]) {
-                newDirection = direction;
+        for (let possibility of directionOdds) {
+            if (randomNumber < possibility.odds) {
+                newDirection = possibility.direction;
+                selectedPatronId = possibility.patronId;
                 break;
             }
-            randomNumber -= directionOdds[direction];
+            randomNumber -= possibility.odds;
         }
 
         if (newDirection == Direction.PatronDrinkOutcome) {
             selectedPatronId = currentNode?.selectedPatronId;
             selectedBeverage = currentNode?.selectedBeverage;
-            if (!selectedPatronId || selectedPatronId.length == 0) {
-                console.log('Was ' + newDirection + ' but no previous patron for drink request, so PatronBanter');
-                newDirection = Direction.PatronBanter;
-                selectedPatronId = undefined;
-            }
-        }
-
-        if ([Direction.PatronBanter, Direction.PatronProblem, Direction.PatronDrinkRequest].includes(newDirection)) {
-                if (newPresentPatronIds.length > 0) {
-                    selectedPatronId = newPresentPatronIds[Math.floor(Math.random() * newPresentPatronIds.length)];
-                } else {
-                    console.log('Was ' + newDirection + ' but no present patrons, so IntroducePatron');
-                    newDirection = Direction.Lull;
-                }
         }
 
         if (newDirection == Direction.IntroducePatron) {
-            // Create a patron or pull an existing one
-            if (newPresentPatronIds.length < Object.keys(stage.patrons).length) {
-                const keys = Object.keys(stage.patrons).filter(key => !newPresentPatronIds.includes(key) && !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == key));
-                selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
+            if (selectedPatronId) {
                 newPresentPatronIds.push(selectedPatronId);
                 console.log('Introduce ' + stage.patrons[selectedPatronId].name);
             } else {
-                console.log('Was IntroducePatron, but no one new to introduce, so patron banter');
                 newDirection = Direction.PatronBanter;
-            }
-        }
-
-        if (newDirection == Direction.PatronLeaves) {
-            // Select a patron to leave
-            if (newPresentPatronIds.length > 0) {
-                selectedPatronId = newPresentPatronIds[Math.floor(Math.random() * newPresentPatronIds.length)];
-                console.log('depart ' + stage.patrons[selectedPatronId].name);
-            } else {
-                console.log('Was PatronLeaves, but no one is here, so Lull');
-                newDirection = Direction.Lull;
             }
         }
 

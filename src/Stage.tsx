@@ -9,7 +9,7 @@ import {
     User
 } from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
-import {Emotion, Patron} from "./Patron";
+import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
 import {createTheme} from "@mui/material";
 import {Direction, Director, sampleScript} from "./Director";
@@ -224,6 +224,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildStoryPrompt(fromNode: ChatNode|null, currentInstruction: string): string {
+        console.log('Generate nightly summary');
+        console.log(this.nightlySummaries);
+        console.log(Object.keys(this.nightlySummaries).join(':'));
         const nightSummaries = '' +
             Object.keys(this.nightlySummaries)
                 .filter(night => (fromNode?.night ?? 1) - parseInt(night) < 3)
