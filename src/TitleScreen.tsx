@@ -31,20 +31,20 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
                                     value={stage().loadingProgress}/>
                 </div>
             ) : (
-                <Grid container spacing={2} justifyContent="center">
+                <div style={{display: 'flex', flexDirection: 'column', gap: '5vh', alignItems: 'center'}}>
                     <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
                             startIcon={<Replay/>}
                             onClick={handleGenerateClick}>
-                        <Typography variant="h6" color='primary'>Start New Game</Typography>
+                        <Typography variant="h5" color='primary'>Start New Game</Typography>
                     </Button>
                     {stage().settingSummary && (
                         <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
                                 startIcon={<ArrowForward/>}
                                 onClick={() => setOnMenu(false)}>
-                            <Typography variant="h6" color='primary'>Continue</Typography>
+                            <Typography variant="h5" color='primary'>Continue</Typography>
                         </Button>
                     )}
-                </Grid>
+                </div>
             )}
         </div>
     );
