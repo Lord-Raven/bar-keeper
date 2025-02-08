@@ -31,7 +31,7 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
                                     value={stage().loadingProgress}/>
                 </div>
             ) : (
-                <div style={{display: 'flex', flexDirection: 'column', gap: '5vh', alignItems: 'center'}}>
+                <div style={{display: 'flex', flexDirection: 'column', height: '20vh', gap: '5vh', alignItems: 'center'}}>
                     <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
                             startIcon={<Replay/>}
                             onClick={handleGenerateClick}>
