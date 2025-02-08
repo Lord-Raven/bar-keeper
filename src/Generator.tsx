@@ -4,7 +4,7 @@ import {Emotion, emotionPrompts, Patron} from "./Patron";
 import bottleUrl from './assets/bottle.png'
 import { Beverage } from "./Beverage";
 
-const TRIM_SYMBOLS = '\\-*#';
+export const TRIM_SYMBOLS = '\\-*#';
 
 export function buildSection(name: string, body: string) {
     return `###${name.toUpperCase()}: ${body.trim()}\n\n`;
@@ -30,7 +30,7 @@ export function buildDistillationPrompt(stage: Stage, baseCharacter: Character):
             `"SOURCE" should identify the source material of FLAVOR TEXT, if possible; leave this blank or 'Original' if FLAVOR TEXT is not derived from a known work.\n` +
             `"SETTING" should briefly summarize the overarching location, vibe, or time period derived from the FLAVOR TEXT, including any key deviations from setting expectations.\n` +
             `"THEMES" should list all of the prominent themes, concepts, quirks, or kinks from the FLAVOR TEXT.\n` +
-            `"ART" should identify a target artist name, art style, genre, medium, palette, stroke, linework, or other style choices that are associated with SOURCE (if any) or which suit or align with the setting and themes of the FLAVOR TEXT; this will be used to generate appropriate images later.\n` +
+            `"ART" lists distinct artist, genre, medium, palette, stroke, shading, or other style descriptors that are associated with SOURCE (if any) or which suit or align with the setting and themes of the FLAVOR TEXT; this should be brief and to the point, as it will be used to generate appropriate images later.\n` +
             `Define these four fields and promptly end your response.\n`) +
         buildSection('Default Instruction', '{{suffix}}')).trim();
 }
@@ -208,8 +208,8 @@ export async function generate(stage: Stage) {
 
         stage.setLoadProgress(10, 'Generating bar image.');
         const barPrompt = `(art style: ${stage.artSummary}), ` +
-            (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + '((interior of an empty bar)), (dark outside), counter, ' +
-            `(general setting: ${stage.settingSummary})`;//, ((${stage.barDescription}))`;
+            (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + '((empty bar interior)), (late), ' +
+            `(general setting: ${stage.settingSummary}), (${stage.barDescription})`;
 
         stage.barImageUrl = await stage.makeImage({
             prompt: barPrompt,
@@ -306,7 +306,7 @@ export async function generatePatrons(stage: Stage) {
     }
 }
 
-function trimSymbols(str: string, symbol: string): string { const regex = new RegExp(`^[${symbol}]+|[${symbol}]+$`, 'g'); return str.replace(regex, ''); }
+export function trimSymbols(str: string, symbol: string): string { const regex = new RegExp(`^[${symbol}]+|[${symbol}]+$`, 'g'); return str.replace(regex, ''); }
 
 
 export async function generatePatron(stage: Stage, baseCharacter: Character): Promise<Patron|undefined> {

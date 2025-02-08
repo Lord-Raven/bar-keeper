@@ -133,7 +133,7 @@ const MessageBanner: FC<MessageBannerProps> = ({message, post}) => {
                 left: 0,
             }}
         >
-            <Typography variant='h1' color='primary'>
+            <Typography variant='h2' color='primary'>
                 {message}
             </Typography>
         </motion.div>
@@ -187,7 +187,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
 
     const getMessage = (targetNode: ChatNode|null) => {
         if (isDrinkDecision(targetNode)) {
-            return `Select a drink to serve ${stage().patrons[targetNode?.selectedPatronId ?? '']}.`;
+            return `Select a drink to serve ${stage().patrons[targetNode?.selectedPatronId ?? ''].name}.`;
         } else if (targetNode && (!targetNode.parentId || !stage().chatNodes[targetNode.parentId] || targetNode.night != stage().chatNodes[targetNode.parentId].night)) {
             return `Night ${targetNode.night}`;
         }
@@ -283,11 +283,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                     </div>
                 </Box>
 
-                <MessageBanner
-                    message = {bannerMessage}
-                    post = {bannerIsPost}
-                />
-
                 {Object.keys(stage().patrons).map(patronId => {
                     const patron = stage().patrons[patronId];
                     let present = false;
@@ -310,6 +305,11 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                                         isTalking={isTalking}
                                         present={present}/>;
                 })}
+
+                <MessageBanner
+                    message = {bannerMessage}
+                    post = {bannerIsPost}
+                />
             </div>
         </div>
     );

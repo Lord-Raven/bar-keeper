@@ -20,7 +20,7 @@ interface InstructionInput {
     beverageName: string;
 }
 
-const generalInstruction = 'Your response will follow a simple stageplay format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Focus events on {{user}} and the characters found in PRESENT PATRONS; other character roles should be fleeting. Refer to {{user}} in second-person.'
+const generalInstruction = 'Your response will follow a simple stageplay format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Only PRESENT PATRONS and {{user}} are active at this time; ABSENT PATRONS remain absent. Minor character roles should be fleeting. Refer to {{user}} in second-person.'
 export const sampleScript = '\n' +
         `**NARRATOR**: General narration is provided by the NARRATOR.\n\n` +
         `**CHARACTER 1**: (Character 1's mood) "Character1 is saying this, and dialog goes in quotations." Character 1's actions don't.\n\n` +
@@ -35,14 +35,14 @@ export const sampleScript = '\n' +
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
     NightStart: input => `Introduce the bar described here: ${input.barDescription}. ` +
-        `Depict a second-person scene where ${input.playerName} is setting up for the beginning of their shift one evening; do not introduce established patrons to the scene yet. ${generalInstruction}`,
+        `Depict a scene where ${input.playerName} is setting up for the beginning of their shift one evening--in second person. ${input.playerName} must remain alone in this moment. ${generalInstruction}`,
     
-    Lull: input => `Continue the scene with some visual novel style flavor as the evening slightly progresses; ${input.playerName} observes the environment or ancillary patrons with only trivial events or conversations--established patrons remain absent or passive.  ${generalInstruction}`,
+    Lull: input => `Continue the scene with some inconsequential flavor as the evening slightly progresses; ${input.playerName} observes the environment or ancillary patrons with only trivial events or conversations--significant patrons remain absent or passive.  ${generalInstruction}`,
 
     IntroducePatron: input => `Continue the scene with visual novel style development as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
-        `If they are a regular, focus on their interactions with ${input.playerName} or other patrons. They aren't ready to order a drink yet and will focus on something else. ${generalInstruction}`,
+        `If they are a regular, focus on their interactions with ${input.playerName} or other present patrons. No one is thirsty yet; patrons will focus on other matters. ${generalInstruction}`,
     
-    PatronBanter: input => `Continue the scene with some visual novel style development as the PRESENT PATRONS banter amongst themselves or with ${input.playerName}. None of them are prepared to order a drink and will focus on their lives or other ongoing events. ${generalInstruction}`,
+    PatronBanter: input => `Continue the scene with some visual novel style development as the PRESENT PATRONS banter amongst themselves or with ${input.playerName}. None of them are prepared to order a drink, so they will focus on their lives or other ongoing events. ${generalInstruction}`,
 
     PatronProblem: input => `Continue the scene with some visual novel style development as one of the PRESENT PATRONS describes a personal problem to another PRESENT PATRON or ${input.playerName}. No one wants to order a drink at this time. ${generalInstruction}`,
 
@@ -56,7 +56,7 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
     PatronLeaves: input => `Continue the scene with some visual novel style development as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar. ` +
         `Honor their personal style and connections to other patrons or ${input.playerName}. ${generalInstruction}`,
 
-    NightEnd: input => `Wrap up the scene as ${input.playerName} cleans up and closes the bar, reflecting on the night's events`
+    NightEnd: input => `Wrap up the scene as ${input.playerName} cleans up and closes the bar, reflecting on the night's events.`
 }
 
 export class Director {

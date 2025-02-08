@@ -1,7 +1,7 @@
 import {Direction} from "./Director";
 import {Stage} from "./index";
 import {Emotion, emotionRouting} from "./Patron";
-import {generatePatronImage} from "./Generator";
+import {generatePatronImage, TRIM_SYMBOLS, trimSymbols} from "./Generator";
 
 export interface ChatNode {
     id: string;
@@ -61,7 +61,7 @@ export async function createNodes(script: string, commonProps: Partial<ChatNode>
             }
             // Start a new dialogue
             currentSpeaker = match[1];
-            currentDialogue = match[2];
+            currentDialogue = trimSymbols(match[2], TRIM_SYMBOLS).trim();
         } else if (currentSpeaker && currentDialogue.trim().length > 0) {
             // Continue the current dialogue
             currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatronIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
