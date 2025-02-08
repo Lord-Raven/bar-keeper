@@ -28,7 +28,7 @@ export class Beverage {
                             backgroundColor: count() > 0 ? 'blue' : '#66666666',
                             color: 'white',
                             borderRadius: '50%',
-                            fontSize: 'large'
+                            fontSize: '10%'
                         }
                     }}>
                     <Box component="section" sx={{
