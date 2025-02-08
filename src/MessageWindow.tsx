@@ -171,7 +171,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
         if (doneWinding) {
             setAdvancing(true);
             setDoneWinding(true);
-            advance().then(() => {setChatNode(stage().currentNode)});
+            advance().then(() => {setAdvancing(false); setChatNode(stage().currentNode)});
         } else {
             setDoneWinding(true);
         }

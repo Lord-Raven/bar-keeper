@@ -55,7 +55,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     requestedNodes: Promise<ChatNode[]|null>|null = null;
     isGenerating: boolean = false;
     director: Director;
-    updateTime: number = Date.now();
     pipeline: any
 
     readonly theme = createTheme({
@@ -320,7 +319,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.setCurrentNode(selectedNode);
         } else {
             console.log('Failed to generate new content; try again.');
-            this.updateTime = Date.now();
         }
         this.requestedNodes = null;
         this.isGenerating = false;
