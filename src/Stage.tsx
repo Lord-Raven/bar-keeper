@@ -224,9 +224,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildStoryPrompt(fromNode: ChatNode|null, currentInstruction: string): string {
-        console.log('Generate nightly summary');
-        console.log(this.nightlySummaries);
-        console.log(Object.keys(this.nightlySummaries).join(':'));
         const nightSummaries = '' +
             Object.keys(this.nightlySummaries)
                 .filter(night => (fromNode?.night ?? 1) - parseInt(night) < 3)
