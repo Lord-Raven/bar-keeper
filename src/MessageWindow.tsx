@@ -131,6 +131,7 @@ const MessageBanner: FC<MessageBannerProps> = ({message, post}) => {
                 backgroundColor: '#000000BB',
                 bottom: '40vh',
                 left: 0,
+                zIndex: 20,
             }}
         >
             <Typography variant='h2' color='primary'>
