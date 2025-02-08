@@ -27,8 +27,8 @@ export function buildDistillationPrompt(stage: Stage, baseCharacter: Character):
             `You are doing prep work for a roleplaying narrative. Instead of narrating, you will first use this planning response to distill the setting and themes from the FLAVOR TEXT into a specific format. ` +
             `Use the FLAVOR TEXT as inspirational material as you establish a SOURCE, SETTING, THEMES, and ART style for future narration and illustration. ` +
             `This essential, preparatory response includes four specific and clearly defined fields, each containing a comma-delimited list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
-            `"SOURCE" should identify the source material of FLAVOR TEXT, if possible; leave this blank or 'Original' if FLAVOR TEXT is not derived from a known work.\n` +
-            `"SETTING" should briefly summarize the overarching location, vibe, or time period derived from the FLAVOR TEXT, including any key deviations from setting expectations.\n` +
+            `"SOURCE" should simply identify the source material of FLAVOR TEXT, if possible; leave this blank or 'Original' if FLAVOR TEXT is not derived from a known work.\n` +
+            `"SETTING" should briefly stipulate the overarching location, vibe, or time period derived from the FLAVOR TEXT, focusing on any key deviations from setting expectations.\n` +
             `"THEMES" should list all of the prominent themes, concepts, quirks, or kinks from the FLAVOR TEXT.\n` +
             `"ART" lists distinct artist, genre, medium, palette, stroke, shading, or other style descriptors that are associated with SOURCE (if any) or which suit or align with the setting and themes of the FLAVOR TEXT; this should be brief and to the point, as it will be used to generate appropriate images later.\n` +
             `Define these four fields and promptly end your response.\n`) +
@@ -159,7 +159,7 @@ async function generateDistillation(stage: Stage) {
     while ((stage.settingSummary == '' || stage.themeSummary == '' || stage.artSummary == '') && tries > 0) {
         let textResponse = await stage.generator.textGen({
             prompt: buildDistillationPrompt(stage, stage.characterForGeneration),
-            max_tokens: 100,
+            max_tokens: 120,
             min_tokens: 50
         });
         if (textResponse && textResponse.result) {

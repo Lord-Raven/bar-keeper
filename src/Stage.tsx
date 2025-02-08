@@ -224,10 +224,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildStoryPrompt(fromNode: ChatNode|null, currentInstruction: string): string {
-        const nightSummaries =
+        const nightSummaries = '' +
             Object.keys(this.nightlySummaries)
-                .filter(night => (fromNode?.night ?? 1) - Number(night) < 3)
-                .map(night => buildSection(`Night ${night} (${(fromNode?.night ?? 1) - Number(night)}s ago)`, this.nightlySummaries[night])).join('\n');
+                .filter(night => (fromNode?.night ?? 1) - parseInt(night) < 3)
+                .map(night => buildSection(`Night ${night} (${(fromNode?.night ?? 1) - parseInt(night)}s ago)`, this.nightlySummaries[night])).join('\n');
         console.log(`Nightly Summary: ${nightSummaries}`);
         return buildSection('Setting', this.barDescription ?? '') +
             buildSection(`Protagonist`, `${this.player.name} is a bartender here. ${this.player.chatProfile}`) +
