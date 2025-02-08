@@ -20,7 +20,7 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
 
 
     return (
-        <div style={{display: 'flex', flexDirection: 'column', height: '60vh', justifyContent: 'center', verticalAlign: 'middle'}}>
+        <div style={{display: 'flex', flexDirection: 'column', height: '100vh', justifyContent: 'center', verticalAlign: 'middle'}}>
 
             {stage().isGenerating ? (
                 <div>

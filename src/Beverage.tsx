@@ -25,12 +25,12 @@ export class Beverage {
                     overlap="circular"
                     sx={{
                         '& .MuiBadge-badge': {
-                            backgroundColor: count() > 0 ? 'blue' : '#66666666',
+                            backgroundColor: count() > 0 ? '#0000DD66' : '#66666666',
                             color: 'white',
                             borderRadius: '50%',
-                            fontSize: 'x-large',
-                            minWidth: '2em',
-                            height: '2em'
+                            fontSize: '1em',
+                            minWidth: '1.5em',
+                            height: '1.5em'
                         }
                 }}>
                     <Box component="section" sx={{
