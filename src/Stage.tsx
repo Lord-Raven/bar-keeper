@@ -45,6 +45,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     patrons: {[key: string]: Patron};
     chatNodes: {[key: string]: ChatNode};
     dummyPatrons: Patron[];
+    nightlySummaries: {[key: string]: string};
 
 
     // Not saved:
@@ -89,11 +90,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.patrons = {};
         this.chatNodes = {};
         this.currentNode = null;
+        this.dummyPatrons = [];
+        this.nightlySummaries = {};
         this.readChatState(chatState);
+
         this.director = new Director();
         this.loadingProgress = 50;
         this.pipeline = null;
-        this.dummyPatrons = [];
 
         console.log('Config loaded:');
         console.log(config);
@@ -141,7 +144,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             chatNodes: this.chatNodes,
             currentMessageId: this.currentNode ? this.currentNode.id : null,
             patrons: this.patrons,
-            dummyPatrons: this.dummyPatrons
+            dummyPatrons: this.dummyPatrons,
+            nightlySummaries: this.nightlySummaries
         };
     }
 
@@ -159,10 +163,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.currentNode = chatState.currentMessageId && this.chatNodes[chatState.currentMessageId] ? this.chatNodes[chatState.currentMessageId] : null;
             this.patrons = chatState.patrons ?? {};
             console.log(chatState.dummyPatrons);
-            this.dummyPatrons = (chatState.dummyPatrons ?? []).map((patron: any) => {
+            this.dummyPatrons = chatState.dummyPatrons;
+                /*(chatState.dummyPatrons ?? []).map((patron: any) => {
                 const {name, description, personality} = patron;
                 return new Patron(name, description, personality)
-            });
+            });*/
+            this.nightlySummaries = chatState.nightlySummaries;
         }
     }
 
@@ -218,10 +224,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildStoryPrompt(fromNode: ChatNode|null, currentInstruction: string): string {
+        const nightSummaries =
+            Object.keys(this.nightlySummaries)
+                .filter(night => (fromNode?.night ?? 1) - Number(night) < 3)
+                .map(night => buildSection(`Night ${night} (${(fromNode?.night ?? 1) - Number(night)}s ago)`, this.nightlySummaries[night])).join('\n');
+        console.log(`Nightly Summary: ${nightSummaries}`);
         return buildSection('Setting', this.barDescription ?? '') +
-            buildSection('User', `${this.player.name} is a bartender here. ${this.player.chatProfile}`) +
+            buildSection(`Protagonist`, `${this.player.name} is a bartender here. ${this.player.chatProfile}`) +
             this.buildPatronDescriptions() +
             this.buildBeverageDescriptions() +
+            nightSummaries +
             buildSection('Sample Response', sampleScript) +
             (fromNode ? buildSection('Log', this.buildHistory(fromNode)) : '') +
             buildSection('Instruction Override', `${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}`) +
@@ -279,6 +291,34 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async generateMessageContent(fromNode: ChatNode|null, additionalContext: string): Promise<ChatNode[]|null> {
         let nodeProps: any = this.director.determineNextNodeProps(this, this.currentNode);
+
+        if (nodeProps.direction == Direction.NightEnd) {
+            // Generate a nightly summary.
+            let retries = 3;
+            while (retries-- > 0) {
+                try {
+                    let textGen = await this.generator.textGen({
+                        prompt:
+                            buildSection('Setting', this.barDescription ?? '') +
+                            buildSection(`Protagonist`, `${this.player.name} is a bartender here. ${this.player.chatProfile}`) +
+                            this.buildPatronDescriptions() +
+                            this.buildBeverageDescriptions() +
+                            (fromNode ? buildSection('Log', this.buildHistory(fromNode)) : '') +
+                            buildSection('Instruction Override', 'Utilize this response to summarize the events in the LOG. You should produce an abridged account of the events and interactions that occurred in the bar this evening, based on an analysis of the LOG.') +
+                            buildSection('Standard Instruction', '{{suffix}}'),
+                        max_tokens: 400,
+                        min_tokens: 50,
+                        include_history: false
+                    });
+                    if (textGen?.result?.length) {
+                        this.nightlySummaries[nodeProps.night] = textGen.result;
+                        retries = 0;
+                    }
+                } catch(error) {
+                    console.error("Failed to generate a nightly summary: " + error);
+                }
+            }
+        }
 
         let retries = 3;
         while (retries-- > 0) {
