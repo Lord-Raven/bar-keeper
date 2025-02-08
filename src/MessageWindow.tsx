@@ -69,10 +69,10 @@ const boxStyle = {
     left: '0%',
     width: '100%',
     border: '1px dashed grey',
-    backgroundColor: '#00000088',
+    backgroundColor: '#000000BB',
     zIndex: 50,
     boxSizing: 'border-box',
-    '&:hover': {backgroundColor: '#000000BB'}
+    '&:hover': {backgroundColor: '#000000EE'}
 }
 
 interface PatronImageProps {
@@ -103,12 +103,12 @@ const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalkin
     );
 };
 
-interface MessagePopupProps {
+interface MessageBannerProps {
     message: string;
     post: boolean;
 }
 
-const MessagePopup: FC<MessagePopupProps> = ({message, post}) => {
+const MessageBanner: FC<MessageBannerProps> = ({message, post}) => {
     const variants: Variants = {
         start: {x: '-100vw', opacity: 0},
         visible: {x: 0, opacity: 1},
@@ -181,6 +181,19 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
         reverse().then(() => {setChatNode(stage().currentNode)});
     }
 
+    const isDrinkDecision = (targetNode: ChatNode|null) => {
+        return targetNode && targetNode.direction == Direction.PatronDrinkRequest && targetNode.childIds.filter(id => stage().chatNodes[id] && stage().chatNodes[id].direction == Direction.PatronDrinkRequest).length == 0;
+    }
+
+    const getMessage = (targetNode: ChatNode|null) => {
+        if (isDrinkDecision(targetNode)) {
+            return `Select a drink to serve ${stage().patrons[targetNode?.selectedPatronId ?? '']}.`;
+        } else if (targetNode && (!targetNode.parentId || !stage().chatNodes[targetNode.parentId] || targetNode.night != stage().chatNodes[targetNode.parentId].night)) {
+            return `Night ${targetNode.night}`;
+        }
+        return '';
+    }
+
     useEffect(() => {
         setChatNode(stage().currentNode);
         setSelectedBeverage(chatNode?.selectedBeverage ?? null);
@@ -189,6 +202,8 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
     }, [chatNode]);
 
     const message = (chatNode?.message ?? '').trim().replace(/^\s*\(.*?\)\s*/, '').trim()
+    const bannerMessage = getMessage(chatNode);
+    const bannerIsPost = getMessage(stage().chatNodes[chatNode?.parentId ?? '']) != '';
     return (
         <div style={{display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden'}}>
             <div style={{position: 'relative', height: '8%'}}>
@@ -268,9 +283,9 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                     </div>
                 </Box>
 
-                <MessagePopup
-                    message = {chatNode && (!chatNode.parentId || !stage().chatNodes[chatNode.parentId] || chatNode.night != stage().chatNodes[chatNode.parentId].night) ? `Night ${chatNode.night}` : ''}
-                    post = {(chatNode != null && Direction.NightEnd != (chatNode.direction ?? Direction.NightStart))}
+                <MessageBanner
+                    message = {bannerMessage}
+                    post = {bannerIsPost}
                 />
 
                 {Object.keys(stage().patrons).map(patronId => {
