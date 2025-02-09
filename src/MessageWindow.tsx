@@ -244,15 +244,14 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                 </Typography>
             </div>
             <div
-                 style={{
-                     position: 'relative',
-                     flexGrow: '1',
-                     left: '1%',
-                     width: '98%',
-                     alignContent: 'center',
-                     zIndex: 2,
-                     overflow: 'hidden'
-            }}>
+                style={{
+                    position: 'relative',
+                    flexGrow: '1',
+                    left: '1%',
+                    width: '98%',
+                    alignContent: 'center',
+                    zIndex: 2,
+                }}>
                 <Box layout sx={{...boxStyle, bottom: '17vh'}}>
                     <div style={{width: '100%'}}>
                         <div>
@@ -299,50 +298,52 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                         </div>
                     </div>
                 </Box>
-                <Box layout sx={{...boxStyle, height: '15vh'}}>
-                    <div
-                        style={{
-                            height: '100%',
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'space-around'
-                        }}>
-                        {stage().beverages.map(beverage => beverage.render(() => {
-                            return beverage.name == selectedBeverage
-                        }, () => {
-                            return stage().currentNode?.beverageCounts[beverage.name] ?? 1
-                        }, handleBeverageClick))}
-                    </div>
-                </Box>
+                <div style={{overflow: 'hidden'}}>
+                    <Box layout sx={{...boxStyle, height: '15vh'}}>
+                        <div
+                            style={{
+                                height: '100%',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-around'
+                            }}>
+                            {stage().beverages.map(beverage => beverage.render(() => {
+                                return beverage.name == selectedBeverage
+                            }, () => {
+                                return stage().currentNode?.beverageCounts[beverage.name] ?? 1
+                            }, handleBeverageClick))}
+                        </div>
+                    </Box>
 
-                {Object.keys(stage().patrons).map(patronId => {
-                    const patron = stage().patrons[patronId];
-                    let present = false;
-                    let position = !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == patronId) ? -40 : 140;
-                    let emotion: Emotion = patron.emotion as Emotion ?? Emotion.neutral;
-                    let isTalking = false;
-                    if (chatNode && chatNode.presentPatronIds.includes(patronId)) {
-                        const index = chatNode.presentPatronIds.length - chatNode.presentPatronIds.indexOf(patronId) - 1;
-                        isTalking = patron.name.toLowerCase().includes(chatNode?.speakerId?.toLowerCase() ?? 'nevereverever');
-                        if (isTalking && chatNode?.emotion) {
-                            emotion = chatNode.emotion as Emotion ?? emotion;
-                            patron.emotion = emotion;
+                    {Object.keys(stage().patrons).map(patronId => {
+                        const patron = stage().patrons[patronId];
+                        let present = false;
+                        let position = !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == patronId) ? -40 : 140;
+                        let emotion: Emotion = patron.emotion as Emotion ?? Emotion.neutral;
+                        let isTalking = false;
+                        if (chatNode && chatNode.presentPatronIds.includes(patronId)) {
+                            const index = chatNode.presentPatronIds.length - chatNode.presentPatronIds.indexOf(patronId) - 1;
+                            isTalking = patron.name.toLowerCase().includes(chatNode?.speakerId?.toLowerCase() ?? 'nevereverever');
+                            if (isTalking && chatNode?.emotion) {
+                                emotion = chatNode.emotion as Emotion ?? emotion;
+                                patron.emotion = emotion;
+                            }
+                            position = getCharacterPosition(index, numberOfPatrons);
+                            present = true;
                         }
-                        position = getCharacterPosition(index, numberOfPatrons);
-                        present = true;
-                    }
-                    return <PatronImage patron={patron}
-                                        emotion={emotion}
-                                        xPosition={position}
-                                        isTalking={isTalking}
-                                        present={present}/>;
-                })}
-                <MessageBanner
-                    message = {bannerMessage}
-                    post = {bannerIsPost}
-                />
+                        return <PatronImage patron={patron}
+                                            emotion={emotion}
+                                            xPosition={position}
+                                            isTalking={isTalking}
+                                            present={present}/>;
+                    })}
+                    <MessageBanner
+                        message={bannerMessage}
+                        post={bannerIsPost}
+                    />
+                </div>
+                <Vignette active={chatNode?.read ?? false}/>
             </div>
-            <Vignette active={chatNode?.read ?? false}/>
         </div>
     );
 }
