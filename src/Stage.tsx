@@ -80,10 +80,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         } = data;
 
         this.loadingProgress = 30;
-        console.log('constructor');
         this.characters = characters;
         this.characterForGeneration = characters[Object.keys(characters)[0]];
-        console.log(this.characterForGeneration);
 
         this.player = users[Object.keys(users)[0]];
         this.beverages = [];
@@ -196,8 +194,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildPatronDescriptions(): string {
         const presentPatronIds = this.currentNode?.presentPatronIds ?? [];
-        return buildSection('Absent Patrons', `${Object.keys(this.patrons).filter(patronId => !presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description}`).join('\n')}`) +
-            buildSection('Present Patrons', `${Object.keys(this.patrons).filter(patronId => presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description}`).join('\n')}`);
+        return buildSection('Absent Patrons', `${Object.keys(this.patrons).filter(patronId => !presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description} - ${this.patrons[patronId].personality}`).join('\n')}`) +
+            buildSection('Present Patrons', `${Object.keys(this.patrons).filter(patronId => presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description} - ${this.patrons[patronId].personality}`).join('\n')}`);
     }
 
     getNightlyNodes(currentNode: ChatNode): ChatNode[] {
@@ -241,7 +239,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async reverseMessage() {
-        console.log('reverseMessage');
         if (this.currentNode && this.currentNode.parentId && this.chatNodes[this.currentNode.parentId]) {
             this.setCurrentNode(this.chatNodes[this.currentNode.parentId]);
         }
@@ -252,7 +249,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         // Go ahead and do a patron check--don't wait up.
         generatePatrons(this);
 
-        console.log('advanceMessage');
         // If this is a drink request, we can't kick this off until the last interaction
         if (!this.requestedNodes && (!this.currentNode || this.currentNode.direction != Direction.PatronDrinkRequest)) {
             console.log('Kick off generation');
@@ -277,8 +273,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         if (this.currentNode) {
             console.log(`New Node's direction: ${this.currentNode?.direction}`);
             console.log(this.currentNode);
-        } else {
-            console.log('No node set');
         }
     }
 
@@ -325,7 +319,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             try {
                 let textGen = await this.generator.textGen({
                     prompt: this.buildStoryPrompt(this.getTerminusOfNode(this.currentNode), `${this.director.getPromptInstruction(this, nodeProps)}\n${additionalContext}`),
-                    max_tokens: 400,
+                    max_tokens: 450,
                     min_tokens: 50,
                     include_history: false
                 });

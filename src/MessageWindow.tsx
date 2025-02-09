@@ -103,6 +103,35 @@ const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalkin
     );
 };
 
+interface VignetteProps {
+    active: boolean;
+}
+
+const Vignette: FC<VignetteProps> = ({active}) => {
+    const variants: Variants = {
+        active: {opacity: 1},
+        inactive: {opacity: 0}
+    }
+
+    return (
+        <motion.div
+            initial="inactive"
+            animate={active ? 'active' : 'inactive'}
+            variants={variants}
+            transition={{duration: 1}}
+            style={{
+                position: 'absolute',
+                top: '0',
+                bottom: '0',
+                width: '100vw',
+                height: '100vh',
+                background: 'radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 70%)',
+                zIndex: 13,
+            }}
+        />
+    );
+}
+
 interface MessageBannerProps {
     message: string;
     post: boolean;
@@ -120,7 +149,7 @@ const MessageBanner: FC<MessageBannerProps> = ({message, post}) => {
             initial="start"
             animate={message ? 'visible' : (post ? 'exit' :  'start')}
             variants={variants}
-            transition={{type: 'spring', stiffness: 300, damping: 30}}
+            transition={{duration: 1}}
             style={{
                 width: '100vw',
                 height: '20vh',
@@ -129,7 +158,7 @@ const MessageBanner: FC<MessageBannerProps> = ({message, post}) => {
                 alignItems: 'center',
                 position: 'fixed',
                 backgroundColor: '#000000BB',
-                bottom: '40vh',
+                bottom: '50vh',
                 left: 0,
                 zIndex: 20,
             }}
@@ -307,6 +336,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                                         present={present}/>;
                 })}
 
+                <Vignette active={chatNode?.read ?? false}/>
                 <MessageBanner
                     message = {bannerMessage}
                     post = {bannerIsPost}
