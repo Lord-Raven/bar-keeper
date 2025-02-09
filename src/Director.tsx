@@ -91,6 +91,9 @@ export class Director {
         const drinksServed = history.filter(node => node.direction == Direction.PatronDrinkOutcome).length;
         const visits = history.filter(node => node.direction == Direction.IntroducePatron).length;
 
+        let selectedPatronId = undefined;
+        let newPresentPatronIds = [...(currentNode ? currentNode.presentPatronIds : [])];
+        let selectedBeverage = undefined;
 
         switch (currentNode ? currentNode.direction : undefined) {
             case undefined:
@@ -140,9 +143,6 @@ export class Director {
                 console.log('Default to Lull');
                 directionOdds.push(new Possibility(Direction.Lull, '', 1000));
         }
-        let selectedPatronId = undefined;
-        let newPresentPatronIds = [...(currentNode ? currentNode.presentPatronIds : [])];
-        let selectedBeverage = undefined;
 
         // If coming from a departure, drop that character from the new present list.
         if (currentNode && currentNode.direction == Direction.PatronLeaves && newPresentPatronIds.includes(currentNode.selectedPatronId ?? '')) {

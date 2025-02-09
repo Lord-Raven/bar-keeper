@@ -2,7 +2,6 @@ import {Stage} from "./Stage";
 import React, {FC, useState} from "react";
 import {Button, LinearProgress, Typography} from "@mui/material";
 import {generate} from "./Generator";
-import Grid from "@mui/material/Grid2";
 import {ArrowForward, Replay} from "@mui/icons-material";
 
 interface TitleScreenProps {
@@ -33,7 +32,7 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
             ) : (
                 <div style={{display: 'flex', flexDirection: 'column', height: '20vh', gap: '5vh', alignItems: 'center'}}>
                     <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
-                            startIcon={<Replay/>}
+                            startIcon={stage().settingSummary ? <Replay/> : <ArrowForward/>}
                             onClick={handleGenerateClick}>
                         <Typography variant="h5" color='primary'>Start New Game</Typography>
                     </Button>
