@@ -125,7 +125,7 @@ const Vignette: FC<VignetteProps> = ({active}) => {
                 left: '0',
                 width: '100vw',
                 height: '100vh',
-                background: 'radial-gradient(ellipse at center, #00000033 0%, #000000BB 90%)',
+                background: 'radial-gradient(ellipse at center, #00000011 30%, #000000BB 90%)',
                 zIndex: 13,
             }}
         />
@@ -235,8 +235,8 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
     const bannerMessage = getMessage(chatNode);
     const bannerIsPost = getMessage(stage().chatNodes[chatNode?.parentId ?? '']) != '';
     return (
-        <div style={{display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden'}}>
-            <div style={{position: 'relative', height: '8%'}}>
+        <div style={{display: 'flex', flexDirection: 'column', height: '100vh', }}>
+            <div style={{position: 'relative', height: '8%', overflow: 'hidden'}}>
                 <GenerationUi stage={stage} setOnMenu={setOnMenu}/>
                 <Typography variant="h5" style={{float: 'right'}}>
                     Night {chatNode?.night ?? 1}
@@ -249,7 +249,8 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                      left: '1%',
                      width: '98%',
                      alignContent: 'center',
-                     zIndex: 2
+                     zIndex: 2,
+                     overflow: 'hidden'
             }}>
                 <Box layout sx={{...boxStyle, bottom: '17vh'}}>
                     <div style={{width: '100%'}}>
@@ -335,13 +336,12 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                                         isTalking={isTalking}
                                         present={present}/>;
                 })}
-
-                <Vignette active={chatNode?.read ?? false}/>
                 <MessageBanner
                     message = {bannerMessage}
                     post = {bannerIsPost}
                 />
             </div>
+            <Vignette active={chatNode?.read ?? false}/>
         </div>
     );
 }
