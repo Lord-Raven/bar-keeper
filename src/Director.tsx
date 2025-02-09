@@ -20,9 +20,10 @@ interface InstructionInput {
     beverageName: string;
 }
 
-const generalInstruction = 'Your response will follow a simple stageplay format, where general storytelling is flavorfully presented by a NARRATOR, and characters present their own dialog and actions. Only PRESENT PATRONS and {{user}} are active at this time; ABSENT PATRONS remain absent. Minor character roles should be fleeting. Refer to {{user}} in second-person.'
+const generalInstruction = 'Your response will follow a simple stageplay format, where general storytelling is flavorfully and incrementally presented by a NARRATOR, and characters present their own dialog and actions. Only PRESENT PATRONS and {{user}} are active at this time; ABSENT PATRONS remain absent. Minor character roles should be fleeting. Refer to {{user}} in second-person.'
 export const sampleScript = '\n' +
         `**NARRATOR**: General narration is provided by the NARRATOR.\n\n` +
+        `**NARRATOR**: Each message should be about one line.\n\n` +
         `**CHARACTER 1**: (Character 1's mood) "Character1 is saying this, and dialog goes in quotations." Character 1's actions don't.\n\n` +
         `**NARRATOR**: Character 2 walks in.\n\n` +
         `**CHARACTER 2**: (Blandly) "Hey, Character 1."\n\n` +

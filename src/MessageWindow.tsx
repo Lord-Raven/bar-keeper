@@ -118,14 +118,14 @@ const Vignette: FC<VignetteProps> = ({active}) => {
             initial="inactive"
             animate={active ? 'active' : 'inactive'}
             variants={variants}
-            transition={{duration: 1}}
+            transition={{duration: 0.5}}
             style={{
                 position: 'absolute',
                 top: '0',
                 bottom: '0',
                 width: '100vw',
                 height: '100vh',
-                background: 'radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 70%)',
+                background: 'radial-gradient(ellipse at center, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.2) 70%)',
                 zIndex: 13,
             }}
         />
@@ -149,7 +149,7 @@ const MessageBanner: FC<MessageBannerProps> = ({message, post}) => {
             initial="start"
             animate={message ? 'visible' : (post ? 'exit' :  'start')}
             variants={variants}
-            transition={{duration: 1}}
+            transition={{duration: 0.5}}
             style={{
                 width: '100vw',
                 height: '20vh',
