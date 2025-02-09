@@ -120,6 +120,7 @@ const Vignette: FC<VignetteProps> = ({active}) => {
             variants={variants}
             transition={{duration: 0.5}}
             style={{
+                pointerEvents: 'none',
                 position: 'absolute',
                 top: '0',
                 left: '0',

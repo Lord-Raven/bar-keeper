@@ -8,12 +8,15 @@ project_name: "Barkeeper"
 tagline: "A barkeeping sim based on any card."
 
 creator_notes: "
-This is little more than a proof of concept for the kind of experiences stages can produce. Adding this stage to a chat will essentially convert that session into a simple bartending visual novel, 
+This is little more than a proof of concept for the kind of experiences that Chub's stages can produce. Honestly, the scope of this stage is rather tame relative to what could be achieved through a stage.
+<br>
+<br>
+Adding this stage to a chat will essentially convert that session into a simple bartending visual novel, 
 where the user's persona is a bartender who meets and interacts with various characters, but the only choices the player makes is what drinks to serve when prompted. 
 <br>
 <br>
 The stage will distill the chat's primary character card into a set of themes and use that to generate a bar, five beverages, and four characters based on the chat's primary character card--
-plus an additional character for each bot you add to the chat. Characters will come and go, with three-to-five drink prompts each night. 
+plus an additional character for each bot you add to the chat. Characters will come and go, with a handful of drink prompts each night and a limited stock of each beverage. 
 Storylines and relationships may emerge and resolve organically, hopefully influenced by the drinks you choose to give. There's no end game, just a stream of nights and regulars.
 <br>
 <br>
@@ -21,8 +24,9 @@ Storylines and relationships may emerge and resolve organically, hopefully influ
 _This stage makes many generative calls. It does include the user's pre and post history in its text requests, but it also includes additional instructions and details that are often the result of other text gen requests._ 
 <br>
 <br>
-I have tested this primarily with Mars Asha, where I have no concerns for usage limits or losing access.
-this stage makes a lot of text and image gen requests up front, and makes about one text gen request per few messages as you play
+I have tested this primarily with Mars Asha, where I have no concerns for usage limits or losing access. 
+this stage makes a lot of text and image gen requests up front, and makes about one text gen request per every few messages as you play--each LLM response is chopped into multiple smaller messages, 
+and the next set of messages are requested as you read the current set. 
 <br>
 <br>
 While the stage may introduce some NSFW themes; while there is relatively little in the way of NSFW instruction in the stage, it does derive themes from the character card, 
