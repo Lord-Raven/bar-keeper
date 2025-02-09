@@ -122,7 +122,7 @@ const Vignette: FC<VignetteProps> = ({active}) => {
             style={{
                 position: 'absolute',
                 top: '0',
-                bottom: '0',
+                left: '0',
                 width: '100vw',
                 height: '100vh',
                 background: 'radial-gradient(ellipse at center, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.2) 70%)',
