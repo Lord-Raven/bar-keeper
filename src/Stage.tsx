@@ -261,6 +261,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         } else {
             console.log('setting currentNode');
             this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]]);
+            if ((!this.currentNode || this.currentNode.direction != Direction.PatronDrinkRequest)) {
+                this.requestedNodes = this.generateMessageContent(this.getTerminusOfNode(this.currentNode), '');
+            }
         }
     }
 
