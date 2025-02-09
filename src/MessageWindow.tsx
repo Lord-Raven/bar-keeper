@@ -97,7 +97,7 @@ const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalkin
             variants={variants}
             initial='idle'
             animate={present ? (isTalking ? 'talking' : 'idle') : 'absent'}
-            style={{position: 'absolute', bottom: '-30vh', width: 'auto', aspectRatio: '5 / 12', zIndex: 10}}>
+            style={{position: 'absolute', bottom: '-25vh', width: 'auto', aspectRatio: '5 / 12', zIndex: 10}}>
             <img src={patron.imageUrls[emotion]} style={{position: 'relative', width: '100%', height: '100%', transform: 'translate(-50%, 0)'}} alt={altText}/>
         </motion.div>
     );
@@ -125,7 +125,7 @@ const Vignette: FC<VignetteProps> = ({active}) => {
                 left: '0',
                 width: '100vw',
                 height: '100vh',
-                background: 'radial-gradient(ellipse at center, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.2) 70%)',
+                background: 'radial-gradient(ellipse at center, #00000033 0%, #000000BB 90%)',
                 zIndex: 13,
             }}
         />
