@@ -64,7 +64,7 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `NAME: Swamp Brew DESCRIPTION: This greenish-brown ale is served in makeshift cups fashioned from skulls, with a frothy head that never settles and a flavor profile dominated by algae and muddy undertones.\n`) +
         stage.buildBeverageDescriptions() +
         buildSection('Priority Instruction',
-            `This is prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to define a formatted list of beverages that the LOCATION might serve, ` +
+            `This is prep work for a roleplaying narrative. Before narrating, this planning response will define a formatted list of beverages that the LOCATION might serve, ` +
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
             `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, ensuring each DESCRIPTION evokes diverse emotions, moods, or sensations. ` +
             `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
@@ -88,8 +88,8 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
             (specific ? '' : Object.values(stage.dummyPatrons).map(patron => `NAME: ${patron.name}\nTRAITS: ${patron.description}\nPERSONALITY: ${patron.personality}`).join('\n\n'))) +
         (Object.values(stage.patrons).length > 0 ?
             buildSection('Established Patrons', Object.values(stage.patrons).map(patron => `NAME: ${patron.name}\nTRAITS: ${patron.description}\nPERSONALITY: ${patron.personality}`).join('\n\n')) : '') +
-        buildSection('Overriding Instruction',
-            `You are doing prep work for a roleplaying narrative. Instead of narrating, use this planning response to study the ` + (specific ?
+        buildSection('Priority Instruction',
+            `This is prep work for a roleplaying narrative. Before narrating, use this planning response to study the ` + (specific ?
                 `INPUT above and condense it into formatted output that describes this character as they will patronize the LOCATION. ` :
                 `SETTING above and generate a distinct, creative, and interesting character that might patronize the LOCATION. `) +
             `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
@@ -136,7 +136,7 @@ export async function generateBeverageImage(stage: Stage, beverage: Beverage) {
     beverage.imageUrl = await stage.makeImage({
         //image: new URL(bottleUrl, import.meta.url).href,
         //strength: 0.75,
-        prompt: `(art style: ${stage.artSummary}), head-on, centered, empty background, negative space, garish color-keyed background, (a lone bottle of this beverage: ${beverage.description})`,
+        prompt: `(art style: ${stage.artSummary}), head-on, centered, empty background, negative space, (a lone bottle of this beverage: ${beverage.description})`,
         negative_prompt: `background, frame, realism, borders, perspective, effects`,
         remove_background: true,
     }, bottleUrl);
@@ -328,7 +328,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     return newPatron;
 }
 
-const patronImagePrompt: string = '(garish empty background color), standing, full body';
+const patronImagePrompt: string = 'empty background, standing, full body';
 const patronImageNegativePrompt: string = 'border, ((close-up)), background elements, special effects, matching background, amateur, low quality, action, cut-off';
 
 export async function generatePatronImage(stage: Stage, patron: Patron, emotion: Emotion): Promise<void> {
