@@ -63,12 +63,12 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `NAME: USB Port DESCRIPTION: Alcohol for wannabe techbros. Not legally a 'port' because of international protections surrounding the term.\n` +
             `NAME: Swamp Brew DESCRIPTION: This greenish-brown ale is served in makeshift cups fashioned from skulls, with a frothy head that never settles and a flavor profile dominated by algae and muddy undertones.\n`) +
         stage.buildBeverageDescriptions() +
-        buildSection('Overriding Instruction',
-            `You are doing prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to define a formatted list of beverages that the LOCATION might serve, ` +
+        buildSection('Priority Instruction',
+            `This is prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to define a formatted list of beverages that the LOCATION might serve, ` +
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
-            `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION and evoke diverse and emotions, moods, or sensations. ` +
+            `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, ensuring each DESCRIPTION evokes diverse emotions, moods, or sensations. ` +
             `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
-            `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your entries, ` +
+            `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your definitions, ` +
             `avoiding drinks which are too similar to previously generated content.`));
 }
 
@@ -95,7 +95,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
             `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
             `Consider other ESTABLISHED PATRONS (if any) and ensure that the new character in your response is distinct from these. Potentially define ` +
             `connections between this new character and one or more ESTABLISHED PATRONS patrons. ` +
-            `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but craft something new and unexpected for this creation.`))).trim();
+            `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but craft something original and unexpected for this definition.`))).trim();
 }
 
 export async function generateBeverages(stage: Stage) {
