@@ -20,19 +20,20 @@ interface InstructionInput {
     beverageName: string;
 }
 
-const generalInstruction = 'Your response will follow a simple stageplay format, where general storytelling is flavorfully and incrementally presented by a NARRATOR, and characters present their own dialog and actions. Only PRESENT PATRONS and {{user}} are active at this time; ABSENT PATRONS remain absent. Minor character roles should be fleeting. Refer to {{user}} in second-person.'
+const generalInstruction = 'Your response follows a strict format, where general storytelling is flavorfully and incrementally presented by a NARRATOR, and characters present their own dialog and actions. Only PRESENT PATRONS and {{user}} are active at this time; ABSENT PATRONS remain passive. Minor characters should be fleeting. Refer to {{user}} in second-person.'
 export const sampleScript = '\n' +
         `**NARRATOR**: General narration is provided by the NARRATOR.\n\n` +
         `**NARRATOR**: Each message should be about one line.\n\n` +
-        `**CHARACTER 1**: (Character 1's mood) "Character1 is saying this, and dialog goes in quotations." Character 1's actions don't.\n\n` +
+        `**CHARACTER 1**: (Character 1's mood) "When I talk, my dialog is embedded in quotations." Character 1 looks up.\n\n` +
         `**NARRATOR**: Character 2 walks in.\n\n` +
         `**CHARACTER 2**: (Blandly) "Hey, Character 1."\n\n` +
         `**CHARACTER 1**: (Cheerful) "Welcome back, Character 2!" They give a friendly wave."\n\n` +
-        `**CHARACTER 1**: (Curious) They think to themself, "You look different, Character 2."\n\n` +
-        `**CHARACTER 2**: (Cheerful) Smiles broadly, "I'm trying a new hairstyle. Thanks for noticing!"\n\n` +
+        `**CHARACTER 1**: (Curious) Character 1 thinks to themself, "You look different, Character 2."\n\n` +
+        `**CHARACTER 2**: (Perking up) Smiles broadly, "I'm trying a new hairstyle. Thanks for noticing!"\n\n` +
         `**NARRATOR**: Character 2 takes a seat down the bar from Character 1 and looks for you.\n\n` +
         `**{{user}}**: You approach Character 2, "What'll it be, Character 2?"\n\n` +
-        `**CHARACTER 2**: (Thoughtful) "I think I'd like something refreshing and bright tonight."`;
+        `**CHARACTER 2**: (Thoughtful) "I think I'd like something refreshing and bright tonight."\n\n` +
+        `**{{user}}**: You nod appreciatively, "I'll see what I can do." You look over your assortment of bottles, weighing the choices.`;
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
     NightStart: input => `Introduce the bar described here: ${input.barDescription}. ` +
