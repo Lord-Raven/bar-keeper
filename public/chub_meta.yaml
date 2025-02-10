@@ -79,7 +79,11 @@ tags:
 config_schema:
   title: Barkeeper Config
   type: object
-#  properties:
+  properties:
+    debug:
+      title: Debug Mode
+      type: boolean
+      default: false
 
 # The schema of the state that you store.
 # This isn't needed even if you do store state,

@@ -1,5 +1,6 @@
 import { Stage } from "./Stage";
 import {ChatNode} from "./ChatNode";
+import {Emotion} from "./Patron";
 
 export enum Direction {
     NightStart = 'NightStart',
@@ -92,8 +93,9 @@ export class Director {
         const visits = history.filter(node => node.direction == Direction.IntroducePatron).length;
 
         let selectedPatronId = undefined;
-        let newPresentPatronIds = [...(currentNode ? currentNode.presentPatronIds : [])];
+        let newPresentPatrons = {...(currentNode ? currentNode.presentPatrons : {})};
         let selectedBeverage = undefined;
+        const presentPatronIds = Object.keys(newPresentPatrons);
 
         switch (currentNode ? currentNode.direction : undefined) {
             case undefined:
@@ -113,29 +115,29 @@ export class Director {
             case Direction.PatronBanter:
             case Direction.PatronProblem:
             case Direction.PatronLeaves:
-                directionOdds.push(new Possibility(Direction.Lull, '', currentNode?.presentPatronIds?.length ?? 0 >= 1 ? 0 : 5));
-                directionOdds.push(new Possibility(Direction.PatronBanter, '', currentNode?.presentPatronIds?.length ?? 0 >= 1 ? 20 : 0));
-                directionOdds.push(new Possibility(Direction.PatronProblem, '', currentNode?.presentPatronIds?.length ?? 0 >= 1 ? 10 : 0));
+                directionOdds.push(new Possibility(Direction.Lull, '', presentPatronIds.length ?? 0 >= 1 ? 0 : 5));
+                directionOdds.push(new Possibility(Direction.PatronBanter, '', presentPatronIds.length ?? 0 >= 1 ? 20 : 0));
+                directionOdds.push(new Possibility(Direction.PatronProblem, '', presentPatronIds.length ?? 0 >= 1 ? 10 : 0));
 
-                for (let patronId of currentNode?.presentPatronIds ?? []) {
+                for (let patronId of presentPatronIds) {
                     directionOdds.push(new Possibility(Direction.PatronDrinkRequest, patronId, drinksServed < 5 ? 10 : 0));
                     directionOdds.push(new Possibility(Direction.PatronLeaves, patronId,
                         Math.max(0, ((drinksServed - 2) * 3)) + // Increase odds when drinks served is >= 3
-                        (currentNode?.presentPatronIds?.length ?? 0) * 2 + // Increase odds by one per patron present
-                        history.filter(node => node.presentPatronIds.includes(patronId)).length // Increase odds by one per node that this character has been present
+                        (presentPatronIds.length ?? 0) * 2 + // Increase odds by one per patron present
+                        history.filter(node => !!node.presentPatrons[patronId]).length // Increase odds by one per node that this character has been present
                     ));
                 }
 
                 // If max possible visits not hit, consider adding a patron (no more than five at a time)
-                if (visits < Object.keys(stage.patrons).length && (currentNode?.presentPatronIds?.length ?? 5) < 5) {
-                    const keys = Object.keys(stage.patrons).filter(key => !newPresentPatronIds.includes(key) && !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == key));
+                if (visits < Object.keys(stage.patrons).length && (presentPatronIds.length ?? 5) < 5) {
+                    const keys = Object.keys(stage.patrons).filter(key => !presentPatronIds.includes(key) && !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == key));
                     let selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
-                    directionOdds.push(new Possibility(Direction.IntroducePatron, selectedPatronId, 25 - (currentNode?.presentPatronIds?.length ?? 0) * 5));
+                    directionOdds.push(new Possibility(Direction.IntroducePatron, selectedPatronId, 25 - (presentPatronIds?.length ?? 0) * 5));
                 }
 
                 // Replicate all of this:
                 // If we've had a couple visits and the bar is empty, start jacking up the night end odds.
-                if (visits >= 2 && (currentNode?.presentPatronIds?.length ?? 0) == 0) {
+                if (visits >= 2 && presentPatronIds.length  == 0) {
                     directionOdds.push(new Possibility(Direction.NightEnd, '', 10 + visits * 10));
                 }
                 directionOdds = directionOdds.filter(probability => probability.direction != currentNode?.direction ?? Direction.NightStart);
@@ -149,8 +151,11 @@ export class Director {
         }
 
         // If coming from a departure, drop that character from the new present list.
-        if (currentNode && currentNode.direction == Direction.PatronLeaves && newPresentPatronIds.includes(currentNode.selectedPatronId ?? '')) {
-            newPresentPatronIds.splice(newPresentPatronIds.indexOf(currentNode.selectedPatronId ?? ''), 1);
+        if (currentNode && currentNode.direction == Direction.PatronLeaves && presentPatronIds.includes(currentNode.selectedPatronId ?? '')) {
+            console.log(newPresentPatrons);
+            delete newPresentPatrons[currentNode.selectedPatronId ?? ''];
+            console.log('after');
+            console.log(newPresentPatrons);
         }
 
         const sumOfWeights = Object.values(directionOdds).reduce((sum, possibility) => sum + possibility.odds, 0);
@@ -173,7 +178,7 @@ export class Director {
 
         if (newDirection == Direction.IntroducePatron) {
             if (selectedPatronId) {
-                newPresentPatronIds.push(selectedPatronId);
+                newPresentPatrons[selectedPatronId] = Emotion.neutral;
                 console.log('Introduce ' + stage.patrons[selectedPatronId].name);
             } else {
                 newDirection = Direction.PatronBanter;
@@ -191,7 +196,7 @@ export class Director {
 
         return {
             direction: newDirection,
-            presentPatronIds: newPresentPatronIds,
+            presentPatrons: newPresentPatrons,
             selectedPatronId: selectedPatronId,
             selectedBeverage: selectedBeverage,
             beverageCounts: beverageCounts,

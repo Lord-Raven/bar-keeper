@@ -190,7 +190,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildPatronDescriptions(): string {
-        const presentPatronIds = this.currentNode?.presentPatronIds ?? [];
+        const presentPatronIds = Object.keys(this.currentNode?.presentPatrons ?? {});
         return buildSection('Absent Patrons', `${Object.keys(this.patrons).filter(patronId => !presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description} - ${this.patrons[patronId].personality}`).join('\n')}`) +
             buildSection('Present Patrons', `${Object.keys(this.patrons).filter(patronId => presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description} - ${this.patrons[patronId].personality}`).join('\n')}`);
     }

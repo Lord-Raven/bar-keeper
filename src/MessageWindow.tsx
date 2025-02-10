@@ -183,7 +183,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
     const [chatNode, setChatNode] = useState<ChatNode|null>(stage().currentNode ?? null);
 
     const makingBeverageDecision = stage().isBeverageDecision() && !(chatNode?.read ?? false);
-    const numberOfPatrons = Math.max(1, chatNode?.presentPatronIds.length ?? 1);
+    const numberOfPatrons = Math.max(1, Object.keys(chatNode?.presentPatrons ?? {}).length);
     const history = chatNode ? stage().getNightlyNodes(chatNode) : [];
 
     const handleBeverageClick = (name: string) => {
@@ -314,15 +314,11 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                     const patron = stage().patrons[patronId];
                     let present = false;
                     let position = !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == patronId) ? -40 : 140;
-                    let emotion: Emotion = patron.emotion as Emotion ?? Emotion.neutral;
+                    let emotion: Emotion = chatNode?.presentPatrons[patronId] as Emotion ?? Emotion.neutral;
                     let isTalking = false;
-                    if (chatNode && chatNode.presentPatronIds.includes(patronId)) {
-                        const index = chatNode.presentPatronIds.length - chatNode.presentPatronIds.indexOf(patronId) - 1;
+                    if (chatNode && chatNode.presentPatrons[patronId]) {
+                        const index = Object.keys(chatNode.presentPatrons).length - Object.keys(chatNode.presentPatrons).indexOf(patronId) - 1;
                         isTalking = patron.name.toLowerCase().includes(chatNode?.speakerId?.toLowerCase() ?? 'nevereverever');
-                        if (isTalking && chatNode?.emotion) {
-                            emotion = chatNode.emotion as Emotion ?? emotion;
-                            patron.emotion = emotion;
-                        }
                         position = getCharacterPosition(index, numberOfPatrons);
                         present = true;
                     }
