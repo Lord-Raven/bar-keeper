@@ -70,7 +70,7 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
             `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your definitions, ` +
             `avoiding drinks which are too similar to previously generated content.`) +
-        buildSection('Original Instruction', 'Suffix: {{suffix}}\npost_instruction: {{post_instruction}}\npost_history: {{post_history}}\njailbreak: {{jailbreak}}'));
+        buildSection('Original Instruction', '{{post_history_instruction}}'));
 }
 
 export function buildPatronPrompt(stage: Stage, baseCharacter: Character): string {
