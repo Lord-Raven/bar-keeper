@@ -76,10 +76,10 @@ tags:
 # The schema of any user-supplied config.
 # If your stage requires a configuration but has no
 #   defined schema, it won't work.
-config_schema:
-  title: Barkeep Config
-  type: object
-  properties:
+# config_schema:
+#  title: Barkeep Config
+#  type: object
+#  properties:
 
 # The schema of the state that you store.
 # This isn't needed even if you do store state,
