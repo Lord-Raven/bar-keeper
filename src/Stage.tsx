@@ -247,7 +247,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         generatePatrons(this);
 
         // If this is a drink request, we can't kick this off until the last interaction
-        if (!this.requestedNodes && (!this.currentNode || this.currentNode.direction != Direction.PatronDrinkRequest)) {
+        if (!this.requestedNodes && (!this.currentNode || this.getTerminusOfNode(this.currentNode)?.direction != Direction.PatronDrinkRequest)) {
             console.log('Kick off generation');
             this.requestedNodes = this.generateMessageContent(this.getTerminusOfNode(this.currentNode), '');
         }
@@ -258,7 +258,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         } else {
             console.log('setting currentNode');
             this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]]);
-            if ((!this.currentNode || this.currentNode.direction != Direction.PatronDrinkRequest)) {
+            if ((!this.currentNode || this.getTerminusOfNode(this.currentNode)?.direction != Direction.PatronDrinkRequest)) {
                 this.requestedNodes = this.generateMessageContent(this.getTerminusOfNode(this.currentNode), '');
             }
         }
