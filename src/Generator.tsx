@@ -293,7 +293,7 @@ export async function generatePatrons(stage: Stage) {
                     console.log('Generated patron:');
                     console.log(patron);
                     stage.patrons[character.name] = patron;
-                    generatePatronImage(stage, patron, Emotion.neutral);
+                    await generatePatronImage(stage, patron, Emotion.neutral);
                 } else {
                     console.log('Failed a patron generation');
                 }
