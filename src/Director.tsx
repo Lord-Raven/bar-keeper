@@ -114,16 +114,20 @@ export class Director {
             case Direction.PatronProblem:
             case Direction.PatronLeaves:
                 directionOdds.push(new Possibility(Direction.Lull, '', currentNode?.presentPatronIds?.length ?? 0 >= 1 ? 0 : 5));
-                directionOdds.push(new Possibility(Direction.PatronBanter, '', 10));
-                directionOdds.push(new Possibility(Direction.PatronProblem, '', 5));
+                directionOdds.push(new Possibility(Direction.PatronBanter, '', currentNode?.presentPatronIds?.length ?? 0 >= 1 ? 20 : 0));
+                directionOdds.push(new Possibility(Direction.PatronProblem, '', currentNode?.presentPatronIds?.length ?? 0 >= 1 ? 10 : 0));
 
                 for (let patronId of currentNode?.presentPatronIds ?? []) {
-                    directionOdds.push(new Possibility(Direction.PatronDrinkRequest, patronId, drinksServed < 5 ? 5 : 0));
-                    directionOdds.push(new Possibility(Direction.PatronLeaves, patronId,  (drinksServed * 5) + (currentNode?.presentPatronIds?.length ?? 0) * 5));
+                    directionOdds.push(new Possibility(Direction.PatronDrinkRequest, patronId, drinksServed < 5 ? 10 : 0));
+                    directionOdds.push(new Possibility(Direction.PatronLeaves, patronId,
+                        Math.max(0, ((drinksServed - 2) * 3)) + // Increase odds when drinks served is >= 3
+                        (currentNode?.presentPatronIds?.length ?? 0) * 2 + // Increase odds by one per patron present
+                        history.filter(node => node.presentPatronIds.includes(patronId)).length // Increase odds by one per node that this character has been present
+                    ));
                 }
 
                 // If max possible visits not hit, consider adding a patron (no more than five at a time)
-                if (visits < Object.keys(stage.patrons).length) {
+                if (visits < Object.keys(stage.patrons).length && (currentNode?.presentPatronIds?.length ?? 5) < 5) {
                     const keys = Object.keys(stage.patrons).filter(key => !newPresentPatronIds.includes(key) && !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == key));
                     let selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
                     directionOdds.push(new Possibility(Direction.IntroducePatron, selectedPatronId, 25 - (currentNode?.presentPatronIds?.length ?? 0) * 5));
