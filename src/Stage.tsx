@@ -222,7 +222,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         const nightSummaries = '' +
             Object.keys(this.nightlySummaries)
                 .filter(night => (fromNode?.night ?? 1) - parseInt(night) < 3)
-                .map(night => buildSection(`Night ${night} (${(fromNode?.night ?? 1) - parseInt(night)}s ago)`, this.nightlySummaries[night])).join('\n');
+                .map(night => buildSection(`Night ${night} (${(fromNode?.night ?? 1) - parseInt(night)} nights ago)`, this.nightlySummaries[night])).join('\n');
         if (nightSummaries) console.log(`Nightly Summary: ${nightSummaries}`);
         return buildSection('Setting', this.barDescription ?? '') +
             buildSection(`Protagonist`, `${this.player.name} is a bartender here. ${this.player.chatProfile}`) +
@@ -288,6 +288,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         if (nodeProps.direction == Direction.NightEnd) {
             // Generate a nightly summary.
+            console.log('Generate a nightly summary');
             let retries = 3;
             while (retries-- > 0) {
                 try {

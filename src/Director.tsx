@@ -43,7 +43,7 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
     Lull: input => `Continue the scene with some inconsequential flavor as the evening slightly progresses; ${input.playerName} observes the environment or ancillary patrons with only trivial events or conversations--significant patrons remain absent or passive.  ${generalInstruction}`,
 
     IntroducePatron: input => `Continue the scene with visual novel style development as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
-        `If they are a regular, focus on their interactions with ${input.playerName} or other present patrons. No one is thirsty yet; patrons will focus on other matters. ${generalInstruction}`,
+        `If they are a regular, focus on their interactions with ${input.playerName} or other PRESENT PATRONS. No one is thirsty yet; patrons will focus on small talk or other matters. ${generalInstruction}`,
     
     PatronBanter: input => `Continue the scene with some visual novel style development as the PRESENT PATRONS banter amongst themselves or with ${input.playerName}. None of them are prepared to order a drink, so they will focus on their lives or other ongoing events. ${generalInstruction}`,
 
