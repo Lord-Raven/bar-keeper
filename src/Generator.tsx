@@ -7,7 +7,7 @@ import { Beverage } from "./Beverage";
 export const TRIM_SYMBOLS = '\\-*#';
 
 export function buildSection(name: string, body: string) {
-    return `###${name.toUpperCase()}: ${body.trim()}\n\n`;
+    return `###${name.toUpperCase()}:\n${body.trim()}\n\n`;
 }
 
 export function buildDistillationPrompt(stage: Stage, baseCharacter: Character): string {
@@ -64,13 +64,13 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `NAME: Swamp Brew DESCRIPTION: This greenish-brown ale is served in makeshift cups fashioned from skulls, with a frothy head that never settles and a flavor profile dominated by algae and muddy undertones.\n`) +
         stage.buildBeverageDescriptions() +
         buildSection('Priority Instruction',
-            `This response represents critical prep work for this narrative. Instead of narrating, this planning response will define a formatted list of beverages that the LOCATION might serve, ` +
+            `You are doing critical prep work for a roleplaying narrative. Instead of narrating, this planning response must define a formatted list of beverages that the LOCATION might serve, ` +
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
             `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, ensuring each DESCRIPTION evokes diverse emotions, moods, or sensations. ` +
             `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
             `Refer to the EXAMPLE RESPONSES for the strict formatting reference, but be original and creative with the beverages you create, ` +
             `avoiding drinks which are too similar to previously generated content.`) +
-        '###ORIGINAL INSTRUCTION:');
+        '###DEFAULT INSTRUCTION:');
 }
 
 export function buildPatronPrompt(stage: Stage, baseCharacter: Character): string {
