@@ -97,7 +97,7 @@ const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalkin
             variants={variants}
             initial='idle'
             animate={present ? (isTalking ? 'talking' : 'idle') : 'absent'}
-            style={{position: 'absolute', bottom: '-25vh', width: 'auto', aspectRatio: '5 / 12', zIndex: 10}}>
+            style={{position: 'absolute', bottom: '-25vh', width: 'auto', aspectRatio: '9 / 16', zIndex: 10}}>
             <img src={patron.imageUrls[emotion]} style={{position: 'relative', width: '100%', height: '100%', transform: 'translate(-50%, 0)'}} alt={altText}/>
         </motion.div>
     );

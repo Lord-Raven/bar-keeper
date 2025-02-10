@@ -31,7 +31,8 @@ export function buildDistillationPrompt(stage: Stage, baseCharacter: Character):
             `"SETTING" should briefly stipulate the overarching location, vibe, or time period derived from the FLAVOR TEXT, focusing on any key deviations from setting expectations.\n` +
             `"THEMES" should list all of the prominent themes, concepts, quirks, or kinks from the FLAVOR TEXT.\n` +
             `"ART" lists distinct artist, genre, medium, palette, stroke, shading, or other style descriptors that are associated with SOURCE (if any) or which suit or align with the setting and themes of the FLAVOR TEXT; this should be brief and to the point, as it will be used to generate appropriate images later.\n` +
-            `Define these four fields and promptly end your response.\n`));
+            `Define these four fields and promptly end your response.\n`) +
+        '###DEFAULT INSTRUCTION:');
 }
 
 export function buildBarDescriptionPrompt(stage: Stage): string {
@@ -40,9 +41,10 @@ export function buildBarDescriptionPrompt(stage: Stage): string {
         buildSection('Setting', stage.settingSummary ?? '') +
         buildSection('Themes', stage.themeSummary ?? '') +
         buildSection('Priority Instruction', 
-            'You are doing prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to write a few sentences describing a fictional pub, bar, club, or tavern set in SETTING, drawing upon the THEMES. ' +
+            'You are doing critical prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to write a few sentences describing a fictional pub, bar, club, or tavern set in SETTING, drawing upon the THEMES. ' +
             'This descriptive paragraph should focus on the interior description, ambience, theming, fixtures, and general clientele of the establishment. ' +
-            'This informative and flavorful description will later be used in future, narrative responses.\n'));
+            'This informative and flavorful description will later be used in future, narrative responses.\n') +
+        '###DEFAULT INSTRUCTION:');
 }
 
 export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
@@ -64,12 +66,12 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `NAME: Swamp Brew DESCRIPTION: This greenish-brown ale is served in makeshift cups fashioned from skulls, with a frothy head that never settles and a flavor profile dominated by algae and muddy undertones.\n`) +
         stage.buildBeverageDescriptions() +
         buildSection('Priority Instruction',
-            `You are doing critical prep work for a roleplaying narrative. Instead of narrating, this planning response must define a formatted list of beverages that the LOCATION might serve, ` +
+            `You are doing critical prep work for a roleplaying narrative. Instead of narrating, use this planning response to define a formatted list of beverages that the LOCATION might serve, ` +
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
             `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, ensuring each DESCRIPTION evokes diverse emotions, moods, or sensations. ` +
             `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
-            `Refer to the EXAMPLE RESPONSES for the strict formatting reference, but be original and creative with the beverages you create, ` +
-            `avoiding drinks which are too similar to previously generated content.`) +
+            `Refer to the EXAMPLE RESPONSES for the strict formatting reference. Be original and creative with the beverages you create, ` +
+            `avoiding drinks which are too similar to the other generated entries in the BEVERAGES list.`) +
         '###DEFAULT INSTRUCTION:');
 }
 
@@ -90,13 +92,14 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
         (Object.values(stage.patrons).length > 0 ?
             buildSection('Established Patrons', Object.values(stage.patrons).map(patron => `NAME: ${patron.name}\nTRAITS: ${patron.description}\nPERSONALITY: ${patron.personality}`).join('\n\n')) : '') +
         buildSection('Priority Instruction',
-            `This is prep work for a roleplaying narrative. Before narrating, use this planning response to study the ` + (specific ?
+            `You are doing critical prep work for a roleplaying narrative. Instead of narrating, use this planning response to study the ` + (specific ?
                 `INPUT above and condense it into formatted output that describes this character as they will patronize the LOCATION. ` :
                 `SETTING above and generate a distinct, creative, and interesting character that might patronize the LOCATION. `) +
             `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
             `Consider other ESTABLISHED PATRONS (if any) and ensure that the new character in your response is distinct from these. Potentially define ` +
             `connections between this new character and one or more ESTABLISHED PATRONS patrons. ` +
-            `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but craft something original and unexpected for this definition.`))).trim();
+            `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but craft something original and unexpected for this definition.`)) +
+        '###DEFAULT INSTRUCTION:');
 }
 
 export async function generateBeverages(stage: Stage) {
