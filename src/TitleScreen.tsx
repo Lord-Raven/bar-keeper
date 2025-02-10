@@ -13,14 +13,15 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
     const [generating, setGenerating] = useState<boolean>(false);
 
     const handleGenerateClick = () => {
+        setGenerating(true);
         stage().isGenerating = true;
-        generate(stage()).then(() => {setOnMenu(!stage().themeSummary)})
+        generate(stage()).then(() => {setGenerating(false); setOnMenu(!stage().themeSummary)})
     };
 
     return (
         <div style={{display: 'flex', flexDirection: 'column', height: '100vh', justifyContent: 'center', verticalAlign: 'middle'}}>
 
-            {stage().isGenerating ? (
+            {generating ? (
                 <div>
                     <Box style={{backgroundColor: '#00000088'}} color={'primary'}>
                     <Typography>
