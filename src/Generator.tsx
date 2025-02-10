@@ -70,7 +70,7 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
             `Refer to the EXAMPLE RESPONSES for the strict formatting reference, but be original and creative with the beverages you create, ` +
             `avoiding drinks which are too similar to previously generated content.`) +
-        buildSection('Original Instruction', '{{post_history_instructions}}'));
+        buildSection('Original Instruction', '{{post_history_instructions}}')).trim();
 }
 
 export function buildPatronPrompt(stage: Stage, baseCharacter: Character): string {
@@ -104,6 +104,7 @@ export async function generateBeverages(stage: Stage) {
     while (stage.beverages.length < 5) {
         let alcoholResponse = await stage.generator.textGen({
             prompt: buildAlcoholDescriptionsPrompt(stage),
+            template: '',
             max_tokens: 300,
             min_tokens: 50
         });
