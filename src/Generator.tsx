@@ -339,7 +339,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
         const imageUrl = await stage.makeImage({
             prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, ${emotionPrompts[emotion]}, (${patron.description})`,
             negative_prompt: patronImageNegativePrompt,
-            aspect_ratio: AspectRatio.CINEMATIC_VERTICAL,
+            aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL,
             remove_background: true
         }, '');
         if (imageUrl == '') {
@@ -356,8 +356,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
             image: patron.imageUrls[Emotion.neutral],
             prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, ${emotionPrompts[emotion]}, (${patron.description})`,
             negative_prompt: patronImageNegativePrompt,
-            aspect_ratio: AspectRatio.CINEMATIC_VERTICAL,
-
+            aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL,
             remove_background: true,
             strength: 0.5
         }, patron.imageUrls[Emotion.neutral]);
