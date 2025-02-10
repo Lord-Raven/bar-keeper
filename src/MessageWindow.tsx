@@ -1,6 +1,6 @@
 import {Pace, WindupChildren} from "windups";
 import {CircularProgress, Icon, IconButton, Typography} from "@mui/material";
-import React, {FC, useEffect, useState} from "react";
+import React, {FC, ReactNode, useEffect, useState} from "react";
 import {Stage} from "./Stage";
 import {ChatNode} from "./ChatNode";
 import {Cancel, CheckCircle, ArrowForward, ArrowBack} from "@mui/icons-material";
@@ -134,11 +134,11 @@ const Vignette: FC<VignetteProps> = ({active}) => {
 }
 
 interface MessageBannerProps {
-    message: string;
+    elements: ReactNode|null;
     post: boolean;
 }
 
-const MessageBanner: FC<MessageBannerProps> = ({message, post}) => {
+const MessageBanner: FC<MessageBannerProps> = ({elements, post}) => {
     const variants: Variants = {
         start: {x: '-100vw', opacity: 0},
         visible: {x: 0, opacity: 1},
@@ -148,7 +148,7 @@ const MessageBanner: FC<MessageBannerProps> = ({message, post}) => {
     return (
         <motion.div
             initial="start"
-            animate={message ? 'visible' : (post ? 'exit' :  'start')}
+            animate={elements ? 'visible' : (post ? 'exit' :  'start')}
             variants={variants}
             transition={{duration: 0.5}}
             style={{
@@ -164,7 +164,7 @@ const MessageBanner: FC<MessageBannerProps> = ({message, post}) => {
                 zIndex: 20,
             }}
         >
-            {message}
+            {elements}
         </motion.div>
     );
 };
@@ -211,13 +211,13 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
         return targetNode && targetNode.direction == Direction.PatronDrinkRequest && targetNode.childIds.filter(id => stage().chatNodes[id] && stage().chatNodes[id].direction == Direction.PatronDrinkRequest).length == 0;
     }
 
-    const getMessage = (targetNode: ChatNode|null) => {
+    const getMessageElements = (targetNode: ChatNode|null): ReactNode|null => {
         if (isDrinkDecision(targetNode)) {
-            return `<Typography color="primary" variant="h3">Select a drink to serve ${stage().patrons[targetNode?.selectedPatronId ?? ''].name}.</Typography>`;
+            return <><Typography color="primary" variant="h3">Select a drink to serve ${stage().patrons[targetNode?.selectedPatronId ?? ''].name}.</Typography></>;
         } else if (targetNode && (!targetNode.parentId || !stage().chatNodes[targetNode.parentId] || targetNode.night != stage().chatNodes[targetNode.parentId].night)) {
-            return `<Typography color="primary" variant="h2">Night ${targetNode.night}</Typography>`;
+            return <><Typography color="primary" variant="h2">Night ${targetNode.night}</Typography></>;
         }
-        return '';
+        return null;
     }
 
     useEffect(() => {
@@ -228,8 +228,8 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
     }, [chatNode]);
 
     const message = (chatNode?.message ?? '').trim().replace(/^\s*\(.*?\)\s*/, '').trim()
-    const bannerMessage = getMessage(chatNode);
-    const bannerIsPost = getMessage(stage().chatNodes[chatNode?.parentId ?? '']) != '';
+    const bannerElements = getMessageElements(chatNode);
+    const bannerIsPost = getMessageElements(stage().chatNodes[chatNode?.parentId ?? '']) != null;
     return (
         <div style={{display: 'flex', flexDirection: 'column', height: '100vh', }}>
             <div style={{position: 'relative', height: '8%', overflow: 'hidden'}}>
@@ -333,7 +333,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                                         present={present}/>;
                 })}
                 <MessageBanner
-                    message = {bannerMessage}
+                    elements = {bannerElements}
                     post = {bannerIsPost}
                 />
             </div>

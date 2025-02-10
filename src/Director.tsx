@@ -76,7 +76,6 @@ export class Director {
     constructor() { }
 
     getPromptInstruction(stage: Stage, node: Partial<ChatNode>): string {
-        console.log(`playerName: ${stage.player.name}\npatronName: ${node.selectedPatronId ? stage.patrons[node.selectedPatronId] : 'no selectedPatronId'}`);
         return directionInstructions[node.direction ?? Direction.NightStart]({
             barDescription: stage.barDescription ?? '',
             playerName: stage.player.name ?? '',
