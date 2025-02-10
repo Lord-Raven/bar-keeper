@@ -68,9 +68,9 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
             `Output several wildly varied and interesting beverages that suit the SETTING and LOCATION, ensuring each DESCRIPTION evokes diverse emotions, moods, or sensations. ` +
             `Format each into a single line with two properties defined on each line: a NAME field followed by a DESCRIPTION field. ` +
-            `Use the EXAMPLE RESPONSES for strict formatting reference, but be original and creative with each of your definitions, ` +
+            `Refer to the EXAMPLE RESPONSES for the strict formatting reference, but be original and creative with the beverages you create, ` +
             `avoiding drinks which are too similar to previously generated content.`) +
-        buildSection('Original Instruction', '{{post_history_instruction}}'));
+        buildSection('Original Instruction', '{{post_history_instructions}}'));
 }
 
 export function buildPatronPrompt(stage: Stage, baseCharacter: Character): string {
