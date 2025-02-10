@@ -96,11 +96,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.loadingProgress = 50;
         this.pipeline = null;
 
-        console.log('Config loaded:');
-        console.log(config);
-        //this.patronImagePrompt = config.character_prompt ?? this.patronImagePrompt;
-        //this.patronImageNegativePrompt = config.character_negative_prompt ?? this.patronImageNegativePrompt;
-
+        //console.log('Config loaded:');
+        //console.log(config);
 
         register('/service-worker.js');
     }

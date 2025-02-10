@@ -21,7 +21,7 @@ Storylines and relationships may emerge and resolve organically, hopefully influ
 <br>
 <br>
 **Warning**
-_This stage makes many generative calls. These requests should honor the user's jailbreak, but they will include additional instructions and details that are often the result of other text gen requests._ 
+_This stage makes many generative calls, especially up front. These requests should honor the user's jailbreak, but they will include additional instructions and details that are often the result of other text gen requests._ 
 <br>
 <br>
 During initial setup, the stage will make a lot of text and image gen requests, and makes about one text gen request per every few messages as you play--each LLM response is chopped into multiple smaller messages, 
@@ -42,7 +42,7 @@ If you dislike a particular piece of art that was generated, you can use the set
 **Shortcomings**
 I feel there are some clear shortfalls in what this stage achieves and maybe some of these items could be addressed with sufficient time or motivation, but I don't know that they will be.
 <li>
-* It probably looks terrible in portrait layout.
+* It probably looks terrible in some layouts--especially portrait.
 * There is a stages bug that causes textgen requests to repeatedly fail sometimes. In my experience, refreshing a few times or clearing the cache can resolve this. If the stage stops loading new responses, this is likely the culprit.
 * A lot of the stage's behavior and performance is contingent upon your personal generation settings; your jailbreak in particular could cause trouble if it is overpowering the stage's instructions.
 * The stage does very little quality control, so you are at the mercy of the LLM to properly format responses and not go off the rails in fixating on minor characters or other activity that isn't internally represented by the stage.
@@ -70,12 +70,11 @@ position: 'FULLSCREEN'
 
 # Self-explanatory.
 tags:
- - 'Stage'
  - 'NSFW'
- - 'Add-On'
+ - 'Stage'
+ - 'Game'
  - 'Scenario'
  - 'Bartender'
- - 'Game'
 
 # The schema of any user-supplied config.
 # If your stage requires a configuration but has no
@@ -84,14 +83,6 @@ config_schema:
   title: Barkeep Config
   type: object
   properties:
-    character_prompt:
-      title: Character prompt
-      type: string
-      default: 'Professional, visual novel, anime, clean linework, vibrant colors, calm expression, neutral pose, standing, front view'
-    character_negative_prompt:
-      title: Character negative prompt
-      type: string
-      default: 'background, frame, realism, out-of-frame, grainy, borders, dynamic angle, perspective, tilted, skewed, dynamic lighting, western artist, close-up'
 
 # The schema of the state that you store.
 # This isn't needed even if you do store state,

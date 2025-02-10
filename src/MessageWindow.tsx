@@ -189,9 +189,6 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
     const history = chatNode ? stage().getNightlyNodes(chatNode) : [];
 
     const handleBeverageClick = (name: string) => {
-        console.log('handleBeverageClick');
-        console.log(stage().currentNode?.beverageCounts);
-        console.log(name);
         if (makingBeverageDecision && (stage().currentNode?.beverageCounts[name] ?? 1 > 0)) {
             setSelectedBeverage(name);
             stage().setLastBeverageServed(name);
