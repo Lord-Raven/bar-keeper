@@ -204,7 +204,7 @@ export async function generate(stage: Stage) {
 
         stage.setLoadProgress(10, 'Generating bar image.');
         const barPrompt = `(art style: ${stage.artSummary}), ` +
-            (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + '(empty bar interior), late, counter, ' +
+            (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + '(empty bar interior), late hour, counter, ' +
             `(${stage.barDescription})`;
 
         stage.barImageUrl = await stage.makeImage({

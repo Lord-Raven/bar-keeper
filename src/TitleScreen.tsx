@@ -1,6 +1,6 @@
 import {Stage} from "./Stage";
 import React, {FC, useState} from "react";
-import {Button, LinearProgress, Typography} from "@mui/material";
+import {Box, Button, LinearProgress, Typography} from "@mui/material";
 import {generate} from "./Generator";
 import {ArrowForward, Replay} from "@mui/icons-material";
 
@@ -17,17 +17,18 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
         generate(stage()).then(() => {setOnMenu(!stage().themeSummary)})
     };
 
-
     return (
         <div style={{display: 'flex', flexDirection: 'column', height: '100vh', justifyContent: 'center', verticalAlign: 'middle'}}>
 
             {stage().isGenerating ? (
                 <div>
+                    <Box style={{backgroundColor: '#00000088'}} color={'primary'}>
                     <Typography>
                         {stage().loadingProgress}% - {stage().loadingDescription}
                     </Typography>
                     <LinearProgress sx={{outline: 'primary'}} variant="determinate" color="success"
                                     value={stage().loadingProgress}/>
+                    </Box>
                 </div>
             ) : (
                 <div style={{display: 'flex', flexDirection: 'column', height: '20vh', gap: '5vh', alignItems: 'center'}}>
