@@ -21,11 +21,7 @@ Storylines and relationships may emerge and resolve organically, hopefully influ
 <br>
 <br>
 **Warning**
-_This stage makes many generative calls, especially up front. These requests should honor the user's jailbreak, but they will include additional instructions and details that are often the result of other text gen requests._ 
-<br>
-<br>
-During initial setup, the stage will make a lot of text and image gen requests, and makes about one text gen request per every few messages as you play--each LLM response is chopped into multiple smaller messages, 
-and the next set of messages are requested as you read the current set--except during drink requests, where the next messages depend upon the selected beverage. 
+_This stage makes *many* generative calls, especially up front. These requests should honor the user's jailbreak, but they will include additional instructions and details that are often the result of other text gen requests._ 
 <br>
 <br>
 The stage isn't particularly NSFW in itself, but it does contain some NSFW sample data; the game will derive themes from the character card, which could result in unsavory extrapolations---some of which may not be immediately transparent to the player.
@@ -40,7 +36,7 @@ If you dislike a particular piece of art that was generated, you can use the set
 <br>
 <br>
 **Shortcomings**
-I feel there are some clear shortfalls in what this stage achieves and maybe some of these items could be addressed with sufficient time or motivation, but I don't know that they will be.
+I feel there are some clear shortfalls in what this stage achieves, and maybe some of these items could be addressed with sufficient time or motivation, but I don't know that they will be.
 <li>
 * It probably looks terrible in some layouts--especially portrait.
 * There is a stages bug that causes textgen requests to repeatedly fail sometimes. In my experience, refreshing a few times or clearing the cache can resolve this. If the stage stops loading new responses, this is likely the culprit.

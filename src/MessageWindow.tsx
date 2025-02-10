@@ -164,7 +164,7 @@ const MessageBanner: FC<MessageBannerProps> = ({message, post}) => {
                 zIndex: 20,
             }}
         >
-            <Typography variant='h2' color='primary'>
+            <Typography color='primary'>
                 {message}
             </Typography>
         </motion.div>
@@ -215,9 +215,9 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
 
     const getMessage = (targetNode: ChatNode|null) => {
         if (isDrinkDecision(targetNode)) {
-            return `Select a drink to serve ${stage().patrons[targetNode?.selectedPatronId ?? ''].name}.`;
+            return `<h3>Select a drink to serve ${stage().patrons[targetNode?.selectedPatronId ?? ''].name}.</h3>`;
         } else if (targetNode && (!targetNode.parentId || !stage().chatNodes[targetNode.parentId] || targetNode.night != stage().chatNodes[targetNode.parentId].night)) {
-            return `Night ${targetNode.night}`;
+            return `<h2>Night ${targetNode.night}</h2>`;
         }
         return '';
     }
