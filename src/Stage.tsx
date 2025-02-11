@@ -304,9 +304,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             this.buildPatronDescriptions() +
                             buildSection('Beverages', this.buildBeverageDescriptions()) +
                             (fromNode ? buildSection('Log', this.buildHistory(fromNode)) : '') +
-                            buildSection('Instruction Override', 'Utilize this response to summarize the events in the LOG. You should produce an abridged account of the events and interactions that occurred in the bar this evening, based on an analysis of the LOG.') +
+                            buildSection('Instruction Override', 'Utilize this response to summarize the events in the LOG. You should produce an abridged account of the key events and interactions that occurred in the bar this evening, based on an analysis of the LOG.') +
                             buildSection('Standard Instruction', '{{suffix}}'),
-                        max_tokens: 400,
+                        max_tokens: 250,
                         min_tokens: 50,
                         include_history: false
                     });
