@@ -24,9 +24,9 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
     };
 
     return (
-        <div style={{background: `radial-gradient(ellipse at center, #00000033 50%, #000000BB 90%)${stage().barImageUrl ? `, url(${stage().barImageUrl})` : ''}`,
-            display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', justifyContent: 'center', verticalAlign: 'bottom'}}>
-            <div style={{backgroundImage: `url(${stage().titleUrl})`, display: 'flex', justifyContent: 'center', flexDirection: 'column', height: '100vh', width: '100vw'}}>
+        <div style={{background: `radial-gradient(ellipse at center, #00000033 50%, #000000BB 90%)`, height: '100vh', width: '100vw'}}>
+            <div style={{backgroundImage: `url(${stage().titleUrl})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat',
+                    display: 'flex', justifyContent: 'center', verticalAlign: 'bottom', flexDirection: 'column', height: '100vh', width: '100vw'}}>
                 {generating ? (
                     <div>
                         <Box style={{backgroundColor: '#00000088'}} color={'primary'}>
@@ -47,16 +47,18 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
                         {confirmReset && (
                             <div>
                                 <Typography variant="h5" color='primary'>This will delete all progress and start over!</Typography>
-                                <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
-                                        startIcon={<Check/>}
-                                        onClick={() => handleGenerateClick()}>
-                                    <Typography variant="h5" color='primary'>Okay!</Typography>
-                                </Button>
-                                <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
-                                        startIcon={<Cancel/>}
-                                        onClick={() => setConfirmReset(false)}>
-                                    <Typography variant="h5" color='primary'>No Way!</Typography>
-                                </Button>
+                                <div style={{display: 'flex', justifyContent: 'center', flexDirection: 'row'}}>
+                                    <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
+                                            startIcon={<Check/>}
+                                            onClick={() => handleGenerateClick()}>
+                                        <Typography variant="h5" color='primary'>Okay!</Typography>
+                                    </Button>
+                                    <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
+                                            startIcon={<Cancel/>}
+                                            onClick={() => setConfirmReset(false)}>
+                                        <Typography variant="h5" color='primary'>No Way!</Typography>
+                                    </Button>
+                                </div>
                             </div>
                         )}
                         {stage().settingSummary && (
