@@ -186,7 +186,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildBeverageDescriptions(): string {
-        return this.beverages.map.length > 0 ? buildSection('Beverages', `${this.beverages.map(beverage => `NAME: ${beverage.name} DESCRIPTION: ${beverage.description}`).join('\n')}`) : '';
+        return this.beverages.map.length > 0 ? buildSection('Beverages', `${this.beverages.map(beverage => `NAME: ${beverage.name}\nDESCRIPTION: ${beverage.description}`).join('\n')}`) : '';
     }
 
     buildPatronDescriptions(): string {
