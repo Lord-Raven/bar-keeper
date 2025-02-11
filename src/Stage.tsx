@@ -186,13 +186,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildBeverageDescriptions(): string {
-        return this.beverages.map.length > 0 ? buildSection('Beverages', `${this.beverages.map(beverage => `NAME: ${beverage.name}\nDESCRIPTION: ${beverage.description}`).join('\n')}`) : '';
+        return this.beverages.map.length > 0 ? buildSection('Beverages', `${this.beverages.map(beverage => `NAME: ${beverage.name}\nDESCRIPTION: ${beverage.description}`).join('\n\n')}`) : '';
     }
 
     buildPatronDescriptions(): string {
         const presentPatronIds = Object.keys(this.currentNode?.presentPatrons ?? {});
-        return buildSection('Absent Patrons', `${Object.keys(this.patrons).filter(patronId => !presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description} - ${this.patrons[patronId].personality}`).join('\n')}`) +
-            buildSection('Present Patrons', `${Object.keys(this.patrons).filter(patronId => presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description} - ${this.patrons[patronId].personality}`).join('\n')}`);
+        return buildSection('Absent Patrons', `${Object.keys(this.patrons).filter(patronId => !presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description} - ${this.patrons[patronId].personality}`).join('\n\n')}`) +
+            buildSection('Present Patrons', `${Object.keys(this.patrons).filter(patronId => presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description} - ${this.patrons[patronId].personality}`).join('\n\n')}`);
     }
 
     getNightlyNodes(currentNode: ChatNode): ChatNode[] {

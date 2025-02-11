@@ -32,7 +32,7 @@ export function buildDistillationPrompt(stage: Stage, baseCharacter: Character):
             `"THEMES" should list all of the prominent themes, concepts, quirks, or kinks from the FLAVOR TEXT.\n` +
             `"ART" lists distinct artist, genre, medium, palette, stroke, shading, or other style descriptors that are associated with SOURCE (if any) or which suit or align with the setting and themes of the FLAVOR TEXT; this should be brief and to the point, as it will be used to generate appropriate images later.\n` +
             `Define these four fields and promptly end your response.\n`) +
-        '###DEFAULT INSTRUCTION:');
+        '###FORMER INSTRUCTION:');
 }
 
 export function buildBarDescriptionPrompt(stage: Stage): string {
@@ -44,7 +44,7 @@ export function buildBarDescriptionPrompt(stage: Stage): string {
             'You are doing critical prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to write a few sentences describing a fictional pub, bar, club, or tavern set in SETTING, drawing upon the THEMES. ' +
             'This descriptive paragraph should focus on the interior description, ambience, theming, fixtures, and general clientele of the establishment. ' +
             'This informative and flavorful description will later be used in future, narrative responses.\n') +
-        '###DEFAULT INSTRUCTION:');
+        '###FORMER INSTRUCTION:');
 }
 
 export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
@@ -68,7 +68,7 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `Output several varied and interesting beverages that suit the SETTING and LOCATION, ensuring each DESCRIPTION evokes diverse emotions, moods, or sensations. ` +
             `Refer to the EXAMPLE RESPONSES for the strict formatting reference. Be original, creative, and on-theme with the beverages you craft, ` +
             `avoiding ideas which are too similar to the other generated entries in the BEVERAGES list.`) +
-        '###DEFAULT INSTRUCTION:');
+        '###FORMER INSTRUCTION:');
 }
 
 export function buildPatronPrompt(stage: Stage, baseCharacter: Character): string {
@@ -95,7 +95,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
             `Consider other ESTABLISHED PATRONS (if any) and ensure that the new character in your response is distinct from these. Potentially define ` +
             `connections between this new character and one or more ESTABLISHED PATRONS patrons. ` +
             `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but craft something original and unexpected for this definition.`)) +
-        '###DEFAULT INSTRUCTION:');
+        '###FORMER INSTRUCTION:');
 }
 
 export async function generateBeverages(stage: Stage) {
@@ -190,6 +190,8 @@ export async function generate(stage: Stage) {
     try {
         stage.currentNode = null;
         stage.chatNodes = {};
+        stage.nightlySummaries = {};
+        stage.dummyPatrons = [];
         stage.setLoadProgress(1, 'Distilling card.');
         await generateDistillation(stage);
 
