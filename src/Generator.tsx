@@ -2,6 +2,8 @@ import {AspectRatio, Character} from "@chub-ai/stages-ts";
 import { Stage } from "./Stage";
 import {Emotion, emotionPrompts, Patron} from "./Patron";
 import bottleUrl from './assets/bottle.png'
+import silhouetteUrl from './assets/silhouette.png'
+import titleUrl from './assets/title.png'
 import { Beverage } from "./Beverage";
 
 export const TRIM_SYMBOLS = '\\-*#';
@@ -195,6 +197,15 @@ export async function generate(stage: Stage) {
         stage.setLoadProgress(1, 'Distilling card.');
         await generateDistillation(stage);
 
+        stage.setLoadProgress(3, 'Generating title image.');
+        stage.titleUrl = await stage.makeImageFromImage({
+            prompt: `(art style: ${stage.artSummary}) (plain white title text on plain black background: "Barkeeper" with subtitle: "A Stage Sim")`,
+            negative_prompt: '',
+            image: titleUrl,
+            remove_background: true,
+            strength: 0.5
+        }, titleUrl);
+
         stage.setLoadProgress(5, 'Generating bar description.');
         let textResponse = await stage.generator.textGen({
             prompt: buildBarDescriptionPrompt(stage),
@@ -209,6 +220,7 @@ export async function generate(stage: Stage) {
         const barPrompt = `(art style: ${stage.artSummary}), ` +
             (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + '(inside an empty bar), late hour, counter, ' +
             `(interior of: ${stage.barDescription})`;
+
 
         stage.barImageUrl = await stage.makeImage({
             prompt: barPrompt,
@@ -342,7 +354,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
             negative_prompt: patronImageNegativePrompt,
             aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL,
             remove_background: true
-        }, '');
+        }, silhouetteUrl);
         if (imageUrl == '') {
             throw Error(`Failed to generate a ${emotion} patron image for ${patron.name}.`);
         } else {

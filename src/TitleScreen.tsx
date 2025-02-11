@@ -19,34 +19,36 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
     };
 
     return (
-        <div style={{display: 'flex', flexDirection: 'column', height: '100vh', justifyContent: 'center', verticalAlign: 'middle'}}>
-
-            {generating ? (
-                <div>
-                    <Box style={{backgroundColor: '#00000088'}} color={'primary'}>
-                    <Typography>
-                        {stage().loadingProgress}% - {stage().loadingDescription}
-                    </Typography>
-                    <LinearProgress sx={{outline: 'primary'}} variant="determinate" color="success"
-                                    value={stage().loadingProgress}/>
-                    </Box>
-                </div>
-            ) : (
-                <div style={{display: 'flex', flexDirection: 'column', height: '20vh', gap: '5vh', alignItems: 'center'}}>
-                    <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
-                            startIcon={stage().settingSummary ? <Replay/> : <ArrowForward/>}
-                            onClick={handleGenerateClick}>
-                        <Typography variant="h5" color='primary'>Start New Game</Typography>
-                    </Button>
-                    {stage().settingSummary && (
+        <div style={{background: `radial-gradient(ellipse at center, #00000033 50%, #000000BB 90%) ${stage().barImageUrl ? `url(${stage().barImageUrl})` : ''}`,
+            display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', justifyContent: 'center', verticalAlign: 'bottom'}}>
+            <div style={{backgroundImage: `url(${stage().titleUrl})`, height: '100vh', width: '100vw'}}>
+                {generating ? (
+                    <div>
+                        <Box style={{backgroundColor: '#00000088'}} color={'primary'}>
+                        <Typography>
+                            {stage().loadingProgress}% - {stage().loadingDescription}
+                        </Typography>
+                        <LinearProgress sx={{outline: 'primary'}} variant="determinate" color="success"
+                                        value={stage().loadingProgress}/>
+                        </Box>
+                    </div>
+                ) : (
+                    <div style={{display: 'flex', flexDirection: 'column', bottom: '10vh', height: '20vh', gap: '5vh', alignItems: 'center'}}>
                         <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
-                                startIcon={<ArrowForward/>}
-                                onClick={() => setOnMenu(false)}>
-                            <Typography variant="h5" color='primary'>Continue</Typography>
+                                startIcon={stage().settingSummary ? <Replay/> : <ArrowForward/>}
+                                onClick={handleGenerateClick}>
+                            <Typography variant="h5" color='primary'>Start New Game</Typography>
                         </Button>
-                    )}
-                </div>
-            )}
+                        {stage().settingSummary && (
+                            <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
+                                    startIcon={<ArrowForward/>}
+                                    onClick={() => setOnMenu(false)}>
+                                <Typography variant="h5" color='primary'>Continue</Typography>
+                            </Button>
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

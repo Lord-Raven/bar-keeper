@@ -18,6 +18,7 @@ import {buildSection, generatePatrons} from "./Generator";
 import {ChatNode, createNodes} from "./ChatNode";
 import {Client} from "@gradio/client";
 import {PlayArea} from "./PlayArea";
+import titleUrl from './assets/title.png'
 
 type MessageStateType = any;
 
@@ -46,6 +47,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     chatNodes: {[key: string]: ChatNode};
     dummyPatrons: Patron[];
     nightlySummaries: {[key: string]: string};
+    titleUrl: string;
 
 
     // Not saved:
@@ -90,6 +92,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.currentNode = null;
         this.dummyPatrons = [];
         this.nightlySummaries = {};
+        this.titleUrl = titleUrl;
         this.readChatState(chatState);
 
         this.director = new Director();
