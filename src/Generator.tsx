@@ -56,7 +56,7 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
         buildSection('Example Responses', '\n' +
             `NAME: Cherry Rotgut\nDESCRIPTION: A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n\n` +
             `NAME: Tritium Delight\nDESCRIPTION: An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n\n` +
-            `NAME: Rosewood Ale\nDESCRIPTION: This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n\m` +
+            `NAME: Rosewood Ale\nDESCRIPTION: This nutty, mellow ale comes in an elegant bottle embossed with the Eldridge Brewery logo.\n\n` +
             `NAME: Toilet Wine\nDESCRIPTION: An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n\n` +
             `NAME: Love Potion #69\nDESCRIPTION: It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n\n` +
             `NAME: Classic Grog\nDESCRIPTION: Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n\n` +
