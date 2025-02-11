@@ -38,7 +38,7 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
                         </Box>
                     </div>
                 ) : (
-                    <div style={{display: 'flex', flexDirection: 'column', bottom: '10vh', height: '20vh', gap: '5vh', alignItems: 'center'}}>
+                    <div style={{display: 'flex', flexDirection: 'column', bottom: '0', gap: '5vh', alignItems: 'center'}}>
                         <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
                                 startIcon={stage().settingSummary ? <Replay/> : <ArrowForward/>}
                                 onClick={stage().settingSummary ? () => setConfirmReset(true) : handleGenerateClick}>
