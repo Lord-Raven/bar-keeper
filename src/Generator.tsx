@@ -7,6 +7,7 @@ import titleUrl from './assets/title.png'
 import { Beverage } from "./Beverage";
 
 export const TRIM_SYMBOLS = '\\-*#';
+export const TITLE_IMAGE_URL = 'https://i.imgur.com/m35kGjZ.png';
 
 export function buildSection(name: string, body: string) {
     return `###${name.toUpperCase()}:\n${body.trim()}\n\n`;
@@ -194,14 +195,15 @@ export async function generate(stage: Stage) {
         stage.chatNodes = {};
         stage.nightlySummaries = {};
         stage.dummyPatrons = [];
+        stage.titleUrl = titleUrl;
         stage.setLoadProgress(1, 'Distilling card.');
         await generateDistillation(stage);
 
         stage.setLoadProgress(3, 'Generating title image.');
         stage.titleUrl = await stage.makeImageFromImage({
-            prompt: `(art style: ${stage.artSummary}) (plain white title text on plain black background: "Barkeeper" with subtitle: "A Stage Sim")`,
+            prompt: `(plain white title text on plain black background: "Barkeeper" with subtitle: "A Stage Sim"). Title image for a bartending sim with these themes: ${stage.themeSummary}.`,
             negative_prompt: '',
-            image: titleUrl,
+            image: TITLE_IMAGE_URL,
             remove_background: true,
             strength: 0.5
         }, titleUrl);
