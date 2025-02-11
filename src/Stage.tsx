@@ -246,11 +246,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         // Go ahead and do a patron check--don't wait up.
         generatePatrons(this);
 
-        // If this is a drink request, we can't kick this off until the last interaction
-        if (!this.requestedNodes && (!this.currentNode || this.getTerminusOfNode(this.currentNode)?.direction != Direction.PatronDrinkRequest)) {
-            console.log('Kick off generation');
-            this.requestedNodes = this.generateMessageContent(this.getTerminusOfNode(this.currentNode), '');
-        }
+        this.kickOffRequestedNodes(this.currentNode);
+
         console.log(this.currentNode);
         if (!this.currentNode || this.currentNode.childIds.length == 0) {
             console.log('Calling this.processNextResponse()');
@@ -258,9 +255,17 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         } else {
             console.log('setting currentNode');
             this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]]);
-            if ((!this.currentNode || this.getTerminusOfNode(this.currentNode)?.direction != Direction.PatronDrinkRequest)) {
-                this.requestedNodes = this.generateMessageContent(this.getTerminusOfNode(this.currentNode), '');
-            }
+            this.kickOffRequestedNodes(this.currentNode);
+        }
+    }
+
+    kickOffRequestedNodes(fromNode: ChatNode|null) {
+        const currentTerminus = this.getTerminusOfNode(fromNode);
+
+        // If this is a drink request, we can't kick this off until the last interaction
+        if (!this.requestedNodes && (!currentTerminus || (currentTerminus.childIds.length == 0 && currentTerminus.direction != Direction.PatronDrinkRequest))) {
+            console.log('Kick off generation');
+            this.requestedNodes = this.generateMessageContent(currentTerminus, '');
         }
     }
 
