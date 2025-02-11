@@ -19,9 +19,9 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
     };
 
     return (
-        <div style={{background: `radial-gradient(ellipse at center, #00000033 50%, #000000BB 90%) ${stage().barImageUrl ? `url(${stage().barImageUrl})` : ''}`,
+        <div style={{background: `radial-gradient(ellipse at center, #00000033 50%, #000000BB 90%)${stage().barImageUrl ? `, url(${stage().barImageUrl})` : ''}`,
             display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', justifyContent: 'center', verticalAlign: 'bottom'}}>
-            <div style={{backgroundImage: `url(${stage().titleUrl})`, display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw'}}>
+            <div style={{backgroundImage: `url(${stage().titleUrl})`, display: 'flex', justifyContent: 'center', flexDirection: 'column', height: '100vh', width: '100vw'}}>
                 {generating ? (
                     <div>
                         <Box style={{backgroundColor: '#00000088'}} color={'primary'}>
