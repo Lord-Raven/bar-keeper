@@ -120,7 +120,7 @@ export class Director {
                 directionOdds.push(new Possibility(Direction.PatronProblem, '', presentPatronIds.length ?? 0 >= 1 ? 10 : 0));
 
                 for (let patronId of presentPatronIds) {
-                    directionOdds.push(new Possibility(Direction.PatronDrinkRequest, patronId, drinksServed < 5 ? 10 : 0));
+                    directionOdds.push(new Possibility(Direction.PatronDrinkRequest, patronId, drinksServed < 5 ? 15 : 0));
                     directionOdds.push(new Possibility(Direction.PatronLeaves, patronId,
                         Math.max(0, ((drinksServed - 2) * 3)) + // Increase odds when drinks served is >= 3
                         (presentPatronIds.length ?? 0) * 2 + // Increase odds by one per patron present
@@ -129,8 +129,10 @@ export class Director {
                 }
 
                 // If max possible visits not hit, consider adding a patron (no more than five at a time)
-                if (visits < Object.keys(stage.patrons).length && (presentPatronIds.length ?? 5) < 5) {
+                if (visits < Object.keys(stage.patrons).length && (presentPatronIds.length ?? 0) < 5) {
                     const keys = Object.keys(stage.patrons).filter(key => !presentPatronIds.includes(key) && !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == key));
+                    console.log('picking someone to bring into the scene');
+                    console.log(keys);
                     let selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
                     directionOdds.push(new Possibility(Direction.IntroducePatron, selectedPatronId, 25 - (presentPatronIds?.length ?? 0) * 5));
                 }

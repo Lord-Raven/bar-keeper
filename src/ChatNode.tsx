@@ -85,6 +85,7 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
                     label: string;
                 }) => confidence.label != 'neutral');
                 if (emotionData.length > 0 && emotionData[0].confidence > 0.1) {
+                    newNode.presentPatrons = {...newNode.presentPatrons};
                     const emotion = emotionRouting[emotionData[0].label as Emotion];
                     newNode.presentPatrons[targetPatronId] = emotion;
                     // Await new image? Maybe just let it run in the background?

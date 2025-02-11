@@ -359,7 +359,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
             negative_prompt: patronImageNegativePrompt,
             aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL,
             remove_background: true,
-            strength: 0.3
+            strength: 0.25
         }, patron.imageUrls[Emotion.neutral]);
         if (imageUrl == '') {
             throw Error(`Failed to generate a ${emotion} patron image for ${patron.name}.`);
