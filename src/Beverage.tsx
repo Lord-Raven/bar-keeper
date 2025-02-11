@@ -29,8 +29,8 @@ export class Beverage {
                             color: 'white',
                             borderRadius: '50%',
                             fontSize: '1.5em',
-                            minWidth: '2em',
-                            height: '2em'
+                            minWidth: '1.8em',
+                            height: '1.8em'
                         }
                 }}>
                     <Box component="section" sx={{

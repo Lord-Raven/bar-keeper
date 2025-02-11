@@ -53,7 +53,7 @@ const ImageWithPopup: React.FC<ImageWithPopupProps> = ({ src, alt, popupHeader, 
                 onClose={handlePopoverClose}
                 disableRestoreFocus
             >
-                <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'start', alignItems: 'flex-start', height: '12vh', p: '1', border: '1px dashed grey'}}>
+                <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'start', alignItems: 'flex-start', height: '20vh', p: '1', border: '1px dashed grey'}}>
                     {popupSrc && (
                         <img src={popupSrc} alt={alt} style={{height: '100%', width: 'auto', objectFit: 'cover'}}/>
                     )}
