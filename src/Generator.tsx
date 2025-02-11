@@ -63,11 +63,11 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `NAME: Synth Mead\nDESCRIPTION: Bees died out long ago, but hypervikings still live for the sweet taste of synthetic honey wine.\n\n` +
             stage.buildBeverageDescriptions()) +
         buildSection('Priority Instruction',
-            `You are doing critical prep work for a roleplaying narrative. Instead of narrating, you will first use this planning response to define a list of beverages that the LOCATION will serve, ` +
-            `providing a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
+            `You are doing critical prep work for a roleplaying narrative. Instead of narrating, you will first use this planning response to define some beverages that the LOCATION will serve. ` +
+            `This essential, preparatory response includes multiple lines defining a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
             `Output several varied and interesting beverages that suit the SETTING and LOCATION, ensuring each DESCRIPTION evokes diverse emotions, moods, or sensations. ` +
             `Refer to the EXAMPLE RESPONSES for the strict formatting reference. Be original, creative, and on-theme with the beverages you craft, ` +
-            `avoiding ideas which are too similar to the other generated entries in the BEVERAGES list.`) +
+            `avoiding ideas which are too similar to the other generated entries in the BEVERAGES list. Define some drinks and promptly end the response.`) +
         '###FORMER INSTRUCTION:');
 }
 
