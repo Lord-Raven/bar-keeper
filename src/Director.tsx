@@ -152,10 +152,7 @@ export class Director {
 
         // If coming from a departure, drop that character from the new present list.
         if (currentNode && currentNode.direction == Direction.PatronLeaves && presentPatronIds.includes(currentNode.selectedPatronId ?? '')) {
-            console.log(newPresentPatrons);
             delete newPresentPatrons[currentNode.selectedPatronId ?? ''];
-            console.log('after');
-            console.log(newPresentPatrons);
         }
 
         const sumOfWeights = Object.values(directionOdds).reduce((sum, possibility) => sum + possibility.odds, 0);

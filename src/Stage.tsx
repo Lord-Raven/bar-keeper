@@ -276,7 +276,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.currentNode = newNode;
         this.setLastBeverageServed(this.currentNode.selectedBeverage ?? '');
         if (this.currentNode) {
-            console.log(`New Node's direction: ${this.currentNode?.direction}`);
             console.log(this.currentNode);
         }
     }

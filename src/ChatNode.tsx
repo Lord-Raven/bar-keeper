@@ -36,11 +36,6 @@ export async function createNodes(script: string, commonProps: Partial<ChatNode>
         read: false,
         night: 0
     };
-    console.log('createNodes');
-    console.log(commonProps);
-    if (commonProps.selectedBeverage && commonProps.beverageCounts) {
-        console.log(`SelectedBeverage: ${commonProps.selectedBeverage}`);
-    }
     let currentBeverageCounts: {[key: string]: number} = stage.beverages.reduce((acc, beverage) => {
             acc[beverage.name] = (commonProps && commonProps.beverageCounts && Object.keys(commonProps.beverageCounts).includes(beverage.name)) ? (commonProps.beverageCounts[beverage.name] - (commonProps.selectedBeverage == beverage.name ? 1 : 0)) : 1;
             return acc;
@@ -78,28 +73,31 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
     if (parentNode != null) {
         parentNode.childIds.push(newNode.id);
     }
-    if (newNode.speakerId) {
-        const targetPatronId = Object.keys(stage.patrons).find(patronId => stage.patrons[patronId].name.toLowerCase().includes(newNode.speakerId?.toLowerCase() ?? 'nevereverever'));
-        const targetPatron = stage.patrons[targetPatronId ?? ''];
-        if (targetPatronId && targetPatron) {
-            const result = (await stage.pipeline.predict("/predict", {
-                param_0: newNode.message
-            }));
-            const emotionData = result.data[0].confidences.filter((confidence: { label: string; }) => confidence.label != 'neutral');
-            console.log(`Emotion determination for: ${newNode.message}`);
-            console.log(emotionData);
-            if (emotionData.length > 0 && emotionData[0].confidence > 0.1) {
-                const emotion = emotionRouting[emotionData[0].label as Emotion];
-                newNode.presentPatrons[targetPatronId] = emotion;
-                // Await new image? Maybe just let it run in the background?
-                if (emotion != Emotion.neutral && targetPatron.imageUrls[emotion as Emotion] == targetPatron.imageUrls[Emotion.neutral]) {
-                    await generatePatronImage(stage, targetPatron, emotion as Emotion);
+    if (!parentNode || newNode.message.trim() != '') {
+        if (newNode.speakerId) {
+            const targetPatronId = Object.keys(stage.patrons).find(patronId => stage.patrons[patronId].name.toLowerCase().includes(newNode.speakerId?.toLowerCase() ?? 'nevereverever'));
+            const targetPatron = stage.patrons[targetPatronId ?? ''];
+            if (targetPatronId && targetPatron) {
+                const result = (await stage.pipeline.predict("/predict", {
+                    param_0: newNode.message
+                }));
+                const emotionData = result.data[0].confidences.filter((confidence: {
+                    label: string;
+                }) => confidence.label != 'neutral');
+                if (emotionData.length > 0 && emotionData[0].confidence > 0.1) {
+                    const emotion = emotionRouting[emotionData[0].label as Emotion];
+                    newNode.presentPatrons[targetPatronId] = emotion;
+                    // Await new image? Maybe just let it run in the background?
+                    if (emotion != Emotion.neutral && targetPatron.imageUrls[emotion as Emotion] == targetPatron.imageUrls[Emotion.neutral]) {
+                        await generatePatronImage(stage, targetPatron, emotion as Emotion);
+                    }
                 }
             }
         }
+        nodes.push(newNode);
+        return newNode;
     }
-    nodes.push(newNode);
-    return newNode;
+    return parentNode;
 }
 
 function generateUuid() {
