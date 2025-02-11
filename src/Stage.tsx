@@ -186,7 +186,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildBeverageDescriptions(): string {
-        return this.beverages.map.length > 0 ? buildSection('Beverages', `${this.beverages.map(beverage => `NAME: ${beverage.name}\nDESCRIPTION: ${beverage.description}`).join('\n\n')}`) : '';
+        return this.beverages.map.length > 0 ? `${this.beverages.map(beverage => `NAME: ${beverage.name}\nDESCRIPTION: ${beverage.description}`).join('\n\n')}` : '';
     }
 
     buildPatronDescriptions(): string {
@@ -227,7 +227,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return buildSection('Setting', this.barDescription ?? '') +
             buildSection(`Protagonist`, `${this.player.name} is a bartender here. ${this.player.chatProfile}`) +
             this.buildPatronDescriptions() +
-            this.buildBeverageDescriptions() +
+            buildSection('Beverages', this.buildBeverageDescriptions()) +
             nightSummaries +
             buildSection('Sample Response', sampleScript) +
             (fromNode ? buildSection('Log', this.buildHistory(fromNode)) : '') +
@@ -302,7 +302,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             buildSection('Setting', this.barDescription ?? '') +
                             buildSection(`Protagonist`, `${this.player.name} is a bartender here. ${this.player.chatProfile}`) +
                             this.buildPatronDescriptions() +
-                            this.buildBeverageDescriptions() +
+                            buildSection('Beverages', this.buildBeverageDescriptions()) +
                             (fromNode ? buildSection('Log', this.buildHistory(fromNode)) : '') +
                             buildSection('Instruction Override', 'Utilize this response to summarize the events in the LOG. You should produce an abridged account of the events and interactions that occurred in the bar this evening, based on an analysis of the LOG.') +
                             buildSection('Standard Instruction', '{{suffix}}'),
