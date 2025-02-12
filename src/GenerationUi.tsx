@@ -73,7 +73,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage, setOnMenu }) => {
                                 {!inProgress['background'] ? (
                                     <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
                                         putInProgress('background', true);
-                                        generateBarImage(stage()).then(() => {putInProgress('background', false)});}}>
+                                        generateBarImage(stage()).then(() => {putInProgress('background', false)});stage().updateChatState()}}>
                                         <ReplayIcon/>
                                     </IconButton>
                                 ) : (
@@ -91,7 +91,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage, setOnMenu }) => {
                                     {!inProgress[beverage.name] ? (
                                         <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
                                             putInProgress(beverage.name, true);
-                                            generateBeverageImage(stage(), beverage).then(() => {putInProgress(beverage.name, false)});}}>
+                                            generateBeverageImage(stage(), beverage).then(() => {putInProgress(beverage.name, false)});stage().updateChatState()}}>
                                             <ReplayIcon/>
                                         </IconButton>
                                     ) : (
@@ -113,7 +113,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage, setOnMenu }) => {
                                     {!inProgress[patron.name] ? (
                                         <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
                                             putInProgress(patron.name, true);
-                                            generatePatronImage(stage(), patron, Emotion.neutral).then(() => {putInProgress(patron.name, false)});}}>
+                                            generatePatronImage(stage(), patron, Emotion.neutral).then(() => {putInProgress(patron.name, false)});stage().updateChatState()}}>
                                             <ReplayIcon/>
                                         </IconButton>
                                     ) : (

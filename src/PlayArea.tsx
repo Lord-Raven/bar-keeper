@@ -30,7 +30,7 @@ export const boxStyle = {
     left: '0%',
     width: '100%',
     border: '1px dashed grey',
-    backgroundColor: '#000000BB',
+    backgroundColor: '#000000CC',
     zIndex: 20,
     boxSizing: 'border-box',
     '&:hover': {backgroundColor: '#000000EE'}
@@ -100,7 +100,7 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, reverse, stage, setOnMenu
     const bannerIsPost = getMessageElements(stage().chatNodes[chatNode?.parentId ?? '']) != null;
     return (
         <div style={{display: 'flex', flexDirection: 'column', height: '100vh', }}>
-            <div style={{position: 'relative', height: '8%', overflow: 'hidden'}}>
+            <div style={{position: 'relative', height: '8%', overflow: 'hidden', zIndex: 50}}>
                 <GenerationUi stage={stage} setOnMenu={setOnMenu}/>
                 <Typography variant="h5" style={{float: 'right'}}>
                     Night {chatNode?.night ?? 1}
@@ -113,7 +113,7 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, reverse, stage, setOnMenu
                      left: '1%',
                      width: '98%',
                      alignContent: 'center',
-                     zIndex: 2,
+                     zIndex: 15,
                      overflow: 'hidden'
             }}>
                 <Box layout sx={{...boxStyle, bottom: '17vh'}}>
@@ -177,31 +177,30 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, reverse, stage, setOnMenu
                         }, handleBeverageClick, setHoveredBeverage))}
                     </div>
                 </Box>
-
-                {Object.keys(stage().patrons).map(patronId => {
-                    const patron = stage().patrons[patronId];
-                    let present = false;
-                    let position = !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == patronId) ? -40 : 140;
-                    let emotion: Emotion = chatNode?.presentPatrons[patronId] as Emotion ?? Emotion.neutral;
-                    let isTalking = false;
-                    if (chatNode && chatNode.presentPatrons[patronId]) {
-                        const index = Object.keys(chatNode.presentPatrons).length - Object.keys(chatNode.presentPatrons).indexOf(patronId) - 1;
-                        isTalking = patron.name.toLowerCase().includes(chatNode?.speakerId?.toLowerCase() ?? 'nevereverever');
-                        position = getCharacterPosition(index, numberOfPatrons);
-                        present = true;
-                    }
-                    return <PatronImage patron={patron}
-                                        emotion={emotion}
-                                        xPosition={position}
-                                        isTalking={isTalking}
-                                        present={present}/>;
-                })}
                 <BeverageDetails beverage={hoveredBeverage}/>
                 <MessageBanner
                     elements = {bannerElements}
                     post = {bannerIsPost}
                 />
             </div>
+            {Object.keys(stage().patrons).map(patronId => {
+                const patron = stage().patrons[patronId];
+                let present = false;
+                let position = !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == patronId) ? -40 : 140;
+                let emotion: Emotion = chatNode?.presentPatrons[patronId] as Emotion ?? Emotion.neutral;
+                let isTalking = false;
+                if (chatNode && chatNode.presentPatrons[patronId]) {
+                    const index = Object.keys(chatNode.presentPatrons).length - Object.keys(chatNode.presentPatrons).indexOf(patronId) - 1;
+                    isTalking = patron.name.toLowerCase().includes(chatNode?.speakerId?.toLowerCase() ?? 'nevereverever');
+                    position = getCharacterPosition(index, numberOfPatrons);
+                    present = true;
+                }
+                return <PatronImage patron={patron}
+                                    emotion={emotion}
+                                    xPosition={position}
+                                    isTalking={isTalking}
+                                    present={present}/>;
+            })}
             <Vignette active={chatNode?.read ?? false}/>
         </div>
     );
