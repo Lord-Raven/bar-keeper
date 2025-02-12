@@ -149,7 +149,7 @@ export async function generateBeverageImage(stage: Stage, beverage: Beverage, se
     }
 }
 
-async function generateDistillation(stage: Stage) {
+async function generateDistillation(stage: Stage, setErrorMessage: (message: string) => void) {
     stage.sourceSummary = '';
     stage.settingSummary = '';
     stage.themeSummary = '';
@@ -181,6 +181,7 @@ async function generateDistillation(stage: Stage) {
     }
 
     if (stage.settingSummary == '' || stage.themeSummary == '' || stage.artSummary == '') {
+        setErrorMessage('Failed to generate a distillation.');
         throw Error('Failed to generate a distillation.');
     }
 
@@ -197,7 +198,7 @@ export async function generate(stage: Stage, setErrorMessage: (message: string) 
         stage.dummyPatrons = [];
         //stage.titleUrl = titleUrl;
         stage.setLoadProgress(1, 'Distilling card.');
-        await generateDistillation(stage);
+        await generateDistillation(stage, setErrorMessage);
 
         /*stage.setLoadProgress(3, 'Generating title image.');
         stage.titleUrl = await stage.makeImage({
