@@ -243,8 +243,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async advanceMessage() {
 
+        console.log('kickOffRequestedNodes');
         // Go ahead and do a patron check--don't wait up.
-        generatePatrons(this, (message) => {});
+        //generatePatrons(this, (message) => {});
 
         this.kickOffRequestedNodes(this.currentNode);
 
