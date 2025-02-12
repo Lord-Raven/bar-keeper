@@ -45,7 +45,7 @@ If you dislike a particular piece of art that was generated, you can use the set
 I feel there are some clear shortfalls in what this stage achieves, and maybe some of these items could be addressed or at least improved with sufficient time or motivation, but I don't know that they will be. 
 <li>
 * It probably looks terrible in some layouts--especially portrait. Maybe I'll try to fix that.
-* There is an issue where stage-originated textgen requests can repeatedly fail. In my experience, refreshing a few times or clearing the cache can resolve this. If the stage stops loading new responses, this is likely the culprit.
+* There is an issue where stage-originated text gen requests can repeatedly fail. In my experience, refreshing a few times or clearing the cache can resolve this. If the stage stops loading new responses, this is likely the culprit.
 * A lot of the stage's behavior and performance is contingent upon your personal generation settings; your jailbreak in particular could cause trouble if it is overpowering the stage's instructions. 
 It's a rough position because the purpose of the jailbreak is to overpower other instructions. Ironically, stages need a stage direction option for general text gen requests.
 * The stage does very little quality control, so you are at the mercy of the LLM to properly format responses and not go off the rails with activity that isn't internally represented by the stage.

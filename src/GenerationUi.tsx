@@ -22,7 +22,8 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage, setOnMenu, setErro
 
 
     const putInProgress = (key: string, value: boolean) => {
-        setInProgress({...inProgress, [key]: value});
+        inProgress[key] = value;
+        setInProgress(inProgress);
     }
 
     const handleClose = () => {

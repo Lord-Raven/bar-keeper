@@ -250,10 +250,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         console.log(this.currentNode);
         if (!this.currentNode || this.currentNode.childIds.length == 0) {
-            console.log('Calling this.processNextResponse()');
             await this.processNextResponse();
         } else {
-            console.log('setting currentNode');
             this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]], false);
             this.kickOffRequestedNodes(this.currentNode);
         }
@@ -264,7 +262,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         // If this is a drink request, we can't kick this off until the last interaction
         if (!this.requestedNodes && (!currentTerminus || (currentTerminus.childIds.length == 0 && currentTerminus.direction != Direction.PatronDrinkRequest))) {
-            console.log('Kick off generation');
             this.requestedNodes = this.generateMessageContent(currentTerminus, '');
         }
     }
