@@ -143,7 +143,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             currentMessageId: this.currentNode ? this.currentNode.id : null,
             patrons: this.patrons,
             dummyPatrons: this.dummyPatrons,
-            nightlySummaries: this.nightlySummaries
+            nightlySummaries: this.nightlySummaries,
+            titleUrl: this.titleUrl,
         };
     }
 
@@ -162,11 +163,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.patrons = chatState.patrons ?? {};
             console.log(chatState.dummyPatrons);
             this.dummyPatrons = chatState.dummyPatrons ?? [];
-                /*(chatState.dummyPatrons ?? []).map((patron: any) => {
-                const {name, description, personality} = patron;
-                return new Patron(name, description, personality)
-            });*/
             this.nightlySummaries = chatState.nightlySummaries ?? [];
+            this.titleUrl = chatState.titleUrl ?? titleUrl;
         }
     }
 
