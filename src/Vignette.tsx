@@ -25,7 +25,7 @@ const Vignette: FC<VignetteProps> = ({active}) => {
                 width: '100vw',
                 height: '100vh',
                 background: 'radial-gradient(ellipse at center, #00000000 70%, #000000BB 90%)',
-                zIndex: 13,
+                zIndex: 15,
             }}
         />
     );

@@ -31,7 +31,7 @@ export const boxStyle = {
     width: '100%',
     border: '1px dashed grey',
     backgroundColor: '#000000BB',
-    zIndex: 50,
+    zIndex: 20,
     boxSizing: 'border-box',
     '&:hover': {backgroundColor: '#000000EE'}
 }

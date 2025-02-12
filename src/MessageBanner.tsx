@@ -29,7 +29,7 @@ const MessageBanner: FC<MessageBannerProps> = ({elements, post}) => {
                 backgroundColor: '#000000BB',
                 bottom: '50vh',
                 left: 0,
-                zIndex: 20,
+                zIndex: 25,
             }}
         >
             {elements}

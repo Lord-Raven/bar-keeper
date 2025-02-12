@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid2';
 import SettingsIcon from "@mui/icons-material/Settings"
 import ReplayIcon from "@mui/icons-material/Replay";
 import Popover from "@mui/material/Popover";
-import {generate, generateBeverageImage, generatePatronImage} from "./Generator";
+import {generate, generateBarImage, generateBeverageImage, generatePatronImage} from "./Generator";
 import {Emotion} from "./Patron";
 import {ArrowBack} from "@mui/icons-material";
 
@@ -47,7 +47,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage, setOnMenu }) => {
                     '& .MuiPopover-paper': {
                         border: '1px dashed grey',
                         backgroundColor: '#000000BB',
-                        zIndex: 20,
+                        zIndex: 60,
                         width: '100vw',
                         boxSizing: 'border-box'
                     }
@@ -65,6 +65,23 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage, setOnMenu }) => {
                 }}
             >
                 <Grid container spacing={2} justifyContent="center">
+                    <Grid key='background'>
+                        <Box sx={{ textAlign: 'center', height: '20vh' }}>
+                            <img src={stage().barImageUrl} alt='Background' style={{ width: 'auto', height: '15vh', margin: '0 auto'}} />
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '1vh' }}>
+                                <Typography variant="h6" color='primary' sx={{ marginRight: '1vh' }}>Background</Typography>
+                                {!inProgress['background'] ? (
+                                    <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
+                                        putInProgress('background', true);
+                                        generateBarImage(stage()).then(() => {putInProgress('background', false)});}}>
+                                        <ReplayIcon/>
+                                    </IconButton>
+                                ) : (
+                                    <CircularProgress/>
+                                )}
+                            </Box>
+                        </Box>
+                    </Grid>
                     {stage().beverages.map((beverage) => (
                         <Grid key={beverage.name}>
                             <Box sx={{ textAlign: 'center', height: '20vh' }}>

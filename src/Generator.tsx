@@ -217,16 +217,7 @@ export async function generate(stage: Stage) {
         stage.barDescription = textResponse?.result ?? '';
 
         stage.setLoadProgress(10, 'Generating bar image.');
-        const barPrompt = `(art style: ${stage.artSummary}), ` +
-            (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + '(inside an empty bar), late hour, counter, ' +
-            `(interior of: ${stage.barDescription})`;
-
-
-        stage.barImageUrl = await stage.makeImage({
-            prompt: barPrompt,
-            negative_prompt: '((exterior)), (people), (outside), daytime, outdoors',
-            aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
-        }, '');
+        await generateBarImage(stage);
 
         stage.setLoadProgress(25, 'Generating beverages.');
 
@@ -259,6 +250,19 @@ export async function generate(stage: Stage) {
     stage.setLoadProgress(undefined, '');
     stage.isGenerating = false;
     // TODO: If there was a failure, consider reloading from chatState rather than saving.
+}
+
+export async function generateBarImage(stage: Stage) {
+    const barPrompt = `(art style: ${stage.artSummary}), ` +
+        (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + '(inside an empty bar), late hour, counter, ' +
+        `(interior of: ${stage.barDescription})`;
+
+
+    stage.barImageUrl = await stage.makeImage({
+        prompt: barPrompt,
+        negative_prompt: '((exterior)), (people), (outside), daytime, outdoors',
+        aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
+    }, '');
 }
 
 const basicCharacter: Character = {
