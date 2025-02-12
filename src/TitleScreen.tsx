@@ -29,7 +29,7 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
                 <img src={`${stage().titleUrl}`} alt={"Barkeeper Title"} style={{maxWidth: '100%', maxHeight: '100%', width: '1536px', height: 'auto'}}/>
                 {generating ? (
                     <>
-                        <Box style={{backgroundColor: '#00000088'}} color={'primary'}>
+                        <Box sx={{backgroundColor: '#00000088', width: '80%'}} color={'primary'}>
                         <Typography>
                             {stage().loadingProgress}% - {stage().loadingDescription}
                         </Typography>

@@ -14,7 +14,6 @@ import PatronImage from "./PatronImage";
 import MessageBanner from "./MessageBanner";
 import Vignette from "./Vignette";
 
-
 const getCharacterPosition = (index: number, amount: number) => {
     const start = 5;
     const end = 95;
@@ -22,7 +21,7 @@ const getCharacterPosition = (index: number, amount: number) => {
     return start + period * index + (period / 2);
 }
 
-const boxStyle = {
+export const boxStyle = {
     pl: 1,
     pr: 1,
     pb: 1,

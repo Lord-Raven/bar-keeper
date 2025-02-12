@@ -25,7 +25,7 @@ export function buildDistillationPrompt(stage: Stage, baseCharacter: Character):
             `SOURCE: Original\nSETTING: Underground 80s Mid-West biker bar\nTHEMES: turf war, drug running, machismo, brutality, sex and drugs, furries, anthropomorphic characters\nART: Comic book style illustrations, neon, chrome, bright colors, bulging muscles, furries, heavy inks for contrast, crosshatching\n\n` +
             `SOURCE: Original\nSETTING: 70s disco scene, Los Angeles\nTHEMES: Free love, vampires, lycanthropes, disco, secret fantasy underworld, clubs, maintaining secrecy\nART: Psychedelic, lurid colors, stylish, 70s clothing, interesting and exaggerated character proportions\n\n` +
             `SOURCE: Warhammer 40k\nSETTING: Massive Cathedral starship from the Warhammer 40k universe\nTHEMES: brutality, faith, devotion, heresy, power armor\nART: grimdark, high contrast, saturated yet gritty colors, heavy inks and shadows, strong characters, extreme technologies, power armor\n\n`) +
-        buildSection('Priority Instruction',
+        buildSection('Current Instruction',
             `You are doing critical prep work for a roleplaying narrative. Instead of narrating, you will first use this planning response to distill the setting and themes from the FLAVOR TEXT into a specific format. ` +
             `Use the FLAVOR TEXT as inspirational material as you establish a SOURCE, SETTING, THEMES, and ART style for future narration and illustration. ` +
             `This essential, preparatory response includes four specific and clearly defined fields, each containing a comma-delimited list of words or phrases that distill or embody the spirit of the FLAVOR TEXT.\n` +
@@ -34,7 +34,7 @@ export function buildDistillationPrompt(stage: Stage, baseCharacter: Character):
             `"THEMES" should list all of the prominent themes, concepts, quirks, or kinks from the FLAVOR TEXT.\n` +
             `"ART" lists distinct artist, genre, medium, palette, stroke, shading, or other style descriptors that are associated with SOURCE (if any) or which suit or align with the setting and themes of the FLAVOR TEXT; this should be brief and to the point, as it will be used to generate appropriate images later.\n` +
             `Define these four fields and promptly end your response.\n`) +
-        '###FORMER INSTRUCTION:');
+        '###FUTURE INSTRUCTION:');
 }
 
 export function buildBarDescriptionPrompt(stage: Stage): string {
@@ -42,11 +42,11 @@ export function buildBarDescriptionPrompt(stage: Stage): string {
         (stage.sourceSummary != '' ? buildSection('Source Material', stage.sourceSummary ?? '') : '') +
         buildSection('Setting', stage.settingSummary ?? '') +
         buildSection('Themes', stage.themeSummary ?? '') +
-        buildSection('Priority Instruction', 
+        buildSection('Current Instruction',
             'You are doing critical prep work for a roleplaying narrative. Instead of narrating, you will use this planning response to write a few sentences describing a fictional pub, bar, club, or tavern set in SETTING, drawing upon the THEMES. ' +
             'This descriptive paragraph should focus on the interior description, ambience, theming, fixtures, and general clientele of the establishment. ' +
             'This informative and flavorful description will later be used in future, narrative responses.\n') +
-        '###FORMER INSTRUCTION:');
+        '###FUTURE INSTRUCTION:');
 }
 
 export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
@@ -63,15 +63,15 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `NAME: Love Potion #69\nDESCRIPTION: It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n\n` +
             `NAME: Classic Grog\nDESCRIPTION: Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n\n` +
             `NAME: Synth Mead\nDESCRIPTION: Bees died out long ago, but hypervikings still live for the sweet taste of synthetic honey wine.\n\n`) +
-        buildSection(`Current Beverages (Need ${5 - stage.beverages.length} More)`,
+        buildSection(`Current Beverages (Need More)`,
             stage.buildBeverageDescriptions()) +
-        buildSection('Priority Instruction',
+        buildSection('Current Instruction',
             `You are doing critical prep work for a roleplaying narrative. Instead of narrating, you will first use this planning response to define some beverages that the LOCATION will serve. ` +
             `This essential, preparatory response includes multiple lines defining a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
             `Output several varied and interesting beverages that suit the SETTING and LOCATION, ensuring each DESCRIPTION evokes diverse emotions, moods, or sensations. ` +
             `Refer to the EXAMPLE RESPONSES for the strict formatting reference. Be original, creative, and on-theme with the beverages you craft, ` +
             `avoiding ideas which are too similar to the CURRENT BEVERAGES. Define multiple drinks and promptly end the response.`) +
-        '###FORMER INSTRUCTION:');
+        '###FUTURE INSTRUCTION:');
 }
 
 export function buildPatronPrompt(stage: Stage, baseCharacter: Character): string {
@@ -90,7 +90,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
             (specific ? '' : Object.values(stage.dummyPatrons).map(patron => `NAME: ${patron.name}\nTRAITS: ${patron.description}\nPERSONALITY: ${patron.personality}`).join('\n\n'))) +
         (Object.values(stage.patrons).length > 0 ?
             buildSection('Established Patrons', Object.values(stage.patrons).map(patron => `NAME: ${patron.name}\nTRAITS: ${patron.description}\nPERSONALITY: ${patron.personality}`).join('\n\n')) : '') +
-        buildSection('Priority Instruction',
+        buildSection('Current Instruction',
             `You are doing critical prep work for a roleplaying narrative. Instead of narrating, use this planning response to study the ` + (specific ?
                 `INPUT above and condense it into formatted output that describes this character as they will patronize the LOCATION. ` :
                 `SETTING above and generate a distinct, creative, and interesting character that might patronize the LOCATION. `) +
@@ -98,7 +98,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
             `Consider other ESTABLISHED PATRONS (if any) and ensure that the new character in your response is distinct from these. Potentially define ` +
             `connections between this new character and one or more ESTABLISHED PATRONS patrons. ` +
             `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but craft something original and unexpected for this definition.`)) +
-        '###FORMER INSTRUCTION:');
+        '###FUTURE INSTRUCTION:');
 }
 
 export async function generateBeverages(stage: Stage) {
@@ -114,7 +114,7 @@ export async function generateBeverages(stage: Stage) {
         console.log(alcoholResponse?.result);
         stage.beverages.push(...(alcoholResponse?.result ?? '').split(new RegExp('NAME:', 'i'))
             .map(item => {
-                const nameMatch = item.match(/(?:\d*\.)*\s*(.*?)\s*Description:/i);
+                const nameMatch = item.match(/\s*(?:\d*\.)*\s*(.*?)\s*Description:/i);
                 const descriptionMatch = item.match(/Description:\s*(.*)/i);
                 console.log(`${nameMatch ? trimSymbols(nameMatch[1], TRIM_SYMBOLS).trim() : ''}, ${descriptionMatch ? trimSymbols(descriptionMatch[1], TRIM_SYMBOLS).trim() : ''}`);
                 return new Beverage(nameMatch ? trimSymbols(nameMatch[1], TRIM_SYMBOLS).trim() : '', descriptionMatch ? trimSymbols(descriptionMatch[1], TRIM_SYMBOLS).trim() : '', '');
