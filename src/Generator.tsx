@@ -204,7 +204,7 @@ export async function generate(stage: Stage) {
             prompt: `(white title text on plain black background: "Barkeeper" with subtitle: "A Stage Sim"). Title image for a bartending sim with these themes: ${stage.themeSummary}.`,
             negative_prompt: '',
             remove_background: true,
-            aspect_ratio: AspectRatio.CINEMATIC_HORIZONTAL
+            aspect_ratio: AspectRatio.CINEMATIC_HORIZONTAL // 1536 x 640
         }, titleUrl);
 
         stage.setLoadProgress(5, 'Generating bar description.');
