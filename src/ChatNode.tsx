@@ -52,20 +52,20 @@ export async function createNodes(script: string, commonProps: Partial<ChatNode>
         if (match) {
             // If there's a current dialogue, push it to the parsedLines array
             if (currentSpeaker && currentDialogue.trim().length > 0) {
-                currentNode = await addNode({...baseNode, id: generateUuid(), message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode?.id ?? null, ...commonProps}, commonProps, currentNode, nodes, stage);
+                currentNode = await addNode({...baseNode, id: generateUuid(), message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps}, commonProps, currentNode, nodes, stage);
             }
             // Start a new dialogue
             currentSpeaker = match[1];
             currentDialogue = trimSymbols(match[2], TRIM_SYMBOLS).trim();
         } else if (currentSpeaker && currentDialogue.trim().length > 0) {
             // Continue the current dialogue
-            currentNode = await addNode({...baseNode, id: generateUuid(), message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode?.id ?? null, ...commonProps}, commonProps, currentNode, nodes, stage);
+            currentNode = await addNode({...baseNode, id: generateUuid(), message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps}, commonProps, currentNode, nodes, stage);
 
             currentDialogue = line.trim();
         }
     }
     if (currentSpeaker && currentDialogue.trim().length > 0) {
-        await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatrons: {}, message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode?.id ?? null, ...commonProps}, commonProps, currentNode, nodes, stage);
+        await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatrons: {}, message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps}, commonProps, currentNode, nodes, stage);
     }
 
     return nodes;
