@@ -248,7 +248,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         this.kickOffRequestedNodes(this.currentNode);
 
-        console.log(this.currentNode);
         if (!this.currentNode || this.currentNode.childIds.length == 0) {
             await this.processNextResponse();
         } else {
