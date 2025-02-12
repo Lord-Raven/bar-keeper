@@ -12,7 +12,8 @@ This is little more than a proof of concept for the kind of full-screen experien
 <br>
 <br>
 **Warning**
-_I do _not_ recommend playing this stage if you rely on a jailbreak or have limited tokens._
+<br>
+_I do *not* recommend playing this stage if you rely on a jailbreak or token budget._
 <br>
 <br>
 This stage makes *many* generative calls, particularly when starting a new game. It will burn through tokens and image generation. 
@@ -21,6 +22,7 @@ I have done zero testing with corporate models and can offer no expectations for
 <br>
 <br>
 **What is this?**
+<br>
 Adding this stage to a chat will essentially convert that session into a simple bartending visual novel, 
 where the user's persona is a bartender who meets and interacts with various characters, but the only choices the player makes is what drinks to serve when prompted. 
 <br>
@@ -42,17 +44,19 @@ If you dislike a particular piece of art that was generated, you can use the set
 <br>
 <br>
 **Shortcomings**
+<br>
 I feel there are some clear shortfalls in what this stage achieves, and maybe some of these items could be addressed or at least improved with sufficient time or motivation, but I don't know that they will be. 
 <li>
-* It probably looks terrible in some layouts--especially portrait. Maybe I'll try to fix that.
-* There is an issue where stage-originated text gen requests can repeatedly fail. In my experience, refreshing a few times or clearing the cache can resolve this. If the stage stops loading new responses, this is likely the culprit.
-* A lot of the stage's behavior and performance is contingent upon your personal generation settings; your jailbreak in particular could cause trouble if it is overpowering the stage's instructions. 
-It's a rough position because the purpose of the jailbreak is to overpower other instructions. Ironically, stages need a stage direction option for general text gen requests.
-* The stage does very little quality control, so you are at the mercy of the LLM to properly format responses and not go off the rails with activity that isn't internally represented by the stage.
+* It probably looks terrible in some layouts--especially portrait. Maybe I'll try to fix that.<br>
+* There is an issue where stage-originated text gen requests can repeatedly fail. In my experience, refreshing a few times or clearing the cache can resolve this. If the stage stops loading new responses, this is likely the culprit.<br>
+* A lot of the stage's behavior and performance is contingent upon your personal generation settings; your jailbreak in particular could cause trouble if it is overpowering the stage's instructions.<br>
+It's a rough position because the purpose of the jailbreak is to overpower other instructions. Ironically, stages need a stage direction option for general text gen requests.<br>
+* The stage does very little quality control, so you are at the mercy of the LLM to properly format responses and not go off the rails with activity that isn't internally represented by the stage.<br>
 </li>
 <br>
 <br>
 **What's Next**
+<br>
 For me, this was an exercise in producing a stage that exists outside of the traditional chat structure, demonstrating that stages can offer completely different experiences. 
 Although it may feel like a (linear) chat, this stage doesn't leverage Chub's chat tree whatsoever (you can see this by the stagnant message counts while playing). 
 I have no further significant plans for this stage, but I may continue to tweak and improve it over time. 
