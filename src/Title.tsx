@@ -7,9 +7,10 @@ import {ArrowForward, Replay, Cancel, Check} from "@mui/icons-material";
 interface TitleProps {
     stage: () => Stage;
     setOnMenu: (onMenu: boolean) => void;
+    setErrorMessage: (message: string) => void;
 }
 
-export const Title: FC<TitleProps> = ({ stage, setOnMenu }) => {
+export const Title: FC<TitleProps> = ({ stage, setOnMenu, setErrorMessage }) => {
     const [generating, setGenerating] = useState<boolean>(false);
     const [confirmReset, setConfirmReset] = useState<boolean>(false);
 
@@ -17,7 +18,7 @@ export const Title: FC<TitleProps> = ({ stage, setOnMenu }) => {
         setConfirmReset(false);
         setGenerating(true);
         stage().isGenerating = true;
-        generate(stage()).then(() => {
+        generate(stage(), setErrorMessage).then(() => {
             setGenerating(false);
             setOnMenu(!stage().themeSummary)
         })

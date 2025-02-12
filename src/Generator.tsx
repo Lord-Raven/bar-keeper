@@ -100,7 +100,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
         '###FUTURE INSTRUCTION:');
 }
 
-export async function generateBeverages(stage: Stage) {
+export async function generateBeverages(stage: Stage, setErrorMessage: (message: string) => void) {
     stage.beverages = [];
     while (stage.beverages.length < 5) {
         let alcoholResponse = await stage.generator.textGen({
@@ -129,12 +129,12 @@ export async function generateBeverages(stage: Stage) {
     stage.setLoadProgress(30, 'Generating beverage images.');
 
     for (const beverage of stage.beverages) {
-        await generateBeverageImage(stage, beverage);
+        await generateBeverageImage(stage, beverage, setErrorMessage);
         stage.setLoadProgress((stage.loadingProgress ?? 0) + 5, 'Generating beverage images.');
     }
 }
 
-export async function generateBeverageImage(stage: Stage, beverage: Beverage) {
+export async function generateBeverageImage(stage: Stage, beverage: Beverage, setErrorMessage: (message: string) => void) {
     console.log(`Generating image for ${beverage.name}: ${beverage.description}`);
     beverage.imageUrl = await stage.makeImage({
         //image: new URL(bottleUrl, import.meta.url).href,
@@ -144,7 +144,8 @@ export async function generateBeverageImage(stage: Stage, beverage: Beverage) {
         remove_background: true,
     }, bottleUrl);
     if (beverage.imageUrl == '') {
-        throw Error('Failed to generate a beverage image');
+        setErrorMessage(`Failed to generate a beverage image for ${beverage.name}.`);
+        throw Error(`Failed to generate a beverage image for ${beverage.name}.`);
     }
 }
 
@@ -186,7 +187,7 @@ async function generateDistillation(stage: Stage) {
     console.log(`Source: ${stage.sourceSummary}\nSetting: ${stage.settingSummary}\nTheme: ${stage.themeSummary}\nArt: ${stage.artSummary}`);
 }
 
-export async function generate(stage: Stage) {
+export async function generate(stage: Stage, setErrorMessage: (message: string) => void) {
     if (stage.loadingProgress !== undefined) return;
 
     try {
@@ -217,11 +218,11 @@ export async function generate(stage: Stage) {
         stage.barDescription = textResponse?.result ?? '';
 
         stage.setLoadProgress(10, 'Generating bar image.');
-        await generateBarImage(stage);
+        await generateBarImage(stage, setErrorMessage);
 
         stage.setLoadProgress(25, 'Generating beverages.');
 
-        await generateBeverages(stage);
+        await generateBeverages(stage, setErrorMessage);
 
         // Generate a sound effect
         stage.setLoadProgress(60, 'Generate sounds.');
@@ -234,7 +235,7 @@ export async function generate(stage: Stage) {
         stage.patrons = {};
         stage.setLoadProgress((stage.loadingProgress ?? 0) + 5, 'Generating patrons.');
         await generateDummyPatrons(stage);
-        await generatePatrons(stage);
+        await generatePatrons(stage, setErrorMessage);
 
         // Finally, display an intro
         stage.currentNode = null;
@@ -243,6 +244,7 @@ export async function generate(stage: Stage) {
         stage.setLoadProgress(undefined, 'Complete');
     } catch (e) {
         console.log(e);
+        setErrorMessage(`${e}`);
         stage.themeSummary = undefined;
     }
 
@@ -252,7 +254,7 @@ export async function generate(stage: Stage) {
     // TODO: If there was a failure, consider reloading from chatState rather than saving.
 }
 
-export async function generateBarImage(stage: Stage) {
+export async function generateBarImage(stage: Stage, setErrorMessage: (message: string) => void) {
     const barPrompt = `(art style: ${stage.artSummary}), ` +
         (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + '(inside an empty bar), late hour, counter, ' +
         `(interior of: ${stage.barDescription})`;
@@ -263,6 +265,9 @@ export async function generateBarImage(stage: Stage) {
         negative_prompt: '((exterior)), (people), (outside), daytime, outdoors',
         aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
     }, '');
+    if (stage.barImageUrl == '') {
+        setErrorMessage(`Failed to generate a bar image.`);
+    }
 }
 
 const basicCharacter: Character = {
@@ -299,7 +304,7 @@ export async function generateDummyPatrons(stage: Stage) {
     }
 }
 
-export async function generatePatrons(stage: Stage) {
+export async function generatePatrons(stage: Stage, setErrorMessage: (message: string) => void) {
     const characters: Character[] = [...Object.values(stage.characters), {...basicCharacter, name: 'spare'}, {...basicCharacter, name: 'another'}, {...basicCharacter, name: 'more'}];
 
     for (let character of characters) {
@@ -312,7 +317,7 @@ export async function generatePatrons(stage: Stage) {
                     console.log('Generated patron:');
                     console.log(patron);
                     stage.patrons[character.name] = patron;
-                    await generatePatronImage(stage, patron, Emotion.neutral);
+                    await generatePatronImage(stage, patron, Emotion.neutral, setErrorMessage);
                 } else {
                     console.log('Failed a patron generation');
                 }
@@ -350,7 +355,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
 const patronImagePrompt: string = 'empty background, standing, full body';
 const patronImageNegativePrompt: string = 'border, ((close-up)), background elements, special effects, matching background, amateur, low quality, action, cut-off';
 
-export async function generatePatronImage(stage: Stage, patron: Patron, emotion: Emotion): Promise<void> {
+export async function generatePatronImage(stage: Stage, patron: Patron, emotion: Emotion, setErrorMessage: (message: string) => void): Promise<void> {
 
     if (emotion == Emotion.neutral) {
         const imageUrl = await stage.makeImage({
@@ -360,6 +365,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
             remove_background: true
         }, silhouetteUrl);
         if (imageUrl == '') {
+            setErrorMessage(`Failed to generate a ${emotion} patron image for ${patron.name}.`);
             throw Error(`Failed to generate a ${emotion} patron image for ${patron.name}.`);
         } else {
             // Replace all existing emotion images with this one
@@ -378,6 +384,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
             strength: 0.25
         }, patron.imageUrls[Emotion.neutral]);
         if (imageUrl == '') {
+            setErrorMessage(`Failed to generate a ${emotion} patron image for ${patron.name}.`);
             throw Error(`Failed to generate a ${emotion} patron image for ${patron.name}.`);
         } else {
             patron.imageUrls[emotion] = imageUrl;

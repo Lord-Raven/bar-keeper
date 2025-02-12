@@ -41,9 +41,10 @@ interface PlayAreaProps {
     reverse: () => Promise<void>;
     stage: () => Stage;
     setOnMenu: (onMenu: boolean) => void;
+    setErrorMessage: (message: string) => void;
 }
 
-export const PlayArea: FC<PlayAreaProps> = ({ advance, reverse, stage, setOnMenu }) => {
+export const PlayArea: FC<PlayAreaProps> = ({ advance, reverse, stage, setOnMenu, setErrorMessage }) => {
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
     const [selectedBeverage, setSelectedBeverage] = useState<string|null>(stage().currentNode?.selectedBeverage ?? null);
@@ -101,7 +102,7 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, reverse, stage, setOnMenu
     return (
         <div style={{display: 'flex', flexDirection: 'column', height: '100vh', }}>
             <div style={{position: 'relative', height: '8%', overflow: 'hidden', zIndex: 50}}>
-                <GenerationUi stage={stage} setOnMenu={setOnMenu}/>
+                <GenerationUi stage={stage} setOnMenu={setOnMenu} setErrorMessage={setErrorMessage}/>
                 <Typography variant="h5" style={{float: 'right'}}>
                     Night {chatNode?.night ?? 1}
                 </Typography>

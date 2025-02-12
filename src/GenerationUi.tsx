@@ -12,9 +12,10 @@ import {ArrowBack} from "@mui/icons-material";
 interface MessageWindowProps {
     stage: () => Stage;
     setOnMenu: (onMenu: boolean) => void;
+    setErrorMessage: (message: string) => void;
 }
 
-export const GenerationUi: FC<MessageWindowProps> = ({ stage, setOnMenu }) => {
+export const GenerationUi: FC<MessageWindowProps> = ({ stage, setOnMenu, setErrorMessage }) => {
     const [generationUiOpen, setGenerationUiOpen] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
     const [inProgress, setInProgress] = React.useState<{[key: string]: boolean}>({});
@@ -73,7 +74,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage, setOnMenu }) => {
                                 {!inProgress['background'] ? (
                                     <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
                                         putInProgress('background', true);
-                                        generateBarImage(stage()).then(() => {putInProgress('background', false)});stage().updateChatState()}}>
+                                        generateBarImage(stage(), setErrorMessage).then(() => {putInProgress('background', false)});stage().updateChatState()}}>
                                         <ReplayIcon/>
                                     </IconButton>
                                 ) : (
@@ -91,7 +92,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage, setOnMenu }) => {
                                     {!inProgress[beverage.name] ? (
                                         <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
                                             putInProgress(beverage.name, true);
-                                            generateBeverageImage(stage(), beverage).then(() => {putInProgress(beverage.name, false)});stage().updateChatState()}}>
+                                            generateBeverageImage(stage(), beverage, setErrorMessage).then(() => {putInProgress(beverage.name, false)});stage().updateChatState()}}>
                                             <ReplayIcon/>
                                         </IconButton>
                                     ) : (
@@ -113,7 +114,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage, setOnMenu }) => {
                                     {!inProgress[patron.name] ? (
                                         <IconButton style={{outline: 1}} color={'primary'} onClick={() => {
                                             putInProgress(patron.name, true);
-                                            generatePatronImage(stage(), patron, Emotion.neutral).then(() => {putInProgress(patron.name, false)});stage().updateChatState()}}>
+                                            generatePatronImage(stage(), patron, Emotion.neutral, setErrorMessage).then(() => {putInProgress(patron.name, false)});stage().updateChatState()}}>
                                             <ReplayIcon/>
                                         </IconButton>
                                     ) : (

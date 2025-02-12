@@ -90,7 +90,7 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
                     newNode.presentPatrons[targetPatronId] = emotion;
                     // Await new image? Maybe just let it run in the background?
                     if (emotion != Emotion.neutral && targetPatron.imageUrls[emotion as Emotion] == targetPatron.imageUrls[Emotion.neutral]) {
-                        await generatePatronImage(stage, targetPatron, emotion as Emotion);
+                        await generatePatronImage(stage, targetPatron, emotion as Emotion, (message: string) => {});
                     }
                 }
             }
