@@ -9,6 +9,7 @@ import {Emotion, Patron} from "./Patron";
 import Box from "./Box";
 import {GenerationUi} from "./GenerationUi";
 import {Direction} from "./Director";
+import {Beverage} from "./Beverage";
 
 interface MessageWindupProps {
     message: string;
@@ -133,6 +134,40 @@ const Vignette: FC<VignetteProps> = ({active}) => {
     );
 }
 
+interface BeverageDetailsProps {
+    beverage: Beverage|null;
+}
+
+const BeverageDetails: FC<BeverageDetailsProps> = ({beverage}) => {
+    const variants: Variants = {
+        active: {opacity: 1},
+        inactive: {opacity: 0}
+    }
+    return (
+        <motion.div
+            animate={beverage ? 'active' : 'inactive'}
+            variants={variants}
+            transition={{duration: 0.3}}
+            style={{
+                width: '70vw',
+                height: '20vh',
+                display: 'flex',
+                left: '15vw',
+                bottom: '20vh',
+                zIndex: 20
+            }}
+        >
+            {beverage && <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'start', alignItems: 'flex-start', height: '20vh', p: '1', border: '1px dashed grey'}}>
+                <img src={beverage.imageUrl} alt={beverage.name} style={{height: '100%', width: 'auto', objectFit: 'cover'}}/>
+                <Box sx={{p: '1', display: 'flex', flexGrow: '1', flexDirection: 'column', maxWidth: '70%'}}>
+                    <Typography variant='h5'>{beverage.name}</Typography>
+                    <Typography>{beverage.description}</Typography>
+                </Box>
+            </Box>}
+        </motion.div>
+    )
+}
+
 interface MessageBannerProps {
     elements: ReactNode|null;
     post: boolean;
@@ -180,6 +215,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
     const [selectedBeverage, setSelectedBeverage] = useState<string|null>(stage().currentNode?.selectedBeverage ?? null);
+    const [hoveredBeverage, setHoveredBeverage] = useState<Beverage|null>(null);
     const [chatNode, setChatNode] = useState<ChatNode|null>(stage().currentNode ?? null);
 
     const makingBeverageDecision = stage().isBeverageDecision() && !(chatNode?.read ?? false);
@@ -294,6 +330,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                         </div>
                     </div>
                 </Box>
+                <BeverageDetails beverage={hoveredBeverage}/>
                 <Box layout sx={{...boxStyle, height: '15vh'}}>
                     <div
                         style={{
@@ -306,7 +343,7 @@ export const MessageWindow: FC<MessageWindowProps> = ({ advance, reverse, stage,
                             return beverage.name == selectedBeverage
                         }, () => {
                             return stage().currentNode?.beverageCounts[beverage.name] ?? 1
-                        }, handleBeverageClick))}
+                        }, handleBeverageClick, setHoveredBeverage))}
                     </div>
                 </Box>
 

@@ -1,5 +1,4 @@
-import {ReactElement} from "react";
-import ImageWithPopup from "./ImageWithPopup";
+import React, {ReactElement} from "react";
 import {Badge, Box} from "@mui/material";
 
 export class Beverage {
@@ -13,7 +12,8 @@ export class Beverage {
         this.imageUrl = imageUrl;
     }
 
-    render(selected: () => boolean, count: () => number, onClick: (id: string) => void): ReactElement {
+    render(selected: () => boolean, count: () => number, onClick: (id: string) => void, onHover: (beverage: Beverage|null) => void): ReactElement {
+
         return this.imageUrl !== '' ? (
                 <Badge
                     badgeContent={`${count()}`}
@@ -34,22 +34,26 @@ export class Beverage {
                         }
                 }}>
                     <Box component="section" sx={{
-                            p: 1,
-                            borderRadius: 3,
-                            border: selected() ? '3px solid yellow' : '',
-                            boxSizing: 'border-box',
-                            backgroundColor: count() > 0 ? '#00000000' : '#66666633',
-                            '&:hover': {backgroundColor: count() > 0 ? '#FFFFFF11' : '#66666666'}
-                    }} onClick={() => {onClick(this.name);}}>
-                        <ImageWithPopup
-                            src={this.imageUrl}
-                            alt={`${this.name}`}
-                            popupHeader={this.name}
-                            popupBody={this.description}
-                            popupSrc={this.imageUrl}
-                        />
+                        p: 1,
+                        borderRadius: 3,
+                        border: selected() ? '3px solid yellow' : '',
+                        boxSizing: 'border-box',
+                        backgroundColor: count() > 0 ? '#00000000' : '#66666633',
+                        '&:hover': {backgroundColor: count() > 0 ? '#FFFFFF11' : '#66666666'}
+                    }} onClick={() => {
+                        onClick(this.name);
+                    }}>
+                        <div style={{height: '90%'}}>
+                            <img
+                                src={this.imageUrl}
+                                alt={`${this.name}`}
+                                onMouseEnter={() => {onHover(this)}}
+                                onMouseLeave={() => {onHover(null)}}
+                                style={{height: '100%', width: 'auto', margin: '0 0px'}}
+                            />
+                        </div>
                     </Box>
                 </Badge>) :
-                <></>;
+            <></>;
     }
 }
