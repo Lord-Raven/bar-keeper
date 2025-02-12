@@ -100,7 +100,7 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, reverse, stage, setOnMenu
     const bannerElements = getMessageElements(chatNode);
     const bannerIsPost = getMessageElements(stage().chatNodes[chatNode?.parentId ?? '']) != null;
     return (
-        <div style={{display: 'flex', flexDirection: 'column', height: '100vh', }}>
+        <div style={{display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden'}}>
             <div style={{position: 'relative', height: '8%', overflow: 'hidden', zIndex: 50}}>
                 <GenerationUi stage={stage} setOnMenu={setOnMenu} setErrorMessage={setErrorMessage}/>
                 <Typography variant="h5" style={{float: 'right'}}>
