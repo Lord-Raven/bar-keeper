@@ -1,59 +1,20 @@
-import {Pace, WindupChildren} from "windups";
 import {CircularProgress, Icon, IconButton, Typography} from "@mui/material";
 import React, {FC, ReactNode, useEffect, useState} from "react";
 import {Stage} from "./Stage";
 import {ChatNode} from "./ChatNode";
 import {Cancel, CheckCircle, ArrowForward, ArrowBack} from "@mui/icons-material";
-import { motion, Variants } from "framer-motion";
-import {Emotion, Patron} from "./Patron";
+import {Emotion} from "./Patron";
 import Box from "./Box";
 import {GenerationUi} from "./GenerationUi";
 import {Direction} from "./Director";
 import {Beverage} from "./Beverage";
+import MessageWindup from "./MessageWindup";
+import BeverageDetails from "./BeverageDetails";
+import PatronImage from "./PatronImage";
+import MessageBanner from "./MessageBanner";
+import Vignette from "./Vignette";
 
-interface MessageWindupProps {
-    message: string;
-    read: boolean;
-    options: {};
-}
 
-interface TextWithQuotesProps { text: string; read: boolean; }
-
-const TextWithQuotes: React.FC<TextWithQuotesProps> = ({ text, read}) => {
-    const regex = /"([^"]*)"/g;
-    const parts = text.split(regex);
-    return (
-        <span className={read ? "prose-read" : "prose-unread"}>
-            {parts.map((part, index) => 
-                index % 2 === 1 ? (
-                    <span className={read ? "quote-read" : "quote-unread"} key={index}>
-                        "{part}"
-                    </span>
-                ) : (
-                    part
-                )
-            )} 
-        </span>
-    );
-};
-
-function MessageWindup({message, read, options}: MessageWindupProps) {
-
-    return (
-        <div style={{height: '100%', position: 'relative'}}>
-            <Typography color='#00000000' style={{userSelect: 'none'}}>{message}</Typography>
-            <div style={{position: 'absolute', top: '0px', left: '0px', zIndex: 10}}>
-                <WindupChildren {...options}>
-                    <Pace ms={3}>
-                        <Typography>{TextWithQuotes({text: message, read})}</Typography>
-                    </Pace>
-                </WindupChildren>
-            </div>
-        </div>
-    );
-}
-
-const CHARACTER_HEIGHT: number = 100;
 const getCharacterPosition = (index: number, amount: number) => {
     const start = 5;
     const end = 95;
@@ -75,134 +36,6 @@ const boxStyle = {
     boxSizing: 'border-box',
     '&:hover': {backgroundColor: '#000000EE'}
 }
-
-interface PatronImageProps {
-    patron: Patron;
-    emotion: Emotion;
-    xPosition: number;
-    isTalking: boolean;
-    present: boolean;
-}
-
-const PatronImage: FC<PatronImageProps> = ({patron, emotion, xPosition, isTalking, present}) => {
-    const variants: Variants = {
-        talking: {color: '#FFFFFF', opacity: 1, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT + 2}vh`, filter: 'brightness(1)', zIndex: 12, transition: {x: {ease: "easeOut"}, opacity: {ease: "easeOut"}}},
-        idle: {color: '#BBBBBB', opacity: 1, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT}vh`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}, opacity: {ease: "easeOut"}}},
-        absent: {color: '#BBBBBB', opacity: 0, x: `${xPosition}vw`, height: `${CHARACTER_HEIGHT}vh`, filter: 'brightness(0.8)', zIndex: 11, transition: {x: {ease: "easeOut"}, opacity: {ease: "easeOut"}}},
-    };
-
-    const altText = `${patron.name} (${emotion})`
-
-    return (
-        <motion.div
-            variants={variants}
-            initial='idle'
-            animate={present ? (isTalking ? 'talking' : 'idle') : 'absent'}
-            style={{position: 'absolute', bottom: '-25vh', width: 'auto', aspectRatio: '9 / 16', zIndex: 10}}>
-            <img src={patron.imageUrls[emotion]} style={{position: 'relative', width: '100%', height: '100%', transform: 'translate(-50%, 0)'}} alt={altText}/>
-        </motion.div>
-    );
-};
-
-interface VignetteProps {
-    active: boolean;
-}
-
-const Vignette: FC<VignetteProps> = ({active}) => {
-    const variants: Variants = {
-        active: {opacity: 1},
-        inactive: {opacity: 0}
-    }
-
-    return (
-        <motion.div
-            initial="inactive"
-            animate={active ? 'active' : 'inactive'}
-            variants={variants}
-            transition={{duration: 0.5}}
-            style={{
-                pointerEvents: 'none',
-                position: 'absolute',
-                top: '0',
-                left: '0',
-                width: '100vw',
-                height: '100vh',
-                background: 'radial-gradient(ellipse at center, #00000000 70%, #000000BB 90%)',
-                zIndex: 13,
-            }}
-        />
-    );
-}
-
-interface BeverageDetailsProps {
-    beverage: Beverage|null;
-}
-
-const BeverageDetails: FC<BeverageDetailsProps> = ({beverage}) => {
-    const variants: Variants = {
-        active: {opacity: 1},
-        inactive: {opacity: 0}
-    }
-    return (
-        <motion.div
-            animate={beverage ? 'active' : 'inactive'}
-            variants={variants}
-            transition={{duration: 0.3}}
-            style={{
-                width: '70vw',
-                height: '20vh',
-                display: 'flex',
-                left: '15vw',
-                bottom: '20vh',
-                zIndex: 20
-            }}
-        >
-            {beverage && <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'start', alignItems: 'flex-start', height: '20vh', p: '1', border: '1px dashed grey'}}>
-                <img src={beverage.imageUrl} alt={beverage.name} style={{height: '100%', width: 'auto', objectFit: 'cover'}}/>
-                <Box sx={{p: '1', display: 'flex', flexGrow: '1', flexDirection: 'column', maxWidth: '70%'}}>
-                    <Typography variant='h5'>{beverage.name}</Typography>
-                    <Typography>{beverage.description}</Typography>
-                </Box>
-            </Box>}
-        </motion.div>
-    )
-}
-
-interface MessageBannerProps {
-    elements: ReactNode|null;
-    post: boolean;
-}
-
-const MessageBanner: FC<MessageBannerProps> = ({elements, post}) => {
-    const variants: Variants = {
-        start: {x: '-100vw', opacity: 0},
-        visible: {x: 0, opacity: 1},
-        exit: {x: '100vw', opacity: 0},
-    };
-
-    return (
-        <motion.div
-            initial="start"
-            animate={elements ? 'visible' : (post ? 'exit' :  'start')}
-            variants={variants}
-            transition={{duration: 0.5}}
-            style={{
-                width: '100vw',
-                height: '20vh',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'fixed',
-                backgroundColor: '#000000BB',
-                bottom: '50vh',
-                left: 0,
-                zIndex: 20,
-            }}
-        >
-            {elements}
-        </motion.div>
-    );
-};
 
 interface MessageWindowProps {
     advance: () => Promise<void>;
