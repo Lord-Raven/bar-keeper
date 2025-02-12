@@ -339,7 +339,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     async processNextResponse() {
         this.isGenerating = true;
         if (!this.requestedNodes) {
-            console.log('No current request in progress--try again');
             this.requestedNodes = this.generateMessageContent(this.getTerminusOfNode(this.currentNode), '');
         }
         let result = await this.requestedNodes;
