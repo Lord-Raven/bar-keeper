@@ -25,7 +25,7 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
 
     return (
         <div style={{background: `radial-gradient(ellipse at center, #00000033 50%, #000000BB 90%)`, height: '100vh', width: '100vw'}}>
-            <div style={{display: 'flex', flexDirection: 'column', bottom: '2vh', gap: '2vh', verticalAlign: 'bottom', alignItems: 'center', marginTop: 'auto'}}>
+            <div style={{display: 'flex', flexDirection: 'column', bottom: '2vh', gap: '2vh', alignItems: 'center'}}>
                 <img src={`${stage().titleUrl}`} alt={"Barkeeper Title"} style={{maxWidth: '100%', height: 'auto'}}/>
                 {generating ? (
                     <>
