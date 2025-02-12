@@ -25,9 +25,10 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
 
     return (
         <div style={{background: `radial-gradient(ellipse at center, #00000033 50%, #000000BB 90%)`, height: '100vh', width: '100vw'}}>
-            <div style={{backgroundImage: `url(${stage().titleUrl})`, backgroundPosition: 'top center', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed', height: '100vh', width: '100vw'}}>
+            <div style={{display: 'flex', flexDirection: 'column', bottom: '2vh', gap: '2vh', verticalAlign: 'bottom', alignItems: 'center', marginTop: 'auto'}}>
+                <img src={`url(${stage().titleUrl}`} alt={"Barkeeper Title"} style={{maxWidth: '100%', height: 'auto'}}/>
                 {generating ? (
-                    <div style={{display: 'flex', flexDirection: 'column', bottom: '2vh', gap: '2vh', alignItems: 'center', marginTop: 'auto'}}>
+                    <>
                         <Box style={{backgroundColor: '#00000088'}} color={'primary'}>
                         <Typography>
                             {stage().loadingProgress}% - {stage().loadingDescription}
@@ -35,9 +36,9 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
                         <LinearProgress sx={{outline: 'primary'}} variant="determinate" color="success"
                                         value={stage().loadingProgress}/>
                         </Box>
-                    </div>
+                    </>
                 ) : (
-                    <div style={{display: 'flex', flexDirection: 'column', bottom: '2vh', gap: '2vh', verticalAlign: 'bottom', alignItems: 'center', marginTop: 'auto'}}>
+                    <>
                         <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
                                 startIcon={stage().settingSummary ? <Replay/> : <ArrowForward/>}
                                 onClick={stage().settingSummary ? () => setConfirmReset(true) : handleGenerateClick}>
@@ -67,7 +68,7 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
                                 <Typography variant="h5" color='primary'>Continue</Typography>
                             </Button>
                         )}
-                    </div>
+                    </>
                 )}
             </div>
         </div>
