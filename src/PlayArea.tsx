@@ -100,89 +100,91 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, reverse, stage, setOnMenu
     const bannerElements = getMessageElements(chatNode);
     const bannerIsPost = getMessageElements(stage().chatNodes[chatNode?.parentId ?? '']) != null;
     return (
-        <div style={{display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden'}}>
-            <div style={{position: 'relative', height: '8%', overflow: 'hidden', zIndex: 50}}>
-                <GenerationUi stage={stage} setOnMenu={setOnMenu} setErrorMessage={setErrorMessage}/>
-                <Typography variant="h5" style={{float: 'right'}}>
-                    Night {chatNode?.night ?? 1}
-                </Typography>
-            </div>
-            <div
-                 style={{
-                     position: 'relative',
-                     flexGrow: '1',
-                     left: '1%',
-                     width: '98%',
-                     alignContent: 'center',
-                     zIndex: 15,
-                     overflow: 'hidden'
-            }}>
-                <Box layout sx={{...boxStyle, bottom: '17vh'}}>
-                    <div style={{width: '100%'}}>
-                        <div>
-                            <Typography variant="h5" color="#AAAAAA">{chatNode?.speakerId ?? ''}</Typography>
-                        </div>
-                        <div>
-                            <MessageWindup message={message} read={chatNode?.read ?? false}
-                                           options={{
-                                               onFinished: () => {
-                                                   setDoneWinding(true);
-                                               }, skipped: doneWinding
-                                           }}/>
-                        </div>
-                        <div>
-                            <IconButton style={{outline: 1, float: 'left'}}
-                                        disabled={advancing || !chatNode || !chatNode?.parentId}
-                                        color={'primary'}
-                                        onClick={recede}>
-                                <ArrowBack/>
-                            </IconButton>
-                            {advancing ? (
-                                <CircularProgress style={{float: 'right'}}/>
-                            ) : (makingBeverageDecision ? (
-                                    selectedBeverage ? (
+        <div style={{position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden'}}>
+            <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
+                <div style={{position: 'relative', height: '8%', overflow: 'hidden', zIndex: 50}}>
+                    <GenerationUi stage={stage} setOnMenu={setOnMenu} setErrorMessage={setErrorMessage}/>
+                    <Typography variant="h5" style={{float: 'right'}}>
+                        Night {chatNode?.night ?? 1}
+                    </Typography>
+                </div>
+                <div
+                     style={{
+                         position: 'relative',
+                         flexGrow: '1',
+                         left: '1%',
+                         width: '98%',
+                         alignContent: 'center',
+                         zIndex: 15,
+                         overflow: 'hidden'
+                }}>
+                    <Box layout sx={{...boxStyle, bottom: '17vh'}}>
+                        <div style={{width: '100%'}}>
+                            <div>
+                                <Typography variant="h5" color="#AAAAAA">{chatNode?.speakerId ?? ''}</Typography>
+                            </div>
+                            <div>
+                                <MessageWindup message={message} read={chatNode?.read ?? false}
+                                               options={{
+                                                   onFinished: () => {
+                                                       setDoneWinding(true);
+                                                   }, skipped: doneWinding
+                                               }}/>
+                            </div>
+                            <div>
+                                <IconButton style={{outline: 1, float: 'left'}}
+                                            disabled={advancing || !chatNode || !chatNode?.parentId}
+                                            color={'primary'}
+                                            onClick={recede}>
+                                    <ArrowBack/>
+                                </IconButton>
+                                {advancing ? (
+                                    <CircularProgress style={{float: 'right'}}/>
+                                ) : (makingBeverageDecision ? (
+                                        selectedBeverage ? (
+                                            <IconButton style={{outline: 1, float: 'right'}} disabled={advancing}
+                                                        color={'primary'}
+                                                        onClick={proceed}>
+                                                <CheckCircle/>
+                                            </IconButton>
+                                        ) : (
+                                            <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
+                                                <Cancel/>
+                                            </Icon>
+                                        )
+                                    ) : (
                                         <IconButton style={{outline: 1, float: 'right'}} disabled={advancing}
                                                     color={'primary'}
                                                     onClick={proceed}>
-                                            <CheckCircle/>
+                                            <ArrowForward/>
                                         </IconButton>
-                                    ) : (
-                                        <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
-                                            <Cancel/>
-                                        </Icon>
                                     )
-                                ) : (
-                                    <IconButton style={{outline: 1, float: 'right'}} disabled={advancing}
-                                                color={'primary'}
-                                                onClick={proceed}>
-                                        <ArrowForward/>
-                                    </IconButton>
                                 )
-                            )
-                            }
+                                }
+                            </div>
                         </div>
-                    </div>
-                </Box>
-                <Box layout sx={{...boxStyle, height: '15vh'}}>
-                    <div
-                        style={{
-                            height: '100%',
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'space-around'
-                        }}>
-                        {stage().beverages.map(beverage => beverage.render(() => {
-                            return beverage.name == selectedBeverage
-                        }, () => {
-                            return stage().currentNode?.beverageCounts[beverage.name] ?? 1
-                        }, handleBeverageClick, setHoveredBeverage))}
-                    </div>
-                </Box>
-                <BeverageDetails beverage={hoveredBeverage}/>
-                <MessageBanner
-                    elements = {bannerElements}
-                    post = {bannerIsPost}
-                />
+                    </Box>
+                    <Box layout sx={{...boxStyle, height: '15vh'}}>
+                        <div
+                            style={{
+                                height: '100%',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-around'
+                            }}>
+                            {stage().beverages.map(beverage => beverage.render(() => {
+                                return beverage.name == selectedBeverage
+                            }, () => {
+                                return stage().currentNode?.beverageCounts[beverage.name] ?? 1
+                            }, handleBeverageClick, setHoveredBeverage))}
+                        </div>
+                    </Box>
+                    <BeverageDetails beverage={hoveredBeverage}/>
+                    <MessageBanner
+                        elements = {bannerElements}
+                        post = {bannerIsPost}
+                    />
+                </div>
             </div>
             {Object.keys(stage().patrons).map(patronId => {
                 const patron = stage().patrons[patronId];
