@@ -8,14 +8,16 @@ project_name: "Barkeeper"
 tagline: "A simple barkeeping sim based on any card."
 
 creator_notes: "
-This is little more than a proof of concept for the kind of experiences that Chub's stages can produce. 
+This is little more than a proof of concept for the kind of full-screen experiences that Chub's stages can produce. 
 <br>
 <br>
 **Warning**
-_This stage makes *many* generative calls, particularly when starting a new game. It will burn through tokens and image generation.
+_I do _not_ recommend playing this stage if you rely on a jailbreak or have limited tokens._
 <br>
+<br>
+This stage makes *many* generative calls, particularly when starting a new game. It will burn through tokens and image generation. 
 Requests include the user's jailbreak, but they also include additional instructions and details that are often the result of other text gen requests. 
-I have done zero testing with corporate models and can offer no expectations for how this stage could impact your account._ 
+I have done zero testing with corporate models and can offer no expectations for how this stage could impact your account. 
 <br>
 <br>
 **What is this?**

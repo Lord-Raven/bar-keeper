@@ -42,14 +42,16 @@ export const Title: FC<TitleProps> = ({ stage, setOnMenu, setErrorMessage }) => 
                     <>
                         <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
                                 startIcon={stage().settingSummary ? <Replay/> : <ArrowForward/>}
-                                onClick={stage().settingSummary ? () => setConfirmReset(true) : handleGenerateClick}>
+                                onClick={() => setConfirmReset(true)}>
                             <Typography variant="h5" color='primary'>Start New Game</Typography>
                         </Button>
                         {confirmReset && (
                             <div>
-                                <Typography variant="h5" color='primary'>This will delete all progress and start over!</Typography>
-                                <div style={{display: 'flex', justifyContent: 'center', flexDirection: 'row'}}>
-                                    <Button style={{outline: 1, backgroundColor: '#00000088', paddingRight: '1vw'}} color={'primary'}
+                                {stage().settingSummary ?
+                                    <Typography variant="h5" color='primary'>This will delete all progress and start over!</Typography> :
+                                    <Typography variant="h5" color='primary'>Warning! This could burn a _lot_ of tokens and may not be safe if you rely on a jailbreak.</Typography>}
+                                <div style={{display: 'flex', justifyContent: 'center', flexDirection: 'row', gap: '1vw'}}>
+                                    <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
                                             startIcon={<Check/>}
                                             onClick={() => handleGenerateClick()}>
                                         <Typography variant="h5" color='primary'>Okay!</Typography>
