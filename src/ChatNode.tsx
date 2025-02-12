@@ -36,42 +36,41 @@ export async function createNodes(script: string, commonProps: Partial<ChatNode>
         read: false,
         night: 0
     };
-    commonProps.beverageCounts = stage.beverages.reduce((acc, beverage) => {
+    let currentBeverageCounts: {[key: string]: number} = stage.beverages.reduce((acc, beverage) => {
             acc[beverage.name] = (commonProps && commonProps.beverageCounts && Object.keys(commonProps.beverageCounts).includes(beverage.name)) ? (commonProps.beverageCounts[beverage.name] - (commonProps.selectedBeverage == beverage.name ? 1 : 0)) : 1;
             return acc;
         }, {} as { [key: string]: number});
-    commonProps.selectedBeverage = null;
     let currentNode: ChatNode|null = null;
     let currentSpeaker = '';
     let currentDialogue = '';
     let nodes: ChatNode[] = [];
-
 
     for (let line of script.trim().split('\n')) {
         const match = line.match(/^\**(.[^*]+)\**:\s*(.+)$/i);
         if (match) {
             // If there's a current dialogue, push it to the parsedLines array
             if (currentSpeaker && currentDialogue.trim().length > 0) {
-                currentNode = await addNode({...baseNode, id: generateUuid(), message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps}, commonProps, currentNode, nodes, stage);
+                currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatrons: {}, message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
+                commonProps.presentPatrons = currentNode.presentPatrons;
             }
             // Start a new dialogue
             currentSpeaker = match[1];
             currentDialogue = trimSymbols(match[2], TRIM_SYMBOLS).trim();
         } else if (currentSpeaker && currentDialogue.trim().length > 0) {
             // Continue the current dialogue
-            currentNode = await addNode({...baseNode, id: generateUuid(), message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps}, commonProps, currentNode, nodes, stage);
-
+            currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatrons: {}, message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
+            commonProps.presentPatrons = currentNode.presentPatrons;
             currentDialogue = line.trim();
         }
     }
     if (currentSpeaker && currentDialogue.trim().length > 0) {
-        await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatrons: {}, message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps}, commonProps, currentNode, nodes, stage);
+        await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatrons: {}, message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: (currentNode ? currentNode.id : null), ...commonProps, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
     }
 
     return nodes;
 }
 
-async function addNode(newNode: ChatNode, commonProps: Partial<ChatNode> = {}, parentNode: ChatNode|null, nodes: ChatNode[], stage: Stage): Promise<ChatNode> {
+async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: ChatNode[], stage: Stage): Promise<ChatNode> {
     if (parentNode != null) {
         parentNode.childIds.push(newNode.id);
     }
@@ -79,7 +78,7 @@ async function addNode(newNode: ChatNode, commonProps: Partial<ChatNode> = {}, p
         if (newNode.speakerId) {
             const targetPatronId = Object.keys(stage.patrons).find(patronId => stage.patrons[patronId].name.toLowerCase().includes(newNode.speakerId?.toLowerCase() ?? 'nevereverever'));
             const targetPatron = stage.patrons[targetPatronId ?? ''];
-            if (targetPatronId && targetPatron) {
+            if (targetPatronId && targetPatron && newNode.presentPatrons[targetPatronId] != null) {
                 const result = (await stage.pipeline.predict("/predict", {
                     param_0: newNode.message
                 }));
@@ -87,9 +86,7 @@ async function addNode(newNode: ChatNode, commonProps: Partial<ChatNode> = {}, p
                     label: string;
                 }) => confidence.label != 'neutral');
                 if (emotionData.length > 0 && emotionData[0].confidence > 0.2) {
-                    // Update commonProps patron list for future nodes to share this emotion change.
-                    commonProps.presentPatrons = {...commonProps.presentPatrons};
-                    newNode.presentPatrons = commonProps.presentPatrons;
+                    newNode.presentPatrons = {...newNode.presentPatrons};
                     const emotion = emotionRouting[emotionData[0].label as Emotion];
                     newNode.presentPatrons[targetPatronId] = emotion;
                     // Await new image? Maybe just let it run in the background?
