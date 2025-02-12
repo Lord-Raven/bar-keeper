@@ -7,7 +7,6 @@ import titleUrl from './assets/title.png'
 import { Beverage } from "./Beverage";
 
 export const TRIM_SYMBOLS = '\\-*#';
-export const TITLE_IMAGE_URL = 'https://i.imgur.com/m35kGjZ.png';
 
 export function buildSection(name: string, body: string) {
     return `###${name.toUpperCase()}:\n${body.trim()}\n\n`;
@@ -63,14 +62,15 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `NAME: Toilet Wine\nDESCRIPTION: An old bleach jug of questionably-sourced-but-unquestionably-alcoholic red 'wine.'\n\n` +
             `NAME: Love Potion #69\nDESCRIPTION: It's fuzzy, bubbly, and guaranteed to polish your drunk goggles.\n\n` +
             `NAME: Classic Grog\nDESCRIPTION: Cheap rum cut with water and lime juice until it barely tastes like anything, served in a sandy bottle.\n\n` +
-            `NAME: Synth Mead\nDESCRIPTION: Bees died out long ago, but hypervikings still live for the sweet taste of synthetic honey wine.\n\n` +
+            `NAME: Synth Mead\nDESCRIPTION: Bees died out long ago, but hypervikings still live for the sweet taste of synthetic honey wine.\n\n`) +
+        buildSection(`Current Beverages (Need ${5 - stage.beverages.length} More)`,
             stage.buildBeverageDescriptions()) +
         buildSection('Priority Instruction',
             `You are doing critical prep work for a roleplaying narrative. Instead of narrating, you will first use this planning response to define some beverages that the LOCATION will serve. ` +
             `This essential, preparatory response includes multiple lines defining a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
             `Output several varied and interesting beverages that suit the SETTING and LOCATION, ensuring each DESCRIPTION evokes diverse emotions, moods, or sensations. ` +
             `Refer to the EXAMPLE RESPONSES for the strict formatting reference. Be original, creative, and on-theme with the beverages you craft, ` +
-            `avoiding ideas which are too similar to the other generated entries in the BEVERAGES list. Define some drinks and promptly end the response.`) +
+            `avoiding ideas which are too similar to the CURRENT BEVERAGES. Define multiple drinks and promptly end the response.`) +
         '###FORMER INSTRUCTION:');
 }
 
@@ -200,12 +200,11 @@ export async function generate(stage: Stage) {
         await generateDistillation(stage);
 
         stage.setLoadProgress(3, 'Generating title image.');
-        stage.titleUrl = await stage.makeImageFromImage({
-            prompt: `(plain white title text on plain black background: "Barkeeper" with subtitle: "A Stage Sim"). Title image for a bartending sim with these themes: ${stage.themeSummary}.`,
+        stage.titleUrl = await stage.makeImage({
+            prompt: `(white title text on plain black background: "Barkeeper" with subtitle: "A Stage Sim"). Title image for a bartending sim with these themes: ${stage.themeSummary}.`,
             negative_prompt: '',
-            image: TITLE_IMAGE_URL,
             remove_background: true,
-            strength: 0.5
+            aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
         }, titleUrl);
 
         stage.setLoadProgress(5, 'Generating bar description.');
