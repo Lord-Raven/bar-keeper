@@ -25,7 +25,7 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
 
     return (
         <div style={{background: `radial-gradient(ellipse at center, #00000033 50%, #000000BB 90%)`, height: '100vh', width: '100vw'}}>
-            <div style={{backgroundImage: `url(${stage().titleUrl})`, backgroundPosition: 'top center', backgroundSize: 'auto 100%', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed', height: '100vh', width: '100vw'}}>
+            <div style={{backgroundImage: `url(${stage().titleUrl})`, backgroundPosition: 'top center', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed', height: '100vh', width: '100vw'}}>
                 {generating ? (
                     <div style={{display: 'flex', flexDirection: 'column', bottom: '2vh', gap: '2vh', alignItems: 'center', marginTop: 'auto'}}>
                         <Box style={{backgroundColor: '#00000088'}} color={'primary'}>
@@ -37,7 +37,7 @@ export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
                         </Box>
                     </div>
                 ) : (
-                    <div style={{display: 'flex', flexDirection: 'column', bottom: '2vh', gap: '2vh', alignItems: 'center', marginTop: 'auto'}}>
+                    <div style={{display: 'flex', flexDirection: 'column', bottom: '2vh', gap: '2vh', verticalAlign: 'bottom', alignItems: 'center', marginTop: 'auto'}}>
                         <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
                                 startIcon={stage().settingSummary ? <Replay/> : <ArrowForward/>}
                                 onClick={stage().settingSummary ? () => setConfirmReset(true) : handleGenerateClick}>
