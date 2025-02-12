@@ -17,7 +17,7 @@ import { register } from "register-service-worker";
 import {buildSection, generatePatrons} from "./Generator";
 import {ChatNode, createNodes} from "./ChatNode";
 import {Client} from "@gradio/client";
-import {PlayArea} from "./PlayArea";
+import {Screen} from "./Screen";
 import titleUrl from './assets/title.png'
 
 type MessageStateType = any;
@@ -144,7 +144,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             patrons: this.patrons,
             dummyPatrons: this.dummyPatrons,
             nightlySummaries: this.nightlySummaries,
-            titleUrl: this.titleUrl,
+            //titleUrl: this.titleUrl,
         };
     }
 
@@ -161,10 +161,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.chatNodes = chatState.chatNodes ?? {};
             this.currentNode = chatState.currentMessageId && this.chatNodes[chatState.currentMessageId] ? this.chatNodes[chatState.currentMessageId] : null;
             this.patrons = chatState.patrons ?? {};
-            console.log(chatState.dummyPatrons);
             this.dummyPatrons = chatState.dummyPatrons ?? [];
             this.nightlySummaries = chatState.nightlySummaries ?? [];
-            this.titleUrl = chatState.titleUrl ?? titleUrl;
+            //this.titleUrl = chatState.titleUrl ?? titleUrl;
         }
     }
 
@@ -402,7 +401,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     render(): ReactElement {
 
-        return <PlayArea stage={() => {return this}}/>;
+        return <Screen stage={() => {return this}}/>;
     };
 
 }

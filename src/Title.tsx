@@ -4,12 +4,12 @@ import {Box, Button, LinearProgress, Typography} from "@mui/material";
 import {generate} from "./Generator";
 import {ArrowForward, Replay, Cancel, Check} from "@mui/icons-material";
 
-interface TitleScreenProps {
+interface TitleProps {
     stage: () => Stage;
     setOnMenu: (onMenu: boolean) => void;
 }
 
-export const TitleScreen: FC<TitleScreenProps> = ({ stage, setOnMenu }) => {
+export const Title: FC<TitleProps> = ({ stage, setOnMenu }) => {
     const [generating, setGenerating] = useState<boolean>(false);
     const [confirmReset, setConfirmReset] = useState<boolean>(false);
 

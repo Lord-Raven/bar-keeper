@@ -3,7 +3,6 @@ import { Stage } from "./Stage";
 import {Emotion, emotionPrompts, Patron} from "./Patron";
 import bottleUrl from './assets/bottle.png'
 import silhouetteUrl from './assets/silhouette.png'
-import titleUrl from './assets/title.png'
 import { Beverage } from "./Beverage";
 
 export const TRIM_SYMBOLS = '\\-*#';
@@ -195,17 +194,17 @@ export async function generate(stage: Stage) {
         stage.chatNodes = {};
         stage.nightlySummaries = {};
         stage.dummyPatrons = [];
-        stage.titleUrl = titleUrl;
+        //stage.titleUrl = titleUrl;
         stage.setLoadProgress(1, 'Distilling card.');
         await generateDistillation(stage);
 
-        stage.setLoadProgress(3, 'Generating title image.');
+        /*stage.setLoadProgress(3, 'Generating title image.');
         stage.titleUrl = await stage.makeImage({
             prompt: `(white title text on plain black background: "Barkeeper" with subtitle: "A Stage Sim"). Title image for a bartending sim with these themes: ${stage.themeSummary}.`,
             negative_prompt: '',
             remove_background: true,
             aspect_ratio: AspectRatio.CINEMATIC_HORIZONTAL // 1536 x 640
-        }, titleUrl);
+        }, titleUrl);*/
 
         stage.setLoadProgress(5, 'Generating bar description.');
         let textResponse = await stage.generator.textGen({
