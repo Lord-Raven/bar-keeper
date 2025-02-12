@@ -231,8 +231,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             nightSummaries +
             buildSection('Sample Response', sampleScript) +
             (fromNode ? buildSection('Log', this.buildHistory(fromNode)) : '') +
-            buildSection('Instruction Override', `${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}`) +
-            buildSection('Standard Instruction', '{{suffix}}');
+            buildSection('Critical Instruction', `${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}`) +
+            '###STANDARD INSTRUCTION:';
     }
 
     async reverseMessage() {
@@ -303,8 +303,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                             this.buildPatronDescriptions() +
                             buildSection('Beverages', this.buildBeverageDescriptions()) +
                             (fromNode ? buildSection('Log', this.buildHistory(fromNode)) : '') +
-                            buildSection('Instruction Override', 'Utilize this response to summarize the events in the LOG. You should produce an abridged account of the key events and interactions that occurred in the bar this evening, based on an analysis of the LOG.') +
-                            buildSection('Standard Instruction', '{{suffix}}'),
+                            buildSection('Current Instruction', 'Utilize this response to summarize the events in the LOG. You should produce an abridged account of the key events and interactions that occurred in the bar this evening, based on an analysis of the LOG.') +
+                            '###FUTURE INSTRUCTION:',
                         max_tokens: 250,
                         min_tokens: 50,
                         include_history: false
@@ -324,8 +324,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             try {
                 let textGen = await this.generator.textGen({
                     prompt: this.buildStoryPrompt(this.getTerminusOfNode(this.currentNode), `${this.director.getPromptInstruction(this, nodeProps)}\n${additionalContext}`),
-                    max_tokens: 450,
-                    min_tokens: 50,
+                    max_tokens: 600,
+                    min_tokens: 100,
                     include_history: false
                 });
                 if (textGen?.result?.length) {
