@@ -237,7 +237,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async reverseMessage() {
         if (this.currentNode && this.currentNode.parentId && this.chatNodes[this.currentNode.parentId]) {
-            this.setCurrentNode(this.chatNodes[this.currentNode.parentId]);
+            this.setCurrentNode(this.chatNodes[this.currentNode.parentId], true);
         }
     }
 
@@ -254,7 +254,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             await this.processNextResponse();
         } else {
             console.log('setting currentNode');
-            this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]]);
+            this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]], false);
             this.kickOffRequestedNodes(this.currentNode);
         }
     }
@@ -269,8 +269,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
     }
 
-    setCurrentNode(newNode: ChatNode) {
-        if (this.currentNode && this.currentNode != newNode && this.currentNode.childIds.length > 0) {
+    setCurrentNode(newNode: ChatNode, reverse: boolean) {
+        if (this.currentNode && this.currentNode != newNode && this.currentNode.childIds.length > 0 && !reverse) {
             this.currentNode.read = true;
         }
         this.currentNode = newNode;
@@ -355,7 +355,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 this.currentNode.childIds.push(selectedNode.id);
                 this.currentNode.selectedChildId = selectedNode.id;
             }
-            this.setCurrentNode(selectedNode);
+            this.setCurrentNode(selectedNode, false);
         } else {
             console.log('Failed to generate new content; try again.');
         }

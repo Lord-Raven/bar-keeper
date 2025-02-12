@@ -115,7 +115,7 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, reverse, stage, setOnMenu
                          left: '1%',
                          width: '98%',
                          alignContent: 'center',
-                         zIndex: 15,
+                         zIndex: 20,
                          overflow: 'hidden'
                 }}>
                     <Box layout sx={{...boxStyle, bottom: '17vh'}}>
