@@ -306,7 +306,7 @@ export async function generateDummyPatrons(stage: Stage) {
 }
 
 export async function generatePatrons(stage: Stage, setErrorMessage: (message: string) => void) {
-    const characters: Character[] = [...Object.values(stage.characters), {...basicCharacter, name: 'spare'}, {...basicCharacter, name: 'another'}, {...basicCharacter, name: 'more'}];
+    const characters: Character[] = [...Object.values(stage.characters), {...basicCharacter, name: 'patron 1'}, {...basicCharacter, name: 'patron 2'}, {...basicCharacter, name: 'patron 3'}];
 
     for (let character of characters) {
         if (!Object.keys(stage.patrons).includes(character.name)) {

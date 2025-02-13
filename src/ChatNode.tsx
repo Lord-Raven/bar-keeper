@@ -44,37 +44,38 @@ export async function createNodes(script: string, commonProps: Partial<ChatNode>
     let currentSpeaker = '';
     let currentDialogue = '';
     let nodes: ChatNode[] = [];
+    let presentPatrons = {...commonProps.presentPatrons};
 
     for (let line of script.trim().split('\n')) {
         const match = line.match(/^\**(.[^*]+)\**:\s*(.+)$/i);
         if (match) {
             // If there's a current dialogue, push it to the parsedLines array
             if (currentSpeaker && currentDialogue.trim().length > 0) {
-                currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatrons: {}, message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
-                commonProps.presentPatrons = currentNode.presentPatrons;
+                currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps, presentPatrons: {...presentPatrons}, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
+                presentPatrons = currentNode.presentPatrons;
             }
             // Start a new dialogue
             currentSpeaker = match[1];
             currentDialogue = trimSymbols(match[2], TRIM_SYMBOLS).trim();
         } else if (currentSpeaker && currentDialogue.trim().length > 0) {
             // Continue the current dialogue
-            currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatrons: {}, message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
-            commonProps.presentPatrons = currentNode.presentPatrons;
+            currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps, presentPatrons: {...presentPatrons}, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
+            presentPatrons = currentNode.presentPatrons;
             currentDialogue = line.trim();
         }
     }
     if (currentSpeaker && currentDialogue.trim().length > 0) {
-        await addNode({...baseNode, id: generateUuid(), childIds: [], presentPatrons: {}, message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: (currentNode ? currentNode.id : null), ...commonProps, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
+        await addNode({...baseNode, id: generateUuid(), childIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: (currentNode ? currentNode.id : null), ...commonProps, presentPatrons: {...presentPatrons}, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
     }
 
     return nodes;
 }
 
 async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: ChatNode[], stage: Stage): Promise<ChatNode> {
-    if (parentNode != null) {
-        parentNode.childIds.push(newNode.id);
-    }
     if (!parentNode || newNode.message.trim() != '') {
+        if (parentNode != null) {
+            parentNode.childIds.push(newNode.id);
+        }
         if (newNode.speakerId) {
             const targetPatronId = Object.keys(stage.patrons).find(patronId => stage.patrons[patronId].name.toLowerCase().includes(newNode.speakerId?.toLowerCase() ?? 'nevereverever'));
             const targetPatron = stage.patrons[targetPatronId ?? ''];
