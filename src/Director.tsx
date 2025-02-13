@@ -94,6 +94,7 @@ export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): 
     const history = startNode ? stage.getNightlyNodes(startNode) : [];
     const drinksServed = history.filter(node => directionCheck(stage, node, Direction.PatronDrinkOutcome)).length;
     const visits = history.filter(node => directionCheck(stage, node, Direction.IntroducePatron)).length;
+    console.log(`drinksServed: ${drinksServed}, visits: ${visits}`);
 
     let selectedPatronId = undefined;
     let newPresentPatrons = {...(startNode ? startNode.presentPatrons : {})};
@@ -142,7 +143,9 @@ export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): 
             // If max possible visits not hit, consider adding a patron (no more than five at a time)
             if (visits < Object.keys(stage.patrons).length && (presentPatronIds.length ?? 0) < 5) {
                 const keys = Object.keys(stage.patrons).filter(key => !presentPatronIds.includes(key) && !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == key));
+                console.log(keys);
                 let selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
+                console.log(`Selected ${selectedPatronId} for introduction`);
                 directionOdds.push(new Possibility(Direction.IntroducePatron, selectedPatronId, 25 - (presentPatronIds?.length ?? 0) * 5));
             }
 
