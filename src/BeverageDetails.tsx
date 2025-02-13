@@ -22,10 +22,10 @@ const BeverageDetails: FC<BeverageDetailsProps> = ({beverage}) => {
             style={{
                 position: 'absolute',
                 width: '70vw',
-                height: '25vh',
+                height: '30vh',
                 display: 'flex',
                 left: '15vw',
-                bottom: '20vh',
+                bottom: '16vh',
                 zIndex: 25
             }}
         >

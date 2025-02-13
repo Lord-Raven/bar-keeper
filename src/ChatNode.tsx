@@ -79,8 +79,6 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
             const targetPatronId = Object.keys(stage.patrons).find(patronId => stage.patrons[patronId].name.toLowerCase().includes(newNode.speakerId?.toLowerCase() ?? 'nevereverever'));
             const targetPatron = stage.patrons[targetPatronId ?? ''];
             if (targetPatronId && targetPatron && newNode.presentPatrons[targetPatronId] != null) {
-                console.log(`${newNode.speakerId} for emotional consideration, came up with ${targetPatronId}`);
-                console.log(`Message is ${newNode.message}`);
                 const result = (await stage.pipeline.predict("/predict", {
                     param_0: newNode.message
                 }));
