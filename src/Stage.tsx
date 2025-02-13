@@ -189,8 +189,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     buildPatronDescriptions(): string {
         const presentPatronIds = Object.keys(this.currentNode?.presentPatrons ?? {});
-        return buildSection('Absent Patrons', `${Object.keys(this.patrons).filter(patronId => !presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description} - ${this.patrons[patronId].personality}`).join('\n\n')}`) +
-            buildSection('Present Patrons', `${Object.keys(this.patrons).filter(patronId => presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description} - ${this.patrons[patronId].personality}`).join('\n\n')}`);
+        return buildSection('Present Patrons', `${Object.keys(this.patrons).filter(patronId => presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description} - ${this.patrons[patronId].personality}`).join('\n\n')}`) +
+            buildSection('Absent Patrons', `${Object.keys(this.patrons).filter(patronId => !presentPatronIds.includes(patronId)).map(patronId => `${this.patrons[patronId].name} - ${this.patrons[patronId].description} - ${this.patrons[patronId].personality}`).join('\n\n')}`);
     }
 
     getNightlyNodes(currentNode: ChatNode): ChatNode[] {
@@ -254,7 +254,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     kickOffRequestedNodes(fromNode: ChatNode|null) {
-        const currentTerminus = this.getTerminusOfNode(fromNode);
+        const currentTerminus = this.getTerminusOfChat(fromNode);
 
         // If this is a drink request, we can't kick this off until the last interaction
         if (!this.requestedNodes && (!currentTerminus || (currentTerminus.childIds.length == 0 && currentTerminus.direction != Direction.PatronDrinkRequest))) {
@@ -271,6 +271,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         if (this.currentNode) {
             console.log(this.currentNode);
         }
+    }
+
+    getTerminusOfChat(fromNode: ChatNode|null) {
+        while (fromNode && (fromNode.selectedChildId || fromNode.childIds.length > 0)) {
+            fromNode = this.chatNodes[fromNode.selectedChildId ?? fromNode.childIds[0]];
+        }
+        return fromNode;
     }
 
     getTerminusOfNode(fromNode: ChatNode|null) {
@@ -317,7 +324,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         while (retries-- > 0) {
             try {
                 let textGen = await this.generator.textGen({
-                    prompt: this.buildStoryPrompt(this.getTerminusOfNode(this.currentNode), getPromptInstruction(this, nodeProps)),
+                    prompt: this.buildStoryPrompt(this.getTerminusOfChat(this.currentNode), getPromptInstruction(this, nodeProps)),
                     max_tokens: 500,
                     min_tokens: 150,
                     include_history: false
@@ -336,7 +343,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     async processNextResponse() {
         this.isGenerating = true;
         if (!this.requestedNodes) {
-            this.requestedNodes = this.generateMessageContent(this.getTerminusOfNode(this.currentNode));
+            this.requestedNodes = this.generateMessageContent(this.getTerminusOfChat(this.currentNode));
         }
         let result = await this.requestedNodes;
         console.log(result);
