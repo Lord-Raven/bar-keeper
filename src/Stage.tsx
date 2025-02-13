@@ -166,7 +166,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     setLoadProgress(loadingProgress: number|undefined, loadingDescription: string) {
-        console.log(loadingProgress != undefined ? loadingDescription : 'Marking load complete.');
         this.loadingProgress = loadingProgress;
         this.loadingDescription = loadingDescription;
     }
@@ -248,7 +247,15 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         if (!this.currentNode || this.currentNode.childIds.length == 0) {
             await this.processNextResponse();
         }
-        this.setCurrentNode(this.chatNodes[this.currentNode?.childIds[0] ?? this.chatNodes[0].childIds[0]], false);
+        if (!this.currentNode) {
+            let someNode = this.chatNodes[Object.keys(this.chatNodes)[0]];
+            while(someNode.parentId) {
+                someNode = this.chatNodes[someNode.parentId];
+            }
+            this.setCurrentNode(someNode, false);
+        } else {
+            this.setCurrentNode(this.chatNodes[this.currentNode?.childIds[0] ?? this.chatNodes[0].childIds[0]], false);
+        }
         this.kickOffRequestedNodes(this.currentNode);
     }
 
