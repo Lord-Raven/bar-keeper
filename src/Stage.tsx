@@ -318,7 +318,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             try {
                 let textGen = await this.generator.textGen({
                     prompt: this.buildStoryPrompt(this.getTerminusOfNode(this.currentNode), getPromptInstruction(this, nodeProps)),
-                    max_tokens: 500,
+                    max_tokens: 600,
                     min_tokens: 100,
                     include_history: false
                 });

@@ -22,7 +22,7 @@ interface InstructionInput {
 }
 
 const generalInstruction = 'Your narration follows some strict formatting, where general storytelling is flavorfully and incrementally presented by a NARRATOR, and characters present their own dialog and actions. ' +
-    `Only PRESENT PATRONS and {{user}} are active at any time; ABSENT PATRONS are passive and used for context. Minor characters should be fleeting and quickly resolved from the story. Use second-person language when referring to {{user}}.`
+    `Only PRESENT PATRONS and {{user}} are active at any time; ABSENT PATRONS are dormant and only exist for context. Minor characters should be fleeting and quickly resolved from the story. Use second-person language when referring to {{user}}.`
 export const sampleScript = '\n' +
         `**NARRATOR**: General narration is provided by the NARRATOR.\n\n` +
         `**NARRATOR**: Each message should be about one line.\n\n` +
@@ -54,8 +54,8 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
         `${input.playerName} remains passive for the moment; the drink will be served in a future response. ${generalInstruction}`,
 
     PatronDrinkOutcome: input => `Continue the scene as ${input.patronName} accepts the drink ${input.playerName} has chosen: ${input.beverageName}. ` +
-        `Strongly steer the scene in a new direction--positive or negative--based on the nature of this beverage, ${input.patronName}'s reaction to the beverage, and how well the drink suits their current taste or mood. ` +
-        `${input.patronName} could be delighted, surprised, disappointed, disgusted, inspired, or even outraged. ${generalInstruction}`,
+        `Strongly steer the scene in a new direction--positive or negative--based on the nature of this beverage and how well it suits their current taste or mood. ` +
+        `${input.patronName} could be critical, delighted, surprised, disappointed, disgusted, inspired, or even outraged by this drink. ${generalInstruction}`,
 
     PatronLeaves: input => `Continue the scene as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar--other PRESENT PATRONS stick around (at least for now). ` +
         `Honor ${input.patronName}'s personal style and relationships with other PRESENT PATRONS or ${input.playerName}. ${generalInstruction}`,
@@ -82,12 +82,16 @@ export function getPromptInstruction(stage: Stage, node: Partial<ChatNode>): str
         beverageName: node.selectedBeverage ?? ''});
 }
 
+function directionCheck(stage: Stage, node: ChatNode, targetDirection: Direction) {
+    return node.direction == targetDirection && (!node.parentId || stage.chatNodes[node.parentId].direction != targetDirection);
+}
+
 export function determineNextNodeProps(stage: Stage, currentNode: ChatNode|null): Partial<ChatNode> {
     let directionOdds: Possibility[] = [];
 
     const history = currentNode ? stage.getNightlyNodes(currentNode) : [];
-    const drinksServed = history.filter(node => node.direction == Direction.PatronDrinkOutcome).length;
-    const visits = history.filter(node => node.direction == Direction.IntroducePatron).length;
+    const drinksServed = history.filter(node => directionCheck(stage, node, Direction.PatronDrinkOutcome)).length;
+    const visits = history.filter(node => directionCheck(stage, node, Direction.IntroducePatron)).length;
 
     let selectedPatronId = undefined;
     let newPresentPatrons = {...(currentNode ? currentNode.presentPatrons : {})};

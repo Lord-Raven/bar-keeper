@@ -68,7 +68,7 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
             `You are doing critical prep work for a roleplaying narrative. Instead of narrating, you will first use this planning response to define some beverages that the LOCATION will serve. ` +
             `This essential, preparatory response includes multiple lines defining a NAME and brief DESCRIPTION of each drink's appearance, bottle, odor, and flavor. ` +
             `Output several varied and interesting beverages that suit the SETTING and LOCATION, ensuring each DESCRIPTION evokes diverse emotions, moods, or sensations. ` +
-            `Refer to the EXAMPLE RESPONSES for the strict formatting reference. Be original, creative, and on-theme with the beverages you craft, ` +
+            `Refer to the EXAMPLE RESPONSES for the strict formatting reference. Be original, lore-rich, and on-theme with the beverages you craft, ` +
             `avoiding ideas which are too similar to the CURRENT BEVERAGES. Define multiple drinks and promptly end the response.`) +
         '###FUTURE INSTRUCTION:');
 }
@@ -92,7 +92,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
         buildSection('Current Instruction',
             `You are doing critical prep work for a roleplaying narrative. Instead of narrating, use this planning response to study the ` + (specific ?
                 `INPUT above and condense it into formatted output that describes this character as they will patronize the LOCATION. ` :
-                `SETTING above and generate a distinct, creative, and interesting character that might patronize the LOCATION. `) +
+                `SETTING above and generate a distinct, engaging, lore-rich, and interesting character that might patronize the LOCATION. `) +
             `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
             `Consider other ESTABLISHED PATRONS (if any) and ensure that the new character in your response is distinct from these. Potentially define ` +
             `connections between this new character and one or more ESTABLISHED PATRONS patrons. ` +
@@ -353,7 +353,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     return newPatron;
 }
 
-const patronImagePrompt: string = 'empty background, standing, full body';
+const patronImagePrompt: string = 'plain flat background, standing, full body';
 const patronImageNegativePrompt: string = 'border, ((close-up)), background elements, special effects, matching background, amateur, low quality, action, cut-off';
 
 export async function generatePatronImage(stage: Stage, patron: Patron, emotion: Emotion, setErrorMessage: (message: string) => void): Promise<void> {
@@ -382,7 +382,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
             negative_prompt: patronImageNegativePrompt,
             aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL,
             remove_background: true,
-            strength: 0.15
+            strength: 0.1
         }, patron.imageUrls[Emotion.neutral]);
         if (imageUrl == '') {
             setErrorMessage(`Failed to generate a ${emotion} patron image for ${patron.name}.`);
