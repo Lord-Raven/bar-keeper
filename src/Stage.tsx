@@ -264,7 +264,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         // If this is a drink request, we can't kick this off until the last interaction
         if (!this.requestedNodes && (!currentTerminus || (currentTerminus.childIds.length == 0 && currentTerminus.direction != Direction.PatronDrinkRequest))) {
-            console.log('Start');
+            console.log(`Start from ${fromNode?.id}`);
+            console.log(fromNode);
             this.requestedNodes = this.generateMessageContent(currentTerminus);
         }
     }
@@ -358,6 +359,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             result.forEach(node => this.chatNodes[node.id] = node);
             const endNode = this.getTerminusOfChat(this.currentNode);
             const startNode = result[0];
+            console.log(`End from ${endNode?.id}`);
+            console.log(endNode);
             if (endNode) {
                 startNode.parentId = endNode.id;
                 endNode.childIds.push(startNode.id);
@@ -369,7 +372,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.requestedNodes = null;
         this.isGenerating = false;
 
-        console.log('End');
         await this.updateChatState();
     }
 
