@@ -11,6 +11,26 @@ export function buildSection(name: string, body: string) {
     return `###${name.toUpperCase()}:\n${body.trim()}\n\n`;
 }
 
+// Replace trigger words with less triggering words, so image gen can succeed.
+export function substitute(input: string) {
+    const synonyms: {[key: string]: string} = {
+        'old-school': 'retro',
+        'old school': 'retro',
+        'oldschool': 'retro',
+        'youngster': 'individual',
+        'child': 'individual',
+        'kid': 'individual'
+    }
+    const regex = new RegExp(Object.keys(synonyms).join('|'), 'gi');
+
+    return input.replace(regex, (match) => {
+        const synonym = synonyms[match.toLowerCase()];
+        return match[0] === match[0].toUpperCase()
+            ? synonym.charAt(0).toUpperCase() + synonym.slice(1)
+            : synonym;
+    });
+}
+
 export function buildDistillationPrompt(stage: Stage, baseCharacter: Character): string {
     return (
         buildSection('Flavor Text', stage.replaceTags((baseCharacter.personality + ' ' + baseCharacter.description + '\n' + baseCharacter.scenario), {user: stage.player.name, char: baseCharacter.name})) +
@@ -139,7 +159,7 @@ export async function generateBeverageImage(stage: Stage, beverage: Beverage, se
     beverage.imageUrl = await stage.makeImage({
         //image: new URL(bottleUrl, import.meta.url).href,
         //strength: 0.75,
-        prompt: `(art style: ${stage.artSummary}), head-on, centered, empty background, negative space, (a lone bottle of this beverage: ${beverage.description})`,
+        prompt: substitute(`(art style: ${stage.artSummary}), head-on, centered, empty background, negative space, (a lone bottle of this beverage: ${beverage.description})`),
         negative_prompt: `background, frame, realism, borders, perspective, effects`,
         remove_background: true,
     }, bottleUrl);
@@ -262,7 +282,7 @@ export async function generateBarImage(stage: Stage, setErrorMessage: (message: 
 
 
     stage.barImageUrl = await stage.makeImage({
-        prompt: barPrompt,
+        prompt: substitute(barPrompt),
         negative_prompt: '((exterior)), (people), (outside), daytime, outdoors',
         aspect_ratio: AspectRatio.WIDESCREEN_HORIZONTAL
     }, '');
@@ -360,7 +380,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
 
     if (emotion == Emotion.neutral) {
         const imageUrl = await stage.makeImage({
-            prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, ${emotionPrompts[emotion]}, (${patron.description})`,
+            prompt: substitute((stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, ${emotionPrompts[emotion]}, (${patron.description})`),
             negative_prompt: patronImageNegativePrompt,
             aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL,
             remove_background: true
@@ -378,7 +398,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
         console.log(`Generate ${emotion} image for ${patron.name}.`)
         const imageUrl = await stage.makeImageFromImage({
             image: patron.imageUrls[Emotion.neutral],
-            prompt: (stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, (${emotionPrompts[emotion]}), (${patron.description})`,
+            prompt: substitute((stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, (${emotionPrompts[emotion]}), (${patron.description})`),
             negative_prompt: patronImageNegativePrompt,
             aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL,
             remove_background: true,
