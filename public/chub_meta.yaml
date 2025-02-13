@@ -8,39 +8,34 @@ project_name: "Barkeeper"
 tagline: "A simple barkeeping sim based on any card."
 
 creator_notes: "
+<b><span style=\"color:red;\">Warning! I do _not_ recommend playing this stage if you rely on a jailbreak or token budget.</span></b>
+<br>
+<br>
 This is little more than a proof of concept for the kind of full-screen experiences that Chub's stages can produce. 
 <br>
 <br>
-**Warning**
+Adding this stage to a chat will essentially convert that session into a simple bartending visual novel, 
+where the user's persona is a bartender who meets and interacts with various characters, but the only choices the player makes is what drinks to serve when prompted.  
+Characters will come and go, with a handful of drink prompts each night and a limited stock of each beverage. 
+Storylines and relationships may emerge and resolve organically, hopefully influenced by the drinks you choose to give. There's no end game, just a stream of nights and regulars.
 <br>
-_I do *not* recommend playing this stage if you rely on a jailbreak or token budget._
+<br>
+The stage will distill the chat's primary character card into a set of themes and use that to generate a bar, five beverages, and four characters based on the chat's primary character card--
+plus an additional character for each bot you add to the chat. The style and atmosphere vary wildly based upon the card you start it with.
 <br>
 <br>
 This stage makes *many* generative calls, particularly when starting a new game. It will burn through tokens and image generation. 
 Requests include the user's jailbreak, but they also include additional instructions and details that are often the result of other text gen requests. 
-I have done zero testing with corporate models and can offer no expectations for how this stage could impact your account. 
+_I have done zero testing with corporate models and offer no expectations for how this stage could impact your account._ 
 <br>
 <br>
-**What is this?**
-<br>
-Adding this stage to a chat will essentially convert that session into a simple bartending visual novel, 
-where the user's persona is a bartender who meets and interacts with various characters, but the only choices the player makes is what drinks to serve when prompted. 
-<br>
-<br>
-The stage will distill the chat's primary character card into a set of themes and use that to generate a bar, five beverages, and four characters based on the chat's primary character card--
-plus an additional character for each bot you add to the chat. Characters will come and go, with a handful of drink prompts each night and a limited stock of each beverage. 
-Storylines and relationships may emerge and resolve organically, hopefully influenced by the drinks you choose to give. There's no end game, just a stream of nights and regulars.
-<br>
-<br>
-The stage isn't particularly NSFW in itself, but it does contain some NSFW sample data; ultimately, the game derives themes from the character card, which could result in unsavory extrapolations---some of which may not be immediately transparent to the player.
-<br>
-<br>
+The stage isn't particularly NSFW in itself, but it does contain some NSFW sample data; ultimately, the game derives themes from the character card, which could result in unsavory extrapolations---some of which may not be immediately transparent to the player. 
 Chub will block image generation of questionable content, which could be triggered by the procedural nature of this stage's content generation--especially if the character you are using features immature themes. 
 If you are seeing lots of missing images (black silhouette default images for characters or drinks), please consider playing this stage with a different card. 
 <br>
 <br>
 \"New Game\" will always blow away all of the stage's content for that chat, so unless you are unhappy with everything that was generated and want a completely fresh start, I would suggest starting an entirely new chat. 
-If you dislike a particular piece of art that was generated, you can use the settings pane to regenerate specific drink and patron images. 
+If you dislike a particular piece of art that was generated, you can use the settings pane to regenerate specific drink and patron images.
 <br>
 <br>
 **Shortcomings**
@@ -48,8 +43,7 @@ If you dislike a particular piece of art that was generated, you can use the set
 I feel there are some clear shortfalls in what this stage achieves, and maybe some of these items could be addressed or at least improved with sufficient time or motivation, but I don't know that they will be. 
 <li>It probably looks terrible in some layouts--especially portrait. Maybe I'll try to fix that.<br>
 <li>There is an issue where stage-originated text gen requests can repeatedly fail. In my experience, refreshing a few times or clearing the cache can resolve this. If the stage stops loading new responses, this is likely the culprit.<br>
-<li>A lot of the stage's behavior and performance is contingent upon your personal generation settings; your jailbreak in particular could cause trouble if it is overpowering the stage's instructions. 
-It's a rough position because the purpose of the jailbreak is to overpower other instructions. Ironically, stages need a stage direction option for general text gen requests.<br>
+<li>A lot of the stage's behavior and performance is contingent upon your personal generation settings; your jailbreak in particular could cause trouble if it is overpowering the stage's instructions.<br>
 <li>The stage does very little quality control, so you are at the mercy of the LLM to properly format responses and not go off the rails with activity that isn't internally represented by the stage.<br>
 <br>
 <br>

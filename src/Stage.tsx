@@ -247,13 +247,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         if (!this.currentNode || this.currentNode.childIds.length == 0) {
             await this.processNextResponse();
-        } else {
-            this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]], false);
-            this.kickOffRequestedNodes(this.currentNode);
         }
+        this.setCurrentNode(this.chatNodes[this.currentNode?.childIds[0] ?? this.chatNodes[0].childIds[0]], false);
+        this.kickOffRequestedNodes(this.currentNode);
     }
 
     kickOffRequestedNodes(fromNode: ChatNode|null) {
+        console.log('Start');
         const currentTerminus = this.getTerminusOfChat(fromNode);
 
         // If this is a drink request, we can't kick this off until the last interaction
@@ -349,19 +349,20 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         console.log(result);
         if (result && result.length > 0) {
             result.forEach(node => this.chatNodes[node.id] = node);
-            let selectedNode = result[0];
-            if (this.currentNode) {
-                selectedNode.parentId = this.currentNode.id;
-                this.currentNode.childIds.push(selectedNode.id);
-                this.currentNode.selectedChildId = selectedNode.id;
+            const endNode = this.getTerminusOfChat(this.currentNode);
+            const startNode = result[0];
+            if (endNode) {
+                startNode.parentId = endNode.id;
+                endNode.childIds.push(startNode.id);
+                endNode.selectedChildId = startNode.id;
             }
-            this.setCurrentNode(selectedNode, false);
         } else {
             console.log('Failed to generate new content; try again.');
         }
         this.requestedNodes = null;
         this.isGenerating = false;
 
+        console.log('end');
         await this.updateChatState();
     }
 
