@@ -121,7 +121,9 @@ export function determineNextNodeProps(stage: Stage, currentNode: ChatNode|null)
             directionOdds.push(new Possibility(Direction.PatronProblem, '', presentPatronIds.length ?? 0 >= 1 ? 10 : 0));
 
             for (let patronId of presentPatronIds) {
-                directionOdds.push(new Possibility(Direction.PatronDrinkRequest, patronId, drinksServed < 5 ? 15 : 0));
+                if (currentNode && Object.values(currentNode.beverageCounts).reduce((total, count) => total + count, 0) > 0) {
+                    directionOdds.push(new Possibility(Direction.PatronDrinkRequest, patronId, drinksServed < 5 ? 15 : 0));
+                }
                 directionOdds.push(new Possibility(Direction.PatronLeaves, patronId,
                     Math.max(0, ((drinksServed - 2) * 3)) + // Increase odds when drinks served is >= 3
                     (presentPatronIds.length ?? 0) * 2 + // Increase odds by one per patron present
@@ -138,12 +140,12 @@ export function determineNextNodeProps(stage: Stage, currentNode: ChatNode|null)
                 directionOdds.push(new Possibility(Direction.IntroducePatron, selectedPatronId, 25 - (presentPatronIds?.length ?? 0) * 5));
             }
 
-            // Replicate all of this:
             // If we've had a couple visits and the bar is empty, start jacking up the night end odds.
             if (visits >= 2 && presentPatronIds.length  == 0) {
-                directionOdds.push(new Possibility(Direction.NightEnd, '', 10 + visits * 10));
+                directionOdds.push(new Possibility(Direction.NightEnd, '', 20 + visits * 10));
             }
-            directionOdds = directionOdds.filter(probability => probability.direction != currentNode?.direction ?? Direction.NightStart);
+            // Remove the direction that we are coming from; can't occur twice in a row.
+            directionOdds = directionOdds.filter(probability => probability.direction != (currentNode?.direction ?? Direction.NightStart));
             break;
         case Direction.PatronDrinkRequest:
             directionOdds.push(new Possibility(Direction.PatronDrinkOutcome, '', 1000));
