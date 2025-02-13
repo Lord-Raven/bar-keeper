@@ -22,7 +22,7 @@ interface InstructionInput {
 }
 
 const generalInstruction = 'Your narration follows some strict formatting, where general storytelling is flavorfully and incrementally presented by a NARRATOR, and characters present their own dialog and actions. ' +
-    `Only PRESENT PATRONS and {{user}} are active at any time; ABSENT PATRONS are dormant and only exist for context. Minor characters should be fleeting and quickly resolved from the story. Use second-person language when referring to {{user}}.`
+    `Only PRESENT PATRONS, {{user}}, and minor characters are active at any time; ABSENT PATRONS are dormant and only exist for context. Minor characters should be fleeting and quickly resolved from the story. Focus on achieving the aforementioned narrative beat in this response.`
 export const sampleScript = '\n' +
         `**NARRATOR**: General narration is provided by the NARRATOR.\n\n` +
         `**NARRATOR**: Each message should be about one line.\n\n` +
@@ -49,12 +49,12 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
 
     PatronProblem: input => `Continue the scene as one of the PRESENT PATRONS describes a personal problem to another PRESENT PATRON or ${input.playerName}. No one wants to order a drink at this time. ${generalInstruction}`,
 
-    PatronDrinkRequest: input => `Continue the scene as ${input.patronName} works up to asking the bartender, ${input.playerName}, for an unspecified drink. ` +
-        `${input.patronName} will simply describe the flavor or style of drink they are in the mood for, rather than specifying the particular beverage they want. ` +
+    PatronDrinkRequest: input => `Continue the scene as ${input.patronName} asks the bartender, ${input.playerName}, for an unspecified drink. ` +
+        `${input.patronName} will describe the flavor or style of drink they are in the mood for, rather than specifying the particular beverage they want. ` +
         `${input.playerName} remains passive for the moment; the drink will be served in a future response. ${generalInstruction}`,
 
     PatronDrinkOutcome: input => `Continue the scene as ${input.patronName} accepts the drink ${input.playerName} has chosen: ${input.beverageName}. ` +
-        `Strongly steer the scene in a new direction--positive or negative--based on the nature of this beverage and how well it suits their current taste or mood. ` +
+        `Dramatically steer the scene in a new direction--negative or positive--based on the nature of this beverage and how well it suits the patron's current taste or mood. ` +
         `${input.patronName} could be critical, delighted, surprised, disappointed, disgusted, inspired, or even outraged by this drink. ${generalInstruction}`,
 
     PatronLeaves: input => `Continue the scene as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar--other PRESENT PATRONS stick around (at least for now). ` +

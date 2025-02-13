@@ -26,7 +26,7 @@ export const Title: FC<TitleProps> = ({ stage, setOnMenu, setErrorMessage }) => 
 
     return (
         <div style={{background: `radial-gradient(ellipse at center, #00000055 50%, #000000BB 90%)`, height: '100vh', width: '100vw'}}>
-            <div style={{display: 'flex', flexDirection: 'column', bottom: '2vh', gap: '2vh', alignItems: 'center'}}>
+            <div style={{display: 'flex', flexDirection: 'column', bottom: '2vh', gap: '2vh', height: '100vh', width: '100vw', alignItems: 'center'}}>
                 <img src={`${stage().titleUrl}`} alt={"Barkeeper Title"} style={{maxWidth: '100%', maxHeight: '100%', width: '1536px', height: 'auto'}}/>
                 {generating ? (
                     <>

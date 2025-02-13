@@ -229,7 +229,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             buildSection('Sample Response', sampleScript) +
             (fromNode ? buildSection('Log', this.buildHistory(fromNode)) : '') +
             buildSection('Critical Instruction', `${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}`) +
-            '###STANDARD INSTRUCTION:';
+            '###GENERAL INSTRUCTION:';
     }
 
     async reverseMessage() {
