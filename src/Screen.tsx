@@ -35,7 +35,7 @@ export const Screen: FC<ScreenProps> = ({ stage }) => {
             flexDirection: 'column',
             color: '#ffffff'
         }}>
-            <ErrorPopup message = {errorMessage}/>
+
             <ThemeProvider theme={stage().theme}>
                 {onMenu ? (
                     <div>
