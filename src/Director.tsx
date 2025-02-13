@@ -50,8 +50,8 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
     PatronProblem: input => `Continue the scene as one of the PRESENT PATRONS describes a personal problem to another PRESENT PATRON or ${input.playerName}. No one wants to order a drink at this time. ${generalInstruction}`,
 
     PatronDrinkRequest: input => `Continue the scene as ${input.patronName} asks the bartender, ${input.playerName}, for an unspecified drink. ` +
-        `${input.patronName} will describe the flavor or style of drink they are in the mood for, rather than specifying the particular beverage they want. ` +
-        `${input.playerName} remains passive for the moment; the drink will be served in a future response. ${generalInstruction}`,
+        `${input.patronName} will describe the flavor or style of drink they are in the mood for, rather than declaring the particular beverage they want. ` +
+        `${input.playerName} passively listens to the request with minimal input; they will prepare and serve the drink in a future response. ${generalInstruction}`,
 
     PatronDrinkOutcome: input => `Continue the scene as ${input.patronName} accepts the drink ${input.playerName} has chosen: ${input.beverageName}. ` +
         `Dramatically steer the scene in a new direction--negative or positive--based on the nature of this beverage and how well it suits the patron's current taste or mood. ` +
