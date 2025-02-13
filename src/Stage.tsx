@@ -253,10 +253,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 someNode = this.chatNodes[someNode.parentId];
             }
             this.setCurrentNode(someNode, false);
-        } else {
-            this.setCurrentNode(this.chatNodes[this.currentNode?.childIds[0] ?? this.chatNodes[0].childIds[0]], false);
+        } else if (this.currentNode.childIds.length > 0) {
+            this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]], false);
+            this.kickOffRequestedNodes(this.currentNode);
         }
-        this.kickOffRequestedNodes(this.currentNode);
     }
 
     kickOffRequestedNodes(fromNode: ChatNode|null) {
