@@ -85,7 +85,7 @@ export function getPromptInstruction(stage: Stage, node: Partial<ChatNode>): str
 }
 
 function directionCheck(stage: Stage, node: ChatNode, targetDirection: Direction) {
-    return node.direction == targetDirection && (!node.parentId || stage.chatNodes[node.parentId].direction != targetDirection);
+    return node.direction == targetDirection && (!node.parentId || stage.chatNodes[node.parentId].direction != node.direction || stage.chatNodes[node.parentId].selectedPatronId != node.selectedPatronId);
 }
 
 export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): Partial<ChatNode> {
@@ -103,7 +103,6 @@ export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): 
 
     // If coming from a departure, drop that character from the new present list.
     if (startNode && startNode.direction == Direction.PatronLeaves && presentPatronIds.includes(startNode.selectedPatronId ?? '')) {
-        console.log(`Removing ${startNode.selectedPatronId}`);
         delete newPresentPatrons[startNode.selectedPatronId ?? ''];
     }
 
@@ -136,6 +135,7 @@ export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): 
                 directionOdds.push(new Possibility(Direction.PatronLeaves, patronId,
                     Math.max(0, ((drinksServed - 2) * 3)) + // Increase odds when drinks served is >= 3
                     (presentPatronIds.length ?? 0) * 2 + // Increase odds by one per patron present
+                    Math.max(0, history.length - 60) + // Increase odds by one per message after threshold messages.
                     history.filter(node => !!node.presentPatrons[patronId]).length // Increase odds by one per node that this character has been present
                 ));
             }
@@ -143,9 +143,7 @@ export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): 
             // If max possible visits not hit, consider adding a patron (no more than five at a time)
             if (visits < Object.keys(stage.patrons).length && (presentPatronIds.length ?? 0) < 5) {
                 const keys = Object.keys(stage.patrons).filter(key => !presentPatronIds.includes(key) && !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == key));
-                console.log(keys);
                 let selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
-                console.log(`Selected ${selectedPatronId} for introduction`);
                 directionOdds.push(new Possibility(Direction.IntroducePatron, selectedPatronId, 25 - (presentPatronIds?.length ?? 0) * 5));
             }
 
@@ -160,7 +158,6 @@ export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): 
             directionOdds.push(new Possibility(Direction.PatronDrinkOutcome, '', 1000));
             break;
         default:
-            console.log('Default to Lull');
             directionOdds.push(new Possibility(Direction.Lull, '', 1000));
     }
 
@@ -185,7 +182,6 @@ export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): 
     if (newDirection == Direction.IntroducePatron) {
         if (selectedPatronId) {
             newPresentPatrons[selectedPatronId] = Emotion.neutral;
-            console.log('Introduce ' + stage.patrons[selectedPatronId].name);
         } else {
             newDirection = Direction.PatronBanter;
         }

@@ -193,23 +193,23 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     getNightlyNodes(currentNode: ChatNode): ChatNode[] {
-        const DEPTH_CAP = 40;
-        let depth = 0;
         let history: ChatNode[] = [currentNode];
-        while(currentNode.parentId && this.chatNodes[currentNode.parentId] && depth < DEPTH_CAP && currentNode.night == this.chatNodes[currentNode.parentId].night) {
+        while(currentNode.parentId && this.chatNodes[currentNode.parentId] && currentNode.night == this.chatNodes[currentNode.parentId].night) {
             currentNode = this.chatNodes[currentNode.parentId];
             history.push(currentNode);
-            depth++;
         }
 
         return history;
     }
 
     buildHistory(currentNode: ChatNode) {
+        const DEPTH_CAP = 100;
+        let depth = 0;
         let historyString = '';
         const history = this.getNightlyNodes(currentNode);
         for(let node of history) {
             historyString = `**${node.speakerId}**: ${node.message}\n\n${historyString}`;
+            if (++depth >= DEPTH_CAP) break;
         }
 
         return historyString;
