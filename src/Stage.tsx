@@ -260,11 +260,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     kickOffRequestedNodes(fromNode: ChatNode|null) {
-        console.log('Start');
         const currentTerminus = this.getTerminusOfChat(fromNode);
 
         // If this is a drink request, we can't kick this off until the last interaction
         if (!this.requestedNodes && (!currentTerminus || (currentTerminus.childIds.length == 0 && currentTerminus.direction != Direction.PatronDrinkRequest))) {
+            console.log('Start');
             this.requestedNodes = this.generateMessageContent(currentTerminus);
         }
     }
@@ -369,7 +369,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.requestedNodes = null;
         this.isGenerating = false;
 
-        console.log('end');
+        console.log('End');
         await this.updateChatState();
     }
 
