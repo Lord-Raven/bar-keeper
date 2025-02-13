@@ -22,7 +22,8 @@ interface InstructionInput {
 }
 
 const generalInstruction = 'Your narration follows some strict formatting, where general storytelling is flavorfully and incrementally presented by a NARRATOR, and characters present their own dialog and actions. ' +
-    `Only PRESENT PATRONS, {{user}}, and minor characters are active at any time; ABSENT PATRONS are dormant and only exist for context. Minor characters should be fleeting and quickly resolved from the story. Focus on achieving the aforementioned narrative beat in this response.`
+    `Only PRESENT PATRONS, {{user}}, and minor characters are active at any time; ABSENT PATRONS are dormant and only exist for context--keep them absent or in the background. ' +
+    'Undefined, minor characters should be fleeting and quickly resolved from the story. Focus on achieving the provided narrative beat in this response.`
 export const sampleScript = '\n' +
         `**NARRATOR**: General narration is provided by the NARRATOR.\n\n` +
         `**NARRATOR**: Each message should be about one line.\n\n` +
@@ -86,19 +87,25 @@ function directionCheck(stage: Stage, node: ChatNode, targetDirection: Direction
     return node.direction == targetDirection && (!node.parentId || stage.chatNodes[node.parentId].direction != targetDirection);
 }
 
-export function determineNextNodeProps(stage: Stage, currentNode: ChatNode|null): Partial<ChatNode> {
+export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): Partial<ChatNode> {
     let directionOdds: Possibility[] = [];
 
-    const history = currentNode ? stage.getNightlyNodes(currentNode) : [];
+    const history = startNode ? stage.getNightlyNodes(startNode) : [];
     const drinksServed = history.filter(node => directionCheck(stage, node, Direction.PatronDrinkOutcome)).length;
     const visits = history.filter(node => directionCheck(stage, node, Direction.IntroducePatron)).length;
 
     let selectedPatronId = undefined;
-    let newPresentPatrons = {...(currentNode ? currentNode.presentPatrons : {})};
+    let newPresentPatrons = {...(startNode ? startNode.presentPatrons : {})};
     let selectedBeverage = undefined;
     const presentPatronIds = Object.keys(newPresentPatrons);
 
-    switch (currentNode ? currentNode.direction : undefined) {
+    // If coming from a departure, drop that character from the new present list.
+    if (startNode && startNode.direction == Direction.PatronLeaves && presentPatronIds.includes(startNode.selectedPatronId ?? '')) {
+        console.log(`Removing ${startNode.selectedPatronId}`);
+        delete newPresentPatrons[startNode.selectedPatronId ?? ''];
+    }
+
+    switch (startNode ? startNode.direction : undefined) {
         case undefined:
             directionOdds.push(new Possibility(Direction.NightStart, '', 1000));
             break;
@@ -121,7 +128,7 @@ export function determineNextNodeProps(stage: Stage, currentNode: ChatNode|null)
             directionOdds.push(new Possibility(Direction.PatronProblem, '', presentPatronIds.length ?? 0 >= 1 ? 10 : 0));
 
             for (let patronId of presentPatronIds) {
-                if (currentNode && Object.values(currentNode.beverageCounts).reduce((total, count) => total + count, 0) > 0) {
+                if (startNode && Object.values(startNode.beverageCounts).reduce((total, count) => total + count, 0) > 0) {
                     directionOdds.push(new Possibility(Direction.PatronDrinkRequest, patronId, drinksServed < 5 ? 15 : 0));
                 }
                 directionOdds.push(new Possibility(Direction.PatronLeaves, patronId,
@@ -143,7 +150,7 @@ export function determineNextNodeProps(stage: Stage, currentNode: ChatNode|null)
                 directionOdds.push(new Possibility(Direction.NightEnd, '', 20 + visits * 10));
             }
             // Remove the direction that we are coming from; can't occur twice in a row.
-            directionOdds = directionOdds.filter(probability => probability.direction != (currentNode?.direction ?? Direction.NightStart));
+            directionOdds = directionOdds.filter(probability => probability.direction != (startNode?.direction ?? Direction.NightStart));
             break;
         case Direction.PatronDrinkRequest:
             directionOdds.push(new Possibility(Direction.PatronDrinkOutcome, '', 1000));
@@ -151,12 +158,6 @@ export function determineNextNodeProps(stage: Stage, currentNode: ChatNode|null)
         default:
             console.log('Default to Lull');
             directionOdds.push(new Possibility(Direction.Lull, '', 1000));
-    }
-
-    // If coming from a departure, drop that character from the new present list.
-    if (currentNode && currentNode.direction == Direction.PatronLeaves && presentPatronIds.includes(currentNode.selectedPatronId ?? '')) {
-        console.log(`Removing ${currentNode.selectedPatronId}`);
-        delete newPresentPatrons[currentNode.selectedPatronId ?? ''];
     }
 
     const sumOfWeights = Object.values(directionOdds).reduce((sum, possibility) => sum + possibility.odds, 0);
@@ -173,8 +174,8 @@ export function determineNextNodeProps(stage: Stage, currentNode: ChatNode|null)
     }
 
     if (newDirection == Direction.PatronDrinkOutcome) {
-        selectedPatronId = currentNode?.selectedPatronId;
-        selectedBeverage = currentNode?.selectedBeverage;
+        selectedPatronId = startNode?.selectedPatronId;
+        selectedBeverage = startNode?.selectedBeverage;
     }
 
     if (newDirection == Direction.IntroducePatron) {
@@ -186,8 +187,8 @@ export function determineNextNodeProps(stage: Stage, currentNode: ChatNode|null)
         }
     }
 
-    let night = (currentNode?.night ?? 0);
-    let beverageCounts = currentNode?.beverageCounts;
+    let night = (startNode?.night ?? 0);
+    let beverageCounts = startNode?.beverageCounts;
     if (newDirection == Direction.NightStart) {
         night += 1;
         for (let beverage in beverageCounts) {
