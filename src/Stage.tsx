@@ -238,7 +238,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async advanceMessage() {
-
         // Go ahead and do a patron check--don't wait up.
         generatePatrons(this, (message) => {});
 
@@ -249,10 +248,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
         if (!this.currentNode) {
             let someNode = this.chatNodes[Object.keys(this.chatNodes)[0]];
-            while(someNode.parentId) {
-                someNode = this.chatNodes[someNode.parentId];
+            if (someNode) {
+                while(someNode.parentId) {
+                    someNode = this.chatNodes[someNode.parentId];
+                }
+                this.setCurrentNode(someNode, false);
             }
-            this.setCurrentNode(someNode, false);
         } else if (this.currentNode.childIds.length > 0) {
             this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]], false);
             this.kickOffRequestedNodes(this.currentNode);

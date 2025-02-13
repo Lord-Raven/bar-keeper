@@ -22,8 +22,9 @@ interface InstructionInput {
 }
 
 const generalInstruction = 'Your narration follows some strict formatting, where general storytelling is flavorfully and incrementally presented by a NARRATOR, and characters present their own dialog and actions. ' +
-    `Only PRESENT PATRONS, {{user}}, and minor characters are active at any time; ABSENT PATRONS are dormant and only exist for context--keep them absent or in the background. ' +
-    'Undefined, minor characters should be fleeting and quickly resolved from the story. Focus on achieving the provided narrative beat in this response.`
+    'Only PRESENT PATRONS, {{user}}, and minor characters are active at any time; ABSENT PATRONS are dormant and only exist for context--keep them absent or in the background. ' +
+    'Undefined, minor characters should be fleeting and quickly resolved from the story. Focus on achieving the provided narrative beat in this response.';
+
 export const sampleScript = '\n' +
         `**NARRATOR**: General narration is provided by the NARRATOR.\n\n` +
         `**NARRATOR**: Each message should be about one line.\n\n` +
