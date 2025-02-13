@@ -296,7 +296,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async generateMessageContent(fromNode: ChatNode|null): Promise<ChatNode[]|null> {
-        let nodeProps: any = determineNextNodeProps(this, this.currentNode);
+        let nodeProps: any = determineNextNodeProps(this, fromNode);
 
         if (nodeProps.direction == Direction.NightEnd) {
             // Generate a nightly summary.
