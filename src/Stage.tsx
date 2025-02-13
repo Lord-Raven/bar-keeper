@@ -12,7 +12,7 @@ import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
 import {createTheme} from "@mui/material";
-import {Direction, Director, sampleScript} from "./Director";
+import {determineNextNodeProps, Direction, getPromptInstruction, sampleScript} from "./Director";
 import { register } from "register-service-worker";
 import {buildSection, generatePatrons} from "./Generator";
 import {ChatNode, createNodes} from "./ChatNode";
@@ -57,7 +57,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     player: User;
     requestedNodes: Promise<ChatNode[]|null>|null = null;
     isGenerating: boolean = false;
-    director: Director;
     pipeline: any
 
     readonly theme = createTheme({
@@ -95,7 +94,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.titleUrl = titleUrl;
         this.readChatState(chatState);
 
-        this.director = new Director();
         this.loadingProgress = 50;
         this.pipeline = null;
 
@@ -222,8 +220,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         const nightSummaries = '' +
             Object.keys(this.nightlySummaries)
                 .filter(night => (fromNode?.night ?? 1) - parseInt(night) < 3)
-                .map(night => buildSection(`Night ${night} (${(fromNode?.night ?? 1) - parseInt(night)} nights ago)`, this.nightlySummaries[night])).join('\n');
-        if (nightSummaries) console.log(`Nightly Summary: ${nightSummaries}`);
+                .map(night => buildSection(`Night ${night} (${(fromNode?.night ?? 1) - parseInt(night)} nights ago)`, this.nightlySummaries[night])).join('\n\n');
         return buildSection('Setting', this.barDescription ?? '') +
             buildSection(`Protagonist`, `${this.player.name} is a bartender here. ${this.player.chatProfile}`) +
             this.buildPatronDescriptions() +
@@ -261,7 +258,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         // If this is a drink request, we can't kick this off until the last interaction
         if (!this.requestedNodes && (!currentTerminus || (currentTerminus.childIds.length == 0 && currentTerminus.direction != Direction.PatronDrinkRequest))) {
-            this.requestedNodes = this.generateMessageContent(currentTerminus, '');
+            this.requestedNodes = this.generateMessageContent(currentTerminus);
         }
     }
 
@@ -283,12 +280,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return fromNode;
     }
 
-    async generateMessageContent(fromNode: ChatNode|null, additionalContext: string): Promise<ChatNode[]|null> {
-        let nodeProps: any = this.director.determineNextNodeProps(this, this.currentNode);
+    async generateMessageContent(fromNode: ChatNode|null): Promise<ChatNode[]|null> {
+        let nodeProps: any = determineNextNodeProps(this, this.currentNode);
 
         if (nodeProps.direction == Direction.NightEnd) {
             // Generate a nightly summary.
-            console.log('Generate a nightly summary');
             let retries = 3;
             while (retries-- > 0) {
                 try {
@@ -306,6 +302,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         include_history: false
                     });
                     if (textGen?.result?.length) {
+
+                        console.log(`Generated a nightly Summary: ${textGen.result}`);
                         this.nightlySummaries[nodeProps.night] = textGen.result;
                         retries = 0;
                     }
@@ -319,8 +317,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         while (retries-- > 0) {
             try {
                 let textGen = await this.generator.textGen({
-                    prompt: this.buildStoryPrompt(this.getTerminusOfNode(this.currentNode), `${this.director.getPromptInstruction(this, nodeProps)}\n${additionalContext}`),
-                    max_tokens: 600,
+                    prompt: this.buildStoryPrompt(this.getTerminusOfNode(this.currentNode), getPromptInstruction(this, nodeProps)),
+                    max_tokens: 500,
                     min_tokens: 100,
                     include_history: false
                 });
@@ -338,7 +336,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     async processNextResponse() {
         this.isGenerating = true;
         if (!this.requestedNodes) {
-            this.requestedNodes = this.generateMessageContent(this.getTerminusOfNode(this.currentNode), '');
+            this.requestedNodes = this.generateMessageContent(this.getTerminusOfNode(this.currentNode));
         }
         let result = await this.requestedNodes;
         console.log(result);

@@ -21,7 +21,8 @@ interface InstructionInput {
     beverageName: string;
 }
 
-const generalInstruction = 'Your response follows a strict format, where general storytelling is flavorfully and incrementally presented by a NARRATOR, and characters present their own dialog and actions. Only PRESENT PATRONS and {{user}} are active at this time; ABSENT PATRONS remain passive. Minor characters should be fleeting. Refer to {{user}} in second-person.'
+const generalInstruction = 'Your narration follows some strict formatting, where general storytelling is flavorfully and incrementally presented by a NARRATOR, and characters present their own dialog and actions. ' +
+    `Only PRESENT PATRONS and {{user}} are active at any time; ABSENT PATRONS are passive and used for context. Minor characters should be fleeting and quickly resolved from the story. Use second-person language when referring to {{user}}.`
 export const sampleScript = '\n' +
         `**NARRATOR**: General narration is provided by the NARRATOR.\n\n` +
         `**NARRATOR**: Each message should be about one line.\n\n` +
@@ -37,27 +38,27 @@ export const sampleScript = '\n' +
         `**{{user}}**: You nod appreciatively, "I'll see what I can do." You look over your assortment of bottles, weighing the choices.`;
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
-    NightStart: input => `Introduce the bar described here: ${input.barDescription}. ` +
-        `Depict a scene where ${input.playerName} is setting up for the beginning of their shift one evening--in second person. ${input.playerName} must remain alone in this moment. ${generalInstruction}`,
+    NightStart: input => `Depict a scene where ${input.playerName} is preparing to begin their evening shift as a bartender for the LOCATION. ${input.playerName} remains alone at the bar at this time. ${generalInstruction}`,
     
-    Lull: input => `Continue the scene with some inconsequential flavor as the evening slightly progresses; ${input.playerName} observes the environment or ancillary patrons with only trivial events or conversations--significant patrons remain absent or passive.  ${generalInstruction}`,
+    Lull: input => `Continue the scene with some inconsequential flavor as the evening slightly progresses; ${input.playerName} observes the environment or incidental characters with only trivial events or conversations--significant patrons remain absent or passive.  ${generalInstruction}`,
 
-    IntroducePatron: input => `Continue the scene with visual novel style development as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
-        `If they are a regular, focus on their interactions with ${input.playerName} or other PRESENT PATRONS. No one is thirsty yet; patrons will focus on small talk or other matters. ${generalInstruction}`,
+    IntroducePatron: input => `Continue the scene as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
+        `If they are a regular, focus on their interactions with ${input.playerName} or other PRESENT PATRONS. No one is thirsty yet; patrons will focus on greetings, small talk, or other trivial matters. ${generalInstruction}`,
     
-    PatronBanter: input => `Continue the scene with some visual novel style development as the PRESENT PATRONS banter amongst themselves or with ${input.playerName}. None of them are prepared to order a drink, so they will focus on their lives or other ongoing events. ${generalInstruction}`,
+    PatronBanter: input => `Continue the scene as the PRESENT PATRONS banter amongst themselves or with ${input.playerName}. None of them are prepared to order a drink, so they will focus on discussing their lives or other ongoing events. ${generalInstruction}`,
 
-    PatronProblem: input => `Continue the scene with some visual novel style development as one of the PRESENT PATRONS describes a personal problem to another PRESENT PATRON or ${input.playerName}. No one wants to order a drink at this time. ${generalInstruction}`,
+    PatronProblem: input => `Continue the scene as one of the PRESENT PATRONS describes a personal problem to another PRESENT PATRON or ${input.playerName}. No one wants to order a drink at this time. ${generalInstruction}`,
 
-    PatronDrinkRequest: input => `Continue the scene with some visual novel style development leading up to ${input.patronName} asking the bartender, ${input.playerName}, for a unspecified drink. ` +
+    PatronDrinkRequest: input => `Continue the scene as ${input.patronName} works up to asking the bartender, ${input.playerName}, for an unspecified drink. ` +
         `${input.patronName} will simply describe the flavor or style of drink they are in the mood for, rather than specifying the particular beverage they want. ` +
-        `${input.playerName} remains passive; the drink will be served in a future response. ${generalInstruction}`,
+        `${input.playerName} remains passive for the moment; the drink will be served in a future response. ${generalInstruction}`,
 
-    PatronDrinkOutcome: input => `Continue the scene with some visual novel style development as ${input.patronName} accepts the drink ${input.playerName} has chosen: ${input.beverageName}. ` +
-        `Strongly steer the scene in a new direction--positive or negative--based on the nature of this beverage, ${input.patronName}'s reaction to the beverage, and how well it suits their current taste or mood. ${input.patronName} could be delighted, surprised, disappointed, disgusted, inspired, or even outraged. ${generalInstruction}`,
+    PatronDrinkOutcome: input => `Continue the scene as ${input.patronName} accepts the drink ${input.playerName} has chosen: ${input.beverageName}. ` +
+        `Strongly steer the scene in a new direction--positive or negative--based on the nature of this beverage, ${input.patronName}'s reaction to the beverage, and how well the drink suits their current taste or mood. ` +
+        `${input.patronName} could be delighted, surprised, disappointed, disgusted, inspired, or even outraged. ${generalInstruction}`,
 
-    PatronLeaves: input => `Continue the scene with some visual novel style development as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar. ` +
-        `Honor their personal style and connections to other patrons or ${input.playerName}. ${generalInstruction}`,
+    PatronLeaves: input => `Continue the scene as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar--other PRESENT PATRONS stick around (at least for now). ` +
+        `Honor ${input.patronName}'s personal style and relationships with other PRESENT PATRONS or ${input.playerName}. ${generalInstruction}`,
 
     NightEnd: input => `Wrap up the scene as ${input.playerName} cleans up and closes the bar, reflecting on the night's events.`
 }
@@ -73,133 +74,128 @@ class Possibility {
     }
 }
 
-export class Director {
+export function getPromptInstruction(stage: Stage, node: Partial<ChatNode>): string {
+    return directionInstructions[node.direction ?? Direction.NightStart]({
+        barDescription: stage.barDescription ?? '',
+        playerName: stage.player.name ?? '',
+        patronName: node.selectedPatronId ? stage.patrons[node.selectedPatronId].name : '',
+        beverageName: node.selectedBeverage ?? ''});
+}
 
-    constructor() { }
+export function determineNextNodeProps(stage: Stage, currentNode: ChatNode|null): Partial<ChatNode> {
+    let directionOdds: Possibility[] = [];
 
-    getPromptInstruction(stage: Stage, node: Partial<ChatNode>): string {
-        return directionInstructions[node.direction ?? Direction.NightStart]({
-            barDescription: stage.barDescription ?? '',
-            playerName: stage.player.name ?? '',
-            patronName: node.selectedPatronId ? stage.patrons[node.selectedPatronId].name : '',
-            beverageName: node.selectedBeverage ?? ''});
+    const history = currentNode ? stage.getNightlyNodes(currentNode) : [];
+    const drinksServed = history.filter(node => node.direction == Direction.PatronDrinkOutcome).length;
+    const visits = history.filter(node => node.direction == Direction.IntroducePatron).length;
+
+    let selectedPatronId = undefined;
+    let newPresentPatrons = {...(currentNode ? currentNode.presentPatrons : {})};
+    let selectedBeverage = undefined;
+    const presentPatronIds = Object.keys(newPresentPatrons);
+
+    switch (currentNode ? currentNode.direction : undefined) {
+        case undefined:
+            directionOdds.push(new Possibility(Direction.NightStart, '', 1000));
+            break;
+        case Direction.NightStart:
+            for (let patronId of Object.keys(stage.patrons)) {
+                directionOdds.push(new Possibility(Direction.IntroducePatron, patronId, 10));
+            }
+            break;
+        case Direction.NightEnd:
+            directionOdds.push(new Possibility(Direction.NightStart, '', 1000));
+            break;
+        case Direction.Lull:
+        case Direction.IntroducePatron:
+        case Direction.PatronDrinkOutcome:
+        case Direction.PatronBanter:
+        case Direction.PatronProblem:
+        case Direction.PatronLeaves:
+            directionOdds.push(new Possibility(Direction.Lull, '', presentPatronIds.length ?? 0 >= 1 ? 0 : 5));
+            directionOdds.push(new Possibility(Direction.PatronBanter, '', presentPatronIds.length ?? 0 >= 1 ? 20 : 0));
+            directionOdds.push(new Possibility(Direction.PatronProblem, '', presentPatronIds.length ?? 0 >= 1 ? 10 : 0));
+
+            for (let patronId of presentPatronIds) {
+                directionOdds.push(new Possibility(Direction.PatronDrinkRequest, patronId, drinksServed < 5 ? 15 : 0));
+                directionOdds.push(new Possibility(Direction.PatronLeaves, patronId,
+                    Math.max(0, ((drinksServed - 2) * 3)) + // Increase odds when drinks served is >= 3
+                    (presentPatronIds.length ?? 0) * 2 + // Increase odds by one per patron present
+                    history.filter(node => !!node.presentPatrons[patronId]).length // Increase odds by one per node that this character has been present
+                ));
+            }
+
+            // If max possible visits not hit, consider adding a patron (no more than five at a time)
+            if (visits < Object.keys(stage.patrons).length && (presentPatronIds.length ?? 0) < 5) {
+                const keys = Object.keys(stage.patrons).filter(key => !presentPatronIds.includes(key) && !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == key));
+                console.log('picking someone to bring into the scene');
+                console.log(keys);
+                let selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
+                directionOdds.push(new Possibility(Direction.IntroducePatron, selectedPatronId, 25 - (presentPatronIds?.length ?? 0) * 5));
+            }
+
+            // Replicate all of this:
+            // If we've had a couple visits and the bar is empty, start jacking up the night end odds.
+            if (visits >= 2 && presentPatronIds.length  == 0) {
+                directionOdds.push(new Possibility(Direction.NightEnd, '', 10 + visits * 10));
+            }
+            directionOdds = directionOdds.filter(probability => probability.direction != currentNode?.direction ?? Direction.NightStart);
+            break;
+        case Direction.PatronDrinkRequest:
+            directionOdds.push(new Possibility(Direction.PatronDrinkOutcome, '', 1000));
+            break;
+        default:
+            console.log('Default to Lull');
+            directionOdds.push(new Possibility(Direction.Lull, '', 1000));
     }
 
-    determineNextNodeProps(stage: Stage, currentNode: ChatNode|null): Partial<ChatNode> {
-        let directionOdds: Possibility[] = [];
-
-        const history = currentNode ? stage.getNightlyNodes(currentNode) : [];
-        const drinksServed = history.filter(node => node.direction == Direction.PatronDrinkOutcome).length;
-        const visits = history.filter(node => node.direction == Direction.IntroducePatron).length;
-
-        let selectedPatronId = undefined;
-        let newPresentPatrons = {...(currentNode ? currentNode.presentPatrons : {})};
-        let selectedBeverage = undefined;
-        const presentPatronIds = Object.keys(newPresentPatrons);
-
-        switch (currentNode ? currentNode.direction : undefined) {
-            case undefined:
-                directionOdds.push(new Possibility(Direction.NightStart, '', 1000));
-                break;
-            case Direction.NightStart:
-                for (let patronId of Object.keys(stage.patrons)) {
-                    directionOdds.push(new Possibility(Direction.IntroducePatron, patronId, 10));
-                }
-                break;
-            case Direction.NightEnd:
-                directionOdds.push(new Possibility(Direction.NightStart, '', 1000));
-                break;
-            case Direction.Lull:
-            case Direction.IntroducePatron:
-            case Direction.PatronDrinkOutcome:
-            case Direction.PatronBanter:
-            case Direction.PatronProblem:
-            case Direction.PatronLeaves:
-                directionOdds.push(new Possibility(Direction.Lull, '', presentPatronIds.length ?? 0 >= 1 ? 0 : 5));
-                directionOdds.push(new Possibility(Direction.PatronBanter, '', presentPatronIds.length ?? 0 >= 1 ? 20 : 0));
-                directionOdds.push(new Possibility(Direction.PatronProblem, '', presentPatronIds.length ?? 0 >= 1 ? 10 : 0));
-
-                for (let patronId of presentPatronIds) {
-                    directionOdds.push(new Possibility(Direction.PatronDrinkRequest, patronId, drinksServed < 5 ? 15 : 0));
-                    directionOdds.push(new Possibility(Direction.PatronLeaves, patronId,
-                        Math.max(0, ((drinksServed - 2) * 3)) + // Increase odds when drinks served is >= 3
-                        (presentPatronIds.length ?? 0) * 2 + // Increase odds by one per patron present
-                        history.filter(node => !!node.presentPatrons[patronId]).length // Increase odds by one per node that this character has been present
-                    ));
-                }
-
-                // If max possible visits not hit, consider adding a patron (no more than five at a time)
-                if (visits < Object.keys(stage.patrons).length && (presentPatronIds.length ?? 0) < 5) {
-                    const keys = Object.keys(stage.patrons).filter(key => !presentPatronIds.includes(key) && !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == key));
-                    console.log('picking someone to bring into the scene');
-                    console.log(keys);
-                    let selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
-                    directionOdds.push(new Possibility(Direction.IntroducePatron, selectedPatronId, 25 - (presentPatronIds?.length ?? 0) * 5));
-                }
-
-                // Replicate all of this:
-                // If we've had a couple visits and the bar is empty, start jacking up the night end odds.
-                if (visits >= 2 && presentPatronIds.length  == 0) {
-                    directionOdds.push(new Possibility(Direction.NightEnd, '', 10 + visits * 10));
-                }
-                directionOdds = directionOdds.filter(probability => probability.direction != currentNode?.direction ?? Direction.NightStart);
-                break;
-            case Direction.PatronDrinkRequest:
-                directionOdds.push(new Possibility(Direction.PatronDrinkOutcome, '', 1000));
-                break;
-            default:
-                console.log('Default to Lull');
-                directionOdds.push(new Possibility(Direction.Lull, '', 1000));
-        }
-
-        // If coming from a departure, drop that character from the new present list.
-        if (currentNode && currentNode.direction == Direction.PatronLeaves && presentPatronIds.includes(currentNode.selectedPatronId ?? '')) {
-            delete newPresentPatrons[currentNode.selectedPatronId ?? ''];
-        }
-
-        const sumOfWeights = Object.values(directionOdds).reduce((sum, possibility) => sum + possibility.odds, 0);
-        let randomNumber = Math.random() * sumOfWeights;
-        let newDirection: Direction = Direction.Lull;
-
-        for (let possibility of directionOdds) {
-            if (randomNumber < possibility.odds) {
-                newDirection = possibility.direction;
-                selectedPatronId = possibility.patronId;
-                break;
-            }
-            randomNumber -= possibility.odds;
-        }
-
-        if (newDirection == Direction.PatronDrinkOutcome) {
-            selectedPatronId = currentNode?.selectedPatronId;
-            selectedBeverage = currentNode?.selectedBeverage;
-        }
-
-        if (newDirection == Direction.IntroducePatron) {
-            if (selectedPatronId) {
-                newPresentPatrons[selectedPatronId] = Emotion.neutral;
-                console.log('Introduce ' + stage.patrons[selectedPatronId].name);
-            } else {
-                newDirection = Direction.PatronBanter;
-            }
-        }
-
-        let night = (currentNode?.night ?? 0);
-        let beverageCounts = currentNode?.beverageCounts;
-        if (newDirection == Direction.NightStart) {
-            night += 1;
-            for (let beverage in beverageCounts) {
-                beverageCounts[beverage] = Math.min(3, beverageCounts[beverage] + 1);
-            }
-        }
-
-        return {
-            direction: newDirection,
-            presentPatrons: newPresentPatrons,
-            selectedPatronId: selectedPatronId,
-            selectedBeverage: selectedBeverage,
-            beverageCounts: beverageCounts,
-            night: night
-        };
+    // If coming from a departure, drop that character from the new present list.
+    if (currentNode && currentNode.direction == Direction.PatronLeaves && presentPatronIds.includes(currentNode.selectedPatronId ?? '')) {
+        delete newPresentPatrons[currentNode.selectedPatronId ?? ''];
     }
+
+    const sumOfWeights = Object.values(directionOdds).reduce((sum, possibility) => sum + possibility.odds, 0);
+    let randomNumber = Math.random() * sumOfWeights;
+    let newDirection: Direction = Direction.Lull;
+
+    for (let possibility of directionOdds) {
+        if (randomNumber < possibility.odds) {
+            newDirection = possibility.direction;
+            selectedPatronId = possibility.patronId;
+            break;
+        }
+        randomNumber -= possibility.odds;
+    }
+
+    if (newDirection == Direction.PatronDrinkOutcome) {
+        selectedPatronId = currentNode?.selectedPatronId;
+        selectedBeverage = currentNode?.selectedBeverage;
+    }
+
+    if (newDirection == Direction.IntroducePatron) {
+        if (selectedPatronId) {
+            newPresentPatrons[selectedPatronId] = Emotion.neutral;
+            console.log('Introduce ' + stage.patrons[selectedPatronId].name);
+        } else {
+            newDirection = Direction.PatronBanter;
+        }
+    }
+
+    let night = (currentNode?.night ?? 0);
+    let beverageCounts = currentNode?.beverageCounts;
+    if (newDirection == Direction.NightStart) {
+        night += 1;
+        for (let beverage in beverageCounts) {
+            beverageCounts[beverage] = Math.min(3, beverageCounts[beverage] + 1);
+        }
+    }
+
+    return {
+        direction: newDirection,
+        presentPatrons: newPresentPatrons,
+        selectedPatronId: selectedPatronId,
+        selectedBeverage: selectedBeverage,
+        beverageCounts: beverageCounts,
+        night: night
+    };
 }
