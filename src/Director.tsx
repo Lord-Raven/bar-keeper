@@ -99,12 +99,12 @@ export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): 
     let selectedPatronId = undefined;
     let newPresentPatrons = {...(startNode ? startNode.presentPatrons : {})};
     let selectedBeverage = undefined;
-    const presentPatronIds = Object.keys(newPresentPatrons);
 
     // If coming from a departure, drop that character from the new present list.
-    if (startNode && startNode.direction == Direction.PatronLeaves && presentPatronIds.includes(startNode.selectedPatronId ?? '')) {
+    if (startNode && startNode.direction == Direction.PatronLeaves && Object.keys(newPresentPatrons).includes(startNode.selectedPatronId ?? '')) {
         delete newPresentPatrons[startNode.selectedPatronId ?? ''];
     }
+    const presentPatronIds = Object.keys(newPresentPatrons);
 
     switch (startNode ? startNode.direction : undefined) {
         case undefined:

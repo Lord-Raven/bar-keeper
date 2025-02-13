@@ -9,8 +9,8 @@ interface ErrorPopupProps {
 
 const ErrorPopup: FC<ErrorPopupProps> = ({message}) => {
     const variants: Variants = {
-        active: {y: '90vh', opacity: 1},
-        inactive: {y: '100vh', opacity: 0}
+        active: {y: 0, opacity: 1},
+        inactive: {y: -100, opacity: 0}
     };
 
     return (
@@ -19,13 +19,13 @@ const ErrorPopup: FC<ErrorPopupProps> = ({message}) => {
             variants={variants}
             transition={{duration: 0.2}}
             style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'absolute',
+                position: 'fixed',
+                top: '0',
+                left: '50%',
                 transform: 'translate(-50%, 0)',
                 backgroundColor: '#000000BB',
-                x: '50vw',
-                zIndex: 25,
+                width: '100%',
+                zIndex: 99,
             }}
         >
             <Typography>
