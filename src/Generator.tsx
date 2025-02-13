@@ -31,7 +31,7 @@ export function buildDistillationPrompt(stage: Stage, baseCharacter: Character):
             `"SOURCE" should simply identify the source material invoked by FLAVOR TEXT, if possible; leave this blank or 'Original' if FLAVOR TEXT is not derived from a known work.\n` +
             `"SETTING" should briefly stipulate the overarching location, vibe, or time period derived from the FLAVOR TEXT, focusing on any key deviations from setting expectations.\n` +
             `"THEMES" should list all of the prominent themes, concepts, quirks, or kinks from the FLAVOR TEXT.\n` +
-            `"ART" lists distinct artist, genre, medium, palette, stroke, shading, or other style descriptors that are associated with SOURCE (if any) or which suit or align with the setting and themes of the FLAVOR TEXT; this should be brief and to the point, as it will be used to generate appropriate images later.\n` +
+            `"ART" lists distinct artist, genre, medium, palette, stroke, shading, or other style descriptors that are associated with SOURCE (if any) or which suit or align with the setting and themes of the FLAVOR TEXT; focus on strong technique descriptors, as these will be used to generate appropriate images later.\n` +
             `Define these four fields and promptly end your response.\n`) +
         '###FUTURE INSTRUCTION:');
 }
