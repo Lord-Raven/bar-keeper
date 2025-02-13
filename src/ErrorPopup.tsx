@@ -19,13 +19,12 @@ const ErrorPopup: FC<ErrorPopupProps> = ({message}) => {
             variants={variants}
             transition={{duration: 0.2}}
             style={{
-                display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                position: 'fixed',
+                position: 'absolute',
+                transform: 'translate(-50%, 0)',
                 backgroundColor: '#000000BB',
-                bottom: '50vh',
-                left: 0,
+                x: '50vw',
                 zIndex: 25,
             }}
         >

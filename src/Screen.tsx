@@ -14,6 +14,7 @@ export const Screen: FC<ScreenProps> = ({ stage }) => {
     const [errorMessage, setErrorMessage] = useState<string>('');
 
     const sendError = (message: string) => {
+        console.log(`setError(${message})`);
         setErrorMessage(message);
         setTimeout(() => {if (errorMessage == message) {setErrorMessage('')}}, 5000);
     }
