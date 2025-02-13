@@ -134,8 +134,6 @@ export function determineNextNodeProps(stage: Stage, currentNode: ChatNode|null)
             // If max possible visits not hit, consider adding a patron (no more than five at a time)
             if (visits < Object.keys(stage.patrons).length && (presentPatronIds.length ?? 0) < 5) {
                 const keys = Object.keys(stage.patrons).filter(key => !presentPatronIds.includes(key) && !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == key));
-                console.log('picking someone to bring into the scene');
-                console.log(keys);
                 let selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
                 directionOdds.push(new Possibility(Direction.IntroducePatron, selectedPatronId, 25 - (presentPatronIds?.length ?? 0) * 5));
             }
@@ -157,6 +155,7 @@ export function determineNextNodeProps(stage: Stage, currentNode: ChatNode|null)
 
     // If coming from a departure, drop that character from the new present list.
     if (currentNode && currentNode.direction == Direction.PatronLeaves && presentPatronIds.includes(currentNode.selectedPatronId ?? '')) {
+        console.log(`Removing ${currentNode.selectedPatronId}`);
         delete newPresentPatrons[currentNode.selectedPatronId ?? ''];
     }
 
