@@ -21,10 +21,10 @@ const ErrorPopup: FC<ErrorPopupProps> = ({message}) => {
             style={{
                 position: 'fixed',
                 top: '0',
-                left: '25%',
-                transform: 'translate(-100%, 0%)',
+                left: '50%',
+                transform: 'translate(-50%, 0%)',
                 backgroundColor: '#000000BB',
-                width: '100%',
+                width: 'fit-content',
                 zIndex: 99,
             }}
         >
