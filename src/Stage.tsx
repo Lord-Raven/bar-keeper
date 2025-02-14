@@ -12,7 +12,13 @@ import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {Patron} from "./Patron";
 import {Beverage} from "./Beverage";
 import {createTheme} from "@mui/material";
-import {determineNextNodeProps, Direction, getPromptInstruction, sampleScript} from "./Director";
+import {
+    determineNextNodeProps,
+    Direction,
+    generalInstruction,
+    getDirectionInstruction,
+    getDirectionSample
+} from "./Director";
 import { register } from "register-service-worker";
 import {buildSection, generatePatrons} from "./Generator";
 import {ChatNode, createNodes} from "./ChatNode";
@@ -215,19 +221,20 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return historyString;
     }
 
-    buildStoryPrompt(fromNode: ChatNode|null, currentInstruction: string): string {
+    buildStoryPrompt(fromNode: ChatNode|null, newProps: Partial<ChatNode>): string {
         const nightSummaries = '' +
             Object.keys(this.nightlySummaries)
                 .filter(night => (fromNode?.night ?? 1) - parseInt(night) < 3)
                 .map(night => buildSection(`Night ${night} (${(fromNode?.night ?? 1) - parseInt(night)} nights ago)`, this.nightlySummaries[night])).join('\n\n');
-        return buildSection('Setting', this.barDescription ?? '') +
+        return buildSection('Location', this.barDescription ?? '') +
             buildSection(`Protagonist`, `${this.player.name} is a bartender here. ${this.player.chatProfile}`) +
             this.buildPatronDescriptions() +
             buildSection('Beverages', this.buildBeverageDescriptions()) +
             nightSummaries +
-            buildSection('Sample Response', sampleScript) +
+            buildSection('Sample Response', getDirectionSample(newProps)) +
             (fromNode ? buildSection('Log', this.buildHistory(fromNode)) : '') +
-            buildSection('Critical Instruction', `${this.player.name} is a bartender at this bar; refer to ${this.player.name} in second person as you describe unfolding events. ${currentInstruction}`) +
+            buildSection('Current Narrative Beat', getDirectionInstruction(this, newProps)) +
+            buildSection('Critical Instruction', generalInstruction) +
             '###GENERAL INSTRUCTION:';
     }
 
@@ -332,7 +339,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         while (retries-- > 0) {
             try {
                 let textGen = await this.generator.textGen({
-                    prompt: this.buildStoryPrompt(this.getTerminusOfChat(this.currentNode), getPromptInstruction(this, nodeProps)),
+                    prompt: this.buildStoryPrompt(this.getTerminusOfChat(this.currentNode), nodeProps),
                     max_tokens: 500,
                     min_tokens: 150,
                     include_history: false

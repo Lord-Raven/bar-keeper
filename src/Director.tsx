@@ -21,46 +21,64 @@ interface InstructionInput {
     beverageName: string;
 }
 
-const generalInstruction = 'Your narration follows some strict formatting, where general storytelling is flavorfully and incrementally presented by a NARRATOR, and characters present their own dialog and actions. ' +
-    'Only PRESENT PATRONS, {{user}}, and minor characters are active at any time; ABSENT PATRONS are dormant and only exist for context--ignore the ABSENT PATRONS and keep them out of the scene. ' +
-    'Undefined, minor characters should be given names, but be fleeting and quickly resolved from the story. Regardless of what\'s going on in the log, re-focus on achieving the narrative goals provided here.';
+export const generalInstruction = '`{{user}} is a bartender for LOCATION; refer to them in second person as you describe unfolding events. ' +
+    'Your narration follows a strict format, where general storytelling is flavorfully and incrementally presented by a NARRATOR, and characters present their own dialog and actions. ' +
+    'Only PRESENT PATRONS, {{user}}, and minor, incidental characters are active in this response. ABSENT PATRONS are dormant and supplied only for context; ignore ABSENT PATRONS and keep them out of the scene. ' +
+    'Undefined, minor characters should be given names, but their roles should be fleeting and quickly resolved from the story. Regardless of what\'s going on in the log, focus on achieving the CURRENT NARRATIVE BEAT.';
 
-export const sampleScript = '\n' +
+const sampleScript = '' +
         `**NARRATOR**: General narration is provided by the NARRATOR.\n\n` +
         `**NARRATOR**: Each message should be about one line.\n\n` +
-        `**SOME PATRON**: (Some Character's mood) "When I talk, my dialog is embedded in quotations." Some Patron looks up.\n\n` +
+        `**JOHN SMITH**: (Some Character's mood) "When I talk, my dialog is embedded in quotations." John Doe looks up.\n\n` +
         `**NARRATOR**: Another Patron walks in.\n\n` +
-        `**ANOTHER PATRON**: (Blandly) "Hey, Some Patron."\n\n` +
-        `**SOME PATRON**: (Cheerful) "Welcome back!" They give a friendly wave."\n\n` +
-        `**SOME PATRON**: (Curious) Some Patron thinks to themself, "You look different..."\n\n` +
-        `**ANOTHER PATRON**: (Perking up) Smiles broadly, "I'm trying a new hairstyle. Thanks for noticing!"\n\n` +
+        `**JANE DOE**: (Blandly) "Hey, Some Patron."\n\n` +
+        `**JOHN SMITH**: (Cheerful) "Welcome back, Jane!" They give a friendly wave."\n\n` +
+        `**JOHN SMITH**: (Curious) John Smith thinks to themself, "You look different..."\n\n` +
+        `**JANE DOE**: (Perking up) Jane smiles broadly, "I'm trying a new hairstyle. Thanks for noticing!"\n\n` +
         `**NARRATOR**: Another Patron takes a seat down the bar from Some Patron and looks for you.\n\n` +
-        `**{{user}}**: You approach Another Patron, "What'll it be?"\n\n` +
-        `**ANOTHER PATRON**: (Thoughtful) "I think I'd like something refreshing and bright tonight."\n\n` +
+        `**{{user}}**: You approach Jane Doe, "What'll it be, Jane?"\n\n` +
+        `**JANE DOE**: (Thoughtful) "I think I'd like something refreshing and bright tonight."\n\n` +
         `**{{user}}**: You nod appreciatively, "I'll see what I can do." You look over your assortment of bottles, weighing the choices.`;
 
+const directionSample: {[direction in Direction]: string} = {
+    NightStart: `**NARRATOR**: You hit the switch for the neon sign and slip into your apron for the night.\n\n` +
+                `**{{user}}**: You sigh deeply, "Hope things stay quiet this evening."\n\n` +
+                `**JOHN SMITH**: A quiet regular enters and slips into their usual booth, opening their laptop and getting to work.\n\n` +
+                `**{{user}}**: "Let me know if you need anything, sir."`,
+    Lull: sampleScript,
+    IntroducePatron: sampleScript,
+    PatronBanter: sampleScript,
+    PatronProblem: sampleScript,
+    PatronDrinkRequest: sampleScript,
+    PatronDrinkOutcome: sampleScript,
+    PatronLeaves: sampleScript,
+    NightEnd: sampleScript
+}
+
+
+
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
-    NightStart: input => `Depict a scene where ${input.playerName} is preparing to begin their evening shift as a bartender for the LOCATION. ${input.playerName} remains alone at the bar at this time. ${generalInstruction}`,
+    NightStart: input => `Depict a scene where ${input.playerName} is preparing to begin their evening shift as a bartender for the LOCATION. ${input.playerName} remains alone at the bar at this time.`,
     
-    Lull: input => `Continue the scene with some inconsequential flavor as the evening slightly progresses; ${input.playerName} observes the environment or incidental characters with only trivial events or conversations--significant patrons remain absent or passive.  ${generalInstruction}`,
+    Lull: input => `Continue the scene with some inconsequential flavor as the evening slightly progresses; ${input.playerName} observes the environment or incidental characters with only trivial events or conversations--defined ABSENT PATRONS remain dormant.`,
 
     IntroducePatron: input => `Continue the scene as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
-        `If they are a regular, focus on their interactions with ${input.playerName} or other PRESENT PATRONS. No one is thirsty yet; patrons will focus on greetings, small talk, or other trivial matters. ${generalInstruction}`,
+        `If they are a regular, focus on their interactions with ${input.playerName} or other PRESENT PATRONS. No one is thirsty yet; patrons will focus on greetings, small talk, or other trivial matters.`,
     
-    PatronBanter: input => `Continue the scene as the PRESENT PATRONS banter amongst themselves or with ${input.playerName}. None of them are prepared to order a drink, so they will focus on discussing their lives or other ongoing events. ${generalInstruction}`,
+    PatronBanter: input => `Continue the scene as the PRESENT PATRONS banter amongst themselves or with ${input.playerName}. None of them are prepared to order a drink, so they will focus on discussing their lives or other ongoing events.`,
 
-    PatronProblem: input => `Continue the scene as one of the PRESENT PATRONS describes a personal problem to another PRESENT PATRON or ${input.playerName}. No one wants to order a drink at this time. ${generalInstruction}`,
+    PatronProblem: input => `Continue the scene as one of the PRESENT PATRONS describes a personal problem to another PRESENT PATRON or ${input.playerName}. No one wants to order a drink at this time.`,
 
     PatronDrinkRequest: input => `Continue the scene as ${input.patronName} asks the bartender, ${input.playerName}, for an unspecified drink. ` +
         `${input.patronName} will describe the flavor or style of drink they are in the mood for, rather than declaring the particular beverage they want. ` +
-        `${input.playerName} passively listens to the request with minimal input; they will prepare and serve the drink in a future response. ${generalInstruction}`,
+        `${input.playerName} passively listens to the request with minimal input; they will prepare and serve the drink in a future response.`,
 
     PatronDrinkOutcome: input => `Continue the scene as ${input.patronName} accepts the drink ${input.playerName} has chosen: ${input.beverageName}. ` +
         `Dramatically steer the scene in a new direction--negative or positive--based on the nature of this beverage and how well it suits the patron's current taste or mood. ` +
-        `${input.patronName} could be critical, delighted, surprised, disappointed, disgusted, inspired, or even outraged by this drink. ${generalInstruction}`,
+        `${input.patronName} could be critical, delighted, surprised, disappointed, disgusted, inspired, or even outraged by this drink.`,
 
     PatronLeaves: input => `Continue the scene as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar--other PRESENT PATRONS stick around (at least for now). ` +
-        `Honor ${input.patronName}'s personal style and relationships with other PRESENT PATRONS or ${input.playerName}. ${generalInstruction}`,
+        `Honor ${input.patronName}'s personal style and relationships with other PRESENT PATRONS or ${input.playerName}.`,
 
     NightEnd: input => `Wrap up the scene as ${input.playerName} cleans up and closes the bar, reflecting on the night's events.`
 }
@@ -76,7 +94,11 @@ class Possibility {
     }
 }
 
-export function getPromptInstruction(stage: Stage, node: Partial<ChatNode>): string {
+export function getDirectionSample(node: Partial<ChatNode>): string {
+    return directionSample[node.direction ?? Direction.NightStart];
+}
+
+export function getDirectionInstruction(stage: Stage, node: Partial<ChatNode>): string {
     return directionInstructions[node.direction ?? Direction.NightStart]({
         barDescription: stage.barDescription ?? '',
         playerName: stage.player.name ?? '',
