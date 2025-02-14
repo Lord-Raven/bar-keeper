@@ -1,6 +1,6 @@
 import React, {FC, ReactNode} from "react";
 import {motion, Variants} from "framer-motion";
-import {Icon, Typography} from "@mui/material";
+import {Box, Icon, Typography} from "@mui/material";
 import {Cancel} from "@mui/icons-material";
 
 interface ErrorPopupProps {
@@ -22,18 +22,20 @@ const ErrorPopup: FC<ErrorPopupProps> = ({message}) => {
                 position: 'fixed',
                 top: '0',
                 left: '50%',
-                transform: 'translate(-100%, 0%)',
-                backgroundColor: '#000000BB',
                 width: '100%',
                 zIndex: 99,
             }}
         >
-            <Typography>
-                <Icon style={{outline: 1, float: 'left'}} color={'warning'}>
-                    <Cancel/>
-                </Icon>
-                {message}
-            </Typography>
+            <Box sx={{
+                transform: 'translate(-100%, 0%)',
+                backgroundColor: '#000000BB'}}>
+                <Typography>
+                    <Icon style={{outline: 1, float: 'left'}} color={'warning'}>
+                        <Cancel/>
+                    </Icon>
+                    {message}
+                </Typography>
+            </Box>
         </motion.div>
     );
 };
