@@ -22,21 +22,21 @@ interface InstructionInput {
 }
 
 const generalInstruction = 'Your narration follows some strict formatting, where general storytelling is flavorfully and incrementally presented by a NARRATOR, and characters present their own dialog and actions. ' +
-    'Only PRESENT PATRONS, {{user}}, and minor characters are active at any time; ABSENT PATRONS are dormant and only exist for context--keep them absent or in the background. ' +
-    'Undefined, minor characters should be fleeting and quickly resolved from the story. Focus on achieving the provided narrative beat in this response.';
+    'Only PRESENT PATRONS, {{user}}, and minor characters are active at any time; ABSENT PATRONS are dormant and only exist for context--keep them in the background or, ideally, drop them from the scene. ' +
+    'Undefined, minor characters should be fleeting and quickly resolved from the story. Regardless of what\'s going on in the log, re-focus on achieving the narrative goals provided here.';
 
 export const sampleScript = '\n' +
         `**NARRATOR**: General narration is provided by the NARRATOR.\n\n` +
         `**NARRATOR**: Each message should be about one line.\n\n` +
-        `**CHARACTER 1**: (Character 1's mood) "When I talk, my dialog is embedded in quotations." Character 1 looks up.\n\n` +
-        `**NARRATOR**: Character 2 walks in.\n\n` +
-        `**CHARACTER 2**: (Blandly) "Hey, Character 1."\n\n` +
-        `**CHARACTER 1**: (Cheerful) "Welcome back, Character 2!" They give a friendly wave."\n\n` +
-        `**CHARACTER 1**: (Curious) Character 1 thinks to themself, "You look different, Character 2."\n\n` +
-        `**CHARACTER 2**: (Perking up) Smiles broadly, "I'm trying a new hairstyle. Thanks for noticing!"\n\n` +
-        `**NARRATOR**: Character 2 takes a seat down the bar from Character 1 and looks for you.\n\n` +
-        `**{{user}}**: You approach Character 2, "What'll it be, Character 2?"\n\n` +
-        `**CHARACTER 2**: (Thoughtful) "I think I'd like something refreshing and bright tonight."\n\n` +
+        `**SOME PATRON**: (Some Character's mood) "When I talk, my dialog is embedded in quotations." Some Patron looks up.\n\n` +
+        `**NARRATOR**: Another Patron walks in.\n\n` +
+        `**ANOTHER PATRON**: (Blandly) "Hey, Some Patron."\n\n` +
+        `**SOME PATRON**: (Cheerful) "Welcome back!" They give a friendly wave."\n\n` +
+        `**SOME PATRON**: (Curious) Some Patron thinks to themself, "You look different..."\n\n` +
+        `**ANOTHER PATRON**: (Perking up) Smiles broadly, "I'm trying a new hairstyle. Thanks for noticing!"\n\n` +
+        `**NARRATOR**: Another Patron takes a seat down the bar from Some Patron and looks for you.\n\n` +
+        `**{{user}}**: You approach Another Patron, "What'll it be?"\n\n` +
+        `**ANOTHER PATRON**: (Thoughtful) "I think I'd like something refreshing and bright tonight."\n\n` +
         `**{{user}}**: You nod appreciatively, "I'll see what I can do." You look over your assortment of bottles, weighing the choices.`;
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
