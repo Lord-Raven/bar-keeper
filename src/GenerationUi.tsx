@@ -103,9 +103,6 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage, setOnMenu, setErro
                             </Box>
                         </Grid>
                     ))}
-                </Grid>
-
-                <Grid container spacing={2} justifyContent="center">
                     {Object.values(stage().patrons).map((patron) => (
                         <Grid key={patron.name}>
                             <Box sx={{ textAlign: 'center', height: '20vh' }}>

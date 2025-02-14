@@ -241,12 +241,12 @@ export async function generate(stage: Stage, setErrorMessage: (message: string) 
         stage.setLoadProgress(10, 'Generating bar image.');
         await generateBarImage(stage, setErrorMessage);
 
-        stage.setLoadProgress(25, 'Generating beverages.');
+        stage.setLoadProgress(15, 'Generating beverages.');
 
         await generateBeverages(stage, setErrorMessage);
 
         // Generate a sound effect
-        stage.setLoadProgress(60, 'Generate sounds.');
+        stage.setLoadProgress(50, 'Generate sounds.');
         
         /*this.entranceSoundUrl = await this.makeSound({
             prompt: `[INSTRUCTION OVERRIDE]Create a brief sound effect (2-4 seconds) to indicate that someone has entered the following establishment:\n${this.barDescription}\nThis sound could be a chime, bell, tone, or door closing sound--something that suits the ambiance of the setting.[/INSTRUCTION OVERRIDE]`,
@@ -254,7 +254,7 @@ export async function generate(stage: Stage, setErrorMessage: (message: string) 
         },'');*/
 
         stage.patrons = {};
-        stage.setLoadProgress((stage.loadingProgress ?? 0) + 5, 'Generating patrons.');
+        stage.setLoadProgress(50, 'Generating dummy patrons.');
         await generateDummyPatrons(stage);
         await generatePatrons(stage, setErrorMessage);
 
@@ -313,6 +313,7 @@ export async function generateDummyPatrons(stage: Stage) {
         console.log(`Generating a dummy patron.`);
         let tries = 5;
         while (stage.dummyPatrons.length < 3 && tries-- >= 0) {
+            stage.setLoadProgress((stage.loadingProgress ?? 0) + 2, 'Generating patrons.');
             let patron = await generatePatron(stage, {...basicCharacter, name: 'something'});
             if (patron) {
                 console.log('Generated dummy patron:');
@@ -330,6 +331,7 @@ export async function generatePatrons(stage: Stage, setErrorMessage: (message: s
 
     for (let character of characters) {
         if (!Object.keys(stage.patrons).includes(character.name)) {
+            stage.setLoadProgress((stage.loadingProgress ?? 0) + 2, 'Generating patrons.');
             console.log(`Generating a patron for ${character.name}.`);
             let tries = 3;
             while (!Object.keys(stage.patrons).includes(character.name) && tries-- >= 0) {
@@ -338,6 +340,7 @@ export async function generatePatrons(stage: Stage, setErrorMessage: (message: s
                     console.log('Generated patron:');
                     console.log(patron);
                     stage.patrons[character.name] = patron;
+                    stage.setLoadProgress((stage.loadingProgress ?? 0) + 2, 'Generating patrons.');
                     await generatePatronImage(stage, patron, Emotion.neutral, setErrorMessage);
                 } else {
                     console.log('Failed a patron generation');
