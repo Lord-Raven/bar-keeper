@@ -35,7 +35,7 @@ export const Screen: FC<ScreenProps> = ({ stage }) => {
             flexDirection: 'column',
             color: '#ffffff'
         }}>
-
+            <ErrorPopup message={errorMessage}/>
             <ThemeProvider theme={stage().theme}>
                 {onMenu ? (
                     <div>
@@ -43,7 +43,7 @@ export const Screen: FC<ScreenProps> = ({ stage }) => {
                     </div>
                 ) : (
                     <PlayArea
-                        advance={() => stage().advanceMessage()}
+                        advance={(setErrorMessage: (message: string) => void) => stage().advanceMessage(setErrorMessage)}
                         reverse={() => stage().reverseMessage()}
                         stage={stage}
                         setOnMenu={handleSetOnMenu}

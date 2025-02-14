@@ -37,7 +37,7 @@ export const boxStyle = {
 }
 
 interface PlayAreaProps {
-    advance: () => Promise<void>;
+    advance: (setErrorMessage: (message: string) => void) => Promise<void>;
     reverse: () => Promise<void>;
     stage: () => Stage;
     setOnMenu: (onMenu: boolean) => void;
@@ -66,7 +66,7 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, reverse, stage, setOnMenu
         if (doneWinding) {
             setAdvancing(true);
             setDoneWinding(true);
-            advance().then(() => {setAdvancing(false); setChatNode(stage().currentNode)});
+            advance(setErrorMessage).then(() => {setAdvancing(false); setChatNode(stage().currentNode)});
         } else {
             setDoneWinding(true);
         }

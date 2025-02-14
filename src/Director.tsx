@@ -188,7 +188,7 @@ export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): 
     }
 
     let night = (startNode?.night ?? 0);
-    let beverageCounts = startNode?.beverageCounts;
+    let beverageCounts = startNode ? {...startNode.beverageCounts} : {};
     if (newDirection == Direction.NightStart) {
         night += 1;
         for (let beverage in beverageCounts) {

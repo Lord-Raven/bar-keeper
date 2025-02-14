@@ -261,7 +261,7 @@ export async function generate(stage: Stage, setErrorMessage: (message: string) 
         // Finally, display an intro
         stage.currentNode = null;
         stage.setLoadProgress(95, 'Writing intro.');
-        await stage.advanceMessage()
+        await stage.advanceMessage(setErrorMessage);
         stage.setLoadProgress(undefined, 'Complete');
     } catch (e) {
         console.log(e);

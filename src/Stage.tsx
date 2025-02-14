@@ -237,14 +237,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
     }
 
-    async advanceMessage() {
+    async advanceMessage(setErrorMessage: (message: string) => void) {
         // Go ahead and do a patron check--don't wait up.
         generatePatrons(this, (message) => {});
 
-        this.kickOffRequestedNodes(this.currentNode);
+        this.kickOffRequestedNodes(this.currentNode, setErrorMessage);
 
         if (!this.currentNode || this.currentNode.childIds.length == 0) {
-            await this.processNextResponse();
+            await this.processNextResponse(setErrorMessage);
         }
         if (!this.currentNode) {
             let someNode = this.chatNodes[Object.keys(this.chatNodes)[0]];
@@ -256,18 +256,18 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             }
         } else if (this.currentNode.childIds.length > 0) {
             this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]], false);
-            this.kickOffRequestedNodes(this.currentNode);
+            this.kickOffRequestedNodes(this.currentNode, setErrorMessage);
         }
     }
 
-    kickOffRequestedNodes(fromNode: ChatNode|null) {
+    kickOffRequestedNodes(fromNode: ChatNode|null, setErrorMessage: (message: string) => void) {
         const currentTerminus = this.getTerminusOfChat(fromNode);
 
         // If this is a drink request, we can't kick this off until the last interaction
         if (!this.requestedNodes && (!currentTerminus || (currentTerminus.childIds.length == 0 && currentTerminus.direction != Direction.PatronDrinkRequest))) {
             console.log(`Start from ${currentTerminus?.id}`);
             console.log(currentTerminus);
-            this.requestedNodes = this.generateMessageContent(currentTerminus);
+            this.requestedNodes = this.generateMessageContent(currentTerminus, setErrorMessage);
         }
     }
 
@@ -296,7 +296,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return fromNode;
     }
 
-    async generateMessageContent(fromNode: ChatNode|null): Promise<ChatNode[]|null> {
+    async generateMessageContent(fromNode: ChatNode|null, setErrorMessage: (message: string) => void): Promise<ChatNode[]|null> {
         let nodeProps: any = determineNextNodeProps(this, fromNode);
 
         if (nodeProps.direction == Direction.NightEnd) {
@@ -324,6 +324,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                         retries = 0;
                     }
                 } catch(error) {
+                    setErrorMessage('Failed to generate a nightly summary; if this error persists, consider refreshing or clearing cache.');
                     console.error("Failed to generate a nightly summary: " + error);
                 }
             }
@@ -343,16 +344,17 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     return Promise.resolve(newNodes);
                 }
             } catch(error) {
-                console.error("Failed to generate message: " + error);
+                setErrorMessage('Failed to generate a message; if this error persists, consider refreshing or clearing cache.');
+                console.error("Failed to generate a message: " + error);
             }
         }
         return Promise.resolve(null);
     }
 
-    async processNextResponse() {
+    async processNextResponse(setErrorMessage: (message: string) => void) {
         this.isGenerating = true;
         if (!this.requestedNodes) {
-            this.requestedNodes = this.generateMessageContent(this.getTerminusOfChat(this.currentNode));
+            this.requestedNodes = this.generateMessageContent(this.getTerminusOfChat(this.currentNode), setErrorMessage);
         }
         let result = await this.requestedNodes;
         console.log(result);
@@ -368,6 +370,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 endNode.selectedChildId = startNode.id;
             }
         } else {
+            setErrorMessage('Failed to generate new content; if this error persists, consider refreshing or clearing cache.');
             console.log('Failed to generate new content; try again.');
         }
         this.requestedNodes = null;
