@@ -94,7 +94,6 @@ export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): 
     const history = startNode ? stage.getNightlyNodes(startNode) : [];
     const drinksServed = history.filter(node => directionCheck(stage, node, Direction.PatronDrinkOutcome)).length;
     const visits = history.filter(node => directionCheck(stage, node, Direction.IntroducePatron)).length;
-    console.log(`drinksServed: ${drinksServed}, visits: ${visits}`);
 
     let selectedPatronId = undefined;
     let newPresentPatrons = {...(startNode ? startNode.presentPatrons : {})};
@@ -130,7 +129,7 @@ export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): 
 
             for (let patronId of presentPatronIds) {
                 if (startNode && Object.values(startNode.beverageCounts).reduce((total, count) => total + count, 0) > 0) {
-                    directionOdds.push(new Possibility(Direction.PatronDrinkRequest, patronId, drinksServed < 5 ? 15 : 0));
+                    directionOdds.push(new Possibility(Direction.PatronDrinkRequest, patronId, Math.max(0, (6 - drinksServed) * 5)));
                 }
                 directionOdds.push(new Possibility(Direction.PatronLeaves, patronId,
                     Math.max(0, ((drinksServed - 2) * 3)) + // Increase odds when drinks served is >= 3
