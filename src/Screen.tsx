@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {ThemeProvider} from "@mui/material";
 import {Title} from "./Title";
 import {PlayArea} from "./PlayArea";
@@ -14,14 +14,15 @@ export const Screen: FC<ScreenProps> = ({ stage }) => {
     const [errorMessage, setErrorMessage] = useState<string>('');
 
     const sendError = (message: string) => {
-        console.log(`setError(${message})`);
         setErrorMessage(message);
-        setTimeout(() => {if (errorMessage == message) {setErrorMessage('')}}, 5000);
+        setTimeout(() => {setErrorMessage('')}, 5000);
     }
 
     const handleSetOnMenu = (onMenu: boolean) => {
         setOnMenu(onMenu);
     };
+
+    useEffect(() => {}, [errorMessage]);
 
     return (
         <div style={{
