@@ -21,21 +21,17 @@ const ErrorPopup: FC<ErrorPopupProps> = ({message}) => {
             style={{
                 position: 'fixed',
                 top: '0',
-                left: '50%',
+                left: '0%',
                 width: '100%',
                 zIndex: 99,
             }}
         >
-            <Box sx={{
-                transform: 'translate(-100%, 0%)',
-                backgroundColor: '#000000BB'}}>
-                <Typography>
-                    <Icon style={{outline: 1, float: 'left'}} color={'warning'}>
-                        <Cancel/>
-                    </Icon>
-                    {message}
-                </Typography>
-            </Box>
+            <Typography>
+                <Icon style={{outline: 1, float: 'left'}} color={'warning'}>
+                    <Cancel/>
+                </Icon>
+                {message}
+            </Typography>
         </motion.div>
     );
 };
