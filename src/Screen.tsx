@@ -32,16 +32,12 @@ export const Screen: FC<ScreenProps> = ({ stage }) => {
             backgroundRepeat: 'no-repeat',
             width: '100vw',
             height: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
             color: '#ffffff'
         }}>
             <ErrorPopup message={errorMessage}/>
             <ThemeProvider theme={stage().theme}>
                 {onMenu ? (
-                    <div>
                         <Title stage={stage} setOnMenu={handleSetOnMenu} setErrorMessage={sendError}/>
-                    </div>
                 ) : (
                     <PlayArea
                         advance={(setErrorMessage: (message: string) => void) => stage().advanceMessage(setErrorMessage)}
