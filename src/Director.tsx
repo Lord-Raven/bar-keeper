@@ -22,7 +22,7 @@ interface InstructionInput {
 }
 
 const generalInstruction = 'Your narration follows some strict formatting, where general storytelling is flavorfully and incrementally presented by a NARRATOR, and characters present their own dialog and actions. ' +
-    'Only PRESENT PATRONS, {{user}}, and minor characters are active at any time; ABSENT PATRONS are dormant and only exist for context--keep them in the background or, ideally, drop them from the scene. ' +
+    'Only PRESENT PATRONS, {{user}}, and minor characters are active at any time; ABSENT PATRONS are dormant and only exist for context--ignore the ABSENT PATRONS and keep them out of the scene. ' +
     'Undefined, minor characters should be given names, but be fleeting and quickly resolved from the story. Regardless of what\'s going on in the log, re-focus on achieving the narrative goals provided here.';
 
 export const sampleScript = '\n' +
