@@ -42,10 +42,16 @@ const sampleScript = '' +
 
 const directionSample: {[direction in Direction]: string} = {
     NightStart: `**NARRATOR**: You hit the switch for the neon sign and slip into your apron for the night.\n\n` +
-                `**{{user}}**: You sigh deeply, "Hope things stay quiet this evening."\n\n` +
-                `**JOHN SMITH**: A quiet regular enters and slips into their usual booth, opening their laptop and getting to work.\n\n` +
-                `**{{user}}**: "Let me know if you need anything, sir."`,
-    Lull: sampleScript,
+                `**{{user}}**: (Resigned) You sigh deeply, "Hope things stay quiet this evening."\n\n` +
+                `**JOHN SMITH**: A quiet regular enters and slips into their usual booth, splaying out some papers and studying them intently.\n\n` +
+                `**{{user}}**: "Let me know if you need anything, sir."\n\n` +
+                `**JOHN SMITH**: (Absently) "Of course." His eyes never leave his work.\n\n` +
+                `NARRATOR**: Seems like this could be a night like any other.`,
+    Lull:   `**NARRATOR**: The sparse crowd simmers for a time; you field the occasional order but are otherwise disengaged.\n\n` +
+            `**JANE DOE**: A mousy girl takes a seat at the bar, eyes scanning the room, searching.\n\n` +
+            `**{{user}}**: (Politely) "Can I help you miss?"\n\n` +
+            `**JANE DOE**: (Surprised) "O-oh, sorry. No, I'm just waiting for someone.\n\n` +
+            `**{{user}}**: "Ah, cool." You note her anxious appearance but decide to leave her be, for now.`,
     IntroducePatron: sampleScript,
     PatronBanter: sampleScript,
     PatronProblem: sampleScript,
@@ -165,11 +171,11 @@ export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): 
             if (visits < Object.keys(stage.patrons).length && (presentPatronIds.length ?? 0) < 5) {
                 const keys = Object.keys(stage.patrons).filter(key => !presentPatronIds.includes(key) && !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == key));
                 let selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
-                directionOdds.push(new Possibility(Direction.IntroducePatron, selectedPatronId, 25 - (presentPatronIds?.length ?? 0) * 5));
+                directionOdds.push(new Possibility(Direction.IntroducePatron, selectedPatronId, 30 - (presentPatronIds?.length ?? 0) * 5));
             }
 
             // If we've had a couple visits and the bar is empty, start jacking up the night end odds.
-            if (visits >= 2 && presentPatronIds.length  == 0) {
+            if (visits >= 3 && presentPatronIds.length  == 0) {
                 directionOdds.push(new Possibility(Direction.NightEnd, '', 20 + visits * 10));
             }
             // Remove the direction that we are coming from; can't occur twice in a row.
