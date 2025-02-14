@@ -1,7 +1,7 @@
 import {Direction} from "./Director";
 import {Stage} from "./index";
 import {Emotion, emotionRouting} from "./Patron";
-import {generatePatronImage, TRIM_SYMBOLS, trimSymbols} from "./Generator";
+import {generatePatronImage, MAX_NAME_LENGTH, TRIM_SYMBOLS, trimSymbols} from "./Generator";
 
 export interface ChatNode {
     id: string;
@@ -55,7 +55,11 @@ export async function createNodes(script: string, commonProps: Partial<ChatNode>
                 presentPatrons = currentNode.presentPatrons;
             }
             // Start a new dialogue
-            currentSpeaker = match[1];
+            currentSpeaker = match[1].toUpperCase();
+            // If speaker is longer than name, go ahead and make this a narrator
+            if (currentSpeaker.length > MAX_NAME_LENGTH) {
+                currentSpeaker = 'NARRATOR';
+            }
             currentDialogue = trimSymbols(match[2], TRIM_SYMBOLS).trim();
         } else if (currentSpeaker && currentDialogue.trim().length > 0) {
             // Continue the current dialogue

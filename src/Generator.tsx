@@ -6,6 +6,7 @@ import silhouetteUrl from './assets/silhouette.png'
 import { Beverage } from "./Beverage";
 
 export const TRIM_SYMBOLS = '\\-*#';
+export const MAX_NAME_LENGTH = 30;
 
 export function buildSection(name: string, body: string) {
     return `###${name.toUpperCase()}:\n${body.trim()}\n\n`;
@@ -361,14 +362,13 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     });
     let result = patronResponse?.result ?? '';
     let newPatron: Patron|undefined = undefined;
-    console.log(patronResponse);
     const nameRegex = /Name\s*[:\-]?\s*(.*)/i;
     const descriptionRegex = /Traits\s*[:\-]?\s*(.*)/i;
     const personalityRegex = /Personality\s*[:\-]?\s*(.*)/i;
     const nameMatches = result.match(nameRegex);
     const descriptionMatches = result.match(descriptionRegex);
     const personalityMatches = result.match(personalityRegex);
-    if (nameMatches && nameMatches.length > 1 && nameMatches[1].length < 30 && descriptionMatches && descriptionMatches.length > 1 && personalityMatches && personalityMatches.length > 1) {
+    if (nameMatches && nameMatches.length > 1 && nameMatches[1].length < MAX_NAME_LENGTH && descriptionMatches && descriptionMatches.length > 1 && personalityMatches && personalityMatches.length > 1) {
         console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
         newPatron = new Patron(trimSymbols(nameMatches[1], TRIM_SYMBOLS).trim(), trimSymbols(descriptionMatches[1], TRIM_SYMBOLS).trim(), trimSymbols(personalityMatches[1], TRIM_SYMBOLS).trim());
     }
