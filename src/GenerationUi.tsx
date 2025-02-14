@@ -66,7 +66,9 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage, setOnMenu, setErro
                     horizontal: 'left',
                 }}
             >
-                <Typography variant="h6" color='primary' sx={{ marginRight: '1vh' }}>Regen art for any of the game's content here.</Typography>
+                <Grid container justifyContent="center">
+                    <Typography variant="h6" color='primary' sx={{ marginRight: '1vh' }}>Regen art for any of the game's content here.</Typography>
+                </Grid>
                 <Grid container spacing={2} justifyContent="center">
                     <Grid key='background'>
                         <Box sx={{ textAlign: 'center', height: '20vh' }}>

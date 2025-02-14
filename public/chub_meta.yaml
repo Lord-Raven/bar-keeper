@@ -56,7 +56,7 @@ I am already applying a lot of what I've learned here toward more elaborate proj
 "
 
 # 'PUBLIC', 'PRIVATE', or 'UNLISTED'.
-visibility: 'PRIVATE'
+visibility: 'PUBLIC'
 
 position: 'FULLSCREEN'
 
