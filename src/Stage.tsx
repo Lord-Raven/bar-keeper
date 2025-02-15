@@ -268,7 +268,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async advanceMessage(setErrorMessage: (message: string) => void) {
         // Go ahead and do a patron check--don't wait up.
-        console.log('advanceMessage');
         generatePatrons(this, (message) => {});
 
         this.kickOffRequestedNodes(this.currentNode, setErrorMessage);
@@ -288,7 +287,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         const currentTerminus = this.getTerminusOfChat(fromNode);
 
         // If this is a drink request, we can't kick this off until the last interaction
-        console.log(currentTerminus);
         if (!this.requestedNodes && (!currentTerminus || (currentTerminus.childIds.length == 0 && currentTerminus.direction != Direction.PatronDrinkRequest))) {
             this.requestedNodes = this.generateMessageContent(currentTerminus, determineNextNodeProps(this, currentTerminus), 500, setErrorMessage);
         }
@@ -385,7 +383,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.requestedNodes = this.generateMessageContent(this.getTerminusOfChat(this.currentNode), determineNextNodeProps(this, this.getTerminusOfChat(this.currentNode)), 500, setErrorMessage);
         }
         let result = await this.requestedNodes;
-        console.log(result);
         if (result && result.length > 0) {
             result.forEach(node => this.chatNodes[node.id] = node);
             newRootNode = result[0];

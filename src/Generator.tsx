@@ -74,7 +74,7 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
         (stage.sourceSummary != '' ? buildSection('Source Material', stage.sourceSummary ?? '') : '') +
         buildSection('Setting', stage.settingSummary ?? '') +
         buildSection('Themes', stage.themeSummary ?? '') +
-        buildSection('Location', `A description of the specific location of this setting: ${stage.barDescription}` ?? '') +
+        buildSection('Location', `The specific location of this narrative: ${stage.barDescription}`) +
         buildSection('Example Responses', '\n' +
             `NAME: Cherry Rotgut\nDESCRIPTION: A viscous, blood-red liqueur in a garishly bright bottle--tastes like cough syrup.\n\n` +
             `NAME: Tritium Delight\nDESCRIPTION: An impossibly fluorescent liquor; the tinted glass of the bottle does nothing to shield the eyes. Tastes like artificial sweetener on crack.\n\n` +
@@ -100,7 +100,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
         (stage.sourceSummary != '' ? buildSection('Source Material', stage.sourceSummary ?? '') : '') +
         buildSection('Setting', stage.settingSummary ?? '') +
         buildSection('Themes', stage.themeSummary ?? '') +
-        buildSection('Location', `A description of the specific location of this setting: ${stage.barDescription}` ?? '') +
+        buildSection('Location', `The specific location of this narrative: ${stage.barDescription}`) +
         (specific ?
             buildSection('Input', stage.replaceTags(`\n${baseCharacter.name}\n\n${baseCharacter.description}\n\n${baseCharacter.personality}`, {user: stage.player.name, char: baseCharacter.name})) : '') +
         buildSection('Example Responses', '\n' +
@@ -131,7 +131,6 @@ export async function generateBeverages(stage: Stage, setErrorMessage: (message:
             min_tokens: 50
         });
 
-        console.log(alcoholResponse?.result);
         stage.beverages.push(...(alcoholResponse?.result ?? '').split(new RegExp('NAME:', 'i'))
             .map(item => {
                 const nameMatch = item.match(/\s*(?:\d*\.)*\s*(.*?)\s*Description:/i);
@@ -311,7 +310,6 @@ const basicCharacter: Character = {
 export async function generateDummyPatrons(stage: Stage) {
     if (stage.dummyPatrons.length == 0) {
         // Build some dummy patrons to throw away the LLM's most generic ideas, and then use them as examples for better ideas.
-        console.log(`Generating a dummy patron.`);
         let tries = 5;
         while (stage.dummyPatrons.length < 3 && tries-- >= 0) {
             stage.setLoadProgress((stage.loadingProgress ?? 0) + 2, 'Generating patrons.');
@@ -333,7 +331,6 @@ export async function generatePatrons(stage: Stage, setErrorMessage: (message: s
     for (let character of characters) {
         if (!Object.keys(stage.patrons).includes(character.name)) {
             stage.setLoadProgress((stage.loadingProgress ?? 0) + 2, 'Generating patrons.');
-            console.log(`Generating a patron for ${character.name}.`);
             let tries = 3;
             while (!Object.keys(stage.patrons).includes(character.name) && tries-- >= 0) {
                 let patron = await generatePatron(stage, character);
@@ -369,7 +366,6 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     const descriptionMatches = result.match(descriptionRegex);
     const personalityMatches = result.match(personalityRegex);
     if (nameMatches && nameMatches.length > 1 && nameMatches[1].length < MAX_NAME_LENGTH && descriptionMatches && descriptionMatches.length > 1 && personalityMatches && personalityMatches.length > 1) {
-        console.log(`${nameMatches[1].trim()}:${descriptionMatches[1].trim()}:${personalityMatches[1].trim()}`);
         newPatron = new Patron(trimSymbols(nameMatches[1], TRIM_SYMBOLS).trim(), trimSymbols(descriptionMatches[1], TRIM_SYMBOLS).trim(), trimSymbols(personalityMatches[1], TRIM_SYMBOLS).trim());
     }
 
