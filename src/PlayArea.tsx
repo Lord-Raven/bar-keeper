@@ -64,12 +64,10 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, regen, reverse, stage, se
     };
 
     const proceed = () => {
-        console.log('proceed');
         if (doneWinding) {
-            console.log('doneWinding');
             setAdvancing(true);
             setDoneWinding(true);
-            advance(setErrorMessage).then(() => {console.log('done'); setAdvancing(false); setChatNode(stage().currentNode)});
+            advance(setErrorMessage).then(() => {setAdvancing(false); setChatNode(stage().currentNode)});
         } else {
             setDoneWinding(true);
         }
