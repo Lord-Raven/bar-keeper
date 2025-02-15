@@ -1,8 +1,8 @@
-import {CircularProgress, Icon, IconButton, Typography} from "@mui/material";
-import React, {FC, ReactNode, useEffect, useState} from "react";
+import {Button, CircularProgress, Typography} from "@mui/material";
+import {FC, ReactNode, useEffect, useState} from "react";
 import {Stage} from "./Stage";
 import {ChatNode} from "./ChatNode";
-import {Cancel, CheckCircle, ArrowForward, ArrowBack} from "@mui/icons-material";
+import {Cancel, CheckCircle, ArrowForward, ArrowBack, Refresh} from "@mui/icons-material";
 import {Emotion} from "./Patron";
 import Box from "./Box";
 import {GenerationUi} from "./GenerationUi";
@@ -38,20 +38,21 @@ export const boxStyle = {
 
 interface PlayAreaProps {
     advance: (setErrorMessage: (message: string) => void) => Promise<void>;
+    regen: (targetNode: ChatNode, setErrorMessage: (message: string) => void) => Promise<void>;
     reverse: () => Promise<void>;
     stage: () => Stage;
     setOnMenu: (onMenu: boolean) => void;
     setErrorMessage: (message: string) => void;
 }
 
-export const PlayArea: FC<PlayAreaProps> = ({ advance, reverse, stage, setOnMenu, setErrorMessage }) => {
+export const PlayArea: FC<PlayAreaProps> = ({ advance, regen, reverse, stage, setOnMenu, setErrorMessage }) => {
     const [advancing, setAdvancing] = useState<boolean>(false);
     const [doneWinding, setDoneWinding] = useState<boolean>(false);
     const [selectedBeverage, setSelectedBeverage] = useState<string|null>(stage().currentNode?.selectedBeverage ?? null);
     const [hoveredBeverage, setHoveredBeverage] = useState<Beverage|null>(null);
     const [chatNode, setChatNode] = useState<ChatNode|null>(stage().currentNode ?? null);
 
-    const makingBeverageDecision = stage().isBeverageDecision() && !(chatNode?.read ?? false);
+    const makingBeverageDecision = stage().isBeverageDecision() == true && !(chatNode?.read ?? false);
     const numberOfPatrons = Math.max(1, Object.keys(chatNode?.presentPatrons ?? {}).length);
     const history = chatNode ? stage().getNightlyNodes(chatNode) : [];
 
@@ -63,12 +64,21 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, reverse, stage, setOnMenu
     };
 
     const proceed = () => {
+        console.log('proceed');
         if (doneWinding) {
+            console.log('doneWinding');
             setAdvancing(true);
             setDoneWinding(true);
-            advance(setErrorMessage).then(() => {setAdvancing(false); setChatNode(stage().currentNode)});
+            advance(setErrorMessage).then(() => {console.log('done'); setAdvancing(false); setChatNode(stage().currentNode)});
         } else {
             setDoneWinding(true);
+        }
+    }
+
+    const reroll = () => {
+        if (chatNode != null) {
+            setAdvancing(true);
+            regen(chatNode, setErrorMessage).then(() => {setAdvancing(false); setChatNode(stage().currentNode)});
         }
     }
 
@@ -119,49 +129,73 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, reverse, stage, setOnMenu
                          overflow: 'hidden'
                 }}>
                     <Box layout sx={{...boxStyle, bottom: '17vh'}}>
-                        <div style={{width: '100%'}}>
-                            <div>
-                                <Typography variant="h5" color="#AAAAAA">{chatNode?.speakerId ?? ''}</Typography>
-                            </div>
-                            <div>
-                                <MessageWindup message={message} read={chatNode?.read ?? false}
-                                               options={{
-                                                   onFinished: () => {
-                                                       setDoneWinding(true);
-                                                   }, skipped: doneWinding
-                                               }}/>
-                            </div>
-                            <div>
-                                <IconButton style={{outline: 1, float: 'left'}}
-                                            disabled={advancing || !chatNode || !chatNode?.parentId}
-                                            color={'primary'}
-                                            onClick={recede}>
+                        <div style={{width: '100%', display: 'flex', alignItems: 'center'}}>
+                            <div style={{position: 'absolute', left: 0, height: '100%', display: 'flex', flexDirection: 'column'}}>
+                                <Button
+                                    style={{
+                                        outline: 1,
+                                        height: '50%',
+                                        width: '40px',
+                                        borderRadius: '10px'
+                                    }}
+                                    disabled={advancing || !chatNode}
+                                    color={'primary'}
+                                    onClick={reroll}
+                                >
+                                    <Refresh/>
+                                </Button>
+                                <Button
+                                    style={{
+                                        outline: 1,
+                                        height: '50%',
+                                        width: '40px',
+                                        borderRadius: '10px'
+                                    }}
+                                    disabled={advancing || !chatNode || !chatNode?.parentId}
+                                    color={'primary'}
+                                    onClick={recede}
+                                >
                                     <ArrowBack/>
-                                </IconButton>
-                                {advancing ? (
-                                    <CircularProgress style={{float: 'right'}}/>
-                                ) : (makingBeverageDecision ? (
-                                        selectedBeverage ? (
-                                            <IconButton style={{outline: 1, float: 'right'}} disabled={advancing}
-                                                        color={'primary'}
-                                                        onClick={proceed}>
-                                                <CheckCircle/>
-                                            </IconButton>
-                                        ) : (
-                                            <Icon style={{outline: 1, float: 'right'}} color={'warning'}>
-                                                <Cancel/>
-                                            </Icon>
-                                        )
-                                    ) : (
-                                        <IconButton style={{outline: 1, float: 'right'}} disabled={advancing}
-                                                    color={'primary'}
-                                                    onClick={proceed}>
-                                            <ArrowForward/>
-                                        </IconButton>
-                                    )
-                                )
-                                }
+                                </Button>
                             </div>
+                            <div style={{flexGrow: 1, padding: '0 50px'}}>
+                                <div>
+                                    <Typography variant="h5" color="#AAAAAA">{chatNode?.speakerId ?? ''}</Typography>
+                                </div>
+                                <div>
+                                    <MessageWindup message={message} read={chatNode?.read ?? false}
+                                                options={{
+                                                    onFinished: () => {
+                                                        setDoneWinding(true);
+                                                    }, skipped: doneWinding
+                                                }}/>
+                                </div>
+                            </div>
+                            <Button 
+                                style={{
+                                    outline: 1,
+                                    height: '100%',
+                                    width: '40px',
+                                    position: 'absolute',
+                                    right: 0,
+                                    borderRadius: '10px'
+                                }}
+                                disabled={(advancing || (makingBeverageDecision && !selectedBeverage))}
+                                color={'primary'}
+                                onClick={proceed}
+                            >
+                                {advancing ? (
+                                    <CircularProgress style={{position: 'absolute', right: 0}}/>
+                                ): (makingBeverageDecision ? (
+                                    selectedBeverage ? (
+                                        <CheckCircle/>
+                                    ) :
+                                        <Cancel/>
+                                ) : (
+                                        <ArrowForward/>
+                                    )
+                                )}
+                            </Button>
                         </div>
                     </Box>
                     <Box layout sx={{...boxStyle, height: '15vh'}}>
@@ -198,7 +232,9 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, reverse, stage, setOnMenu
                     position = getCharacterPosition(index, numberOfPatrons);
                     present = true;
                 }
-                return <PatronImage patron={patron}
+                return <PatronImage 
+                                    key={patronId}
+                                    patron={patron}
                                     emotion={emotion}
                                     xPosition={position}
                                     isTalking={isTalking}

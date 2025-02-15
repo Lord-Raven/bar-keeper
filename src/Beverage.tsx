@@ -16,6 +16,7 @@ export class Beverage {
 
         return this.imageUrl !== '' ? (
                 <Badge
+                    key={this.name}
                     badgeContent={`${count()}`}
                     color="primary"
                     anchorOrigin={{

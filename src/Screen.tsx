@@ -4,6 +4,7 @@ import {Title} from "./Title";
 import {PlayArea} from "./PlayArea";
 import {Stage} from "./Stage";
 import ErrorPopup from "./ErrorPopup";
+import { ChatNode } from "./ChatNode";
 
 interface ScreenProps {
     stage: () => Stage;
@@ -41,6 +42,7 @@ export const Screen: FC<ScreenProps> = ({ stage }) => {
                 ) : (
                     <PlayArea
                         advance={(setErrorMessage: (message: string) => void) => stage().advanceMessage(setErrorMessage)}
+                        regen={(targetNode: ChatNode, setErrorMessage: (message: string) => void) => stage().regenMessage(targetNode, setErrorMessage)}
                         reverse={() => stage().reverseMessage()}
                         stage={stage}
                         setOnMenu={handleSetOnMenu}

@@ -29,29 +29,29 @@ export const generalInstruction = '`{{user}} is a bartender for LOCATION; refer 
 const sampleScript = '' +
         `**NARRATOR**: General narration is provided by the NARRATOR.\n\n` +
         `**NARRATOR**: Each message should be about one line.\n\n` +
-        `**JOHN SMITH**: (Some Character's mood) "When I talk, my dialog is embedded in quotations." John Doe looks up.\n\n` +
-        `**NARRATOR**: Another Patron walks in.\n\n` +
-        `**JANE DOE**: (Blandly) "Hey, Some Patron."\n\n` +
-        `**JOHN SMITH**: (Cheerful) "Welcome back, Jane!" They give a friendly wave."\n\n` +
-        `**JOHN SMITH**: (Curious) John Smith thinks to themself, "You look different..."\n\n` +
-        `**JANE DOE**: (Perking up) Jane smiles broadly, "I'm trying a new hairstyle. Thanks for noticing!"\n\n` +
-        `**NARRATOR**: Another Patron takes a seat down the bar from Some Patron and looks for you.\n\n` +
-        `**{{user}}**: You approach Jane Doe, "What'll it be, Jane?"\n\n` +
-        `**JANE DOE**: (Thoughtful) "I think I'd like something refreshing and bright tonight."\n\n` +
+        `**REGULAR**: (Informative) "When I talk, my dialog is embedded in quotations." The regular looks up.\n\n` +
+        `**YOUNG WOMAN**: Another regular, a young woman, walks in.\n\n` +
+        `**YOUNG WOMAN**: (Blandly) "Hey."\n\n` +
+        `**FIRST REGULAR**: (Cheerful) "Welcome back!" He gives a friendly wave."\n\n` +
+        `**RIST REGULAR**: (Curious) He thinks to themself, "You look different...but good."\n\n` +
+        `**YOUNG WOMAN**: (Perking up) She smiles broadly, "I'm trying a new hairstyle. Thanks for noticing!"\n\n` +
+        `**NARRATOR**: The young woman takes a seat down the bar from the man and looks for you.\n\n` +
+        `**{{user}}**: You approach her, "What'll it be, miss?"\n\n` +
+        `**YOUNG WOMAN**: (Thoughtful) "I think I'd like something refreshing and bright tonight."\n\n` +
         `**{{user}}**: You nod appreciatively, "I'll see what I can do." You look over your assortment of bottles, weighing the choices.`;
 
 const directionSample: {[direction in Direction]: string} = {
-    NightStart: `**NARRATOR**: You hit the switch for the neon sign and slip into your apron for the night.\n\n` +
+    NightStart: sampleScript, /*`**NARRATOR**: You hit the switch for the neon sign and slip into your apron for the night.\n\n` +
                 `**{{user}}**: (Resigned) You sigh deeply, "Hope things stay quiet this evening."\n\n` +
                 `**JOHN SMITH**: A quiet regular enters and slips into their usual booth, splaying out some papers and studying them intently.\n\n` +
                 `**{{user}}**: "Let me know if you need anything, sir."\n\n` +
                 `**JOHN SMITH**: (Absently) "Of course." His eyes never leave his work.\n\n` +
-                `NARRATOR**: Seems like this could be a night like any other.`,
-    Lull:   `**NARRATOR**: The sparse crowd simmers for a time; you field the occasional order but are otherwise disengaged.\n\n` +
+                `NARRATOR**: Seems like this could be a night like any other.`,*/
+    Lull:   sampleScript, /*`**NARRATOR**: The sparse crowd simmers for a time; you field the occasional order but are otherwise disengaged.\n\n` +
             `**JANE DOE**: A mousy girl takes a seat at the bar, eyes scanning the room, searching.\n\n` +
             `**{{user}}**: (Politely) "Can I help you miss?"\n\n` +
             `**JANE DOE**: (Surprised) "O-oh, sorry. No, I'm just waiting for someone.\n\n` +
-            `**{{user}}**: "Ah, cool." You note her anxious appearance but decide to leave her be, for now.`,
+            `**{{user}}**: "Ah, cool." You note her anxious appearance but decide to leave her be, for now.`,*/
     IntroducePatron: sampleScript,
     PatronBanter: sampleScript,
     PatronProblem: sampleScript,
@@ -114,6 +114,17 @@ export function getDirectionInstruction(stage: Stage, node: Partial<ChatNode>): 
 
 function directionCheck(stage: Stage, node: ChatNode, targetDirection: Direction) {
     return node.direction == targetDirection && (!node.parentId || stage.chatNodes[node.parentId].direction != node.direction || stage.chatNodes[node.parentId].selectedPatronId != node.selectedPatronId);
+}
+
+export function getCoreNodeProps(targetNode: ChatNode): Partial<ChatNode> {
+    return {
+        direction: targetNode.direction,
+        presentPatrons: {...targetNode.presentPatrons},
+        selectedPatronId: targetNode.selectedPatronId,
+        selectedBeverage: targetNode.selectedBeverage,
+        beverageCounts: {...targetNode.beverageCounts},
+        night: targetNode.night
+    };
 }
 
 export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): Partial<ChatNode> {

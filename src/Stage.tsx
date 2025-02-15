@@ -16,6 +16,7 @@ import {
     determineNextNodeProps,
     Direction,
     generalInstruction,
+    getCoreNodeProps,
     getDirectionInstruction,
     getDirectionSample
 } from "./Director";
@@ -244,35 +245,52 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
     }
 
+    async regenMessage(targetNode: ChatNode, setErrorMessage: (message: string) => void) {
+        // Regen a new child for the provided node and swap to it.
+        // First, delete nightly summaries that occur on or after the targetNode.
+        const targetNight = targetNode?.night ?? 0;
+        for (let key in Object.keys(this.nightlySummaries)) {
+            if (Number(key) >= targetNight) {
+                delete this.nightlySummaries[Number(key)];
+            }
+        }
+        // Now, regen from current props
+        const parentNode = targetNode.parentId ? this.chatNodes[targetNode.parentId] : null
+        this.requestedNodes = this.generateMessageContent(parentNode, getCoreNodeProps(targetNode), 250, setErrorMessage);
+
+        const newNode = await this.processNextResponse(parentNode, setErrorMessage);
+        if (newNode) {
+            this.setCurrentNode(newNode, false);
+        }
+        // TODO: clean up orphaned children.
+
+    }
+
     async advanceMessage(setErrorMessage: (message: string) => void) {
         // Go ahead and do a patron check--don't wait up.
+        console.log('advanceMessage');
         generatePatrons(this, (message) => {});
 
         this.kickOffRequestedNodes(this.currentNode, setErrorMessage);
 
         if (!this.currentNode || this.currentNode.childIds.length == 0) {
-            await this.processNextResponse(setErrorMessage);
-        }
-        if (!this.currentNode) {
-            let someNode = this.chatNodes[Object.keys(this.chatNodes)[0]];
-            if (someNode) {
-                while(someNode.parentId) {
-                    someNode = this.chatNodes[someNode.parentId];
-                }
-                this.setCurrentNode(someNode, false);
+            const newNode = await this.processNextResponse(this.getTerminusOfChat(this.currentNode), setErrorMessage);
+            if (newNode) {
+                this.setCurrentNode(newNode, false);
             }
         } else if (this.currentNode.childIds.length > 0) {
             this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]], false);
-            this.kickOffRequestedNodes(this.currentNode, setErrorMessage);
         }
+        this.kickOffRequestedNodes(this.currentNode, setErrorMessage);
     }
 
     kickOffRequestedNodes(fromNode: ChatNode|null, setErrorMessage: (message: string) => void) {
         const currentTerminus = this.getTerminusOfChat(fromNode);
 
         // If this is a drink request, we can't kick this off until the last interaction
+        console.log(currentTerminus);
         if (!this.requestedNodes && (!currentTerminus || (currentTerminus.childIds.length == 0 && currentTerminus.direction != Direction.PatronDrinkRequest))) {
-            this.requestedNodes = this.generateMessageContent(currentTerminus, setErrorMessage);
+            this.requestedNodes = this.generateMessageContent(currentTerminus, determineNextNodeProps(this, currentTerminus), 500, setErrorMessage);
         }
     }
 
@@ -301,51 +319,53 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return fromNode;
     }
 
-    async generateMessageContent(fromNode: ChatNode|null, setErrorMessage: (message: string) => void): Promise<ChatNode[]|null> {
-        let nodeProps: any = determineNextNodeProps(this, fromNode);
+    async generateNightlySummary(fromNode: ChatNode, setErrorMessage: (message: string) => void) {
+        let retries = 3;
+        while (retries-- > 0) {
+            try {
+                let textGen = await this.generator.textGen({
+                    prompt:
+                        buildSection('Setting', this.barDescription ?? '') +
+                        buildSection(`Protagonist`, `${this.player.name} is a bartender here. ${this.player.chatProfile}`) +
+                        this.buildPatronDescriptions() +
+                        buildSection('Beverages', this.buildBeverageDescriptions()) +
+                        (fromNode ? buildSection('Log', this.buildHistory(fromNode)) : '') +
+                        buildSection('Current Instruction', 'Utilize this response to summarize the events in the LOG. You should produce an abridged account of the key events and interactions that occurred in the bar this evening, based on an analysis of the LOG.') +
+                        '###FUTURE INSTRUCTION:',
+                    max_tokens: 250,
+                    min_tokens: 50,
+                    include_history: false
+                });
+                if (textGen?.result?.length) {
 
-        if (nodeProps.direction == Direction.NightEnd) {
-            // Generate a nightly summary.
-            let retries = 3;
-            while (retries-- > 0) {
-                try {
-                    let textGen = await this.generator.textGen({
-                        prompt:
-                            buildSection('Setting', this.barDescription ?? '') +
-                            buildSection(`Protagonist`, `${this.player.name} is a bartender here. ${this.player.chatProfile}`) +
-                            this.buildPatronDescriptions() +
-                            buildSection('Beverages', this.buildBeverageDescriptions()) +
-                            (fromNode ? buildSection('Log', this.buildHistory(fromNode)) : '') +
-                            buildSection('Current Instruction', 'Utilize this response to summarize the events in the LOG. You should produce an abridged account of the key events and interactions that occurred in the bar this evening, based on an analysis of the LOG.') +
-                            '###FUTURE INSTRUCTION:',
-                        max_tokens: 250,
-                        min_tokens: 50,
-                        include_history: false
-                    });
-                    if (textGen?.result?.length) {
-
-                        console.log(`Generated a nightly Summary: ${textGen.result}`);
-                        this.nightlySummaries[nodeProps.night] = textGen.result;
-                        retries = 0;
-                    }
-                } catch(error) {
-                    setErrorMessage('Failed to generate a nightly summary; if this error persists, consider refreshing or clearing cache.');
-                    console.error("Failed to generate a nightly summary: " + error);
+                    console.log(`Generated a nightly Summary: ${textGen.result}`);
+                    this.nightlySummaries[fromNode.night] = textGen.result;
+                    retries = 0;
                 }
+            } catch(error) {
+                setErrorMessage('Failed to generate a nightly summary; if this error persists, consider refreshing or clearing cache.');
+                console.error("Failed to generate a nightly summary: " + error);
             }
+        }
+    }
+
+    async generateMessageContent(fromNode: ChatNode|null, nextNodeProps: any, maxTokens: number, setErrorMessage: (message: string) => void): Promise<ChatNode[]|null> {
+
+        if (fromNode && nextNodeProps.direction == Direction.NightEnd) {
+            await this.generateNightlySummary(fromNode, setErrorMessage);
         }
 
         let retries = 3;
         while (retries-- > 0) {
             try {
                 let textGen = await this.generator.textGen({
-                    prompt: this.buildStoryPrompt(this.getTerminusOfChat(this.currentNode), nodeProps),
-                    max_tokens: 500,
+                    prompt: this.buildStoryPrompt(fromNode, nextNodeProps),
+                    max_tokens: maxTokens,
                     min_tokens: 150,
                     include_history: false
                 });
                 if (textGen?.result?.length) {
-                    const newNodes = createNodes(textGen.result, nodeProps, this);
+                    const newNodes = createNodes(textGen.result, nextNodeProps, this);
                     return Promise.resolve(newNodes);
                 }
             } catch(error) {
@@ -356,21 +376,24 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         return Promise.resolve(null);
     }
 
-    async processNextResponse(setErrorMessage: (message: string) => void) {
+    async processNextResponse(parentNode: ChatNode|null, setErrorMessage: (message: string) => void) {
         this.isGenerating = true;
+        let newRootNode: ChatNode|null = null;
         if (!this.requestedNodes) {
-            this.requestedNodes = this.generateMessageContent(this.getTerminusOfChat(this.currentNode), setErrorMessage);
+            // This will happen during drink requests, where kickoff can't occur until a drink has definitively been chosen.
+            // Could happen in other weird situations, too.
+            this.requestedNodes = this.generateMessageContent(this.getTerminusOfChat(this.currentNode), determineNextNodeProps(this, this.getTerminusOfChat(this.currentNode)), 500, setErrorMessage);
         }
         let result = await this.requestedNodes;
         console.log(result);
         if (result && result.length > 0) {
             result.forEach(node => this.chatNodes[node.id] = node);
-            const endNode = this.getTerminusOfChat(this.currentNode);
-            const startNode = result[0];
-            if (endNode) {
-                startNode.parentId = endNode.id;
-                endNode.childIds.push(startNode.id);
-                endNode.selectedChildId = startNode.id;
+            newRootNode = result[0];
+            
+            if (parentNode) {
+                newRootNode.parentId = parentNode.id;
+                parentNode.childIds = [newRootNode.id]; // Could push(startNode.id), if I want to start keeping a proper tree.
+                parentNode.selectedChildId = newRootNode.id;
             }
         } else {
             setErrorMessage('Failed to generate new content; if this error persists, consider refreshing or clearing cache.');
@@ -380,6 +403,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.isGenerating = false;
 
         await this.updateChatState();
+        return newRootNode;
     }
 
     async makeImage(imageRequest: Object, defaultUrl: string): Promise<string> {
