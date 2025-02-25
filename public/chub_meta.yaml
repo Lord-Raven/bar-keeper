@@ -8,7 +8,7 @@ project_name: "Barkeeper"
 tagline: "A simple barkeeping sim based on any card."
 
 creator_notes: "
-<b><span style=\"color:red;\">Warning! I do _not_ recommend playing this stage if you rely on a jailbreak or token budget.</span></b>
+<b>_Warning! I do <span style=\"color:red;\">not</span> recommend playing this stage if you rely on a jailbreak or token budget._</b>
 <br>
 <br>
 This is little more than a proof of concept for the kind of full-screen experiences that Chub's stages can produce. 
@@ -53,6 +53,9 @@ For me, this was an exercise in producing a stage that exists outside of the tra
 Although it may feel like a (linear) chat, this stage doesn't leverage Chub's chat tree whatsoever (you can see this by the stagnant message counts while playing). 
 I have no further significant plans for this stage, but I may continue to tweak and improve it over time. 
 I am already applying a lot of what I've learned here toward more elaborate projects, so hopefully I'll have some cool stuff to share in the future =).
+<br>
+<br>
+02/25/2025 - Fixing the way the title screen adjusts to some window layouts. Also revised emotion handling a bit.
 "
 
 # 'PUBLIC', 'PRIVATE', or 'UNLISTED'.
