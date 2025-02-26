@@ -29,7 +29,7 @@ The stage will distill the chat's primary character card into a set of themes an
 The style and atmosphere vary _wildly_ based upon the card you start it with, so go ahead and find a card with a bizarre setting and add Barkeeper from the chat settings.
 <br>
 <br>
-<img src=\"https://avatars.charhub.io/avatars/uploads/images/gallery/file/faf5a7f6-957e-48cf-993c-d61c166380c6/5a4d4be5-a505-498c-933c-2deed326b888.png\" width=\"50%\" height=\"auto\"/>
+<img src=\"https://avatars.charhub.io/avatars/uploads/images/gallery/file/faf5a7f6-957e-48cf-993c-d61c166380c6/5a4d4be5-a505-498c-933c-2deed326b888.png\" width=\"25%\" height=\"auto\"/>
 <br>
 <br>
 This stage makes *many* generative calls, particularly when starting a new game. It will burn through tokens and image generation. 
