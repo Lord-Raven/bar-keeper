@@ -8,20 +8,28 @@ project_name: "Barkeeper"
 tagline: "A simple barkeeping sim based on any card."
 
 creator_notes: "
-<b>_Warning! I do <span style=\"color:red;\">not</span> recommend playing this stage if you rely on a jailbreak or token budget._</b>
+<b>_Warning: I do <span style=\"color:red;\">not</span> recommend playing this stage if you rely on a jailbreak or token budget._</b>
 <br>
 <br>
-This is little more than a proof of concept for the kind of full-screen experiences that Chub's stages can produce. 
-<br>
-<br>
-Adding this stage to a chat will essentially convert that session into a simple bartending visual novel, 
+This is little more than a proof of concept for the kind of full-screen experiences that Chub's stages can produce. Adding this stage to a chat will essentially convert that session into a simple bartending visual novel, 
 where the user's persona is a bartender who meets and interacts with various characters, but the only choices the player makes is what drinks to serve when prompted.  
+<br>
+<br>
+![](https://avatars.charhub.io/avatars/uploads/images/gallery/file/0fed37a1-97c3-4eb4-aaca-9ac42345cba7/0803a323-54b3-49b3-8b6e-6edabbff6ea4.png)
+<br>
+<br>
 Characters will come and go, with a handful of drink prompts each night and a limited stock of each beverage. 
 Storylines and relationships may emerge and resolve organically, hopefully influenced by the drinks you choose to give. There's no end game, just a stream of nights and regulars.
 <br>
 <br>
-The stage will distill the chat's primary character card into a set of themes and use that to generate a bar, five beverages, and four characters based on the chat's primary character card--
-plus an additional character for each bot you add to the chat. The style and atmosphere vary wildly based upon the card you start it with.
+![](https://avatars.charhub.io/avatars/uploads/images/gallery/file/1026ba47-4d23-47b6-8cc0-71ff7a5c454e/bb08bcf2-38b1-4585-af6e-0c5c5e0001c4.png)
+<br>
+<br>
+The stage will distill the chat's primary character card into a set of themes and use that to generate a bar, five beverages, and four characters--plus an additional character for each bot you add to the chat. 
+The style and atmosphere vary _wildly_ based upon the card you start it with, so go ahead and find a card with a bizarre setting and add Barkeeper from the chat settings.
+<br>
+<br>
+![](https://avatars.charhub.io/avatars/uploads/images/gallery/file/faf5a7f6-957e-48cf-993c-d61c166380c6/5a4d4be5-a505-498c-933c-2deed326b888.png)
 <br>
 <br>
 This stage makes *many* generative calls, particularly when starting a new game. It will burn through tokens and image generation. 
@@ -29,13 +37,13 @@ Requests include the user's jailbreak, but they also include additional instruct
 _I have done zero testing with corporate models and offer no expectations for how this stage could impact your account._ 
 <br>
 <br>
-The stage isn't particularly NSFW in itself, but it does contain some NSFW sample data; ultimately, the game derives themes from the character card, which could result in unsavory extrapolations---some of which may not be immediately transparent to the player. 
+The stage isn't particularly NSFW in itself, but it does contain some NSFW sample data; ultimately, the game derives themes from the character card, which could result in unsavory extrapolations--some of which may not be immediately transparent to the player. 
 Chub will block image generation of questionable content, which could be triggered by the procedural nature of this stage's content generation--especially if the character you are using features immature themes. 
 If you are seeing lots of missing images (black silhouette default images for characters or drinks), please consider playing this stage with a different card. 
 <br>
 <br>
-\"New Game\" will always blow away all of the stage's content for that chat, so unless you are unhappy with everything that was generated and want a completely fresh start, I would suggest starting an entirely new chat. 
-If you dislike a particular piece of art that was generated, you can use the settings pane to regenerate specific drink and patron images.
+\"New Game\" will blow away all of the stage's content and progress for that chat and re-generate everything. If you dislike a particular piece of art that was generated, you can use the settings pane to regenerate specific images. 
+If you receive a bad or undesirable response, there is a re-roll button; there is no tree navigation, so using this feature will make any messages beyond the re-rolled message inaccessible.
 <br>
 <br>
 **Shortcomings**
