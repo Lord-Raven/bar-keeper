@@ -15,21 +15,21 @@ This is little more than a proof of concept for the kind of full-screen experien
 where the user's persona is a bartender who meets and interacts with various characters, but the only choices the player makes is what drinks to serve when prompted.  
 <br>
 <br>
-<img src=\"https://avatars.charhub.io/avatars/uploads/images/gallery/file/0fed37a1-97c3-4eb4-aaca-9ac42345cba7/0803a323-54b3-49b3-8b6e-6edabbff6ea4.png\" width=\"50%\" height=\"auto\"/>
+<img src=\"https://avatars.charhub.io/avatars/uploads/images/gallery/file/0fed37a1-97c3-4eb4-aaca-9ac42345cba7/0803a323-54b3-49b3-8b6e-6edabbff6ea4.png\" style=\"max-width: 50%; height: auto;\"/>
 <br>
 <br>
 Characters will come and go, with a handful of drink prompts each night and a limited stock of each beverage. 
 Storylines and relationships may emerge and resolve organically, hopefully influenced by the drinks you choose to give. There's no end game, just a stream of nights and regulars.
 <br>
 <br>
-<img src=\"https://avatars.charhub.io/avatars/uploads/images/gallery/file/1026ba47-4d23-47b6-8cc0-71ff7a5c454e/bb08bcf2-38b1-4585-af6e-0c5c5e0001c4.png\" width=\"50%\" height=\"auto\"/>
+<img src=\"https://avatars.charhub.io/avatars/uploads/images/gallery/file/1026ba47-4d23-47b6-8cc0-71ff7a5c454e/bb08bcf2-38b1-4585-af6e-0c5c5e0001c4.png\" style=\"max-width: 50%; height: auto;\"/>
 <br>
 <br>
 The stage will distill the chat's primary character card into a set of themes and use that to generate a bar, five beverages, and four characters--plus an additional character for each bot you add to the chat. 
 The style and atmosphere vary _wildly_ based upon the card you start it with, so go ahead and find a card with a bizarre setting and add Barkeeper from the chat settings.
 <br>
 <br>
-<img src=\"https://avatars.charhub.io/avatars/uploads/images/gallery/file/faf5a7f6-957e-48cf-993c-d61c166380c6/5a4d4be5-a505-498c-933c-2deed326b888.png\" width=\"25%\" height=\"auto\"/>
+<img src=\"https://avatars.charhub.io/avatars/uploads/images/gallery/file/faf5a7f6-957e-48cf-993c-d61c166380c6/5a4d4be5-a505-498c-933c-2deed326b888.png\" style=\"max-width: 50%; height: auto;\"/>
 <br>
 <br>
 This stage makes *many* generative calls, particularly when starting a new game. It will burn through tokens and image generation. 
