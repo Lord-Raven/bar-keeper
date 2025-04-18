@@ -34,7 +34,7 @@ export function nameCheck(name: string, possibleName: string): boolean {
             }
         }
     }
-
+    console.log(`Levenshtein distance between ${name} and ${possibleName}: ${matrix[name.length][possibleName.length]}`);
     return matrix[name.length][possibleName.length] < Math.min(name.length / 2, possibleName.length / 2);
 }
 
