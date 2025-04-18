@@ -1,6 +1,6 @@
 import {Direction} from "./Director";
 import {Stage} from "./index";
-import {Emotion, emotionRouting} from "./Patron";
+import {Emotion, emotionRouting, nameCheck} from "./Patron";
 import {generatePatronImage, MAX_NAME_LENGTH, TRIM_SYMBOLS, trimSymbols} from "./Generator";
 
 export interface ChatNode {
@@ -81,7 +81,7 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
             parentNode.childIds.push(newNode.id);
         }
         if (newNode.speakerId) {
-            const targetPatronId = Object.keys(stage.patrons).find(patronId => stage.patrons[patronId].isThisMe(newNode.speakerId?.toLowerCase() ?? ''));
+            const targetPatronId = Object.keys(stage.patrons).find(patronId => nameCheck(stage.patrons[patronId].name, newNode.speakerId?.toLowerCase() ?? ''));
             const targetPatron = stage.patrons[targetPatronId ?? ''];
             if (targetPatronId && targetPatron && newNode.presentPatrons[targetPatronId] != null) {
                 const result = (await stage.pipeline.predict("/predict", {

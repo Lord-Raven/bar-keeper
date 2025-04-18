@@ -3,7 +3,7 @@ import {FC, ReactNode, useEffect, useState} from "react";
 import {Stage} from "./Stage";
 import {ChatNode} from "./ChatNode";
 import {Cancel, CheckCircle, ArrowForward, ArrowBack, Refresh} from "@mui/icons-material";
-import {Emotion} from "./Patron";
+import {Emotion, nameCheck} from "./Patron";
 import Box from "./Box";
 import {GenerationUi} from "./GenerationUi";
 import {Direction} from "./Director";
@@ -226,7 +226,7 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, regen, reverse, stage, se
                 let isTalking = false;
                 if (chatNode && chatNode.presentPatrons[patronId]) {
                     const index = Object.keys(chatNode.presentPatrons).length - Object.keys(chatNode.presentPatrons).indexOf(patronId) - 1;
-                    isTalking = patron.isThisMe(chatNode?.speakerId?.toLowerCase() ?? '');
+                    isTalking = nameCheck(patron.name, chatNode?.speakerId?.toLowerCase() ?? '');
                     position = getCharacterPosition(index, numberOfPatrons);
                     present = true;
                 }

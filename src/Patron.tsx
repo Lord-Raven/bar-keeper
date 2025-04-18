@@ -13,29 +13,29 @@ export class Patron {
             return acc;
         }, {} as {[emotion in Emotion]: string});
     }
+}
 
-    // Use Levenshtein distance to determine if an input string is referring to this character's name
-    isThisMe(possibleMe: string): boolean {
-        const matrix = Array.from({ length: this.name.length + 1 }, () => Array(possibleMe.length + 1).fill(0));
+// Use Levenshtein distance to determine if an input string is referring to this character's name
+export function nameCheck(name: string, possibleName: string): boolean {
+    const matrix = Array.from({ length: name.length + 1 }, () => Array(possibleName.length + 1).fill(0));
 
-        for (let i = 0; i <= this.name.length; i++) {
-            for (let j = 0; j <= possibleMe.length; j++) {
-                if (i === 0) {
-                    matrix[i][j] = j;
-                } else if (j === 0) {
-                    matrix[i][j] = i;
-                } else {
-                    matrix[i][j] = Math.min(
-                        matrix[i - 1][j] + 1,
-                        matrix[i][j - 1] + 1,
-                        matrix[i - 1][j - 1] + (this.name[i - 1] === possibleMe[j - 1] ? 0 : 1)
-                    );
-                }
+    for (let i = 0; i <= name.length; i++) {
+        for (let j = 0; j <= possibleName.length; j++) {
+            if (i === 0) {
+                matrix[i][j] = j;
+            } else if (j === 0) {
+                matrix[i][j] = i;
+            } else {
+                matrix[i][j] = Math.min(
+                    matrix[i - 1][j] + 1,
+                    matrix[i][j - 1] + 1,
+                    matrix[i - 1][j - 1] + (name[i - 1] === possibleName[j - 1] ? 0 : 1)
+                );
             }
         }
-
-        return matrix[this.name.length][possibleMe.length] < Math.min(this.name.length / 2, possibleMe.length / 2);
     }
+
+    return matrix[name.length][possibleName.length] < Math.min(name.length / 2, possibleName.length / 2);
 }
 
 export enum Emotion {
