@@ -159,7 +159,7 @@ export async function generateBeverageImage(stage: Stage, beverage: Beverage, se
     beverage.imageUrl = await stage.makeImage({
         //image: new URL(bottleUrl, import.meta.url).href,
         //strength: 0.75,
-        prompt: substitute(`(art style: ${stage.artSummary}), head-on, centered, empty background, negative space, (a lone bottle of this beverage: ${beverage.description})`),
+        prompt: substitute(`Art style: ${stage.artSummary}. head-on, centered, empty background, negative space. A lone bottle of this beverage: ${beverage.description}`),
         negative_prompt: `background, frame, realism, borders, perspective, effects`,
         remove_background: true,
     }, bottleUrl);
@@ -276,9 +276,9 @@ export async function generate(stage: Stage, setErrorMessage: (message: string) 
 }
 
 export async function generateBarImage(stage: Stage, setErrorMessage: (message: string) => void) {
-    const barPrompt = `(art style: ${stage.artSummary}), ` +
-        (stage.sourceSummary && stage.sourceSummary != '' ? `(source material: ${stage.sourceSummary}), ` : '') + '(inside an empty bar), late hour, counter, ' +
-        `(interior of: ${stage.barDescription})`;
+    const barPrompt = `Art style: ${stage.artSummary}. ` +
+        (stage.sourceSummary && stage.sourceSummary != '' ? `Source material: ${stage.sourceSummary}., ` : '') + '(inside an empty bar), late hour, counter. ' +
+        `Interior of: ${stage.barDescription}`;
 
 
     stage.barImageUrl = await stage.makeImage({
@@ -379,7 +379,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
 
     if (emotion == Emotion.neutral) {
         const imageUrl = await stage.makeImage({
-            prompt: substitute((stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `art style: ${stage.artSummary}., ${patronImagePrompt}, ${emotionPrompts[emotion]}, ${patron.description}.`),
+            prompt: substitute((stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}). ` : '') + `Art style: ${stage.artSummary}., ${patronImagePrompt}, ${emotionPrompts[emotion]}, ${patron.description}.`),
             negative_prompt: patronImageNegativePrompt,
             aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL,
             remove_background: true
@@ -397,7 +397,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
         console.log(`Generate ${emotion} image for ${patron.name}.`)
         const imageUrl = await stage.makeImageFromImage({
             image: patron.imageUrls[Emotion.neutral],
-            prompt: substitute((stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `art style: ${stage.artSummary}. ${patronImagePrompt}, ${emotionPrompts[emotion]}, ${patron.description}`),
+            prompt: substitute((stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}). ` : '') + `Art style: ${stage.artSummary}. ${patronImagePrompt}, ${emotionPrompts[emotion]}, ${patron.description}`),
             negative_prompt: patronImageNegativePrompt,
             aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL,
             remove_background: true,
