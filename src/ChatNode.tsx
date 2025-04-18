@@ -81,7 +81,7 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
             parentNode.childIds.push(newNode.id);
         }
         if (newNode.speakerId) {
-            const targetPatronId = Object.keys(stage.patrons).find(patronId => stage.patrons[patronId].name.toLowerCase().includes(newNode.speakerId?.toLowerCase() ?? 'nevereverever'));
+            const targetPatronId = Object.keys(stage.patrons).find(patronId => stage.patrons[patronId].isThisMe(newNode.speakerId?.toLowerCase() ?? ''));
             const targetPatron = stage.patrons[targetPatronId ?? ''];
             if (targetPatronId && targetPatron && newNode.presentPatrons[targetPatronId] != null) {
                 const result = (await stage.pipeline.predict("/predict", {

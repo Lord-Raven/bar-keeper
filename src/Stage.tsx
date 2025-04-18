@@ -210,7 +210,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildHistory(currentNode: ChatNode) {
-        const DEPTH_CAP = 100;
+        const DEPTH_CAP = 50;
         let depth = 0;
         let historyString = '';
         const history = this.getNightlyNodes(currentNode);

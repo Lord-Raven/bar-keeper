@@ -379,7 +379,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
 
     if (emotion == Emotion.neutral) {
         const imageUrl = await stage.makeImage({
-            prompt: substitute((stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, ${emotionPrompts[emotion]}, (${patron.description})`),
+            prompt: substitute((stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `art style: ${stage.artSummary}., ${patronImagePrompt}, ${emotionPrompts[emotion]}, ${patron.description}.`),
             negative_prompt: patronImageNegativePrompt,
             aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL,
             remove_background: true
@@ -397,7 +397,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
         console.log(`Generate ${emotion} image for ${patron.name}.`)
         const imageUrl = await stage.makeImageFromImage({
             image: patron.imageUrls[Emotion.neutral],
-            prompt: substitute((stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `(art style: ${stage.artSummary}), ${patronImagePrompt}, (${emotionPrompts[emotion]}), (${patron.description})`),
+            prompt: substitute((stage.sourceSummary && stage.sourceSummary != '' ? `(${patron.name} from ${stage.sourceSummary}), ` : '') + `art style: ${stage.artSummary}. ${patronImagePrompt}, ${emotionPrompts[emotion]}, ${patron.description}`),
             negative_prompt: patronImageNegativePrompt,
             aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL,
             remove_background: true,

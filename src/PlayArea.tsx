@@ -226,7 +226,7 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, regen, reverse, stage, se
                 let isTalking = false;
                 if (chatNode && chatNode.presentPatrons[patronId]) {
                     const index = Object.keys(chatNode.presentPatrons).length - Object.keys(chatNode.presentPatrons).indexOf(patronId) - 1;
-                    isTalking = patron.name.toLowerCase().includes(chatNode?.speakerId?.toLowerCase() ?? 'nevereverever');
+                    isTalking = patron.isThisMe(chatNode?.speakerId?.toLowerCase() ?? '');
                     position = getCharacterPosition(index, numberOfPatrons);
                     present = true;
                 }
