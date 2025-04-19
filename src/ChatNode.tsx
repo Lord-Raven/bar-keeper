@@ -19,6 +19,10 @@ export interface ChatNode {
     night: number;
 }
 
+function stripParens(input: string) {
+    return input.trim().replace(/^\s*\(.*?\)\s*/, '').trim()
+}
+
 export async function createNodes(script: string, commonProps: Partial<ChatNode> = {}, stage: Stage): Promise<ChatNode[]> {
 
     const baseNode: ChatNode = {
@@ -50,8 +54,7 @@ export async function createNodes(script: string, commonProps: Partial<ChatNode>
         const match = line.match(/^\**(.[^*]+)\**:\s*(.+)$/i);
         if (match) {
             // If there's a current dialogue, push it to the parsedLines array
-            if (currentSpeaker && currentDialogue.trim().length > 0) {
-                console.log(`|${currentDialogue}|`);
+            if (currentSpeaker && stripParens(currentDialogue).length > 0) {
                 currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps, presentPatrons: {...presentPatrons}, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
                 presentPatrons = currentNode.presentPatrons;
             }
@@ -62,16 +65,14 @@ export async function createNodes(script: string, commonProps: Partial<ChatNode>
                 currentSpeaker = 'NARRATOR';
             }
             currentDialogue = trimSymbols(match[2], TRIM_SYMBOLS).trim();
-        } else if (currentSpeaker && currentDialogue.trim().length > 0) {
+        } else if (currentSpeaker && stripParens(currentDialogue).length > 0) {
             // Continue the current dialogue
-            console.log(`|${currentDialogue}|`);
             currentNode = await addNode({...baseNode, id: generateUuid(), childIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: currentNode ? currentNode.id : null, ...commonProps, presentPatrons: {...presentPatrons}, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
             presentPatrons = currentNode.presentPatrons;
             currentDialogue = line.trim();
         }
     }
-    if (currentSpeaker && currentDialogue.trim().length > 0) {
-        console.log(`|${currentDialogue}|`);
+    if (currentSpeaker && stripParens(currentDialogue).length > 0) {
         await addNode({...baseNode, id: generateUuid(), childIds: [], message: currentDialogue.trim(), speakerId: currentSpeaker, parentId: (currentNode ? currentNode.id : null), ...commonProps, presentPatrons: {...presentPatrons}, beverageCounts: currentBeverageCounts, selectedBeverage: null}, currentNode, nodes, stage);
     }
 
