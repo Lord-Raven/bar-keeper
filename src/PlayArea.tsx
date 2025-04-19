@@ -241,7 +241,7 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, regen, reverse, stage, se
                         </div>
                     </Box>
                     <BeverageDetails beverage={hoveredBeverage}/>
-                    <BlurOverlay blurLevel={bannerElements ? 2 : (chatNode && Object.values(chatNode.presentPatrons).length > 0 ? 1 : 0)}/>
+                    <BlurOverlay blurLevel={(chatNode && Object.values(chatNode.presentPatrons).length > 0 ? 1 : 0)}/>
                     <MessageBanner
                         elements = {bannerElements}
                         post = {bannerIsPost}
