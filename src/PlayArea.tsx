@@ -43,7 +43,7 @@ interface BlurOverlayProps {
 
 const BlurOverlay: FC<BlurOverlayProps> = ({blurLevel}) => {
     const variants: Variants = {
-        off: {zIndex: 0, opacity: 0},
+        off: {zIndex: 2, opacity: 0.2},
         background: {zIndex: 2, opacity: 0.5},
         all: {zIndex: 15, opacity: 1}
     };
