@@ -12,6 +12,28 @@ export function buildSection(name: string, body: string) {
     return `###${name.toUpperCase()}:\n${body.trim()}\n\n`;
 }
 
+// Mostly from the WTF list, but a bit curated and supplemented: https://rentry.co/25d5p
+const messOTraits = [    'Activistic', 'Adventurous', 'Affable', 'Affectionate', 'Alert', 'Amusing', 'Artful', 'Artsy', 'Ascetic', 'Assertive', 'Athletic', 'Authentic',
+                                'Balanced', 'Benevolent', 'Brave', 'Breezy', 'Brilliant', 'Broad-Minded', 'Businesslike',
+                                'Calculating', 'Calm', 'Capable', 'Captivating', 'Careful', 'Careless', 'Caring', 'Challenging', 'Charming', 'Cheerful', 'Circumspect', 'Clean', 'Clever', 'Compassionate',
+                                'Conciliatory', 'Confident', 'Conservative', 'Considerate', 'Constructive', 'Convincing', 'Corrupting', 'Courteous', 'Creative', 'Cultured', 'Curious', 'Cute',
+                                'Daring', 'Debonair', 'Decisive', 'Dependable', 'Depraved', 'Determined', 'Dignified', 'Diligent', 'Diplomatic', 'Disciplined', 'Discreet', 'Dogmatic', 'Dour', 'Dramatic', 'Dreamer', 'Driven', 'Dutiful',
+                                'Earnest', 'Earthy', 'Easygoing', 'Ebullient', 'Educated', 'Efficient', 'Elegant', 'Eloquent', 'Empathetic', 'Encouraging', 'Energetic', 'Enigmatic', 'Enthusiastic', 'Ethical', 'Exciting', 'Expressive', 'Extroverted',
+                                'Fair', 'Faithful', 'Faithless', 'Familial', 'Fancy', 'Fashionable', 'Fastidious', 'Feminine', 'Flexible', 'Focused', 'Folksy', 'Forceful', 'Formal', 'Forthright', 'Friendly', 'Frugal', 'Funny',
+                                'Gallant', 'Generous', 'Gentle', 'Genuine', 'Glamorous', 'Goofy', 'Gothic', 'Gracious', 'Gregarious', 'Guarded', 'Guileful',
+                                'Happy', 'Hardworking', 'Hateful', 'Helpful', 'Heroic', 'Honest', 'Honorable', 'Hopeful', 'Humble',
+                                'Idealistic', 'Idiosyncratic', 'Imaginative', 'Immature', 'Immodest', 'Inane', 'Independent', 'Individualistic', 'Innovative', 'Insane', 'Insightful', 'Insignificant', 'Interesting', 'Intuitive', 'Inventive',
+                                'Joyful', 'Kind', 'Leaderly', 'Leisurely', 'Liberal', 'Logical', 'Lovable', 'Loving', 'Loyal', 'Lucky', 'Lyrical',
+                                'Magnanimous', 'Masculine', 'Maternal', 'Mature', 'Mellow', 'Meticulous', 'Mindful', 'Moderate', 'Modest', 'Mystical',
+                                'Neutral', 'Noncompetitive', 'Nurturing', 'Obedient', 'Objective', 'Observant', 'Old-fashioned', 'Open-minded', 'Optimistic', 'Organized', 'Outgoing', 'Outspoken',
+                                'Passionate', 'Patient', 'Patriotic', 'Peaceful', 'Perceptive', 'Perfect', 'Persistent', 'Persuasive', 'Placid', 'Playful', 'Polite', 'Positive', 'Pragmatic',
+                                'Precise', 'Principled', 'Private', 'Productive', 'Profound', 'Progressive', 'Protective', 'Proud', 'Prudent', 'Pure',
+                                'Quiet', 'Quirky', 'Reasonable', 'Reliable', 'Religious', 'Reserved', 'Resilient', 'Resourceful', 'Reverential', 'Ritualistic', 'Romantic', 'Rowdy', 'Rustic',
+                                'Sarcastic', 'Scholarly', 'Scrupulous', 'Selfless', 'Sensitive', 'Sensual', 'Sentimental', 'Serious', 'Sexy', 'Shrewd', 'Silly', 'Simple', 'Sincere', 'Skeptical', 'Solemn',
+                                'Spontaneous', 'Steadfast', 'Steely', 'Stoic', 'Studious', 'Stylish', 'Suave', 'Subtle', 'Sweet', 'Sympathetic',
+                                'Talented', 'Talkative', 'Teacherly', 'Thorough', 'Thoughtful', 'Thrifty', 'Tidy', 'Tolerant', 'Tough', 'Transparent', 'Trendy', 'Trusting', 'Trustworthy',
+                                'Uninhibited', 'Unkempt', 'Urbane', 'Versatile', 'Vivacious', 'Whimsical', 'Wholesome', 'Winning', 'Wise', 'Witty', 'Zany', 'Zealous']
+
 // Replace trigger words with less triggering words, so image gen can succeed.
 export function substitute(input: string) {
     const synonyms: {[key: string]: string} = {
@@ -96,6 +118,13 @@ export function buildAlcoholDescriptionsPrompt(stage: Stage): string {
 
 export function buildPatronPrompt(stage: Stage, baseCharacter: Character): string {
     const specific = baseCharacter.description != '' || baseCharacter.personality != '';
+    let additionalInstruction = `INPUT above and condense it into formatted output that describes this adult character as they will patronize the LOCATION. `;
+    if (!specific) {
+        // Pick a couple traits to seed this character with
+        let traits = [messOTraits[Math.floor(Math.random() * messOTraits.length)], messOTraits[Math.floor(Math.random() * messOTraits.length)], messOTraits[Math.floor(Math.random() * messOTraits.length)]];
+        additionalInstruction = `SETTING above and generate a distinct, engaging, lore-rich, and interesting character that might patronize the LOCATION. Incorporate these traits: ${traits.join(', ')}. `;
+
+    }
     return (
         (stage.sourceSummary != '' ? buildSection('Source Material', stage.sourceSummary ?? '') : '') +
         buildSection('Setting', stage.settingSummary ?? '') +
@@ -111,9 +140,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
         (Object.values(stage.patrons).length > 0 ?
             buildSection('Established Patrons', Object.values(stage.patrons).map(patron => `NAME: ${patron.name}\nTRAITS: ${patron.description}\nPERSONALITY: ${patron.personality}`).join('\n\n')) : '') +
         buildSection('Current Instruction',
-            `You are doing critical prep work for a roleplaying narrative. Instead of narrating, use this planning response to study the ` + (specific ?
-                `INPUT above and condense it into formatted output that describes this character as they will patronize the LOCATION. ` :
-                `SETTING above and generate a distinct, engaging, lore-rich, and interesting character that might patronize the LOCATION. `) +
+            `You are doing critical prep work for a roleplaying narrative. Instead of narrating, use this planning response to study the ` + additionalInstruction +
             `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
             `Consider other ESTABLISHED PATRONS (if any) and ensure that the new character in your response is distinct from these. Potentially define ` +
             `connections between this new character and one or more ESTABLISHED PATRONS patrons. ` +
@@ -372,7 +399,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     return newPatron;
 }
 
-const patronImagePrompt: string = 'plain flat background, standing, full body';
+const patronImagePrompt: string = 'plain flat background, standing, full body, adult';
 const patronImageNegativePrompt: string = 'border, ((close-up)), background elements, special effects, matching background, amateur, low quality, action, cut-off';
 
 export async function generatePatronImage(stage: Stage, patron: Patron, emotion: Emotion, setErrorMessage: (message: string) => void): Promise<void> {
