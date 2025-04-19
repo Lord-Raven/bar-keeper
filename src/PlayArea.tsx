@@ -44,8 +44,8 @@ interface BlurOverlayProps {
 const BlurOverlay: FC<BlurOverlayProps> = ({blurLevel}) => {
     const variants: Variants = {
         off: {zIndex: 0, opacity: 0},
-        background: {zIndex: 2, opacity: 1},
-        all: {zIndex: 15, opacity: 0}
+        background: {zIndex: 2, opacity: 0.5},
+        all: {zIndex: 15, opacity: 1}
     };
     return (
         <motion.div
@@ -59,7 +59,7 @@ const BlurOverlay: FC<BlurOverlayProps> = ({blurLevel}) => {
                 left: 0,
                 width: "100%",
                 height: "100%",
-                backdropFilter: "blur(2px)"
+                backdropFilter: "blur(3px)"
             }}
         />
     );
