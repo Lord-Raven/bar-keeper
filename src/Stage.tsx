@@ -14,7 +14,7 @@ import {Beverage} from "./Beverage";
 import {createTheme} from "@mui/material";
 import {
     determineNextNodeProps,
-    Direction,
+    Direction, directionSize,
     generalInstruction,
     getCoreNodeProps,
     getDirectionInstruction,
@@ -288,7 +288,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         // If this is a drink request, we can't kick this off until the last interaction
         if (!this.requestedNodes && (!currentTerminus || (currentTerminus.childIds.length == 0 && currentTerminus.direction != Direction.PatronDrinkRequest))) {
-            this.requestedNodes = this.generateMessageContent(currentTerminus, determineNextNodeProps(this, currentTerminus), 500, setErrorMessage);
+            this.requestedNodes = this.generateMessageContent(currentTerminus, determineNextNodeProps(this, currentTerminus), directionSize[currentTerminus?.direction ?? Direction.Lull], setErrorMessage);
         }
     }
 
@@ -380,7 +380,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         if (!this.requestedNodes) {
             // This will happen during drink requests, where kickoff can't occur until a drink has definitively been chosen.
             // Could happen in other weird situations, too.
-            this.requestedNodes = this.generateMessageContent(this.getTerminusOfChat(this.currentNode), determineNextNodeProps(this, this.getTerminusOfChat(this.currentNode)), 500, setErrorMessage);
+            let nextProps = determineNextNodeProps(this, this.getTerminusOfChat(this.currentNode));
+            this.requestedNodes = this.generateMessageContent(this.getTerminusOfChat(this.currentNode), nextProps, directionSize[nextProps?.direction ?? Direction.Lull], setErrorMessage);
         }
         let result = await this.requestedNodes;
         if (result && result.length > 0) {

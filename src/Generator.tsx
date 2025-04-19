@@ -12,28 +12,30 @@ export function buildSection(name: string, body: string) {
     return `###${name.toUpperCase()}:\n${body.trim()}\n\n`;
 }
 
-// Mostly from the WTF list, but a bit curated and supplemented: https://rentry.co/25d5p
-const messOTraits = [   'Abusive', 'Activistic', 'Adventurous', 'Adorable', 'Affable', 'Affectionate', 'Alert', 'Alpha', 'Amorous', 'Amusing', 'Analytical', 'Angelic', 'Annoying', 'Artful', 'Artsy', 'Assertive', 'Athletic', 'Authentic',
-                                'Balanced', 'Benevolent', 'Beta', 'Blustery', 'Boorish', 'Brash', 'Bratty', 'Brave', 'Breezy', 'Brilliant', 'Broad-Minded', 'Businesslike', 'Buff',
-                                'Calculating', 'Calm', 'Capable', 'Captivating', 'Careful', 'Careless', 'Caring', 'Challenging', 'Charming', 'Cheerful', 'Cheesy', 'Circumspect', 'Clean', 'Clever', 'Clueless', 'Clumsy', 'Commanding', 'Compassionate',
-                                'Conciliatory', 'Condescending', 'Confident', 'Conservative', 'Considerate', 'Constructive', 'Convincing', 'Corrupting', 'Courteous', 'Craven', 'Creative', 'Crotchety', 'Cultured', 'Curious',
-                                'Daring', 'Debonair', 'Deceptive', 'Decisive', 'Dependable', 'Depraved', 'Determined', 'Dignified', 'Diligent', 'Diplomatic', 'Disciplined', 'Discreet', 'Dogmatic', 'Dour', 'Dramatic', 'Dreamer', 'Driven', 'Dry', 'Dutiful',
-                                'Earnest', 'Earthy', 'Easygoing', 'Ebullient', 'Educated', 'Efficient', 'Elegant', 'Eloquent', 'Empathetic', 'Encouraging', 'Energetic', 'Enigmatic', 'Enthusiastic', 'Ethical', 'Exciting', 'Expressive', 'Extroverted',
-                                'Fair', 'Faithful', 'Faithless', 'Famed', 'Fancy', 'Fashionable', 'Fastidious', 'Feminine', 'Fickle', 'Fiery', 'Filthy', 'Flexible', 'Focused', 'Folksy', 'Foolish', 'Forceful', 'Formal', 'Frail', 'Friendly', 'Frugal', 'Funny',
-                                'Gallant', 'Generous', 'Gentle', 'Genuine', 'Glamorous', 'Goofy', 'Gorgeous', 'Gothic', 'Graceful', 'Gracious', 'Gregarious', 'Grouchy', 'Guarded', 'Guilty',
-                                'Happy', 'Hardworking', 'Hateful', 'Haunted', 'Haunting', 'Heinous', 'Helpful', 'Heroic', 'Honest', 'Honorable', 'Hopeful', 'Humble', 'Hysterical',
-                                'Idealistic', 'Idiosyncratic', 'Imaginative', 'Immature', 'Immodest', 'Immoral', 'Inane', 'Inappropriate', 'Incompetent', 'Independent', 'Individualistic', 'Innocent', 'Insane', 'Insightful', 'Inspiring', 'Inventive', 'Irritable',
-                                'Jealous', 'Jolly', 'Judgmental', 'Jumpy', 'Kind', 'Klutzy', 'Leaderly', 'Leisurely', 'Liberal', 'Logical', 'Looming', 'Lovable', 'Loving', 'Loyal', 'Lucky', 'Lush', 'Lyrical',
-                                'Machiavellian', 'Magnanimous', 'Maladroit', 'Masculine', 'Mature', 'Mellow', 'Meticulous', 'Mindful', 'Moderate', 'Modest', 'Moody', 'Musical', 'Mystical',
-                                'Naive', 'Nasty', 'Needy', 'Nerdy', 'Nervous', 'Noble', 'Nonviolent', 'Nurturing',
-                                'Oafish', 'Obedient', 'Oblivious', 'Obnoxious', 'Observant', 'Old-fashioned', 'Open-minded', 'Opportunistic', 'Optimistic', 'Organized', 'Outgoing', 'Outspoken',
-                                'Paranoid', 'Passionate', 'Patient', 'Patriotic', 'Peaceful', 'Perceptive', 'Perfect', 'Persistent', 'Persuasive', 'Petite', 'Petty', 'Picky', 'Placid', 'Playful', 'Polite', 'Poor', 'Positive', 'Pragmatic',
-                                'Precise', 'Principled', 'Private', 'Productive', 'Profound', 'Progressive', 'Protective', 'Proud', 'Prude', 'Prudent', 'Pure',
-                                'Quiet', 'Quirky', 'Rakish', 'Reasonable', 'Reliable', 'Religious', 'Reserved', 'Resilient', 'Resourceful', 'Reverential', 'Rich', 'Ritualistic', 'Romantic', 'Rowdy', 'Rude', 'Rustic',
-                                'Sanctimonious', 'Sappy', 'Sarcastic', 'Sassy', 'Scandalous', 'Scholarly', 'Scrupulous', 'Selfless', 'Sensitive', 'Sensual', 'Sentimental', 'Serious', 'Sexy', 'Short', 'Shrewd', 'Sickly', 'Silly', 'Simple', 'Sincere',
-                                'Skeptical', 'Sleepy', 'Slinky', 'Smarmy', 'Solemn', 'Spiritual', 'Spoiled', 'Spry', 'Spontaneous', 'Steadfast', 'Steely', 'Stoic', 'Studious', 'Stylish', 'Suave', 'Subtle', 'Suspicious', 'Sweet', 'Sympathetic',
-                                'Talented', 'Talkative', 'Tall', 'Teacherly', 'Thorough', 'Thoughtful', 'Thrifty', 'Tidy', 'Timid', 'Tolerant', 'Tough', 'Transparent', 'Trendy', 'Trusting', 'Trustworthy',
-                                'Uninhibited', 'Unkempt', 'Urbane', 'Vain', 'Vapid', 'Vegan', 'Vengeful', 'Versatile', 'Vivacious', 'Vocal', 'Whimsical', 'Wholesome', 'Wimpy', 'Winning', 'Wiry', 'Wise', 'Withholding', 'Witty', 'Zany', 'Zealous']
+// A lot from the WTF list, but quite a bit not. Still, here's some credit: https://rentry.co/25d5p
+// Notably, this list does contain a handful of appearance words because it is not being used exclusively for personality determination.
+const messOTraits = [
+    'Abusive', 'Activistic', 'Adventurous', 'Adorable', 'Affable', 'Affectionate', 'Alert', 'Alpha', 'Amorous', 'Amusing', 'Analytical', 'Angelic', 'Annoying', 'Argumentative', 'Artful', 'Artsy', 'Assertive', 'Athletic', 'Authentic',
+    'Balanced', 'Benevolent', 'Beta', 'Blustery', 'Bold', 'Boorish', 'Brash', 'Bratty', 'Brave', 'Breezy', 'Bright', 'Brilliant', 'Buff', 'Businesslike', 'Bullying',
+    'Calculating', 'Calm', 'Capable', 'Capricious', 'Captivating', 'Careful', 'Careless', 'Caring', 'Challenging', 'Charming', 'Chauvinistic', 'Cheerful', 'Cheesy', 'Chunky', 'Circumspect', 'Classist', 'Clean', 'Clever', 'Clueless', 'Clumsy',
+    'Commanding', 'Compassionate', 'Conciliatory', 'Condescending', 'Confident', 'Conservative', 'Considerate', 'Constructive', 'Convincing', 'Cool', 'Corporate', 'Corrupting', 'Courteous', 'Crass', 'Craven', 'Creative', 'Crotchety', 'Cultured', 'Curious',
+    'Daring', 'Dark', 'Debonair', 'Deceptive', 'Decisive', 'Demure', 'Dependable', 'Depraved', 'Determined', 'Dignified', 'Diligent', 'Diplomatic', 'Disciplined', 'Discreet', 'Dogmatic', 'Dour', 'Dramatic', 'Dreamer', 'Driven', 'Drunken', 'Dry', 'Dutiful',
+    'Earnest', 'Earthy', 'Easygoing', 'Ebullient', 'Educated', 'Effeminate', 'Efficient', 'Elegant', 'Eloquent', 'Empathetic', 'Encouraging', 'Endowed', 'Energetic', 'Enigmatic', 'Enthusiastic', 'Ethical', 'Excitable', 'Expressive', 'Extroverted',
+    'Fair', 'Faithful', 'Faithless', 'Famed', 'Fancy', 'Fashionable', 'Fastidious', 'Feminine', 'Fickle', 'Fiery', 'Filthy', 'Flexible', 'Flowery', 'Focused', 'Folksy', 'Foolish', 'Forceful', 'Formal', 'Frail', 'Friendly', 'Frugal', 'Funny',
+    'Gallant', 'Garish', 'Generous', 'Gentle', 'Genuine', 'Gifted', 'Glamorous', 'Goofy', 'Gorgeous', 'Gothic', 'Graceful', 'Gracious', 'Gregarious', 'Grouchy', 'Guarded', 'Guilty',
+    'Happy', 'Hardworking', 'Hateful', 'Haunted', 'Haunting', 'Heinous', 'Helpful', 'Heroic', 'Hip', 'Homey', 'Honest', 'Honorable', 'Hopeful', 'Horny', 'Humble', 'Hysterical',
+    'Icy', 'Idealistic', 'Idiosyncratic', 'Imaginative', 'Immature', 'Immodest', 'Immoral', 'Inane', 'Inappropriate', 'Incompetent', 'Independent', 'Individualistic', 'Innocent', 'Insane', 'Insightful', 'Inspiring', 'Inventive', 'Ironic', 'Irritable',
+    'Jealous', 'Jolly', 'Judgmental', 'Jumpy', 'Kind', 'Klutzy', 'Lanky', 'Leaderly', 'Leisurely', 'Liberal', 'Logical', 'Lonely', 'Looming', 'Lovable', 'Loving', 'Loyal', 'Lucky', 'Lush', 'Lyrical',
+    'Machiavellian', 'Macho', 'Magnanimous', 'Maladroit', 'Masculine', 'Mature', 'Mellow', 'Meticulous', 'Mindful', 'Mischievous', 'Miserable', 'Moderate', 'Modest', 'Moody', 'Musical', 'Mystical',
+    'Naive', 'Narcissistic', 'Nasty', 'Needy', 'Nerdy', 'Nervous', 'Noble', 'Nomadic', 'Nonviolent', 'Nosey', 'Nurturing',
+    'Oafish', 'Obedient', 'Oblivious', 'Obnoxious', 'Observant', 'Old-fashioned', 'Open-minded', 'Opportunistic', 'Optimistic', 'Opulent', 'Organized', 'Outdoorsy', 'Outgoing', 'Outspoken',
+    'Paranoid', 'Passionate', 'Patient', 'Patriotic', 'Peaceful', 'Peevish', 'Perceptive', 'Perfect', 'Persistent', 'Persuasive', 'Petite', 'Petty', 'Picky', 'Placid', 'Playful', 'Polite', 'Poor', 'Positive', 'Pragmatic',
+    'Precise', 'Principled', 'Private', 'Productive', 'Profound', 'Progressive', 'Protective', 'Proud', 'Prude', 'Prudent', 'Pudgy', 'Puny', 'Pure',
+    'Quiet', 'Quirky', 'Rakish', 'Reasonable', 'Reliable', 'Religious', 'Reserved', 'Resilient', 'Resourceful', 'Retro', 'Reverential', 'Rich', 'Ritualistic', 'Romantic', 'Rowdy', 'Rude', 'Rustic',
+    'Sanctimonious', 'Sappy', 'Sarcastic', 'Sassy', 'Scandalous', 'Scholarly', 'Scrupulous', 'Selfless', 'Sensitive', 'Sensual', 'Sentimental', 'Serious', 'Sexy', 'Short', 'Shrewd', 'Sickly', 'Silly', 'Simple', 'Sincere', 'Sing-songy',
+    'Skeptical', 'Sleepy', 'Slender', 'Slimy', 'Slinky', 'Smarmy', 'Smoky', 'Sniveling', 'Solemn', 'Spiritual', 'Spoiled', 'Spontaneous', 'Spry', 'Steadfast', 'Steely', 'Stocky', 'Stoic', 'Studious', 'Stylish', 'Suave', 'Subtle', 'Suspicious', 'Sweet', 'Sympathetic',
+    'Talented', 'Talkative', 'Tall', 'Teacherly', 'Thorough', 'Thoughtful', 'Thrifty', 'Tidy', 'Timid', 'Tolerant', 'Tough', 'Transparent', 'Trendy', 'Troubled', 'Trusting', 'Trustworthy',
+    'Uninhibited', 'Unkempt', 'Urbane', 'Vain', 'Vapid', 'Vegan', 'Vengeful', 'Versatile', 'Vivacious', 'Vocal', 'Warm', 'Whimsical', 'Wholesome', 'Wimpy', 'Winning', 'Wiry', 'Wise', 'Withholding', 'Witty', 'Zany', 'Zealous']
 
 // Replace trigger words with less triggering words, so image gen can succeed.
 export function substitute(input: string) {
@@ -123,8 +125,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
     if (!specific) {
         // Pick a couple traits to seed this character with
         let traits = [messOTraits[Math.floor(Math.random() * messOTraits.length)], messOTraits[Math.floor(Math.random() * messOTraits.length)], messOTraits[Math.floor(Math.random() * messOTraits.length)]];
-        additionalInstruction = `SETTING above and generate a distinct, engaging, lore-rich, and interesting character that might patronize the LOCATION. Consider incorporating these traits: ${traits.join(', ')}. `;
-
+        additionalInstruction = `SETTING above and generate a distinct, engaging, lore-rich, and interesting character that might patronize the LOCATION. Consider incorporating these themes: ${traits.join(', ')}. `;
     }
     return (
         (stage.sourceSummary != '' ? buildSection('Source Material', stage.sourceSummary ?? '') : '') +
@@ -145,7 +146,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
             `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
             `Consider other ESTABLISHED PATRONS (if any) and ensure that the new character in your response is distinct from these. Potentially define ` +
             `connections between this new character and one or more ESTABLISHED PATRONS patrons. ` +
-            `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but craft something original and unexpected for this definition.`)) +
+            `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but dig deep and craft something original and unexpected for this definition.`)) +
         '###FUTURE INSTRUCTION:');
 }
 

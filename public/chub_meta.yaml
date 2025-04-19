@@ -63,6 +63,7 @@ I have no further significant plans for this stage, but I may continue to tweak 
 I am already applying a lot of what I've learned here toward more elaborate projects, so hopefully I'll have some cool stuff to share in the future =).
 <br>
 <br>
+04/19/2025 - Some patron generation and prompt improvements; trying to get a broader variety of patrons and get varying response sizes to suit the type of narration requested.<br>
 04/18/2025 - Reduced history provided in the prompt by a good bit. Adjusted some other prompts slightly. Improved character determination when the LLM uses nicknames.<br>
 02/25/2025 - Fixing the way the title screen adjusts to some window layouts. Also revised emotion handling a bit.
 "

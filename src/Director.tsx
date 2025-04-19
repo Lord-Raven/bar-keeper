@@ -33,7 +33,7 @@ const sampleScript = '' +
         `**YOUNG WOMAN**: Another regular, a young woman, walks in.\n\n` +
         `**YOUNG WOMAN**: (Blandly) "Hey."\n\n` +
         `**FIRST REGULAR**: (Cheerful) "Welcome back!" He gives a friendly wave."\n\n` +
-        `**RIST REGULAR**: (Curious) He thinks to themself, "You look different...but good."\n\n` +
+        `**FIRST REGULAR**: (Curious) He thinks to themself, "You look different...but good."\n\n` +
         `**YOUNG WOMAN**: (Perking up) She smiles broadly, "I'm trying a new hairstyle. Thanks for noticing!"\n\n` +
         `**NARRATOR**: The young woman takes a seat down the bar from the man and looks for you.\n\n` +
         `**{{user}}**: You approach her, "What'll it be, miss?"\n\n` +
@@ -61,6 +61,18 @@ const directionSample: {[direction in Direction]: string} = {
     NightEnd: sampleScript
 }
 
+export const directionSize: {[direction in Direction]: number} = {
+    NightStart: 300,
+    Lull:   300,
+    IntroducePatron: 400,
+    PatronBanter: 500,
+    PatronProblem: 500,
+    PatronDrinkRequest: 200,
+    PatronDrinkOutcome: 500,
+    PatronLeaves: 400,
+    NightEnd: 400
+}
+
 
 
 const directionInstructions: {[direction in Direction]: (input: InstructionInput) => string } = {
@@ -69,24 +81,24 @@ const directionInstructions: {[direction in Direction]: (input: InstructionInput
     Lull: input => `Continue the scene with some inconsequential flavor as the evening slightly progresses; ${input.playerName} observes the environment or incidental characters with only trivial events or conversations--defined ABSENT PATRONS remain dormant.`,
 
     IntroducePatron: input => `Continue the scene as ${input.patronName} enters the bar. If ${input.patronName} is new, describe and introduce them in great detail. ` +
-        `If they are a regular, focus on their interactions with ${input.playerName} or other PRESENT PATRONS. No one is thirsty yet; patrons will focus on greetings, small talk, or other trivial matters.`,
+        `If they are a regular, focus on their interactions with ${input.playerName} or other PRESENT PATRONS. Patrons are thirstless and busy with greetings, small talk, or other trivial matters.`,
     
     PatronBanter: input => `Continue the scene as the PRESENT PATRONS banter amongst themselves or with ${input.playerName}. None of them are prepared to order a drink, so they will focus on discussing their lives or other ongoing events.`,
 
     PatronProblem: input => `Continue the scene as one of the PRESENT PATRONS describes a personal problem to another PRESENT PATRON or ${input.playerName}. No one wants to order a drink at this time.`,
 
     PatronDrinkRequest: input => `Continue the scene as ${input.patronName} asks the bartender, ${input.playerName}, for an unspecified drink. ` +
-        `${input.patronName} will describe the flavor or style of drink they are in the mood for, rather than declaring the particular beverage they want. ` +
-        `${input.playerName} passively listens to the request with minimal input; they will prepare and serve the drink in a future response.`,
+        `${input.patronName} or the narration will describe the flavor or style of drink ${input.patronName} is in the mood for, rather than declaring the particular beverage they want. ` +
+        `${input.playerName} passively listens to the request with minimal input; they will prepare the drink in a future response.`,
 
     PatronDrinkOutcome: input => `Continue the scene as ${input.patronName} accepts the drink ${input.playerName} has chosen: ${input.beverageName}. ` +
-        `Dramatically steer the scene in a new direction--negative or positive--based on the nature of this beverage and how well it suits the patron's current taste or mood. ` +
-        `${input.patronName} could be critical, delighted, surprised, disappointed, disgusted, inspired, or even outraged by this drink.`,
+        `Steer the scene in a new direction--negative or positive--based on the nature of this beverage and how well it suits ${input.patronName}'s current taste or mood or request. ` +
+        `${input.patronName} could be critical, delighted, surprised, disappointed, disgusted, inspired, or even outraged by this drink; choose a reaction that heightens the drama of the moment.`,
 
     PatronLeaves: input => `Continue the scene as ${input.patronName} (and only ${input.patronName}) bids farewell or otherwise departs the bar--other PRESENT PATRONS stick around (at least for now). ` +
         `Honor ${input.patronName}'s personal style and relationships with other PRESENT PATRONS or ${input.playerName}.`,
 
-    NightEnd: input => `Wrap up the scene as ${input.playerName} cleans up and closes the bar, reflecting on the night's events.`
+    NightEnd: input => `Quickly wrap up the scene as ${input.playerName} cleans up and closes the bar, perhaps reflecting on the night's events.`
 }
 
 class Possibility {
