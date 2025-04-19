@@ -13,6 +13,7 @@ import BeverageDetails from "./BeverageDetails";
 import PatronImage from "./PatronImage";
 import MessageBanner from "./MessageBanner";
 import Vignette from "./Vignette";
+import {motion, Variants} from "framer-motion";
 
 const getCharacterPosition = (index: number, amount: number) => {
     const start = 5;
@@ -34,6 +35,34 @@ export const boxStyle = {
     zIndex: 20,
     boxSizing: 'border-box',
     '&:hover': {backgroundColor: '#000000EE'}
+}
+
+interface BlurOverlayProps {
+    blurLevel: number;
+}
+
+const BlurOverlay: FC<BlurOverlayProps> = ({blurLevel}) => {
+    const variants: Variants = {
+        off: {zIndex: 0, opacity: 0},
+        background: {zIndex: 2, opacity: 1},
+        all: {zIndex: 15, opacity: 0}
+    };
+    return (
+        <motion.div
+            initial="off"
+            animate={blurLevel == 0 ? 'off' : (blurLevel == 1 ? 'background' :  'all')}
+            variants={variants}
+            transition={{duration: 1}}
+            style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                backdropFilter: "blur(2px)"
+            }}
+        />
+    );
 }
 
 interface PlayAreaProps {
@@ -212,6 +241,7 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, regen, reverse, stage, se
                         </div>
                     </Box>
                     <BeverageDetails beverage={hoveredBeverage}/>
+                    <BlurOverlay blurLevel={bannerElements ? 2 : (chatNode && Object.values(chatNode.presentPatrons).length > 0 ? 1 : 0)}/>
                     <MessageBanner
                         elements = {bannerElements}
                         post = {bannerIsPost}
