@@ -13,7 +13,7 @@ import BeverageDetails from "./BeverageDetails";
 import PatronImage from "./PatronImage";
 import MessageBanner from "./MessageBanner";
 import Vignette from "./Vignette";
-import {motion, Variants} from "framer-motion";
+import BlurOverlay from "./BlurOverlay";
 
 const getCharacterPosition = (index: number, amount: number) => {
     const start = 5;
@@ -35,34 +35,6 @@ export const boxStyle = {
     zIndex: 20,
     boxSizing: 'border-box',
     '&:hover': {backgroundColor: '#000000EE'}
-}
-
-interface BlurOverlayProps {
-    blurLevel: number;
-}
-
-const BlurOverlay: FC<BlurOverlayProps> = ({blurLevel}) => {
-    const variants: Variants = {
-        off: {zIndex: 2, opacity: 0.2},
-        background: {zIndex: 2, opacity: 0.5},
-        all: {zIndex: 15, opacity: 1}
-    };
-    return (
-        <motion.div
-            initial="off"
-            animate={blurLevel == 0 ? 'off' : (blurLevel == 1 ? 'background' :  'all')}
-            variants={variants}
-            transition={{duration: 1}}
-            style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                backdropFilter: "blur(3px)"
-            }}
-        />
-    );
 }
 
 interface PlayAreaProps {

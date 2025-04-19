@@ -70,7 +70,7 @@ export const directionSize: {[direction in Direction]: number} = {
     PatronDrinkRequest: 200,
     PatronDrinkOutcome: 500,
     PatronLeaves: 400,
-    NightEnd: 400
+    NightEnd: 500
 }
 
 
