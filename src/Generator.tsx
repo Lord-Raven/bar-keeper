@@ -13,26 +13,26 @@ export function buildSection(name: string, body: string) {
 }
 
 // Mostly from the WTF list, but a bit curated and supplemented: https://rentry.co/25d5p
-const messOTraits = [    'Activistic', 'Adventurous', 'Affable', 'Affectionate', 'Alert', 'Amusing', 'Artful', 'Artsy', 'Ascetic', 'Assertive', 'Athletic', 'Authentic',
-                                'Balanced', 'Benevolent', 'Brave', 'Breezy', 'Brilliant', 'Broad-Minded', 'Businesslike',
-                                'Calculating', 'Calm', 'Capable', 'Captivating', 'Careful', 'Careless', 'Caring', 'Challenging', 'Charming', 'Cheerful', 'Circumspect', 'Clean', 'Clever', 'Compassionate',
-                                'Conciliatory', 'Confident', 'Conservative', 'Considerate', 'Constructive', 'Convincing', 'Corrupting', 'Courteous', 'Creative', 'Cultured', 'Curious', 'Cute',
-                                'Daring', 'Debonair', 'Decisive', 'Dependable', 'Depraved', 'Determined', 'Dignified', 'Diligent', 'Diplomatic', 'Disciplined', 'Discreet', 'Dogmatic', 'Dour', 'Dramatic', 'Dreamer', 'Driven', 'Dutiful',
+const messOTraits = [    'Activistic', 'Adventurous', 'Adorable', 'Affable', 'Affectionate', 'Ailing', 'Alert', 'Alpha', 'Amusing', 'Analytical', 'Artful', 'Artsy', 'Assertive', 'Athletic', 'Authentic',
+                                'Balanced', 'Benevolent', 'Beta', 'Brave', 'Breezy', 'Brilliant', 'Broad-Minded', 'Businesslike', 'Buff',
+                                'Calculating', 'Calm', 'Capable', 'Captivating', 'Careful', 'Careless', 'Caring', 'Challenging', 'Charming', 'Cheerful', 'Circumspect', 'Clean', 'Clumsy', 'Clever', 'Commanding', 'Compassionate',
+                                'Conciliatory', 'Confident', 'Conservative', 'Considerate', 'Constructive', 'Convincing', 'Corrupting', 'Courteous', 'Craven', 'Creative', 'Cultured', 'Curious',
+                                'Daring', 'Debonair', 'Deceptive', 'Decisive', 'Dependable', 'Depraved', 'Determined', 'Dignified', 'Diligent', 'Diplomatic', 'Disciplined', 'Discreet', 'Dogmatic', 'Dour', 'Dramatic', 'Dreamer', 'Driven', 'Dry', 'Dutiful',
                                 'Earnest', 'Earthy', 'Easygoing', 'Ebullient', 'Educated', 'Efficient', 'Elegant', 'Eloquent', 'Empathetic', 'Encouraging', 'Energetic', 'Enigmatic', 'Enthusiastic', 'Ethical', 'Exciting', 'Expressive', 'Extroverted',
-                                'Fair', 'Faithful', 'Faithless', 'Familial', 'Fancy', 'Fashionable', 'Fastidious', 'Feminine', 'Flexible', 'Focused', 'Folksy', 'Forceful', 'Formal', 'Forthright', 'Friendly', 'Frugal', 'Funny',
-                                'Gallant', 'Generous', 'Gentle', 'Genuine', 'Glamorous', 'Goofy', 'Gothic', 'Gracious', 'Gregarious', 'Guarded', 'Guileful',
-                                'Happy', 'Hardworking', 'Hateful', 'Helpful', 'Heroic', 'Honest', 'Honorable', 'Hopeful', 'Humble',
-                                'Idealistic', 'Idiosyncratic', 'Imaginative', 'Immature', 'Immodest', 'Inane', 'Independent', 'Individualistic', 'Innovative', 'Insane', 'Insightful', 'Insignificant', 'Interesting', 'Intuitive', 'Inventive',
-                                'Joyful', 'Kind', 'Leaderly', 'Leisurely', 'Liberal', 'Logical', 'Lovable', 'Loving', 'Loyal', 'Lucky', 'Lyrical',
-                                'Magnanimous', 'Masculine', 'Maternal', 'Mature', 'Mellow', 'Meticulous', 'Mindful', 'Moderate', 'Modest', 'Mystical',
-                                'Neutral', 'Noncompetitive', 'Nurturing', 'Obedient', 'Objective', 'Observant', 'Old-fashioned', 'Open-minded', 'Optimistic', 'Organized', 'Outgoing', 'Outspoken',
-                                'Passionate', 'Patient', 'Patriotic', 'Peaceful', 'Perceptive', 'Perfect', 'Persistent', 'Persuasive', 'Placid', 'Playful', 'Polite', 'Positive', 'Pragmatic',
-                                'Precise', 'Principled', 'Private', 'Productive', 'Profound', 'Progressive', 'Protective', 'Proud', 'Prudent', 'Pure',
-                                'Quiet', 'Quirky', 'Reasonable', 'Reliable', 'Religious', 'Reserved', 'Resilient', 'Resourceful', 'Reverential', 'Ritualistic', 'Romantic', 'Rowdy', 'Rustic',
+                                'Fair', 'Faithful', 'Faithless', 'Famed', 'Fancy', 'Fashionable', 'Fastidious', 'Feminine', 'Fickle', 'Fiery', 'Flexible', 'Focused', 'Folksy', 'Foolish', 'Forceful', 'Formal', 'Frail', 'Friendly', 'Frugal', 'Funny',
+                                'Gallant', 'Generous', 'Gentle', 'Genuine', 'Glamorous', 'Goofy', 'Gothic', 'Graceful', 'Gracious', 'Gregarious', 'Guarded', 'Guilty',
+                                'Happy', 'Hardworking', 'Hateful', 'Heinous', 'Helpful', 'Heroic', 'Honest', 'Honorable', 'Hopeful', 'Humble', 'Hysterical',
+                                'Idealistic', 'Idiosyncratic', 'Imaginative', 'Immature', 'Immodest', 'Immoral', 'Inane', 'Inappropriate', 'Incompetent', 'Independent', 'Individualistic', 'Innocent', 'Insane', 'Insightful', 'Inventive',
+                                'Jolly', 'Jumpy', 'Kind', 'Klutzy', 'Leaderly', 'Leisurely', 'Liberal', 'Logical', 'Looming', 'Lovable', 'Loving', 'Loyal', 'Lucky', 'Lush', 'Lyrical',
+                                'Machiavellian', 'Magnanimous', 'Maladroit', 'Masculine', 'Mature', 'Mellow', 'Meticulous', 'Mindful', 'Moderate', 'Modest', 'Mystical',
+                                'Naive', 'Needy', 'Nerdy', 'Nervous', 'Nonviolent', 'Nurturing', 'Oafish', 'Obedient', 'Oblivious', 'Observant', 'Old-fashioned', 'Open-minded', 'Opportunistic', 'Optimistic', 'Organized', 'Outgoing', 'Outspoken',
+                                'Paranoid', 'Passionate', 'Patient', 'Patriotic', 'Peaceful', 'Perceptive', 'Perfect', 'Persistent', 'Persuasive', 'Petty', 'Placid', 'Playful', 'Polite', 'Positive', 'Pragmatic',
+                                'Precise', 'Principled', 'Private', 'Productive', 'Profound', 'Progressive', 'Protective', 'Proud', 'Prude', 'Prudent', 'Pure',
+                                'Quiet', 'Quirky', 'Rakish', 'Reasonable', 'Reliable', 'Religious', 'Reserved', 'Resilient', 'Resourceful', 'Reverential', 'Ritualistic', 'Romantic', 'Rowdy', 'Rude', 'Rustic',
                                 'Sarcastic', 'Scholarly', 'Scrupulous', 'Selfless', 'Sensitive', 'Sensual', 'Sentimental', 'Serious', 'Sexy', 'Shrewd', 'Silly', 'Simple', 'Sincere', 'Skeptical', 'Solemn',
                                 'Spontaneous', 'Steadfast', 'Steely', 'Stoic', 'Studious', 'Stylish', 'Suave', 'Subtle', 'Sweet', 'Sympathetic',
                                 'Talented', 'Talkative', 'Teacherly', 'Thorough', 'Thoughtful', 'Thrifty', 'Tidy', 'Tolerant', 'Tough', 'Transparent', 'Trendy', 'Trusting', 'Trustworthy',
-                                'Uninhibited', 'Unkempt', 'Urbane', 'Versatile', 'Vivacious', 'Whimsical', 'Wholesome', 'Winning', 'Wise', 'Witty', 'Zany', 'Zealous']
+                                'Uninhibited', 'Unkempt', 'Urbane', 'Vain', 'Vegan', 'Vengeful', 'Versatile', 'Vivacious', 'Whimsical', 'Wholesome', 'Wimpy', 'Winning', 'Wise', 'Witty', 'Zany', 'Zealous']
 
 // Replace trigger words with less triggering words, so image gen can succeed.
 export function substitute(input: string) {
