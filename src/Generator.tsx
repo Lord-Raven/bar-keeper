@@ -1,6 +1,6 @@
 import {AspectRatio, Character} from "@chub-ai/stages-ts";
 import { Stage } from "./Stage";
-import {Emotion, emotionPrompts, Patron} from "./Patron";
+import {Emotion, emotionPrompts, nameCheck, Patron} from "./Patron";
 import bottleUrl from './assets/bottle.png'
 import silhouetteUrl from './assets/silhouette.png'
 import { Beverage } from "./Beverage";
@@ -32,8 +32,8 @@ const messOTraits = [
     'Paranoid', 'Passionate', 'Patient', 'Patriotic', 'Peaceful', 'Peevish', 'Perceptive', 'Perfect', 'Persistent', 'Persuasive', 'Petite', 'Petty', 'Picky', 'Placid', 'Playful', 'Polite', 'Poor', 'Positive', 'Pragmatic',
     'Precise', 'Principled', 'Private', 'Productive', 'Profound', 'Progressive', 'Protective', 'Proud', 'Prude', 'Prudent', 'Pudgy', 'Puny', 'Pure',
     'Quiet', 'Quirky', 'Rakish', 'Reasonable', 'Reliable', 'Religious', 'Reserved', 'Resilient', 'Resourceful', 'Retro', 'Reverential', 'Rich', 'Ritualistic', 'Romantic', 'Rowdy', 'Rude', 'Rustic',
-    'Sanctimonious', 'Sappy', 'Sarcastic', 'Sassy', 'Scandalous', 'Scholarly', 'Scrupulous', 'Selfless', 'Sensitive', 'Sensual', 'Sentimental', 'Serious', 'Sexy', 'Short', 'Shrewd', 'Sickly', 'Silly', 'Simple', 'Sincere', 'Sing-songy',
-    'Skeptical', 'Sleepy', 'Slender', 'Slimy', 'Slinky', 'Smarmy', 'Smoky', 'Sniveling', 'Solemn', 'Spiritual', 'Spoiled', 'Spontaneous', 'Spry', 'Steadfast', 'Steely', 'Stocky', 'Stoic', 'Studious', 'Stylish', 'Suave', 'Subtle', 'Suspicious', 'Sweet', 'Sympathetic',
+    'Sanctimonious', 'Sappy', 'Sarcastic', 'Sassy', 'Scandalous', 'Scholarly', 'Scrupulous', 'Selfless', 'Sensitive', 'Sensual', 'Sentimental', 'Serious', 'Sexy', 'Short', 'Shrewd', 'Sickly', 'Silly', 'Simple', 'Sincere', 'Sing-songy', 'Skeptical',
+    'Sleepy', 'Slender', 'Slimy', 'Slinky', 'Smarmy', 'Smoky', 'Sniveling', 'Sociable', 'Solemn', 'Spiritual', 'Spoiled', 'Spontaneous', 'Spry', 'Steadfast', 'Steely', 'Stocky', 'Stoic', 'Studious', 'Stylish', 'Suave', 'Subtle', 'Suspicious', 'Sweet', 'Sympathetic',
     'Talented', 'Talkative', 'Tall', 'Teacherly', 'Thorough', 'Thoughtful', 'Thrifty', 'Tidy', 'Timid', 'Tolerant', 'Tough', 'Transparent', 'Trendy', 'Troubled', 'Trusting', 'Trustworthy',
     'Uninhibited', 'Unkempt', 'Urbane', 'Vain', 'Vapid', 'Vegan', 'Vengeful', 'Versatile', 'Vivacious', 'Vocal', 'Warm', 'Whimsical', 'Wholesome', 'Wimpy', 'Winning', 'Wiry', 'Wise', 'Withholding', 'Witty', 'Zany', 'Zealous']
 
@@ -394,7 +394,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     const nameMatches = result.match(nameRegex);
     const descriptionMatches = result.match(descriptionRegex);
     const personalityMatches = result.match(personalityRegex);
-    if (nameMatches && nameMatches.length > 1 && nameMatches[1].length < MAX_NAME_LENGTH && descriptionMatches && descriptionMatches.length > 1 && personalityMatches && personalityMatches.length > 1) {
+    if (nameMatches && nameMatches.length > 1 && nameMatches[1].length < MAX_NAME_LENGTH && descriptionMatches && descriptionMatches.length > 1 && personalityMatches && personalityMatches.length > 1 && !nameCheck(nameMatches[1], stage.player.name)) {
         newPatron = new Patron(trimSymbols(nameMatches[1], TRIM_SYMBOLS).trim(), trimSymbols(descriptionMatches[1], TRIM_SYMBOLS).trim(), trimSymbols(personalityMatches[1], TRIM_SYMBOLS).trim());
     }
 
