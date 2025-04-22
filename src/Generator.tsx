@@ -77,7 +77,7 @@ export function buildDistillationPrompt(stage: Stage, baseCharacter: Character):
             `"SOURCE" should simply identify the source material invoked by FLAVOR TEXT, if possible; leave this blank or 'Original' if FLAVOR TEXT is not derived from a known work.\n` +
             `"SETTING" should briefly stipulate the overarching location, vibe, or time period derived from the FLAVOR TEXT, focusing on any key deviations from setting expectations.\n` +
             `"THEMES" should list all of the prominent themes, concepts, quirks, or kinks from the FLAVOR TEXT.\n` +
-            `"ART" lists distinct artist, genre, medium, palette, stroke, shading, or other style descriptors that are associated with SOURCE (if any) or which suit or align with the setting and themes of the FLAVOR TEXT; focus on strong technique descriptors, as these will be used to generate appropriate images later.\n` +
+            `"ART" lists distinct artist, genre, medium, palette, stroke, shading, or other evocative style descriptors that are associated with SOURCE (if any) or which might suit or align with the setting and themes of the FLAVOR TEXT; focus on strong, evocative styles, as this will be used to generate compelling images later.\n` +
             `Define these four fields and promptly end your response.\n`) +
         '###FUTURE INSTRUCTION:');
 }
@@ -146,7 +146,7 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
             `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
             `Consider other ESTABLISHED PATRONS (if any) and ensure that the new character in your response is distinct from these. Potentially define ` +
             `connections between this new character and one or more ESTABLISHED PATRONS patrons. ` +
-            `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but dig deep and craft something original and unexpected for this definition.`)) +
+            `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but dig deep and craft something original and unexpected for this character's name, appearance, and personality.`)) +
         '###FUTURE INSTRUCTION:');
 }
 

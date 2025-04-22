@@ -17,8 +17,15 @@ export class Patron {
 
 // Use Levenshtein distance to determine if an input string is referring to this character's name
 export function nameCheck(name: string, possibleName: string): boolean {
+
     name = name.toLowerCase();
     possibleName = possibleName.toLowerCase();
+
+    const names = name.split(' ');
+    if (names.filter(namePart => !possibleName.includes(namePart)).length == 0) {
+        return true;
+    }
+
     const matrix = Array.from({ length: name.length + 1 }, () => Array(possibleName.length + 1).fill(0));
     for (let i = 0; i <= name.length; i++) {
         for (let j = 0; j <= possibleName.length; j++) {
@@ -35,7 +42,7 @@ export function nameCheck(name: string, possibleName: string): boolean {
             }
         }
     }
-    return matrix[name.length][possibleName.length] < Math.min(name.length / 1.5, possibleName.length / 1.5);
+    return matrix[name.length][possibleName.length] < Math.min(name.length / 2, possibleName.length / 2);
 }
 
 export enum Emotion {
