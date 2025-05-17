@@ -51,7 +51,7 @@ If you receive a bad or undesirable response, there is a re-roll button; there i
 I feel there are some clear shortfalls in what this stage achieves, and maybe some of these items could be addressed or at least improved with sufficient time or motivation, but I don't know that they will be. 
 <li>It probably looks terrible in some layouts--especially portrait. Maybe I'll try to fix that.<br>
 <li>There is an issue where stage-originated text gen requests can repeatedly fail. In my experience, refreshing a few times or clearing the cache can resolve this. If the stage stops loading new responses, this is likely the culprit.<br>
-<li>A lot of the stage's behavior and performance is contingent upon your personal generation settings; your jailbreak in particular could cause trouble if it is overpowering the stage's instructions.<br>
+<li>A lot of the stage's behavior and performance is contingent upon your chosen LLM and generation settings; your jailbreak in particular could cause trouble if it is overpowering the stage's instructions.<br>
 <li>The stage does very little quality control, so you are at the mercy of the LLM to properly format responses and not go off the rails with activity that isn't internally represented by the stage.<br>
 <br>
 <br>
