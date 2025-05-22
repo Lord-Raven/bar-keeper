@@ -244,7 +244,7 @@ async function generateDistillation(stage: Stage, setErrorMessage: (message: str
         throw Error('Failed to generate a distillation.');
     }
 
-    console.log(`Source: ${stage.sourceSummary}\nSetting: ${stage.settingSummary}\nTheme: ${stage.themeSummary}\nArt: ${stage.artSummary}`);
+    console.log(`Source: ${stage.sourceSummary}\nSetting: ${stage.settingSummary}\nTheme: ${stage.themeSummary}\nArt Style: ${stage.artSummary}`);
 }
 
 export async function generate(stage: Stage, setErrorMessage: (message: string) => void) {
