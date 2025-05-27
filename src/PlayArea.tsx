@@ -203,6 +203,7 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, regen, reverse, stage, se
                             style={{
                                 height: '100%',
                                 display: 'flex',
+                                flexWrap: 'nowrap',
                                 flexDirection: 'row',
                                 justifyContent: 'space-evenly'
                             }}>
