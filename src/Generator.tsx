@@ -155,8 +155,8 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
             `You are doing critical prep work for a roleplaying narrative. Instead of narrating, use this planning response to study the ` + additionalInstruction +
             `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
             `Consider other ESTABLISHED PATRONS (if any) and ensure that the new character in your response is distinct from these. Potentially define ` +
-            `connections between this new character and one or more ESTABLISHED PATRONS patrons. ` +
-            `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but dig deep and craft something original and unexpected for this character's name, appearance, and personality.`)) +
+            `connections between this new character and one or more ESTABLISHED PATRONS. ` +
+            `See the EXAMPLE RESPONSES for strict formatting reference` + (specific ? '.' : `, but dig deep and craft something original and unexpected for this character's full name, appearance, and personality.`)) +
         '###FUTURE INSTRUCTION:');
 }
 
@@ -174,8 +174,8 @@ export async function generateBeverages(stage: Stage, setErrorMessage: (message:
             .map(item => {
                 const nameMatch = item.match(/\s*(?:\d*\.)*\s*(.*?)\s*Description:/i);
                 const descriptionMatch = item.match(/Description:\s*(.*)/i);
-                console.log(`${nameMatch ? trimSymbols(nameMatch[1], TRIM_SYMBOLS).trim() : ''}, ${descriptionMatch ? trimSymbols(descriptionMatch[1], TRIM_SYMBOLS).trim() : ''}`);
-                return new Beverage(nameMatch ? trimSymbols(nameMatch[1], TRIM_SYMBOLS).trim() : '', descriptionMatch ? trimSymbols(descriptionMatch[1], TRIM_SYMBOLS).trim() : '', '');
+                console.log(`${nameMatch ? trimSymbols(nameMatch[1], TRIM_SYMBOLS) : ''}, ${descriptionMatch ? trimSymbols(descriptionMatch[1], TRIM_SYMBOLS) : ''}`);
+                return new Beverage(nameMatch ? trimSymbols(nameMatch[1], TRIM_SYMBOLS) : '', descriptionMatch ? trimSymbols(descriptionMatch[1], TRIM_SYMBOLS) : '', '');
             }).filter(beverage => beverage.name != '' && beverage.description != '' && stage.beverages.filter(existing => existing.name.toLowerCase() == beverage.name.toLowerCase()).length == 0));
     }
 
@@ -387,7 +387,7 @@ export async function generatePatrons(stage: Stage, setErrorMessage: (message: s
     }
 }
 
-export function trimSymbols(str: string, symbol: string): string { const regex = new RegExp(`^[${symbol}]+|[${symbol}]+$`, 'g'); return str.replace(regex, ''); }
+export function trimSymbols(str: string, symbol: string): string { const regex = new RegExp(`^[${symbol}]+|[${symbol}]+$`, 'g'); return str.trim().replace(regex, '').trim(); }
 
 
 export async function generatePatron(stage: Stage, baseCharacter: Character): Promise<Patron|undefined> {
@@ -405,7 +405,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     const descriptionMatches = result.match(descriptionRegex);
     const personalityMatches = result.match(personalityRegex);
     if (nameMatches && nameMatches.length > 1 && nameMatches[1].length < MAX_NAME_LENGTH && descriptionMatches && descriptionMatches.length > 1 && personalityMatches && personalityMatches.length > 1 && !nameCheck(nameMatches[1], stage.player.name)) {
-        newPatron = new Patron(trimSymbols(nameMatches[1], TRIM_SYMBOLS).trim(), trimSymbols(descriptionMatches[1], TRIM_SYMBOLS).trim(), trimSymbols(personalityMatches[1], TRIM_SYMBOLS).trim());
+        newPatron = new Patron(trimSymbols(nameMatches[1], TRIM_SYMBOLS), trimSymbols(descriptionMatches[1], TRIM_SYMBOLS), trimSymbols(personalityMatches[1], TRIM_SYMBOLS));
     }
 
     return newPatron;

@@ -204,7 +204,7 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, regen, reverse, stage, se
                                 height: '100%',
                                 display: 'flex',
                                 flexDirection: 'row',
-                                justifyContent: 'space-around'
+                                justifyContent: 'space-evenly'
                             }}>
                             {stage().beverages.map(beverage => beverage.render(() => {
                                 return beverage.name == selectedBeverage
