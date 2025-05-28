@@ -25,6 +25,7 @@ export class Beverage {
                     }}
                     overlap="circular"
                     sx={{
+                        flexShrink: 1,
                         '& .MuiBadge-badge': {
                             backgroundColor: count() > 0 ? '#3333FFCC' : '#666666CC',
                             color: 'white',
