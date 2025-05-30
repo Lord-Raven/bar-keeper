@@ -374,7 +374,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 }
             } catch(error) {
                 setErrorMessage('Failed to generate a message; if this error persists, consider refreshing or clearing cache.');
-                console.error("Failed to generate a message: " + error);
+                console.error("Failed to generate a message: ");
+                console.error(error);
             }
         }
         console.log('Resolve with nothing');
