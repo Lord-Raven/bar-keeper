@@ -367,9 +367,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                     include_history: false
                 });
                 if (textGen?.result?.length) {
-                    const newNodes = createNodes(textGen.result, nextNodeProps, this);
+                    const newNodes = await createNodes(textGen.result, nextNodeProps, this);
                     console.log('Resolve with result');
-                    return newNodes;
+                    console.log(newNodes);
+                    return Promise.resolve(newNodes);
                 }
             } catch(error) {
                 setErrorMessage('Failed to generate a message; if this error persists, consider refreshing or clearing cache.');
