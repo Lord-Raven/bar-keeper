@@ -273,13 +273,17 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.kickOffRequestedNodes(this.currentNode, setErrorMessage);
 
         if (!this.currentNode || this.currentNode.childIds.length == 0) {
+            console.log('Await processNextResponse');
             const newNode = await this.processNextResponse(this.getTerminusOfChat(this.currentNode), setErrorMessage);
+            console.log('ProcessedNextResponse');
+            console.log(newNode);
             if (newNode) {
                 this.setCurrentNode(newNode, false);
             }
         } else if (this.currentNode.childIds.length > 0) {
             this.setCurrentNode(this.chatNodes[this.currentNode.childIds[0]], false);
         }
+        await this.updateChatState();
         this.kickOffRequestedNodes(this.currentNode, setErrorMessage);
     }
 
@@ -383,7 +387,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             let nextProps = determineNextNodeProps(this, this.getTerminusOfChat(this.currentNode));
             this.requestedNodes = this.generateMessageContent(this.getTerminusOfChat(this.currentNode), nextProps, directionSize[nextProps?.direction ?? Direction.Lull], setErrorMessage);
         }
+        console.log('Awaiting requestedNodes');
         let result = await this.requestedNodes;
+        console.log('Got requestedNodes result')
+        console.log(result);
         if (result && result.length > 0) {
             result.forEach(node => this.chatNodes[node.id] = node);
             newRootNode = result[0];
@@ -400,7 +407,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.requestedNodes = null;
         this.isGenerating = false;
 
-        await this.updateChatState();
         return newRootNode;
     }
 
