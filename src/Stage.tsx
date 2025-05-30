@@ -273,10 +273,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.kickOffRequestedNodes(this.currentNode, setErrorMessage);
 
         if (!this.currentNode || this.currentNode.childIds.length == 0) {
-            console.log('Await processNextResponse');
             const newNode = await this.processNextResponse(this.getTerminusOfChat(this.currentNode), setErrorMessage);
-            console.log('ProcessedNextResponse');
-            console.log(newNode);
             if (newNode) {
                 this.setCurrentNode(newNode, false);
             }
@@ -368,8 +365,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 });
                 if (textGen?.result?.length) {
                     const newNodes = await createNodes(textGen.result, nextNodeProps, this);
-                    console.log('Resolve with result');
-                    console.log(newNodes);
                     return Promise.resolve(newNodes);
                 }
             } catch(error) {
@@ -378,7 +373,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 console.error(error);
             }
         }
-        console.log('Resolve with nothing');
         return Promise.resolve(null);
     }
 
