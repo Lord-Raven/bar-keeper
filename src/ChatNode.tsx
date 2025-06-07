@@ -91,6 +91,8 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
                 const result = (await stage.pipeline.predict("/predict", {
                     param_0: newNode.message
                 }));
+                console.log(`Emotion result:`);
+                console.log(result);
                 const emotionData = result.data[0].confidences.filter((confidence: {
                     label: string;
                 }) => confidence.label != 'neutral');
