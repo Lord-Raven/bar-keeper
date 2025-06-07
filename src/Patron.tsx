@@ -15,17 +15,18 @@ export class Patron {
     }
 }
 
-// Use Levenshtein distance to determine if an input string is referring to this character's name
 export function nameCheck(name: string, possibleName: string): boolean {
 
     name = name.toLowerCase();
     possibleName = possibleName.toLowerCase();
 
     const names = name.split(' ');
-    if (names.filter(namePart => !possibleName.includes(namePart)).length == 0) {
+    // If the possible name contains at least half of the parts of the character name, then close enough.
+    if (names.filter(namePart => !possibleName.includes(namePart)).length <= Math.floor(names.length / 2)) {
         return true;
     }
 
+    // Otherwise, use Levenshtein distance to determine if an input string is referring to this character's name
     const matrix = Array.from({ length: name.length + 1 }, () => Array(possibleName.length + 1).fill(0));
     for (let i = 0; i <= name.length; i++) {
         for (let j = 0; j <= possibleName.length; j++) {
