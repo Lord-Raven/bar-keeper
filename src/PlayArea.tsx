@@ -241,7 +241,7 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, regen, reverse, stage, se
                                     isTalking={isTalking}
                                     present={present}/>;
             })}
-            <Vignette active={!advancing && (chatNode?.read ?? false)}/>
+            <Vignette active={(advancing && chatNode && chatNode.childIds.length > 0) ? stage().chatNodes[chatNode.childIds[0]].read :  (chatNode?.read ?? false)}/>
         </div>
     );
 }
