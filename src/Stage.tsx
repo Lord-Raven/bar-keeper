@@ -115,7 +115,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.loadingProgress = undefined;
 
         try {
-            this.pipeline = await Client.connect("lloorree/SamLowe-roberta-base-go_emotions");
+            this.pipeline = await Client.connect("ravenok/emotions");
         } catch (exception: any) {
             console.error(`Error loading expressions pipeline, error: ${exception}`);
         }
@@ -385,9 +385,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             let nextProps = determineNextNodeProps(this, this.getTerminusOfChat(this.currentNode));
             this.requestedNodes = this.generateMessageContent(this.getTerminusOfChat(this.currentNode), nextProps, directionSize[nextProps?.direction ?? Direction.Lull], setErrorMessage);
         }
-        console.log('Awaiting requestedNodes');
         let result = await this.requestedNodes;
-        console.log('Got requestedNodes result')
+        console.log('Got requestedNodes:')
         console.log(result);
         if (result && result.length > 0) {
             result.forEach(node => this.chatNodes[node.id] = node);
