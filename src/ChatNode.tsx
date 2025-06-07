@@ -100,10 +100,14 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
                     newNode.presentPatrons = {...newNode.presentPatrons};
                     const emotion = (emotionRouting[emotionData[0].label] ?? emotionData[0].label) as Emotion;
                     newNode.presentPatrons[targetPatronId] = emotion;
+                    console.log(`Setting ${targetPatron.name} to ${emotion} for message:\n"${newNode.message}"`);
                     // Await new image? Maybe just let it run in the background?
                     if (emotion != Emotion.neutral && targetPatron.imageUrls[emotion as Emotion] == targetPatron.imageUrls[Emotion.neutral]) {
+                        console.log('Generating emotion image');
                         await generatePatronImage(stage, targetPatron, emotion as Emotion, (message: string) => {});
                     }
+                } else if (result.data[0].label != 'neutral') {
+                    console.log(`Expected, perhaps, to shift ${targetPatron.name} to ${result.data[0].label} for message:\n"${newNode.message}"`);
                 }
             }
         }
