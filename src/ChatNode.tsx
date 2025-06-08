@@ -96,6 +96,7 @@ async function addNode(newNode: ChatNode, parentNode: ChatNode|null, nodes: Chat
                 const emotionData = result.data[0].confidences.filter((confidence: {
                     label: string;
                 }) => confidence.label != 'neutral');
+                console.log(emotionData);
                 if (emotionData.length > 0 && emotionData[0].confidence > 0.2) {
                     newNode.presentPatrons = {...newNode.presentPatrons};
                     const emotion = (emotionRouting[emotionData[0].label] ?? emotionData[0].label) as Emotion;
