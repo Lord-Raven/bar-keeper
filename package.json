@@ -28,7 +28,7 @@
     "react-dom": "^19.1.1",
     "vite-plugin-dts": "^3.9.1",
     "use-sound": "^4.0.1",
-    "windups": "^1.2.2",
+    "windups": "1.2.2",
     "register-service-worker": "1.7.2",
     "motion": "^12.19.1"
   },
