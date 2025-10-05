@@ -29,14 +29,13 @@ interface MessageWindupProps {
 }
 
 function MessageWindup({message, read, options}: MessageWindupProps) {
-
+    console.log("Rendering MessageWindup with message:", message, "and read status:", read);
     return (
         <div style={{height: '100%', position: 'relative'}}>
             <Typography color='#00000000' style={{userSelect: 'none'}}>{message}</Typography>
             <div style={{position: 'absolute', top: '0px', left: '0px', zIndex: 10}}>
                 <WindupChildren {...options}>
                     <Pace ms={3}>
-                        {/*Old approach: <Typography>{TextWithQuotes({text: message, read})}</Typography> */}
                         <Typography style={{display: 'inline-block'}}><TextWithQuotes text={message} read={read}/></Typography>
                     </Pace>
                 </WindupChildren>
