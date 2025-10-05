@@ -445,7 +445,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
             negative_prompt: patronImageNegativePrompt,
             aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL,
             remove_background: true,
-            transfer_type: 'face',
+            transfer_type: 'canny',
             strength: 0.05
         }, patron.imageUrls[Emotion.neutral]);
         if (imageUrl == '') {
