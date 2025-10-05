@@ -36,7 +36,7 @@ function MessageWindup({message, read, options}: MessageWindupProps) {
             <div style={{position: 'absolute', top: '0px', left: '0px', zIndex: 10}}>
                 <WindupChildren {...options}>
                     <Pace ms={3}>
-                        <TextWithQuotes text={message} read={read}/>
+                        <Typography>{TextWithQuotes({text: message, read})}</Typography>
                     </Pace>
                 </WindupChildren>
             </div>
