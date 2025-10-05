@@ -53,9 +53,14 @@ export function substitute(input: string) {
         'old-school': 'retro',
         'old school': 'retro',
         'oldschool': 'retro',
+        'schoolgirl': 'college girl',
+        'school girl': 'college girl',
+        'schoolboy': 'college guy',
+        'school boy': 'college guy',
         'youngster': 'individual',
         'child': 'individual',
-        'kid': 'individual'
+        'kid': 'individual',
+        'young ': ' '
     }
     const regex = new RegExp(Object.keys(synonyms).join('|'), 'gi');
 
@@ -440,6 +445,7 @@ export async function generatePatronImage(stage: Stage, patron: Patron, emotion:
             negative_prompt: patronImageNegativePrompt,
             aspect_ratio: AspectRatio.WIDESCREEN_VERTICAL,
             remove_background: true,
+            transfer_type: 'face',
             strength: 0.05
         }, patron.imageUrls[Emotion.neutral]);
         if (imageUrl == '') {
