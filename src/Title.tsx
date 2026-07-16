@@ -42,6 +42,7 @@ export const Title: FC<TitleProps> = ({ stage, setOnMenu, setErrorMessage }) => 
                     </>
                 ) : (
                     <>
+                        <Typography variant="h5" color='primary'>I am reworking major portions of the stage; I don't advise playing at this time.</Typography>
                         <Button style={{outline: 1, backgroundColor: '#00000088'}} color={'primary'}
                                 startIcon={stage().settingSummary ? <Replay/> : <ArrowForward/>}
                                 onClick={() => setConfirmReset(true)}>

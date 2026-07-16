@@ -3,7 +3,7 @@ import {FC, ReactNode, useEffect, useState} from "react";
 import {Stage} from "./Stage";
 import {ChatNode} from "./ChatNode";
 import {Cancel, CheckCircle, ArrowForward, ArrowBack, Refresh} from "@mui/icons-material";
-import {Emotion, nameCheck} from "./Patron";
+import {Emotion, nameCheck} from "./actors/Actor";
 import Box from "./Box";
 import {GenerationUi} from "./GenerationUi";
 import {Direction} from "./Director";
@@ -91,7 +91,7 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, regen, reverse, stage, se
 
     const getMessageElements = (targetNode: ChatNode|null): ReactNode|null => {
         if (isDrinkDecision(targetNode)) {
-            return <><Typography color="primary" variant="h3">Select a drink to serve {stage().patrons[targetNode?.selectedPatronId ?? ''].name}.</Typography></>;
+            return <><Typography color="primary" variant="h3">Select a drink to serve {stage().actors[targetNode?.selectedPatronId ?? ''].name}.</Typography></>;
         } else if (targetNode && (!targetNode.parentId || !stage().chatNodes[targetNode.parentId] || targetNode.night != stage().chatNodes[targetNode.parentId].night)) {
             return <><Typography color="primary" variant="h2">Night {targetNode.night}</Typography></>;
         }
@@ -221,8 +221,8 @@ export const PlayArea: FC<PlayAreaProps> = ({ advance, regen, reverse, stage, se
                     />
                 </div>
             </div>
-            {Object.keys(stage().patrons).map(patronId => {
-                const patron = stage().patrons[patronId];
+            {Object.keys(stage().actors).map(patronId => {
+                const patron = stage().actors[patronId];
                 let present = false;
                 let position = !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == patronId) ? -40 : 140;
                 let emotion: Emotion = chatNode?.presentPatrons[patronId] as Emotion ?? Emotion.neutral;

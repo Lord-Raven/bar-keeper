@@ -1,6 +1,6 @@
 import {AspectRatio, Character} from "@chub-ai/stages-ts";
 import { Stage } from "./Stage";
-import {Emotion, emotionPrompts, nameCheck, Patron} from "./Patron";
+import {Emotion, emotionPrompts, nameCheck, Actor} from "./actors/Actor";
 import bottleUrl from './assets/bottle.png'
 import silhouetteUrl from './assets/silhouette.png'
 import { Beverage } from "./Beverage";
@@ -153,9 +153,9 @@ export function buildPatronPrompt(stage: Stage, baseCharacter: Character): strin
             `NAME: Carolina Reaper\nTRAITS: Short, stacked, young woman, black trench coat over bright outfit, short red hair, green eyes, freckles.\nPERSONALITY: Carolina Reaper is a spicy-as-fuck death dealer. She's sassy and fun and takes pleasure in the pain of others.\n\n` +
             `NAME: Pwince Gwegowy\nTRAITS: gangly, tall, boyish man, bowl cut, blue eyes, regal outfit, pouty look.\nPERSONALITY: Pwince Gwegowy had his name legally changed to match his speech impediment so everyone would have to say it the same way. This is completely representative of his childish, petulant personality.\n\n` +
             `NAME: Liara T'Soni\nTRAITS: Asari woman, curvy, thin waist, blue skin, Asari head tentacles, futuristic white trench coat, innocent face.\nPERSONALITY: Once a naive--though prolific--Asari scientist, Liara has been hardened by her experiences combating the Reapers and is the current Shadow Broker.\n\n` +
-            (specific ? '' : Object.values(stage.dummyPatrons).map(patron => `NAME: ${patron.name}\nTRAITS: ${patron.description}\nPERSONALITY: ${patron.personality}`).join('\n\n'))) +
-        (Object.values(stage.patrons).length > 0 ?
-            buildSection('Established Patrons', Object.values(stage.patrons).map(patron => `NAME: ${patron.name}\nTRAITS: ${patron.description}\nPERSONALITY: ${patron.personality}`).join('\n\n')) : '') +
+            (specific ? '' : Object.values(stage.dummyActors).map(patron => `NAME: ${patron.name}\nTRAITS: ${patron.description}\nPERSONALITY: ${patron.personality}`).join('\n\n'))) +
+        (Object.values(stage.actors).length > 0 ?
+            buildSection('Established Patrons', Object.values(stage.actors).map(patron => `NAME: ${patron.name}\nTRAITS: ${patron.description}\nPERSONALITY: ${patron.personality}`).join('\n\n')) : '') +
         buildSection('Current Instruction',
             `You are doing critical prep work for a roleplaying narrative. Instead of narrating, use this planning response to study the ` + additionalInstruction +
             `You must specify the character's NAME, a TRAITS list of comma-delimited physical and visual attributes or booru tags, and a paragraph about their PERSONALITY: background, habits, ticks, style, and motivation (if any) for visiting the bar. ` +
@@ -259,7 +259,7 @@ export async function generate(stage: Stage, setErrorMessage: (message: string) 
         stage.currentNode = null;
         stage.chatNodes = {};
         stage.nightlySummaries = {};
-        stage.dummyPatrons = [];
+        stage.dummyActors = [];
         //stage.titleUrl = titleUrl;
         stage.setLoadProgress(1, 'Distilling card.');
         await generateDistillation(stage, setErrorMessage);
@@ -297,7 +297,7 @@ export async function generate(stage: Stage, setErrorMessage: (message: string) 
             seconds: 5
         },'');*/
 
-        stage.patrons = {};
+        stage.actors = {};
         stage.setLoadProgress(50, 'Generating dummy patrons.');
         await generateDummyPatrons(stage);
         await generatePatrons(stage, setErrorMessage);
@@ -352,16 +352,16 @@ const basicCharacter: Character = {
 }
 
 export async function generateDummyPatrons(stage: Stage) {
-    if (stage.dummyPatrons.length == 0) {
+    if (stage.dummyActors.length == 0) {
         // Build some dummy patrons to throw away the LLM's most generic ideas, and then use them as examples for better ideas.
         let tries = 5;
-        while (stage.dummyPatrons.length < 3 && tries-- >= 0) {
+        while (stage.dummyActors.length < 3 && tries-- >= 0) {
             stage.setLoadProgress((stage.loadingProgress ?? 0) + 2, 'Generating patrons.');
             let patron = await generatePatron(stage, {...basicCharacter, name: 'something'});
             if (patron) {
                 console.log('Generated dummy patron:');
                 console.log(patron);
-                stage.dummyPatrons.push(patron);
+                stage.dummyActors.push(patron);
             } else {
                 console.log('Failed a dummy patron generation');
             }
@@ -373,15 +373,15 @@ export async function generatePatrons(stage: Stage, setErrorMessage: (message: s
     const characters: Character[] = [...Object.values(stage.characters), {...basicCharacter, name: 'patron 1'}, {...basicCharacter, name: 'patron 2'}, {...basicCharacter, name: 'patron 3'}];
 
     for (let character of characters) {
-        if (!Object.keys(stage.patrons).includes(character.name)) {
+        if (!Object.keys(stage.actors).includes(character.name)) {
             stage.setLoadProgress((stage.loadingProgress ?? 0) + 2, 'Generating patrons.');
             let tries = 3;
-            while (!Object.keys(stage.patrons).includes(character.name) && tries-- >= 0) {
+            while (!Object.keys(stage.actors).includes(character.name) && tries-- >= 0) {
                 let patron = await generatePatron(stage, character);
                 if (patron) {
                     console.log('Generated patron:');
                     console.log(patron);
-                    stage.patrons[character.name] = patron;
+                    stage.actors[character.name] = patron;
                     stage.setLoadProgress((stage.loadingProgress ?? 0) + 2, 'Generating patrons.');
                     await generatePatronImage(stage, patron, Emotion.neutral, setErrorMessage);
                 } else {
@@ -395,14 +395,14 @@ export async function generatePatrons(stage: Stage, setErrorMessage: (message: s
 export function trimSymbols(str: string, symbol: string): string { const regex = new RegExp(`^[${symbol}]+|[${symbol}]+$`, 'g'); return str.trim().replace(regex, '').trim(); }
 
 
-export async function generatePatron(stage: Stage, baseCharacter: Character): Promise<Patron|undefined> {
+export async function generatePatron(stage: Stage, baseCharacter: Character): Promise<Actor|undefined> {
     let patronResponse = await stage.generator.textGen({
         prompt: buildPatronPrompt(stage, baseCharacter),
         max_tokens: 200,
         min_tokens: 50
     });
     let result = patronResponse?.result ?? '';
-    let newPatron: Patron|undefined = undefined;
+    let newPatron: Actor|undefined = undefined;
     const nameRegex = /Name\s*[:\-]?\s*(.*)/i;
     const descriptionRegex = /Traits\s*[:\-]?\s*(.*)/i;
     const personalityRegex = /Personality\s*[:\-]?\s*(.*)/i;
@@ -410,7 +410,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
     const descriptionMatches = result.match(descriptionRegex);
     const personalityMatches = result.match(personalityRegex);
     if (nameMatches && nameMatches.length > 1 && nameMatches[1].length < MAX_NAME_LENGTH && descriptionMatches && descriptionMatches.length > 1 && personalityMatches && personalityMatches.length > 1 && !nameCheck(nameMatches[1], stage.player.name)) {
-        newPatron = new Patron(trimSymbols(nameMatches[1], TRIM_SYMBOLS), trimSymbols(descriptionMatches[1], TRIM_SYMBOLS), trimSymbols(personalityMatches[1], TRIM_SYMBOLS));
+        newPatron = new Actor(trimSymbols(nameMatches[1], TRIM_SYMBOLS), trimSymbols(descriptionMatches[1], TRIM_SYMBOLS), trimSymbols(personalityMatches[1], TRIM_SYMBOLS));
     }
 
     return newPatron;
@@ -419,7 +419,7 @@ export async function generatePatron(stage: Stage, baseCharacter: Character): Pr
 const patronImagePrompt: string = 'plain flat background, standing, full body, adult';
 const patronImageNegativePrompt: string = 'border, ((close-up)), background elements, special effects, matching background, amateur, low quality, action, cut-off';
 
-export async function generatePatronImage(stage: Stage, patron: Patron, emotion: Emotion, setErrorMessage: (message: string) => void): Promise<void> {
+export async function generatePatronImage(stage: Stage, patron: Actor, emotion: Emotion, setErrorMessage: (message: string) => void): Promise<void> {
 
     if (emotion == Emotion.neutral) {
         const imageUrl = await stage.makeImage({

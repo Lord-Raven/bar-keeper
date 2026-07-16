@@ -1,6 +1,6 @@
 import { Stage } from "./Stage";
 import {ChatNode} from "./ChatNode";
-import {Emotion} from "./Patron";
+import {Emotion} from "./actors/Actor";
 
 export enum Direction {
     NightStart = 'NightStart',
@@ -120,7 +120,7 @@ export function getDirectionInstruction(stage: Stage, node: Partial<ChatNode>): 
     return directionInstructions[node.direction ?? Direction.NightStart]({
         barDescription: stage.barDescription ?? '',
         playerName: stage.player.name ?? '',
-        patronName: node.selectedPatronId ? stage.patrons[node.selectedPatronId].name : '',
+        patronName: node.selectedPatronId ? stage.actors[node.selectedPatronId].name : '',
         beverageName: node.selectedBeverage ?? ''});
 }
 
@@ -161,7 +161,7 @@ export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): 
             directionOdds.push(new Possibility(Direction.NightStart, '', 1000));
             break;
         case Direction.NightStart:
-            for (let patronId of Object.keys(stage.patrons)) {
+            for (let patronId of Object.keys(stage.actors)) {
                 directionOdds.push(new Possibility(Direction.IntroducePatron, patronId, 10));
             }
             break;
@@ -191,8 +191,8 @@ export function determineNextNodeProps(stage: Stage, startNode: ChatNode|null): 
             }
 
             // If max possible visits not hit, consider adding a patron (no more than five at a time)
-            if (visits < Object.keys(stage.patrons).length && (presentPatronIds.length ?? 0) < 5) {
-                const keys = Object.keys(stage.patrons).filter(key => !presentPatronIds.includes(key) && !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == key));
+            if (visits < Object.keys(stage.actors).length && (presentPatronIds.length ?? 0) < 5) {
+                const keys = Object.keys(stage.actors).filter(key => !presentPatronIds.includes(key) && !history.find(node => node.direction == Direction.IntroducePatron && node.selectedPatronId == key));
                 let selectedPatronId = keys[Math.floor(Math.random() * keys.length)];
                 directionOdds.push(new Possibility(Direction.IntroducePatron, selectedPatronId, 30 - (presentPatronIds?.length ?? 0) * 5));
             }

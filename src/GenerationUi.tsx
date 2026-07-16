@@ -6,7 +6,7 @@ import SettingsIcon from "@mui/icons-material/Settings"
 import ReplayIcon from "@mui/icons-material/Replay";
 import Popover from "@mui/material/Popover";
 import {generate, generateBarImage, generateBeverageImage, generatePatronImage} from "./Generator";
-import {Emotion} from "./Patron";
+import {Emotion} from "./actors/Actor";
 import {ArrowBack} from "@mui/icons-material";
 
 interface MessageWindowProps {
@@ -106,7 +106,7 @@ export const GenerationUi: FC<MessageWindowProps> = ({ stage, setOnMenu, setErro
                             </Box>
                         </Grid>
                     ))}
-                    {Object.values(stage().patrons).map((patron) => (
+                    {Object.values(stage().actors).map((patron) => (
                         <Grid key={patron.name}>
                             <Box sx={{ textAlign: 'center', height: '20vh' }}>
                                 <img src={patron.imageUrls[Emotion.neutral]} alt={patron.name} style={{ width: 'auto', height: '15vh', margin: '0 auto'}} />
